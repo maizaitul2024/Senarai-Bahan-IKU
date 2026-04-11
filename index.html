@@ -458,58 +458,63 @@
                 </div>
             </section>
 
-            <section class="base-card filter-card">
-                <div class="input-labeled flex-1">
-                    <label>Carian</label>
-                    <input type="text" id="search-input" class="premium-input !py-2.5" placeholder="Cari Tajuk atau Accession...">
-                </div>
-                <div class="input-labeled">
-                    <label>Staff</label>
-                    <select id="filter-staff" class="premium-input !py-2.5">
-                        <option value="">Semua Staff</option>
-                        <option value="FATIHAH">FATIHAH</option>
-                        <option value="FAZILAH">FAZILAH</option>
-                        <option value="SAKINAH">SAKINAH</option>
-                        <option value="HUSNA">HUSNA</option>
-                        <option value="ADMIN">ADMIN</option>
-                    </select>
-                </div>
-                <div class="input-labeled">
-                    <label>Status</label>
-                    <select id="filter-status" class="premium-input !py-2.5">
-                        <option value="">Semua Status</option>
-                        <option value="Completed">Completed</option>
-                        <option value="incomplete">incomplete</option>
-                    </select>
-                </div>
-                <div class="input-labeled">
-                    <label>Tahun</label>
-                    <select id="filter-year" class="premium-input !py-2.5">
-                        <option value="">Semua Tahun</option>
-                        <option value="2024">2024</option>
-                        <option value="2025">2025</option>
-                        <option value="2026">2026</option>
-                        <option value="2027">2027</option>
-                    </select>
-                </div>
-                <button id="btn-sync" class="btn-action btn-sync">
-                    <i data-lucide="refresh-cw" class="w-4 h-4 sync-icon"></i> Segerak Auto
-                </button>
-                
-                <!-- SEPARATOR UNTUK BUTANG DOWNLOAD -->
-                <div class="w-px h-10 bg-gray-200 hidden xl:block mx-1"></div>
-                
-                <!-- NEW: BAHAGIAN DOWNLOAD LAPORAN EXCEL -->
-                <div class="input-labeled border-l border-gray-100 pl-2 lg:pl-4">
-                    <label class="text-[#10B981]">Laporan Excel</label>
-                    <div class="flex gap-2">
-                        <select id="export-year" class="premium-input !py-2.5 border-[#10B981]/30 focus:border-[#10B981] w-36">
-                            <option value="all">Keseluruhan</option>
-                            <!-- Tahun akan dijana auto dari pangkalan data -->
+            <!-- DESIGN BARU UNTUK FILTER (Disusun Rapi & Tiada Overflow) -->
+            <section class="base-card filter-card !gap-5 !p-5">
+                <!-- Kumpulan 1: Carian & Dropdowns -->
+                <div class="flex flex-wrap gap-4 flex-1 w-full xl:w-auto">
+                    <div class="input-labeled flex-1 min-w-[200px]">
+                        <label>Carian</label>
+                        <input type="text" id="search-input" class="premium-input !py-2.5" placeholder="Cari Tajuk atau Accession...">
+                    </div>
+                    <div class="input-labeled min-w-[130px]">
+                        <label>Staff</label>
+                        <select id="filter-staff" class="premium-input !py-2.5">
+                            <option value="">Semua Staff</option>
+                            <option value="FATIHAH">FATIHAH</option>
+                            <option value="FAZILAH">FAZILAH</option>
+                            <option value="SAKINAH">SAKINAH</option>
+                            <option value="HUSNA">HUSNA</option>
+                            <option value="ADMIN">ADMIN</option>
                         </select>
-                        <button id="btn-export" class="btn-action bg-[#10B981] text-white hover:bg-[#059669]">
-                            <i data-lucide="download" class="w-4 h-4"></i> Muat Turun
-                        </button>
+                    </div>
+                    <div class="input-labeled min-w-[130px]">
+                        <label>Status</label>
+                        <select id="filter-status" class="premium-input !py-2.5">
+                            <option value="">Semua Status</option>
+                            <option value="Completed">Completed</option>
+                            <option value="incomplete">incomplete</option>
+                        </select>
+                    </div>
+                    <div class="input-labeled min-w-[130px]">
+                        <label>Tahun</label>
+                        <select id="filter-year" class="premium-input !py-2.5">
+                            <option value="">Semua Tahun</option>
+                            <option value="2024">2024</option>
+                            <option value="2025">2025</option>
+                            <option value="2026">2026</option>
+                            <option value="2027">2027</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Kumpulan 2: Butang Tindakan -->
+                <div class="flex flex-wrap items-end gap-4 ml-auto">
+                    <button id="btn-sync" class="btn-action btn-sync whitespace-nowrap h-[44px]">
+                        <i data-lucide="refresh-cw" class="w-4 h-4 sync-icon"></i> Segerak Auto
+                    </button>
+                    
+                    <div class="w-px h-10 bg-gray-200 hidden md:block mx-1"></div>
+                    
+                    <div class="flex flex-col gap-1.5">
+                        <label class="text-[#10B981] text-[11px] font-bold uppercase tracking-wider">Laporan Excel</label>
+                        <div class="flex gap-2">
+                            <select id="export-year" class="premium-input !py-2.5 border-[#10B981]/30 focus:border-[#10B981] w-32">
+                                <option value="all">Keseluruhan</option>
+                            </select>
+                            <button id="btn-export" class="btn-action bg-[#10B981] text-white hover:bg-[#059669] whitespace-nowrap h-[44px]">
+                                <i data-lucide="download" class="w-4 h-4"></i> Muat Turun
+                            </button>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -600,7 +605,7 @@
         // KONFIGURASI SISTEM
         // ==========================================
         // PENTING: Gantikan URL di bawah dengan URL Google Apps Script anda yang BAHARU
-        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxK66Q0zC_i9L1hVp8J_J0aN0_M-nJ3M00Q1vK_x9A/exec"; 
+        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxt0qfnlCxrCVbEuuessmUKICRladcdhzCey0U5fUU60IWxUbfXlUQFyhv-CNWmN-L9/exec"; 
         
         const State = {
             currentUser: null, data: [], filtered: [],
@@ -639,6 +644,7 @@
             const passInput = document.getElementById('login-pass');
             const type = passInput.getAttribute('type') === 'password' ? 'text' : 'password';
             passInput.setAttribute('type', type);
+            // Re-render icon specifically for toggle
             document.getElementById('toggle-pass').innerHTML = type === 'password' ? '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>' : '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye-off"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" x2="22" y1="2" y2="22"/></svg>';
         });
 
