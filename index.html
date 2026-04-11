@@ -38,7 +38,6 @@
             color: #334155;
             margin: 0;
             padding: 0;
-            /* Fix Scrolling Issue: Removed height:100vh and overflow-x:hidden */
             min-height: 100vh;
         }
 
@@ -181,39 +180,46 @@
             background: var(--bg-light); color: var(--brand-medium);
         }
 
-        /* DESIGN BARU: CHARTS SECTION (3 LAJUR) */
+        /* DESIGN BARU: CHARTS SECTION (LEBIH KECIL & KETAT) */
         #charts-section { 
             display: var(--charts-visible); 
-            grid-template-columns: 1.2fr 2fr 1fr; 
+            grid-template-columns: 1fr 1.5fr 1fr; 
             gap: 20px; 
-            height: 340px; 
+            height: 280px; /* Dikurangkan supaya lebih padat */
         }
         
         .chart-container { 
-            padding: 24px; 
+            padding: 20px 24px; 
             display: flex; 
             flex-direction: column; 
             background: white;
             border-radius: 16px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
             border: 1px solid #F1F5F9;
-            min-width: 0; /* FIX PENTING: Halang kotak mengembang tanpa had */
-            min-height: 0; /* FIX PENTING: Halang kotak mengembang tanpa had */
+            min-width: 0; 
+            min-height: 0; 
+            height: 100%;
         }
+        
+        /* FIX PENTING: Hadkan tinggi maksimum pembungkus carta */
         .chart-container .relative { 
             flex: 1 1 auto; 
             min-height: 0; 
             min-width: 0;
             width: 100%; 
             height: 100%;
+            max-height: 190px; /* HAD MUTLAK: Halang carta membesar gergasi */
             position: relative; 
+            display: flex;
+            justify-content: center;
         }
-        .chart-header { font-size: 15px; font-weight: 700; color: var(--brand-dark); margin-bottom: 16px; }
+        
+        .chart-header { font-size: 14px; font-weight: 700; color: var(--brand-dark); margin-bottom: 12px; }
 
         /* SUSUNAN RESPONSIVE (Jika skrin kecil) */
         @media (max-width: 1200px) {
             #charts-section { grid-template-columns: 1fr; height: auto; }
-            .chart-container { height: 320px; }
+            .chart-container { height: 280px; }
             #kpis { grid-template-columns: repeat(2, 1fr); }
         }
 
@@ -446,28 +452,28 @@
 
                 <div class="chart-container">
                     <div class="chart-header">Quick Insights</div>
-                    <div class="flex-1 flex flex-col justify-center gap-6">
+                    <div class="flex-1 flex flex-col justify-center gap-5">
                         <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 rounded-full bg-orange-50 text-[#F59E0B] flex items-center justify-center shadow-sm border border-orange-100">
+                            <div class="w-12 h-12 rounded-full bg-orange-50 text-[#F59E0B] flex items-center justify-center shadow-sm border border-orange-100 shrink-0">
                                 <i data-lucide="award" class="w-6 h-6"></i>
                             </div>
                             <div>
-                                <div class="text-[11px] text-gray-400 font-bold uppercase tracking-wider mb-0.5">Top Performer</div>
-                                <div class="text-base font-bold text-[--brand-dark] leading-tight" id="insight-top-staff">-</div>
-                                <div class="text-[12px] text-[#10B981] font-semibold mt-0.5" id="insight-top-score">0 Rekod Siap</div>
+                                <div class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-0.5">Top Performer</div>
+                                <div class="text-[15px] font-bold text-[--brand-dark] leading-tight" id="insight-top-staff">-</div>
+                                <div class="text-[11px] text-[#10B981] font-semibold mt-0.5" id="insight-top-score">0 Rekod Siap</div>
                             </div>
                         </div>
                         
                         <div class="w-full h-px bg-gray-100"></div>
                         
                         <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 rounded-full bg-blue-50 text-[--brand-medium] flex items-center justify-center shadow-sm border border-blue-100">
+                            <div class="w-12 h-12 rounded-full bg-blue-50 text-[--brand-medium] flex items-center justify-center shadow-sm border border-blue-100 shrink-0">
                                 <i data-lucide="alert-circle" class="w-6 h-6"></i>
                             </div>
                             <div>
-                                <div class="text-[11px] text-gray-400 font-bold uppercase tracking-wider mb-0.5">Pending Tasks</div>
-                                <div class="text-base font-bold text-[--brand-dark] leading-tight" id="insight-pending">0 Rekod</div>
-                                <div class="text-[12px] text-red-500 font-semibold mt-0.5">Belum Siap</div>
+                                <div class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-0.5">Pending Tasks</div>
+                                <div class="text-[15px] font-bold text-[--brand-dark] leading-tight" id="insight-pending">0 Rekod</div>
+                                <div class="text-[11px] text-red-500 font-semibold mt-0.5">Belum Siap</div>
                             </div>
                         </div>
                     </div>
@@ -621,7 +627,7 @@
         // KONFIGURASI SISTEM
         // ==========================================
         // PENTING: Gantikan URL di bawah dengan URL Google Apps Script anda yang BAHARU
-        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwrzp45KVTwTzFGFucvVUa-uQb1biSh5qp5gU_iisQ4qUhsViVI_5_w79gsQRUHRXoM/exec"; 
+        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxLqnjylElzuBhUJvoa1Z87LvjtzvspJgr1WMVnObf3DH_UmXR-VeEstS5S_tTWp-YN/exec"; 
         
         const State = {
             currentUser: null, data: [], filtered: [],
@@ -1039,7 +1045,7 @@
                 options: { 
                     responsive: true, 
                     maintainAspectRatio: false, 
-                    cutout: '75%', /* Lebih nipis, nampak moden */
+                    cutout: '70%', /* Lebih nipis, nampak moden */
                     layout: { padding: 10 },
                     plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 11 } } } }
                 } 
