@@ -839,25 +839,42 @@
                     if (field === 'STATUS') {
                         inputElement.className = `editable-input font-bold ${value === 'Completed' ? 'text-[#10B981]' : value === 'incomplete' ? 'text-[#F59E0B]' : ''}`;
                         
-                        // AUTO-UPDATE DATE JIKA STATUS DITUKAR
-                        const today = new Date();
-                        const day = String(today.getDate()).padStart(2, '0');
-                        const month = String(today.getMonth() + 1).padStart(2, '0');
-                        const year = today.getFullYear();
-                        const formattedDate = `${day}/${month}/${year}`;
-                        
-                        record['DATE'] = formattedDate;
-                        
-                        const tr = inputElement.closest('tr');
-                        if (tr) {
-                            const dateInput = tr.querySelector('.col-date input');
-                            if (dateInput) {
-                                dateInput.value = formattedDate;
+                        // AUTO-UPDATE DATE HANYA UNTUK REKOD BARU KE HADAPAN
+                        if (value === 'Completed') {
+                            const today = new Date();
+                            const day = String(today.getDate()).padStart(2, '0');
+                            const month = String(today.getMonth() + 1).padStart(2, '0');
+                            const year = today.getFullYear();
+                            const formattedDate = `${day}/${month}/${year}`; // Format: DD/MM/YYYY
+                            
+                            record['DATE'] = formattedDate;
+                            
+                            const tr = inputElement.closest('tr');
+                            if (tr) {
+                                const dateInput = tr.querySelector('.col-date input');
+                                if (dateInput) {
+                                    dateInput.value = formattedDate;
+                                }
                             }
+                            
+                            const dateParams = new URLSearchParams({ action: 'update', rowIndex: rowIndex, field: 'DATE', value: formattedDate, validateDup: false });
+                            try { await fetch(`${GAS_WEB_APP_URL}?${dateParams.toString()}`); } catch(e) { console.error(e); }
+                            
+                        } else if (value === 'incomplete') {
+                            // Kosongkan tarikh jika staf tersalah tekan dan tukar balik ke incomplete
+                            record['DATE'] = '';
+                            
+                            const tr = inputElement.closest('tr');
+                            if (tr) {
+                                const dateInput = tr.querySelector('.col-date input');
+                                if (dateInput) {
+                                    dateInput.value = '';
+                                }
+                            }
+                            
+                            const dateParams = new URLSearchParams({ action: 'update', rowIndex: rowIndex, field: 'DATE', value: '', validateDup: false });
+                            try { await fetch(`${GAS_WEB_APP_URL}?${dateParams.toString()}`); } catch(e) { console.error(e); }
                         }
-                        
-                        const dateParams = new URLSearchParams({ action: 'update', rowIndex: rowIndex, field: 'DATE', value: formattedDate, validateDup: false });
-                        try { await fetch(`${GAS_WEB_APP_URL}?${dateParams.toString()}`); } catch(e) { console.error(e); }
                     }
                     applyFilters(false); 
                 }
@@ -974,7 +991,7 @@
                         </select>
                     </td>
                     <td class="col-date">
-                        <input type="text" class="editable-input text-gray-600" placeholder="DD/MM/YYYY" value="${row['DATE'] || ''}" onchange="handleEdit(${row._rowIndex}, 'DATE', this.value, this)">
+                        <input type="text" class="editable-input text-gray-600" value="${row['DATE'] || ''}" disabled title="Diisi secara automatik bila Completed">
                     </td>
                 `;
                 frag.appendChild(tr);
