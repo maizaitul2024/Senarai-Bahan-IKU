@@ -4,544 +4,242 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Senarai Buku IKU - Sistem Pengurusan Koleksi Buku</title>
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Montserrat:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Tailwind CSS -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
-    <!-- SheetJS (For Professional Excel Export) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
     <style>
         :root {
-            /* STRICT Corporate Blue Executive System */
-            --brand-dark: #003366;
-            --brand-medium: #0055A5;
-            --bg-light: #CCE5FF;
-            --row-alt: #F8FAFC;
-            
-            --font-ui: 'Montserrat', sans-serif;
-            --font-table: 'DM Sans', sans-serif !important;
-
-            --kpi-visible: grid;
-            --charts-visible: grid;
+            --brand-dark: #0f172a; --brand-medium: #2563eb; --bg-light: #f1f5f9;
+            --font-ui: 'Inter', sans-serif;
+            --kpi-visible: grid; --charts-visible: grid;
         }
 
-        body {
-            font-family: var(--font-ui);
-            background-color: #F1F5F9; /* Warna latar sedikit gelap untuk tonjolkan kad putih */
-            color: #334155;
-            margin: 0;
-            padding: 0;
-            min-height: 100vh;
-        }
+        body { font-family: var(--font-ui); background-color: var(--bg-light); color: #334155; margin: 0; min-height: 100vh; -webkit-font-smoothing: antialiased; }
 
-        /* --- STRICT PAGE 1: LOGIN SCREEN --- */
-        #login-screen {
-            position: fixed;
-            inset: 0;
-            background-color: #F1F5F9;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 100;
-            padding: 20px;
-        }
+        /* --- Scrollbar --- */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
-        .login-card {
-            background: white;
-            width: 100%;
-            max-width: 600px;
-            min-height: 400px;
-            border-radius: 20px;
-            box-shadow: 0 10px 40px rgba(0, 51, 102, 0.08);
-            padding: 40px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        .login-header {
-            text-align: center;
-            margin-bottom: 32px;
-        }
-
-        .login-header h1 {
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 700;
-            font-size: 28px;
-            color: var(--brand-dark);
-            margin-bottom: 8px;
-        }
-
-        .login-header p {
-            color: var(--brand-medium);
-            font-size: 15px;
-            font-weight: 500;
-        }
-
-        .premium-input {
-            width: 100%;
-            padding: 12px 16px;
-            background: #F8FAFC;
-            border: 1px solid #E2E8F0;
-            border-radius: 10px;
-            font-size: 14px;
-            color: var(--brand-dark);
-            outline: none;
-            transition: all 0.2s;
-            font-family: var(--font-ui);
-        }
-
-        .premium-input:focus {
-            background: white;
-            border-color: var(--brand-medium);
-            box-shadow: 0 0 0 3px rgba(0, 85, 165, 0.1);
-        }
-
-        .login-btn {
-            background: linear-gradient(135deg, var(--brand-medium), var(--brand-dark));
-            color: white;
-            padding: 14px;
-            border-radius: 10px;
-            font-weight: 600;
-            font-size: 16px;
-            border: none;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 10px;
-            transition: opacity 0.2s, transform 0.1s;
-        }
-
-        .login-btn:hover { opacity: 0.9; }
-        .login-btn:active { transform: scale(0.98); }
-
-        /* --- DASHBOARD LAYOUT --- */
-        #dashboard {
-            display: none;
-            flex-direction: column;
-            min-height: 100vh;
-            max-width: 1920px;
-            margin: 0 auto;
-            width: 100%;
-        }
-
-        .top-navbar {
-            background: white;
-            padding: 16px 32px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
-            position: sticky;
-            top: 0;
-            z-index: 50;
-        }
-
-        .main-content {
-            flex: 1;
-            padding: 24px 32px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        /* DESIGN BARU: KAD MELENGKUNG & SHADOW LEMBUT */
-        .base-card {
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
-            border: 1px solid #F1F5F9;
-        }
-
-        /* COMPACT KPI CARDS */
-        #kpis { display: var(--kpi-visible); grid-template-columns: repeat(4, 1fr); gap: 20px; }
-        
-        .kpi-card {
-            padding: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border-left: 4px solid var(--brand-medium);
-        }
-        
-        .kpi-info { display: flex; flex-direction: column; gap: 4px; }
-        .kpi-label { font-size: 12px; color: #64748b; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
-        .kpi-value { font-size: 32px; font-weight: 700; color: var(--brand-dark); line-height: 1; }
-
-        .kpi-icon-wrap {
-            width: 48px; height: 48px; border-radius: 12px;
-            display: flex; align-items: center; justify-content: center;
-            background: var(--bg-light); color: var(--brand-medium);
-        }
-
-        /* DESIGN BARU: CHARTS SECTION (LEBIH KECIL & KETAT) */
-        #charts-section { 
-            display: var(--charts-visible); 
-            grid-template-columns: 1fr 1.5fr 1fr; 
-            gap: 20px; 
-            height: 280px; /* Dikurangkan supaya lebih padat */
-        }
-        
-        .chart-container { 
-            padding: 20px 24px; 
-            display: flex; 
-            flex-direction: column; 
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
-            border: 1px solid #F1F5F9;
-            min-width: 0; 
-            min-height: 0; 
-            height: 100%;
-        }
-        
-        /* FIX PENTING: Hadkan tinggi maksimum pembungkus carta */
-        .chart-container .relative { 
-            flex: 1 1 auto; 
-            min-height: 0; 
-            min-width: 0;
-            width: 100%; 
-            height: 100%;
-            max-height: 190px; /* HAD MUTLAK: Halang carta membesar gergasi */
-            position: relative; 
-            display: flex;
-            justify-content: center;
-        }
-        
-        .chart-header { font-size: 14px; font-weight: 700; color: var(--brand-dark); margin-bottom: 12px; }
-
-        /* SUSUNAN RESPONSIVE (Jika skrin kecil) */
-        @media (max-width: 1200px) {
-            #charts-section { grid-template-columns: 1fr; height: auto; }
-            .chart-container { height: 280px; }
-            #kpis { grid-template-columns: repeat(2, 1fr); }
-        }
-
-        /* Controls / Filter Card */
-        .filter-card { padding: 20px 24px; display: flex; gap: 16px; align-items: flex-end; flex-wrap: wrap; }
-        .input-labeled { display: flex; flex-direction: column; gap: 8px; flex: 1; min-width: 150px; }
-        .input-labeled label { font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; }
-
-        .btn-action {
-            padding: 10px 24px; border-radius: 10px; font-weight: 600; font-size: 14px;
-            display: flex; align-items: center; gap: 8px; cursor: pointer; height: 44px;
-            border: none; transition: background 0.2s;
-        }
-        .btn-sync { background: var(--brand-medium); color: white; }
-        .btn-sync:hover { background: var(--brand-dark); }
-        .btn-sync.syncing .sync-icon { animation: spin 1s linear infinite; }
+        /* --- Micro Animations --- */
+        .fade-in-up { animation: fadeInUp 0.5s ease-out forwards; opacity: 0; }
+        .delay-100 { animation-delay: 100ms; }
+        .delay-200 { animation-delay: 200ms; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes spin { 100% { transform: rotate(360deg); } }
+        .syncing .sync-icon { animation: spin 1s linear infinite; }
 
-        /* STRICT TABLE SECTION */
-        #table-section { 
-            display: flex; 
-            flex-direction: column; 
-            overflow: hidden; 
-        }
+        /* --- LOGIN SCREEN --- */
+        #login-screen { position: fixed; inset: 0; background-color: var(--bg-light); display: flex; align-items: center; justify-content: center; z-index: 100; padding: 20px; }
+        .login-card { background: white; width: 100%; max-width: 420px; border-radius: 24px; box-shadow: 0 20px 40px rgba(15, 23, 42, 0.06); padding: 48px 40px; }
+        .login-header { text-align: center; margin-bottom: 32px; }
+        .login-header h1 { font-weight: 800; font-size: 24px; color: var(--brand-dark); margin-bottom: 8px; }
         
-        .table-wrapper { 
-            overflow-x: auto; 
-            max-height: 650px;
-            overflow-y: auto; 
+        .modern-input {
+            width: 100%; padding: 12px 16px; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 12px;
+            font-size: 14px; color: var(--brand-dark); outline: none; transition: all 0.2s; font-weight: 500;
         }
-        
-        table {
-            width: 100%; border-collapse: separate; border-spacing: 0;
-            font-family: var(--font-table) !important; table-layout: fixed; min-width: 1100px;
+        .modern-input:focus { border-color: var(--brand-medium); box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1); }
+        select.modern-input { cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2364748b'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px; padding-right: 36px; }
+
+        .btn-gradient {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); color: white; padding: 12px 24px; border-radius: 12px;
+            font-weight: 600; font-size: 15px; border: none; cursor: pointer; width: 100%; transition: all 0.2s; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
         }
+        .btn-gradient:active { transform: scale(0.98); }
 
-        thead { position: sticky; top: 0; z-index: 5; }
+        /* --- DASHBOARD --- */
+        #dashboard { display: none; flex-direction: column; min-height: 100vh; max-width: 1920px; margin: 0 auto; }
+        .top-navbar {
+            background: linear-gradient(135deg, #0a1128 0%, #1e3a8a 100%); padding: 16px 32px; display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); position: sticky; top: 0; z-index: 50;
+        }
+        .nav-title { color: white; font-weight: 800; font-size: 20px; letter-spacing: -0.5px; }
+        .main-content { flex: 1; padding: 32px; display: flex; flex-direction: column; gap: 24px; }
+        .base-card { background: white; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); border: 1px solid #e2e8f0; }
 
+        /* KPI & CHARTS */
+        #kpis { display: var(--kpi-visible); grid-template-columns: repeat(4, 1fr); gap: 24px; }
+        .kpi-card { padding: 24px; display: flex; align-items: center; justify-content: space-between; border-left: 4px solid var(--brand-medium); }
+        .kpi-label { font-size: 12px; color: #64748b; font-weight: 700; text-transform: uppercase; }
+        .kpi-value { font-size: 32px; font-weight: 800; color: var(--brand-dark); }
+        #charts-section { display: var(--charts-visible); grid-template-columns: 1fr 1.6fr; gap: 24px; height: 300px; }
+        .chart-container { padding: 24px; display: flex; flex-direction: column; height: 100%; }
+
+        /* TABLE */
+        .table-wrapper { overflow-x: auto; max-height: 600px; overflow-y: auto; background: white; border-radius: 16px 16px 0 0; }
+        table { width: 100%; border-collapse: separate; border-spacing: 0; font-family: var(--font-ui) !important; table-layout: fixed; min-width: 1300px; }
+        thead { position: sticky; top: 0; z-index: 20; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); }
         th {
-            background: var(--brand-dark); color: white;
-            font-size: 12px; font-weight: 700; text-align: center;
-            padding: 14px 8px; border-bottom: none;
-            letter-spacing: 0.5px;
+            background: linear-gradient(135deg, #0a1128 0%, #1e3a8a 100%); color: #ffffff; font-size: 11px; font-weight: 700; text-align: center;
+            padding: 16px 10px; border-right: 1px solid rgba(255,255,255,0.1); text-transform: uppercase; letter-spacing: 0.5px;
         }
-        
-        /* Table Header rounded corners */
-        th:first-child { border-top-left-radius: 8px; }
-        th:last-child { border-top-right-radius: 8px; }
+        td { font-size: 13px; text-align: center; padding: 12px 10px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
+        tbody tr:hover { background-color: #f0f9ff; }
 
-        td {
-            font-size: 12.5px; text-align: center; padding: 12px 8px;
-            border-bottom: 1px solid #F1F5F9; color: #334155; vertical-align: middle;
-            line-height: 1.5;
-            white-space: nowrap; 
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        tr:nth-child(even) td { background-color: var(--row-alt); }
-        tr:hover td { background-color: #F8FAFC; } /* Efek hover baris */
-        
-        /* COLUMN WIDTHS */
         .col-no { width: 50px; }
-        .col-control { width: 140px; }
+        .col-control { width: 130px; }
         .col-call82 { width: 110px; }
-        .col-call50 { width: 160px; }
-        .col-acc { width: 110px; }
-        .col-title { 
-            width: auto; 
-            font-size: 12.5px !important; 
-            text-align: center !important; 
-            white-space: normal !important; /* ONLY wrap TITLE */
-            word-break: break-word;
-        }
-        .col-status { width: 130px; }
+        .col-call50 { width: 140px; }
+        .col-acc { width: 120px; }
+        .col-title { width: auto; text-align: left !important; white-space: normal !important; padding-left: 16px; }
         .col-staff { width: 130px; }
-        .col-date { width: 120px; }
+        .col-status { width: 160px; }
+        .col-action { width: 220px; } /* Lebar untuk butang kelulusan & peti mesej */
 
-        /* Editable Inputs inside table */
-        .editable-input {
-            width: 100%; padding: 6px; border: 1px solid transparent; border-radius: 6px;
-            font-family: var(--font-table) !important; font-size: 12.5px; text-align: center;
-            background: transparent; color: inherit; font-weight: 500;
+        .editable-text {
+            width: 100%; padding: 8px 12px; border: 1px solid transparent; border-radius: 8px;
+            font-size: 13px; text-align: center; background: transparent; font-weight: 500; transition: all 0.2s;
         }
-        .editable-input:hover { border-color: #E2E8F0; background: white; }
-        .editable-input:focus {
-            background: white; border-color: var(--brand-medium);
-            box-shadow: 0 0 0 2px rgba(0, 85, 165, 0.1); outline: none;
-        }
-        .editable-input:disabled { opacity: 0.6; cursor: not-allowed; }
+        .editable-text:hover:not(:disabled) { background: white; border-color: #cbd5e1; }
+        .editable-text:focus { background: white; border-color: var(--brand-medium); outline: none; }
+        .editable-text:disabled { opacity: 0.7; cursor: not-allowed; background: transparent !important; border-color: transparent !important; }
 
-        select.editable-input { cursor: pointer; }
+        /* Status Badges */
+        .badge { padding: 6px 12px; border-radius: 99px; font-size: 11px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; width: 100%; letter-spacing: 0.3px; }
+        .b-incomplete { background: #f1f5f9; color: #64748b; }
+        .b-pending-semak { background: #fff7ed; color: #ea580c; border: 1px solid #fdba74; }
+        .b-pending-lulus { background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; }
+        .b-completed { background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; }
+        .b-rejected { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+
+        /* Action Buttons */
+        .btn-act { padding: 8px 14px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; border: none; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .btn-act:hover { filter: brightness(0.9); transform: translateY(-1px); }
+        .btn-act:active { transform: translateY(1px); }
+        .act-blue { background: #3b82f6; color: white; }
+        .act-green { background: #10b981; color: white; }
+        .act-red { background: #ef4444; color: white; }
 
         /* Loading Overlay */
-        #sync-overlay {
-            position: fixed; inset: 0; background: rgba(255,255,255,0.8); backdrop-filter: blur(4px);
-            z-index: 3000; display: none; flex-direction: column; justify-content: center; align-items: center;
-        }
-        .loader {
-            width: 40px; height: 40px; border: 4px solid var(--bg-light);
-            border-top-color: var(--brand-medium); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 16px;
-        }
+        #sync-overlay { position: fixed; inset: 0; background: rgba(255,255,255,0.85); backdrop-filter: blur(8px); z-index: 3000; display: none; flex-direction: column; justify-content: center; align-items: center; }
+        .loader { width: 48px; height: 48px; border: 4px solid #e2e8f0; border-top-color: var(--brand-medium); border-radius: 50%; animation: spin 1s infinite; margin-bottom: 20px; }
 
-        /* Popups */
-        .popup-overlay {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none;
-            justify-content: center; align-items: center; z-index: 4000;
-        }
-        .popup-content { background: white; padding: 32px; border-radius: 20px; max-width: 400px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
-
-        /* Admin Panel */
-        #admin-panel {
-            position: fixed; right: -320px; top: 0; bottom: 0; width: 300px;
-            background: white; box-shadow: -5px 0 25px rgba(0,0,0,0.1); z-index: 1000;
-            transition: right 0.3s; display: flex; flex-direction: column;
-        }
+        /* Rejection Modal */
+        #reject-modal { position: fixed; inset: 0; background: rgba(15,23,42,0.6); display: none; justify-content: center; align-items: center; z-index: 4000; }
+        .reject-content { background: white; padding: 32px; border-radius: 20px; width: 100%; max-width: 400px; text-align: center; }
+        .msg-box { background: #fef2f2; border: 1px dashed #fca5a5; padding: 12px; border-radius: 8px; font-size: 11px; color: #b91c1c; text-align: left; margin-top: 8px; }
     </style>
 </head>
 <body>
 
     <div id="sync-overlay">
         <div class="loader"></div>
-        <h2 class="text-lg font-bold text-[--brand-dark]">Menyegerak Pangkalan Data...</h2>
+        <h2 class="text-xl font-bold text-slate-800">Menyegerak Pangkalan Data...</h2>
     </div>
 
+    <!-- LOGIN SCREEN -->
     <div id="login-screen">
         <div class="login-card">
             <div class="login-header">
-                <h1>Senarai Buku IKU</h1>
-                <p>Sistem Pengurusan Koleksi Buku<br>Tukar DDC kepada NLM/LC</p>
+                <div class="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600 mx-auto mb-5 shadow-inner">
+                    <i data-lucide="shield-check" class="w-8 h-8"></i>
+                </div>
+                <h1>IKU Library System</h1>
+                <p class="text-slate-500 text-sm">Log Masuk Kakitangan & Pegawai</p>
             </div>
-            <form id="login-form">
-                <div class="mb-4">
-                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1.5">Peranan</label>
-                    <select id="login-role" class="premium-input">
-                        <option value="staff">Staff</option>
-                        <option value="admin">Admin</option>
+            <form id="login-form" class="flex flex-col gap-4">
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5 ml-1">Username / Peranan</label>
+                    <select id="login-user" class="modern-input">
+                        <option value="" disabled selected hidden>Pilih Username</option>
+                        <option value="staff">Staff (Kemasukan Data)</option>
+                        <option value="rosli">Rosli (Pegawai Penyemak)</option>
+                        <option value="jaini">Jaini (Pegawai Pelulus)</option>
+                        <option value="admin">Admin System</option>
                     </select>
                 </div>
-                <div class="mb-4">
-                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1.5">ID Pengguna</label>
-                    <input type="text" id="login-user" class="premium-input" placeholder="Masukkan ID pengguna" required>
-                </div>
-                <div class="mb-4 relative">
-                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1.5">Kata Laluan</label>
-                    <input type="password" id="login-pass" class="premium-input" placeholder="Masukkan kata laluan" required>
-                    <button type="button" id="toggle-pass" class="absolute right-3 top-8 text-gray-400">
+                <div class="relative">
+                    <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5 ml-1">Kata Laluan</label>
+                    <input type="password" id="login-pass" class="modern-input pr-10" placeholder="••••••••" required>
+                    <button type="button" id="toggle-pass" class="absolute right-3 top-[32px] text-slate-400">
                         <i data-lucide="eye" class="w-4 h-4"></i>
                     </button>
                 </div>
-                <div id="admin-code-container" class="mb-4 hidden">
-                    <label class="block text-xs font-bold text-red-500 uppercase tracking-wide mb-1.5">Kod Akses Pentadbir</label>
-                    <input type="password" id="admin-code" class="premium-input border-red-200 focus:border-red-500 focus:ring-red-100" placeholder="Diperlukan untuk admin">
-                </div>
-                <button type="submit" class="login-btn mt-4">Log Masuk</button>
+                <button type="submit" class="btn-gradient mt-4">Log Masuk Sistem</button>
             </form>
-            <div class="text-center mt-8 text-xs text-gray-400 font-medium">
-                &copy; 2026 IKU Library System
-            </div>
         </div>
     </div>
 
+    <!-- DASHBOARD -->
     <div id="dashboard">
         <nav class="top-navbar">
-            <div>
-                <h2 class="text-2xl font-bold text-[--brand-dark] tracking-tight">IKU LIBRARY SYSTEM</h2>
-                <p class="text-sm text-gray-500 font-medium">Executive Collection Management</p>
+            <div class="flex items-center gap-4">
+                <div class="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center text-white border border-white/10">
+                    <i data-lucide="library" class="w-5 h-5"></i>
+                </div>
+                <h2 class="nav-title">IKU LIBRARY SYSTEM</h2>
             </div>
             <div class="flex items-center gap-6">
-                <div class="text-right">
-                    <div id="live-time" class="text-xl font-bold text-[--brand-dark] font-mono">--:--:-- --</div>
-                    <div id="live-date" class="text-[11px] font-bold text-gray-500 uppercase tracking-widest">---</div>
+                <div class="flex items-center gap-3 bg-white/10 py-1.5 pl-2 pr-4 rounded-full border border-white/20">
+                    <div class="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold text-sm shadow-inner" id="user-avatar">S</div>
+                    <div class="text-[13px] font-bold text-white uppercase tracking-wider" id="current-username">STAFF</div>
                 </div>
-                <div class="h-8 w-px bg-gray-200"></div>
-                <div class="flex items-center gap-3">
-                    <div class="w-9 h-9 rounded-full bg-[--bg-light] text-[--brand-medium] flex items-center justify-center font-bold text-sm" id="user-avatar">S</div>
-                    <div class="text-[13px] font-bold text-gray-700 uppercase tracking-wide" id="current-username">USER</div>
-                </div>
-                <button id="btn-admin-panel" class="hidden text-gray-400 hover:text-[--brand-dark] transition-colors" title="Admin Panel">
-                    <i data-lucide="settings" class="w-5 h-5"></i>
-                </button>
-                <button id="btn-logout" class="text-red-400 hover:text-red-600 transition-colors" title="Logout">
+                <button onclick="location.reload()" class="w-10 h-10 rounded-full flex items-center justify-center text-red-300 hover:text-white hover:bg-red-500/20 transition-all" title="Log Keluar">
                     <i data-lucide="log-out" class="w-5 h-5"></i>
                 </button>
             </div>
         </nav>
 
         <main class="main-content">
-            <section id="kpis">
-                <div class="base-card kpi-card">
-                    <div class="kpi-info">
-                        <span class="kpi-label">Jumlah Rekod</span>
-                        <span class="kpi-value" id="kpi-total">0</span>
-                    </div>
-                    <div class="kpi-icon-wrap"><i data-lucide="database"></i></div>
-                </div>
-                <div class="base-card kpi-card" style="border-left-color: #10B981;">
-                    <div class="kpi-info">
-                        <span class="kpi-label">Completed</span>
-                        <span class="kpi-value text-[#10B981]" id="kpi-complete">0</span>
-                    </div>
-                    <div class="kpi-icon-wrap" style="color: #10B981; background: #ecfdf5;"><i data-lucide="check-circle-2"></i></div>
-                </div>
-                <div class="base-card kpi-card" style="border-left-color: #F59E0B;">
-                    <div class="kpi-info">
-                        <span class="kpi-label">Incomplete</span>
-                        <span class="kpi-value text-[#F59E0B]" id="kpi-incomplete">0</span>
-                    </div>
-                    <div class="kpi-icon-wrap" style="color: #F59E0B; background: #fffbeb;"><i data-lucide="clock"></i></div>
-                </div>
-                <div class="base-card kpi-card" style="border-left-color: #6366F1;">
-                    <div class="kpi-info">
-                        <span class="kpi-label">Staff Active</span>
-                        <span class="kpi-value" id="kpi-staff">0</span>
-                    </div>
-                    <div class="kpi-icon-wrap" style="color: #6366F1; background: #EEF2FF;"><i data-lucide="users"></i></div>
-                </div>
+            <!-- KPI CARDS -->
+            <section id="kpis" class="fade-in-up">
+                <div class="base-card kpi-card"><div class="kpi-info"><span class="kpi-label">Jumlah Rekod</span><span class="kpi-value" id="kpi-total">0</span></div></div>
+                <div class="base-card kpi-card" style="border-left-color: #10b981;"><div class="kpi-info"><span class="kpi-label">Completed Lulus</span><span class="kpi-value text-emerald-600" id="kpi-complete">0</span></div></div>
+                <div class="base-card kpi-card" style="border-left-color: #3b82f6;"><div class="kpi-info"><span class="kpi-label">Pending Semakan/Lulus</span><span class="kpi-value text-blue-600" id="kpi-pending">0</span></div></div>
+                <div class="base-card kpi-card" style="border-left-color: #ef4444;"><div class="kpi-info"><span class="kpi-label">Rejected</span><span class="kpi-value text-red-500" id="kpi-rejected">0</span></div></div>
             </section>
 
-            <section id="charts-section">
-                <div class="chart-container">
-                    <div class="chart-header">Status Distribution</div>
+            <!-- CHARTS -->
+            <section id="charts-section" class="fade-in-up delay-100">
+                <div class="chart-container base-card">
+                    <div class="text-sm font-bold text-slate-800 mb-4">Status Distribution</div>
                     <div class="flex-1 relative"><canvas id="statusChart"></canvas></div>
                 </div>
-                
-                <div class="chart-container">
-                    <div class="chart-header">Staff Performance</div>
+                <div class="chart-container base-card">
+                    <div class="text-sm font-bold text-slate-800 mb-4">Staff Submission Performance</div>
                     <div class="flex-1 relative"><canvas id="staffChart"></canvas></div>
-                </div>
-
-                <div class="chart-container">
-                    <div class="chart-header">Quick Insights</div>
-                    <div class="flex-1 flex flex-col justify-center gap-5">
-                        <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 rounded-full bg-orange-50 text-[#F59E0B] flex items-center justify-center shadow-sm border border-orange-100 shrink-0">
-                                <i data-lucide="award" class="w-6 h-6"></i>
-                            </div>
-                            <div>
-                                <div class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-0.5">Top Performer</div>
-                                <div class="text-[15px] font-bold text-[--brand-dark] leading-tight" id="insight-top-staff">-</div>
-                                <div class="text-[11px] text-[#10B981] font-semibold mt-0.5" id="insight-top-score">0 Rekod Siap</div>
-                            </div>
-                        </div>
-                        
-                        <div class="w-full h-px bg-gray-100"></div>
-                        
-                        <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 rounded-full bg-blue-50 text-[--brand-medium] flex items-center justify-center shadow-sm border border-blue-100 shrink-0">
-                                <i data-lucide="alert-circle" class="w-6 h-6"></i>
-                            </div>
-                            <div>
-                                <div class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-0.5">Pending Tasks</div>
-                                <div class="text-[15px] font-bold text-[--brand-dark] leading-tight" id="insight-pending">0 Rekod</div>
-                                <div class="text-[11px] text-red-500 font-semibold mt-0.5">Belum Siap</div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </section>
 
-            <!-- DESIGN BARU UNTUK FILTER (Disusun Rapi & Tiada Overflow) -->
-            <section class="base-card filter-card !gap-5 !p-5">
-                <!-- Kumpulan 1: Carian & Dropdowns -->
-                <div class="flex flex-wrap gap-4 flex-1 w-full xl:w-auto">
-                    <div class="input-labeled flex-1 min-w-[200px]">
-                        <label>Carian</label>
-                        <input type="text" id="search-input" class="premium-input !py-2.5" placeholder="Cari Tajuk atau Accession...">
-                    </div>
-                    <div class="input-labeled min-w-[130px]">
-                        <label>Staff</label>
-                        <select id="filter-staff" class="premium-input !py-2.5">
-                            <option value="">Semua Staff</option>
-                            <option value="FATIHAH">FATIHAH</option>
-                            <option value="FAZILAH">FAZILAH</option>
-                            <option value="SAKINAH">SAKINAH</option>
-                            <option value="HUSNA">HUSNA</option>
-                            <option value="ADMIN">ADMIN</option>
-                        </select>
+            <!-- FILTERS & ACTIONS -->
+            <section class="base-card p-6 flex flex-wrap gap-6 items-end fade-in-up delay-200">
+                <div class="flex flex-wrap gap-4 flex-1">
+                    <div class="input-labeled min-w-[200px]">
+                        <label>Carian Lanjut</label>
+                        <input type="text" id="search-input" class="modern-input" placeholder="Taip tajuk/accession...">
                     </div>
                     <div class="input-labeled min-w-[130px]">
                         <label>Status</label>
-                        <select id="filter-status" class="premium-input !py-2.5">
+                        <select id="filter-status" class="modern-input">
                             <option value="">Semua Status</option>
-                            <option value="Completed">Completed</option>
-                            <option value="incomplete">incomplete</option>
-                        </select>
-                    </div>
-                    <div class="input-labeled min-w-[130px]">
-                        <label>Tahun</label>
-                        <select id="filter-year" class="premium-input !py-2.5">
-                            <option value="">Semua Tahun</option>
-                            <option value="2024">2024</option>
-                            <option value="2025">2025</option>
-                            <option value="2026">2026</option>
-                            <option value="2027">2027</option>
+                            <option value="Incomplete">Incomplete</option>
+                            <option value="Pending Semakan">Pending Semakan (Rosli)</option>
+                            <option value="Pending Kelulusan">Pending Kelulusan (Jaini)</option>
+                            <option value="Completed">Completed (Lulus)</option>
+                            <option value="Rejected">Rejected</option>
                         </select>
                     </div>
                 </div>
-
-                <!-- Kumpulan 2: Butang Tindakan -->
-                <div class="flex flex-wrap items-end gap-4 ml-auto">
-                    <button id="btn-sync" class="btn-action btn-sync whitespace-nowrap h-[44px]">
-                        <i data-lucide="refresh-cw" class="w-4 h-4 sync-icon"></i> Segerak Auto
+                <div class="flex items-end gap-3">
+                    <button id="btn-sync" class="btn-gradient w-auto h-[44px]">
+                        <i data-lucide="refresh-cw" class="w-4 h-4 sync-icon"></i> Segerak
                     </button>
-                    
-                    <div class="w-px h-10 bg-gray-200 hidden md:block mx-1"></div>
-                    
-                    <div class="flex flex-col gap-1.5">
-                        <label class="text-[#10B981] text-[11px] font-bold uppercase tracking-wider">Laporan Excel</label>
-                        <div class="flex gap-2">
-                            <select id="export-year" class="premium-input !py-2.5 border-[#10B981]/30 focus:border-[#10B981] w-32">
-                                <option value="all">Keseluruhan</option>
-                            </select>
-                            <button id="btn-export" class="btn-action bg-[#10B981] text-white hover:bg-[#059669] whitespace-nowrap h-[44px]">
-                                <i data-lucide="download" class="w-4 h-4"></i> Muat Turun
-                            </button>
-                        </div>
+                    <div class="flex flex-col gap-1.5 ml-4">
+                        <label class="text-[10px] font-bold text-emerald-600 uppercase tracking-wider">Laporan Excel</label>
+                        <button id="btn-export" class="btn-gradient w-auto h-[44px] !bg-emerald-600" style="background: linear-gradient(135deg, #10b981, #059669);">
+                            <i data-lucide="download" class="w-4 h-4"></i> Muat Turun
+                        </button>
                     </div>
                 </div>
             </section>
 
-            <section id="table-section" class="base-card flex-1">
+            <!-- TABLE -->
+            <section id="table-section" class="base-card flex-1 fade-in-up delay-200">
                 <div class="table-wrapper">
                     <table id="library-table">
                         <thead>
@@ -551,562 +249,356 @@
                                 <th class="col-call82">CALL NO (082)</th>
                                 <th class="col-call50">CALL NO (050/060)</th>
                                 <th class="col-acc">ACCESSION</th>
-                                <th class="col-title">TITLE</th>
-                                <th class="col-status">STATUS</th>
+                                <th class="col-title text-left pl-4">TITLE</th>
                                 <th class="col-staff">STAFF</th>
-                                <th class="col-date">DATE</th>
+                                <th class="col-status">STATUS & JEJAK</th>
+                                <th class="col-action">TINDAKAN / PETI MESEJ</th>
                             </tr>
                         </thead>
                         <tbody id="table-body">
-                            </tbody>
+                            <!-- JS injects rows here -->
+                        </tbody>
                     </table>
                 </div>
-                <div class="flex justify-between items-center p-4 border-t border-gray-100 bg-white" style="border-bottom-left-radius: 16px; border-bottom-right-radius: 16px;">
-                    <div class="text-xs text-gray-500 font-bold uppercase tracking-wider">
-                        Memaparkan <span id="page-start">0</span> ke <span id="page-end">0</span> dari <span id="page-total">0</span> rekod
+                <div class="flex justify-between items-center p-4 border-t border-slate-200 bg-white rounded-b-2xl">
+                    <div class="text-[11px] text-slate-500 font-bold uppercase tracking-wider">
+                        Memaparkan <span id="page-start" class="text-slate-800">0</span> - <span id="page-end" class="text-slate-800">0</span> dari <span id="page-total" class="text-blue-600">0</span> rekod
                     </div>
-                    <div class="flex gap-2">
-                        <button id="btn-prev" class="px-3 py-1.5 border border-gray-200 rounded-md bg-white hover:bg-gray-50 transition-colors disabled:opacity-40"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
-                        <span id="page-indicator" class="px-4 py-1.5 font-bold text-[--brand-dark] bg-[#F8FAFC] border border-gray-200 rounded-md">1</span>
-                        <button id="btn-next" class="px-3 py-1.5 border border-gray-200 rounded-md bg-white hover:bg-gray-50 transition-colors disabled:opacity-40"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
+                    <div class="flex items-center gap-2">
+                        <button id="btn-prev" class="w-8 h-8 flex items-center justify-center border border-slate-200 rounded-lg bg-white hover:bg-slate-50"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
+                        <span id="page-indicator" class="px-3 py-1 font-bold text-slate-700 bg-slate-100 rounded-lg">1</span>
+                        <button id="btn-next" class="w-8 h-8 flex items-center justify-center border border-slate-200 rounded-lg bg-white hover:bg-slate-50"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
                     </div>
                 </div>
             </section>
         </main>
     </div>
 
-    <div id="admin-panel">
-        <div class="bg-[--brand-dark] text-white p-4 flex justify-between items-center">
-            <h3 class="font-bold text-sm tracking-wide uppercase">Kawalan Pentadbir</h3>
-            <button id="btn-close-admin" class="hover:text-gray-300 transition-colors"><i data-lucide="x" class="w-5 h-5"></i></button>
-        </div>
-        <div class="p-6 flex flex-col gap-5">
-            <label class="text-xs font-bold text-gray-700 flex justify-between items-center">
-                Font Header:
-                <select id="admin-font" class="border border-gray-200 p-1.5 rounded-md text-xs outline-none">
-                    <option value="'Montserrat', sans-serif">Montserrat</option>
-                    <option value="'Poppins', sans-serif">Poppins</option>
-                </select>
-            </label>
-            <label class="text-xs font-bold text-gray-700 flex justify-between items-center">
-                Warna Gelap: <input type="color" id="admin-dark" value="#003366" class="cursor-pointer border-0 w-6 h-6 p-0 rounded">
-            </label>
-            <label class="text-xs font-bold text-gray-700 flex justify-between items-center">
-                Warna Medium: <input type="color" id="admin-medium" value="#0055A5" class="cursor-pointer border-0 w-6 h-6 p-0 rounded">
-            </label>
-            <label class="text-xs font-bold text-gray-700 flex justify-between items-center">
-                Bg Cerah: <input type="color" id="admin-light" value="#CCE5FF" class="cursor-pointer border-0 w-6 h-6 p-0 rounded">
-            </label>
-            <hr class="border-gray-100">
-            <label class="text-xs font-bold text-gray-700 flex items-center gap-3 cursor-pointer">
-                <input type="checkbox" id="toggle-kpi" checked class="w-4 h-4 text-[--brand-medium] rounded focus:ring-[--brand-medium]"> Papar Kad KPI
-            </label>
-            <label class="text-xs font-bold text-gray-700 flex items-center gap-3 cursor-pointer">
-                <input type="checkbox" id="toggle-charts" checked class="w-4 h-4 text-[--brand-medium] rounded focus:ring-[--brand-medium]"> Papar Carta
-            </label>
-            <label class="text-xs font-bold text-gray-700 flex items-center gap-3 cursor-pointer">
-                <input type="checkbox" id="toggle-dup-prevent" checked class="w-4 h-4 text-[--brand-medium] rounded focus:ring-[--brand-medium]"> Halang Rekod Pendua
-            </label>
-            <div class="mt-6 text-[10px] uppercase tracking-widest text-gray-400 text-center font-bold">
-                Kemaskini Terakhir<br><span id="admin-last-update" class="text-gray-600 mt-1 block font-normal capitalize">-</span>
+    <!-- REJECTION MODAL -->
+    <div id="reject-modal">
+        <div class="reject-content">
+            <div class="w-14 h-14 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i data-lucide="alert-triangle" class="w-7 h-7"></i>
+            </div>
+            <h3 class="text-xl font-bold text-slate-800 mb-2">Tolak Rekod</h3>
+            <p class="text-sm text-slate-500 mb-4">Sila masukkan sebab penolakan supaya Staff boleh membuat pembetulan.</p>
+            <textarea id="reject-reason" class="modern-input h-24 resize-none mb-4" placeholder="Cth: Call number salah format..."></textarea>
+            <div class="flex gap-3">
+                <button onclick="document.getElementById('reject-modal').style.display='none'" class="flex-1 py-2.5 rounded-xl font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors">Batal</button>
+                <button id="confirm-reject-btn" class="flex-1 py-2.5 rounded-xl font-bold text-white bg-red-500 hover:bg-red-600 transition-colors shadow-lg shadow-red-500/30">Hantar Mesej</button>
             </div>
         </div>
     </div>
 
-    <div id="popup" class="popup-overlay">
-        <div class="popup-content">
-            <div id="popup-icon" class="mx-auto w-14 h-14 rounded-full flex items-center justify-center mb-4 shadow-sm"></div>
-            <h3 id="popup-title" class="text-xl font-bold mb-2 text-[--brand-dark]">Notifikasi</h3>
-            <p id="popup-msg" class="text-gray-500 text-sm mb-6 leading-relaxed">Message</p>
-            <button id="popup-btn" class="w-full py-3 bg-[--brand-medium] text-white rounded-xl font-bold transition-transform active:scale-95 shadow-md">OK</button>
-        </div>
-    </div>
-
     <script>
-        // ==========================================
-        // KONFIGURASI SISTEM
-        // ==========================================
-        // PENTING: Gantikan URL di bawah dengan URL Google Apps Script anda yang BAHARU
-        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxLqnjylElzuBhUJvoa1Z87LvjtzvspJgr1WMVnObf3DH_UmXR-VeEstS5S_tTWp-YN/exec"; 
-        
-        const State = {
-            currentUser: null, data: [], filtered: [],
-            currentPage: 1, itemsPerPage: 100,
-            settings: { duplicatePrevention: true },
-            staffList: ["FATIHAH", "FAZILAH", "SAKINAH", "HUSNA", "ADMIN"],
-            chartInstances: {}
-        };
+        // PENTING: Gantikan URL ini dengan URL Deployment anda yang baharu!
+        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzpaGctVVI8PFMI0tolNzvdg7JsHLpPnKHM9EhusWbjYdfZTuVDxOcMZwJNBXqFh1FJ/exec"; 
 
         lucide.createIcons();
-        const els = {
-            loginScreen: document.getElementById('login-screen'), dashboard: document.getElementById('dashboard'),
-            loginForm: document.getElementById('login-form'), roleSelect: document.getElementById('login-role'),
-            adminCodeCont: document.getElementById('admin-code-container'), timeDisplay: document.getElementById('live-time'),
-            dateDisplay: document.getElementById('live-date'), popup: document.getElementById('popup'),
-            popupTitle: document.getElementById('popup-title'), popupMsg: document.getElementById('popup-msg'),
-            popupIcon: document.getElementById('popup-icon'), popupBtn: document.getElementById('popup-btn'),
-            syncOverlay: document.getElementById('sync-overlay'), btnSync: document.getElementById('btn-sync')
-        };
+        const State = { currentUser: null, data: [], filtered: [], currentPage: 1, itemsPerPage: 100, staffList: ["FATIHAH", "FAZILAH", "SAKINAH", "HUSNA"], chartInstances: {} };
+        const els = { syncOverlay: document.getElementById('sync-overlay') };
 
-        // --- Jam & Tarikh ---
-        setInterval(() => {
-            const now = new Date();
-            let h = now.getHours(), m = now.getMinutes(), s = now.getSeconds();
-            const ampm = h >= 12 ? 'PM' : 'AM'; h = h % 12 || 12;
-            els.timeDisplay.innerText = `${h}:${m < 10 ? '0'+m:m}:${s < 10 ? '0'+s:s} ${ampm}`;
-            els.dateDisplay.innerText = now.toLocaleDateString('en-MY', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-        }, 1000);
-
-        // --- Logik Log Masuk ---
-        els.roleSelect.addEventListener('change', e => {
-            els.adminCodeCont.classList.toggle('hidden', e.target.value !== 'admin');
-            e.target.value === 'admin' ? document.getElementById('admin-code').setAttribute('required', 'true') : document.getElementById('admin-code').removeAttribute('required');
-        });
+        // --- LOGIN LOGIC ---
         document.getElementById('toggle-pass').addEventListener('click', () => {
             const passInput = document.getElementById('login-pass');
-            const type = passInput.getAttribute('type') === 'password' ? 'text' : 'password';
-            passInput.setAttribute('type', type);
-            // Re-render icon specifically for toggle
-            document.getElementById('toggle-pass').innerHTML = type === 'password' ? '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>' : '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye-off"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" x2="22" y1="2" y2="22"/></svg>';
+            passInput.type = passInput.type === 'password' ? 'text' : 'password';
         });
 
-        els.loginForm.addEventListener('submit', e => {
+        document.getElementById('login-form').addEventListener('submit', e => {
             e.preventDefault();
-            const role = els.roleSelect.value, user = document.getElementById('login-user').value.trim();
-            const pass = document.getElementById('login-pass').value, code = document.getElementById('admin-code').value;
+            const user = document.getElementById('login-user').value;
+            const pass = document.getElementById('login-pass').value;
 
-            if ((role === 'staff' && user === 'staff' && pass === 'staff123') || (role === 'admin' && user === 'admin' && pass === 'admin123' && code === 'admin2026')) {
-                State.currentUser = { username: user, role: role };
-                document.getElementById('current-username').innerText = user;
+            // Kredensial mengikut permintaan
+            const credentials = {
+                'staff': 'staff123',
+                'rosli': 'rosli123',
+                'jaini': 'jaini123',
+                'admin': 'admin123'
+            };
+
+            if (user && credentials[user] === pass) {
+                State.currentUser = { id: user, name: user.toUpperCase() };
+                document.getElementById('current-username').innerText = user === 'rosli' ? 'ROSLI (Penyemak)' : user === 'jaini' ? 'JAINI (Pelulus)' : user.toUpperCase();
                 document.getElementById('user-avatar').innerText = user.charAt(0).toUpperCase();
-                document.getElementById('btn-admin-panel').classList.toggle('hidden', role !== 'admin');
-                els.loginScreen.style.display = 'none';
-                els.dashboard.style.display = 'flex';
+                
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('dashboard').style.display = 'flex';
                 syncLiveDatabase();
             } else {
-                showPopup("Log Masuk Gagal", "ID Pengguna atau Kata Laluan tidak sah.", "error");
+                alert("Kata laluan salah!");
             }
         });
 
-        document.getElementById('btn-logout').addEventListener('click', () => {
-            State.currentUser = null; els.dashboard.style.display = 'none'; els.loginScreen.style.display = 'flex';
-            els.loginForm.reset(); els.adminCodeCont.classList.add('hidden');
-        });
-
-        function showPopup(title, msg, type="info") {
-            try {
-                els.popupTitle.innerText = title; 
-                els.popupMsg.innerText = msg;
-                els.popupIcon.className = `mx-auto w-14 h-14 rounded-full flex items-center justify-center mb-4 shadow-sm text-white ${type==='error'?'bg-red-500':type==='success'?'bg-[#10B981]':'bg-[--brand-medium]'}`;
-                
-                let svgIcon = '';
-                if (type === 'error') {
-                    svgIcon = '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>';
-                } else if (type === 'success') {
-                    svgIcon = '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>';
-                } else {
-                    svgIcon = '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>';
-                }
-                
-                els.popupIcon.innerHTML = svgIcon;
-                els.popup.style.display = 'flex';
-            } catch (error) {
-                console.error("Error in showPopup:", error);
-                alert(title + ": " + msg); 
-            }
-        }
-        els.popupBtn.addEventListener('click', () => els.popup.style.display = 'none');
-
-        // ==========================================
-        // BACKEND SYNC (GOOGLE APPS SCRIPT)
-        // ==========================================
+        // --- BACKEND CONNECTION ---
         async function syncLiveDatabase() {
-            if(!GAS_WEB_APP_URL || GAS_WEB_APP_URL.includes("YOUR_APP_ID_HERE")) {
-                showPopup("Ralat Sistem", "URL Google Apps Script tidak dijumpai. Sila tetapkan URL di dalam kod HTML.", "error"); return;
-            }
-            els.syncOverlay.style.display = 'flex'; els.btnSync.classList.add('syncing');
+            els.syncOverlay.style.display = 'flex';
             try {
                 const response = await fetch(`${GAS_WEB_APP_URL}?action=get`);
                 const json = await response.json();
-                if(json.success) {
-                    processData(json.data);
-                } else { throw new Error(json.message); }
-            } catch (err) {
-                showPopup("Ralat Sambungan", "Gagal memuat turun data dari Spreadsheet. Sila semak URL Apps Script anda.", "error");
-            }
-            els.syncOverlay.style.display = 'none'; els.btnSync.classList.remove('syncing');
+                if(json.success) { processData(json.data); } else { throw new Error(json.message); }
+            } catch (err) { alert("Gagal menyegerak pangkalan data."); }
+            els.syncOverlay.style.display = 'none';
         }
 
-        els.btnSync.addEventListener('click', syncLiveDatabase);
+        document.getElementById('btn-sync').addEventListener('click', syncLiveDatabase);
 
         function processData(rawData) {
-            let uniqueYears = new Set();
-
-            State.data = rawData.map(row => {
-                if (row.STAFF) {
-                    let staffUpper = row.STAFF.toString().trim().toUpperCase();
-                    if (["NABIL", "ALIA", "EYZAN", "ADMIN", "USER"].includes(staffUpper)) {
-                        row.STAFF = "ADMIN";
-                    } else {
-                        row.STAFF = staffUpper;
-                    }
-                }
-                
-                // Ekstrak Tahun dari lajur Date untuk Dropdown Export Laporan
-                if (row.DATE) {
-                    let yearMatch = row.DATE.toString().match(/\b(20\d{2})\b/);
-                    if(yearMatch) uniqueYears.add(yearMatch[1]);
-                }
-                
-                return row;
-            });
-            
-            // Auto-Bina Pilihan Dropdown Tahun Laporan (Excel)
-            const exportYearFilter = document.getElementById('export-year');
-            let years = Array.from(uniqueYears).sort((a,b) => b-a);
-            if(years.length === 0) years = ["2024", "2025", "2026", "2027"];
-            exportYearFilter.innerHTML = '<option value="all">Keseluruhan</option>' + 
-                years.map(y => `<option value="${y}">${y}</option>`).join('');
-                
-            document.getElementById('admin-last-update').innerText = new Date().toLocaleString('en-MY');
+            State.data = rawData;
             applyFilters();
         }
 
-        // ==========================================
-        // EDITING & AUTO UPDATE KE SPREADSHEET (GET)
-        // ==========================================
-        window.handleEdit = async function(rowIndex, field, value, inputElement) {
-            const recordIndex = State.data.findIndex(r => r._rowIndex === rowIndex);
-            if(recordIndex === -1) return;
-            const record = State.data[recordIndex];
-            const originalValue = record[field];
-
-            // Semakan Pendua Tempatan
-            if(State.settings.duplicatePrevention && (field === 'CONTROL NUMBER' || field === 'ACCESSION')) {
-                const tempControl = field === 'CONTROL NUMBER' ? value : record['CONTROL NUMBER'];
-                const tempAcc = field === 'ACCESSION' ? value : record['ACCESSION'];
-                if(tempControl && tempAcc) {
-                    const isDup = State.data.some(r => r._rowIndex !== rowIndex && r['CONTROL NUMBER'] === tempControl && r['ACCESSION'] === tempAcc);
-                    if(isDup) {
-                        inputElement.value = originalValue;
-                        showPopup("Rekod Pendua", "Rekod pendua dikesan. Kemas kini dibatalkan.", "error");
-                        return;
-                    }
-                }
-            }
-
-            inputElement.disabled = true;
-            record[field] = value;
-            
+        // --- CORE UPDATE LOGIC (Multi-field / Action based) ---
+        async function multiUpdate(rowIndex, updatesArray) {
+            els.syncOverlay.style.display = 'flex';
             try {
                 const params = new URLSearchParams({
-                    action: 'update',
+                    action: 'update_multiple',
                     rowIndex: rowIndex,
-                    field: field,
-                    value: value,
-                    validateDup: State.settings.duplicatePrevention
+                    updates: JSON.stringify(updatesArray)
                 });
-                
                 const res = await fetch(`${GAS_WEB_APP_URL}?${params.toString()}`);
+                const json = await res.json();
                 
-                const textRes = await res.text();
-                let json;
-                try {
-                    json = JSON.parse(textRes);
-                } catch(e) {
-                    throw new Error(`Kemas kini ditolak. Mungkin ada 'Data Validation' pada lajur di Spreadsheet.`);
-                }
-                
-                if(!json.success) {
-                    record[field] = originalValue; 
-                    inputElement.value = originalValue;
-                    showPopup("Kemas Kini Ditolak", json.message, "error");
+                if(json.success) {
+                    // Update Local State directly to avoid fetching 7000 rows again
+                    let record = State.data.find(r => r._rowIndex === rowIndex);
+                    updatesArray.forEach(u => record[u.field] = u.value);
+                    applyFilters(false); // Update charts without re-rendering everything
+                    renderTable();       // Re-render table to show new buttons
                 } else {
-                    if (field === 'STATUS') {
-                        inputElement.className = `editable-input font-bold ${value === 'Completed' ? 'text-[#10B981]' : value === 'incomplete' ? 'text-[#F59E0B]' : ''}`;
-                        
-                        // AUTO-UPDATE DATE JIKA STATUS DITUKAR
-                        const today = new Date();
-                        const day = String(today.getDate()).padStart(2, '0');
-                        const month = String(today.getMonth() + 1).padStart(2, '0');
-                        const year = today.getFullYear();
-                        const formattedDate = `${day}/${month}/${year}`;
-                        
-                        record['DATE'] = formattedDate;
-                        
-                        const tr = inputElement.closest('tr');
-                        if (tr) {
-                            const dateInput = tr.querySelector('.col-date input');
-                            if (dateInput) {
-                                dateInput.value = formattedDate;
-                            }
-                        }
-                        
-                        const dateParams = new URLSearchParams({ action: 'update', rowIndex: rowIndex, field: 'DATE', value: formattedDate, validateDup: false });
-                        try { await fetch(`${GAS_WEB_APP_URL}?${dateParams.toString()}`); } catch(e) { console.error(e); }
-                    }
-                    applyFilters(false); 
+                    alert("Kemas kini ditolak: " + json.message);
                 }
-            } catch (err) {
-                record[field] = originalValue;
-                inputElement.value = originalValue;
-                console.error(err);
-                showPopup("Ralat Rangkaian", "Gagal mengemas kini. Pastikan kod Apps Script terbaru telah di-deploy (New Deployment).", "error");
+            } catch (e) {
+                alert("Ralat rangkaian.");
             }
-            inputElement.disabled = false;
+            els.syncOverlay.style.display = 'none';
+        }
+
+        // Triggered when text input changed (e.g. Call No, Control No)
+        window.handleEdit = async function(rowIndex, field, value, inputEl) {
+            inputEl.disabled = true;
+            await multiUpdate(rowIndex, [{field: field, value: value}]);
+            inputEl.disabled = false;
         };
 
-        // ==========================================
-        // EKSPORT LAPORAN (EXCEL)
-        // ==========================================
-        document.getElementById('btn-export').addEventListener('click', () => {
-            if (!State.data || State.data.length === 0) {
-                showPopup("Tiada Data", "Tiada data untuk dimuat turun.", "error");
-                return;
-            }
+        // --- WORKFLOW BUTTON ACTIONS ---
+        window.hantarSemakan = function(rowIndex) {
+            const today = new Date().toLocaleDateString('en-GB');
+            multiUpdate(rowIndex, [
+                {field: 'STATUS', value: 'Pending Semakan'},
+                {field: 'DATE', value: today}, // Cop tarikh hantar
+                {field: 'REMARKS', value: ''}  // Clear mesej reject jika ada
+            ]);
+        };
 
-            const selectedYear = document.getElementById('export-year').value;
-            let dataToExport = State.data;
+        window.lulusRosli = function(rowIndex) {
+            const today = new Date().toLocaleDateString('en-GB');
+            multiUpdate(rowIndex, [
+                {field: 'STATUS', value: 'Pending Kelulusan'},
+                {field: 'CHECKED BY', value: 'Rosli'},
+                {field: 'DATE CHECKED', value: today}
+            ]);
+        };
 
-            // Jika tahun spesifik dipilih, tapis data mengikut tahun tersebut
-            if (selectedYear !== 'all') {
-                dataToExport = dataToExport.filter(row => row['DATE'] && row['DATE'].toString().includes(selectedYear));
-            }
-
-            if (dataToExport.length === 0) {
-                showPopup("Tiada Rekod", `Tiada rekod dijumpai untuk tahun ${selectedYear}.`, "info");
-                return;
-            }
-
-            // Memformat data untuk Excel
-            const worksheetData = dataToExport.map((row, index) => ({
-                "NO": index + 1,
-                "CONTROL NUMBER": row['CONTROL NUMBER'] || '',
-                "CALL NO (082)": row['CALL NO (082)'] || '',
-                "CALL NO (050/060)": row['CALL NO (050/060)'] || '',
-                "ACCESSION": row['ACCESSION'] || '',
-                "TITLE": row['TITLE'] || '',
-                "STATUS": row['STATUS'] || '',
-                "STAFF": row['STAFF'] || '',
-                "DATE": row['DATE'] || ''
-            }));
-
-            // Mencipta fail Excel menggunakan SheetJS
-            const ws = XLSX.utils.json_to_sheet(worksheetData);
+        window.rejectRosli = function(rowIndex) {
+            const modal = document.getElementById('reject-modal');
+            const textarea = document.getElementById('reject-reason');
+            const btn = document.getElementById('confirm-reject-btn');
             
-            // Melebarkan lajur (kolum) supaya kemas & profesional
-            const wscols = [
-                {wch: 6},  // NO
-                {wch: 18}, // CONTROL NUMBER
-                {wch: 18}, // CALL NO (082)
-                {wch: 22}, // CALL NO (050/060)
-                {wch: 18}, // ACCESSION
-                {wch: 60}, // TITLE (Lebar besar)
-                {wch: 15}, // STATUS
-                {wch: 15}, // STAFF
-                {wch: 15}  // DATE
-            ];
-            ws['!cols'] = wscols;
-
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "Laporan IKU");
-
-            // Nama Fail
-            const fileName = `Laporan_Buku_IKU_${selectedYear === 'all' ? 'Keseluruhan' : selectedYear}.xlsx`;
-            XLSX.writeFile(wb, fileName);
+            textarea.value = '';
+            modal.style.display = 'flex';
             
-            showPopup("Muat Turun Berjaya", "Laporan Excel anda telah siap dimuat turun.", "success");
-        });
+            btn.onclick = function() {
+                const reason = textarea.value.trim();
+                if(!reason) return alert("Sila masukkan sebab penolakan.");
+                
+                modal.style.display = 'none';
+                multiUpdate(rowIndex, [
+                    {field: 'STATUS', value: 'Rejected'},
+                    {field: 'REMARKS', value: reason},
+                    {field: 'CHECKED BY', value: 'Rosli'}
+                ]);
+            };
+        };
 
+        window.lulusJaini = function(rowIndex) {
+            const today = new Date().toLocaleDateString('en-GB');
+            multiUpdate(rowIndex, [
+                {field: 'STATUS', value: 'Completed'},
+                {field: 'APPROVED BY', value: 'Jaini'},
+                {field: 'APPROVED DATE', value: today}
+            ]);
+        };
 
-        // ==========================================
-        // UI RENDERING
-        // ==========================================
+        // --- UI RENDERING ---
         function renderTable() {
             const tbody = document.getElementById('table-body'); tbody.innerHTML = '';
             const start = (State.currentPage - 1) * State.itemsPerPage;
             const pageData = State.filtered.slice(start, start + State.itemsPerPage);
 
-            if (pageData.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="9" class="py-16 text-center text-gray-400">Tiada rekod dijumpai.</td></tr>`;
-                updatePaginationInfo(); return;
-            }
+            if (pageData.length === 0) { tbody.innerHTML = `<tr><td colspan="9" class="py-16 text-center text-slate-400">Tiada rekod.</td></tr>`; updatePaginationInfo(); return; }
 
             const frag = document.createDocumentFragment();
             pageData.forEach(row => {
                 const tr = document.createElement('tr');
+                const stat = row['STATUS'];
+                const role = State.currentUser.id;
+                
+                // Determine Field Editability (Only Staff can edit if Incomplete/Rejected. Rosli can edit if Pending Semakan)
+                let canEdit = false;
+                if (role === 'admin') canEdit = true;
+                if (role === 'staff' && (stat === 'Incomplete' || stat === 'Rejected')) canEdit = true;
+                if (role === 'rosli' && stat === 'Pending Semakan') canEdit = true;
+
+                // Build Action Buttons & Message Box
+                let actionHTML = '';
+                
+                // STAFF UI
+                if (role === 'staff') {
+                    if (stat === 'Incomplete' || stat === 'Rejected') {
+                        actionHTML = `<button onclick="hantarSemakan(${row._rowIndex})" class="btn-act act-blue w-full justify-center"><i data-lucide="send"></i> Hantar Semakan</button>`;
+                        if (stat === 'Rejected' && row['REMARKS']) {
+                            actionHTML += `<div class="msg-box"><i data-lucide="message-square-warning" class="w-3 h-3 inline"></i> <b>Mesej Rosli:</b> ${row['REMARKS']}</div>`;
+                        }
+                    } else {
+                        actionHTML = `<span class="text-[10px] text-slate-400 font-bold uppercase"><i data-lucide="lock" class="w-3 h-3 inline"></i> Dikunci</span>`;
+                    }
+                }
+                // ROSLI UI
+                else if (role === 'rosli') {
+                    if (stat === 'Pending Semakan') {
+                        actionHTML = `
+                            <div class="flex gap-2">
+                                <button onclick="lulusRosli(${row._rowIndex})" class="btn-act act-green flex-1 justify-center" title="Luluskan"><i data-lucide="check"></i></button>
+                                <button onclick="rejectRosli(${row._rowIndex})" class="btn-act act-red flex-1 justify-center" title="Tolak / Komen"><i data-lucide="x"></i></button>
+                            </div>
+                        `;
+                    } else if (stat === 'Rejected' && row['REMARKS']) {
+                        actionHTML = `<div class="msg-box border-none bg-slate-100 text-slate-600"><i data-lucide="info" class="w-3 h-3 inline"></i> <b>Ditolak:</b> ${row['REMARKS']}</div>`;
+                    } else { actionHTML = '-'; }
+                }
+                // JAINI UI
+                else if (role === 'jaini') {
+                    if (stat === 'Pending Kelulusan') {
+                        actionHTML = `<button onclick="lulusJaini(${row._rowIndex})" class="btn-act act-green w-full justify-center"><i data-lucide="award"></i> Sahkan Lulus</button>`;
+                    } else { actionHTML = '-'; }
+                }
+                // ADMIN UI
+                else if (role === 'admin') {
+                    actionHTML = `<span class="text-[10px] text-slate-400">View Only</span>`;
+                }
+
+                // Status Badge UI
+                let badgeClass = 'b-incomplete';
+                let displayStatus = stat;
+                if(stat === 'Pending Semakan') { badgeClass = 'b-pending-semak'; displayStatus = 'Pending (Rosli)'; }
+                if(stat === 'Pending Kelulusan') { badgeClass = 'b-pending-lulus'; displayStatus = 'Pending (Jaini)'; }
+                if(stat === 'Completed') badgeClass = 'b-completed';
+                if(stat === 'Rejected') badgeClass = 'b-rejected';
+
+                // Audit Trail Info
+                let auditHTML = '';
+                if(row['CHECKED BY']) auditHTML += `<div class="text-[9px] text-slate-500 mt-1">S: ${row['CHECKED BY']} (${row['DATE CHECKED']})</div>`;
+                if(row['APPROVED BY']) auditHTML += `<div class="text-[9px] text-emerald-600 mt-0.5">L: ${row['APPROVED BY']} (${row['APPROVED DATE']})</div>`;
+
                 tr.innerHTML = `
-                    <td class="col-no">${row['NO'] || ''}</td>
-                    <td class="col-control">
-                        <input type="text" class="editable-input" value="${row['CONTROL NUMBER'] || ''}" onchange="handleEdit(${row._rowIndex}, 'CONTROL NUMBER', this.value, this)">
-                    </td>
-                    <td class="col-call82 text-gray-500">${row['CALL NO (082)'] || ''}</td>
-                    <td class="col-call50">
-                        <input type="text" class="editable-input !text-[--brand-main]" value="${row['CALL NO (050/060)'] || ''}" onchange="handleEdit(${row._rowIndex}, 'CALL NO (050/060)', this.value, this)">
-                    </td>
-                    <td class="col-acc font-bold text-gray-700">${row['ACCESSION'] || ''}</td>
-                    <td class="col-title" title="${row['TITLE'] || ''}">${row['TITLE'] || ''}</td>
-                    <td class="col-status">
-                        <select class="editable-input font-bold ${row['STATUS'] === 'Completed' ? 'text-[#10B981]' : row['STATUS'] === 'incomplete' ? 'text-[#F59E0B]' : ''}" onchange="handleEdit(${row._rowIndex}, 'STATUS', this.value, this)">
-                            ${(row['STATUS'] !== 'Completed' && row['STATUS'] !== 'incomplete') ? `<option value="" disabled selected hidden>Sila Pilih</option>` : ''}
-                            <option value="Completed" ${row['STATUS'] === 'Completed' ? 'selected' : ''}>Completed</option>
-                            <option value="incomplete" ${row['STATUS'] === 'incomplete' ? 'selected' : ''}>incomplete</option>
-                        </select>
-                    </td>
+                    <td class="col-no text-slate-400 font-semibold">${row['NO'] || ''}</td>
+                    <td class="col-control"><input type="text" class="editable-text" value="${row['CONTROL NUMBER'] || ''}" ${canEdit?'':'disabled'} onchange="handleEdit(${row._rowIndex}, 'CONTROL NUMBER', this.value, this)"></td>
+                    <td class="col-call82"><input type="text" class="editable-text text-slate-500" value="${row['CALL NO (082)'] || ''}" ${canEdit?'':'disabled'} onchange="handleEdit(${row._rowIndex}, 'CALL NO (082)', this.value, this)"></td>
+                    <td class="col-call50"><input type="text" class="editable-text text-blue-600" value="${row['CALL NO (050/060)'] || ''}" ${canEdit?'':'disabled'} onchange="handleEdit(${row._rowIndex}, 'CALL NO (050/060)', this.value, this)"></td>
+                    <td class="col-acc"><input type="text" class="editable-text font-bold text-slate-700" value="${row['ACCESSION'] || ''}" ${canEdit?'':'disabled'} onchange="handleEdit(${row._rowIndex}, 'ACCESSION', this.value, this)"></td>
+                    <td class="col-title"><input type="text" class="editable-text text-left" value="${row['TITLE'] || ''}" ${canEdit?'':'disabled'} onchange="handleEdit(${row._rowIndex}, 'TITLE', this.value, this)"></td>
                     <td class="col-staff">
-                        <select class="editable-input" onchange="handleEdit(${row._rowIndex}, 'STAFF', this.value, this)">
+                        <select class="editable-text" ${canEdit?'':'disabled'} onchange="handleEdit(${row._rowIndex}, 'STAFF', this.value, this)">
                             <option value="">-</option>
                             ${State.staffList.map(s => `<option value="${s}" ${row['STAFF'] === s ? 'selected' : ''}>${s}</option>`).join('')}
                         </select>
                     </td>
-                    <td class="col-date">
-                        <input type="text" class="editable-input text-gray-600" placeholder="DD/MM/YYYY" value="${row['DATE'] || ''}" onchange="handleEdit(${row._rowIndex}, 'DATE', this.value, this)">
+                    <td class="col-status px-2">
+                        <div class="badge ${badgeClass}">${displayStatus}</div>
+                        ${auditHTML}
                     </td>
+                    <td class="col-action px-3">${actionHTML}</td>
                 `;
                 frag.appendChild(tr);
             });
             tbody.appendChild(frag);
+            lucide.createIcons();
             updatePaginationInfo();
         }
 
+        // --- FILTERS & CHARTS ---
         function applyFilters(reRender = true) {
-            const fStaff = document.getElementById('filter-staff').value;
             const fStatus = document.getElementById('filter-status').value;
-            const fYear = document.getElementById('filter-year').value.trim();
             const search = document.getElementById('search-input').value.toLowerCase();
 
             State.filtered = State.data.filter(row => {
-                let match = true;
-                
-                if (fStaff && row['STAFF'] !== fStaff) match = false;
-                if (fStatus && row['STATUS'] !== fStatus) match = false;
-                
-                if (fYear) {
-                    if (!row['DATE'] || !row['DATE'].toString().includes(fYear)) {
-                        match = false;
-                    }
-                }
-                
-                if (search) {
-                    const t = (row['TITLE'] || "").toLowerCase(), a = (row['ACCESSION'] || "").toLowerCase();
-                    if (!t.includes(search) && !a.includes(search)) match = false;
-                }
-                return match;
+                if (fStatus && row['STATUS'] !== fStatus) return false;
+                if (search && !((row['TITLE']||"").toLowerCase().includes(search) || (row['ACCESSION']||"").toLowerCase().includes(search))) return false;
+                return true;
             });
             State.currentPage = 1;
-            updateKPIs(); 
-            if(document.getElementById('toggle-charts').checked) updateCharts();
+            updateKPIs(); updateCharts();
             if(reRender) renderTable();
         }
 
-        ['filter-staff', 'filter-status', 'filter-year'].forEach(id => document.getElementById(id).addEventListener('change', () => applyFilters()));
-        document.getElementById('search-input').addEventListener('input', () => applyFilters());
+        ['filter-status', 'search-input'].forEach(id => document.getElementById(id).addEventListener('input', () => applyFilters()));
 
         function updatePaginationInfo() {
             const t = State.filtered.length, s = t === 0 ? 0 : (State.currentPage - 1) * State.itemsPerPage + 1, e = Math.min(State.currentPage * State.itemsPerPage, t);
-            const maxPage = Math.ceil(t / State.itemsPerPage) || 1;
             document.getElementById('page-start').innerText = s; document.getElementById('page-end').innerText = e;
             document.getElementById('page-total').innerText = t; document.getElementById('page-indicator').innerText = State.currentPage;
-            document.getElementById('btn-prev').disabled = State.currentPage === 1; document.getElementById('btn-next').disabled = State.currentPage === maxPage;
+            document.getElementById('btn-prev').disabled = State.currentPage === 1; document.getElementById('btn-next').disabled = State.currentPage === Math.ceil(t / State.itemsPerPage) || 1;
         }
         document.getElementById('btn-prev').addEventListener('click', () => { if (State.currentPage > 1) { State.currentPage--; renderTable(); } });
         document.getElementById('btn-next').addEventListener('click', () => { if (State.currentPage < Math.ceil(State.filtered.length / State.itemsPerPage)) { State.currentPage++; renderTable(); } });
 
         function updateKPIs() {
-            const total = State.filtered.length;
-            const complete = State.filtered.filter(r => r['STATUS'] === 'Completed').length;
-            const incomplete = total - complete;
-            const activeStaff = new Set(State.filtered.filter(r => r['STAFF'] && r['STAFF'].trim() !== "").map(r => r['STAFF'])).size;
-
-            document.getElementById('kpi-total').innerText = total.toLocaleString();
-            document.getElementById('kpi-complete').innerText = complete.toLocaleString();
-            document.getElementById('kpi-incomplete').innerText = incomplete.toLocaleString();
-            document.getElementById('kpi-staff').innerText = activeStaff;
-            
-            // Update the "Quick Insights" Pending count
-            document.getElementById('insight-pending').innerText = incomplete.toLocaleString() + " Rekod";
+            document.getElementById('kpi-total').innerText = State.filtered.length;
+            document.getElementById('kpi-complete').innerText = State.filtered.filter(r => r['STATUS'] === 'Completed').length;
+            document.getElementById('kpi-pending').innerText = State.filtered.filter(r => r['STATUS'].includes('Pending')).length;
+            document.getElementById('kpi-rejected').innerText = State.filtered.filter(r => r['STATUS'] === 'Rejected').length;
         }
 
         function updateCharts() {
-            Chart.defaults.font.family = "'Montserrat', sans-serif";
-            
-            const total = State.filtered.length;
-            const comp = State.filtered.filter(r => r['STATUS'] === 'Completed').length;
-            const incomp = total - comp; 
-
-            const ctx1 = document.getElementById('statusChart').getContext('2d');
-            if (State.chartInstances.status) State.chartInstances.status.destroy();
-            State.chartInstances.status = new Chart(ctx1, { 
-                type: 'doughnut', 
-                data: { 
-                    labels: ['Completed', 'incomplete'], 
-                    datasets: [{ data: [comp, incomp], backgroundColor: ['#10B981', '#F59E0B'], borderWidth: 0 }] 
-                }, 
-                options: { 
-                    responsive: true, 
-                    maintainAspectRatio: false, 
-                    cutout: '70%', /* Lebih nipis, nampak moden */
-                    layout: { padding: 10 },
-                    plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 11 } } } }
-                } 
-            });
-
+            Chart.defaults.font.family = "'Inter', sans-serif";
+            const sCounts = { 'Completed':0, 'Pending Kelulusan':0, 'Pending Semakan':0, 'Rejected':0, 'Incomplete':0 };
             const staffCount = {}; State.staffList.forEach(s => staffCount[s] = 0);
-            State.filtered.forEach(r => { 
-                if (r['STATUS'] === 'Completed' && r['STAFF'] && staffCount[r['STAFF']] !== undefined) {
-                    staffCount[r['STAFF']]++; 
-                }
+
+            State.filtered.forEach(r => {
+                if(sCounts[r['STATUS']] !== undefined) sCounts[r['STATUS']]++;
+                // Hanya kira prestasi staff untuk yang dihantar
+                if(r['STAFF'] && r['STATUS'] !== 'Incomplete' && staffCount[r['STAFF']] !== undefined) staffCount[r['STAFF']]++;
             });
-            
-            // QUICK INSIGHTS: Kalkulasi Top Performer
-            let maxCount = 0;
-            let topStaff = "-";
-            for (const [staff, count] of Object.entries(staffCount)) {
-                if (count > maxCount) {
-                    maxCount = count;
-                    topStaff = staff;
-                }
-            }
-            document.getElementById('insight-top-staff').innerText = topStaff;
-            document.getElementById('insight-top-score').innerText = maxCount.toLocaleString() + " Rekod Siap";
 
-            // Bar Chart Warna-Warni
-            const barColors = ['#003366', '#0055A5', '#3B82F6', '#10B981', '#6366f1']; 
-            const bgColors = Object.keys(staffCount).map((_, i) => barColors[i % barColors.length]);
+            if(State.chartInstances.status) State.chartInstances.status.destroy();
+            State.chartInstances.status = new Chart(document.getElementById('statusChart').getContext('2d'), { 
+                type: 'doughnut', 
+                data: { labels: Object.keys(sCounts), datasets: [{ data: Object.values(sCounts), backgroundColor: ['#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#cbd5e1'] }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { boxWidth: 10, font: { size: 10 } } } } } 
+            });
 
-            const ctx2 = document.getElementById('staffChart').getContext('2d');
-            if (State.chartInstances.staff) State.chartInstances.staff.destroy();
-            State.chartInstances.staff = new Chart(ctx2, { 
+            if(State.chartInstances.staff) State.chartInstances.staff.destroy();
+            State.chartInstances.staff = new Chart(document.getElementById('staffChart').getContext('2d'), { 
                 type: 'bar', 
-                data: { 
-                    labels: Object.keys(staffCount), 
-                    datasets: [{ data: Object.values(staffCount), backgroundColor: bgColors, borderRadius: 6 }] 
-                }, 
-                options: { 
-                    responsive: true, 
-                    maintainAspectRatio: false, 
-                    plugins: { legend: { display: false } }, 
-                    scales: { x: { grid: { display: false } } } 
-                } 
+                data: { labels: Object.keys(staffCount), datasets: [{ data: Object.values(staffCount), backgroundColor: '#3b82f6', borderRadius: 4 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } } } } 
             });
         }
 
-        const adminPanel = document.getElementById('admin-panel');
-        document.getElementById('btn-admin-panel').addEventListener('click', () => adminPanel.style.right = '0');
-        document.getElementById('btn-close-admin').addEventListener('click', () => adminPanel.style.right = '-320px');
-
-        document.getElementById('admin-font').addEventListener('change', e => document.documentElement.style.setProperty('--font-ui', e.target.value));
-        document.getElementById('admin-dark').addEventListener('input', e => document.documentElement.style.setProperty('--brand-dark', e.target.value));
-        document.getElementById('admin-medium').addEventListener('input', e => document.documentElement.style.setProperty('--brand-medium', e.target.value));
-        document.getElementById('admin-light').addEventListener('input', e => document.documentElement.style.setProperty('--bg-light', e.target.value));
-        
-        document.getElementById('toggle-kpi').addEventListener('change', e => document.documentElement.style.setProperty('--kpi-visible', e.target.checked ? 'grid' : 'none'));
-        document.getElementById('toggle-charts').addEventListener('change', e => {
-            document.documentElement.style.setProperty('--charts-visible', e.target.checked ? 'grid' : 'none');
-            if(e.target.checked && State.data.length > 0) updateCharts();
+        // --- EXPORT LAPORAN ---
+        document.getElementById('btn-export').addEventListener('click', () => {
+            const worksheetData = State.filtered.map((r, i) => ({
+                "NO": i + 1, "CONTROL NUMBER": r['CONTROL NUMBER'], "CALL NO (082)": r['CALL NO (082)'], "CALL NO (050/060)": r['CALL NO (050/060)'],
+                "ACCESSION": r['ACCESSION'], "TITLE": r['TITLE'], "STAFF": r['STAFF'], "STATUS": r['STATUS'],
+                "TARIKH HANTAR": r['DATE'], "DISEMAK OLEH": r['CHECKED BY'], "TARIKH DISEMAK": r['DATE CHECKED'],
+                "DILULUSKAN OLEH": r['APPROVED BY'], "TARIKH LULUS": r['APPROVED DATE'], "MESEJ (REJECT)": r['REMARKS']
+            }));
+            const ws = XLSX.utils.json_to_sheet(worksheetData);
+            const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Laporan IKU");
+            XLSX.writeFile(wb, "Laporan_Jejak_Audit_IKU.xlsx");
         });
-        document.getElementById('toggle-dup-prevent').addEventListener('change', e => State.settings.duplicatePrevention = e.target.checked);
-
     </script>
 </body>
 </html>
