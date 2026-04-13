@@ -59,16 +59,27 @@
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); position: sticky; top: 0; z-index: 50;
         }
         .nav-title { color: white; font-weight: 800; font-size: 20px; letter-spacing: -0.5px; }
-        .main-content { flex: 1; padding: 32px; display: flex; flex-direction: column; gap: 24px; }
-        .base-card { background: white; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); border: 1px solid #e2e8f0; }
+        .main-content { flex: 1; padding: 24px 32px; display: flex; flex-direction: column; gap: 24px; }
+        .base-card { background: white; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03); border: 1px solid #e2e8f0; }
 
-        /* KPI & CHARTS */
+        /* KPI CARDS (Premium Style) */
         #kpis { display: var(--kpi-visible); grid-template-columns: repeat(4, 1fr); gap: 24px; }
-        .kpi-card { padding: 24px; display: flex; align-items: center; justify-content: space-between; border-left: 4px solid var(--brand-medium); }
-        .kpi-label { font-size: 12px; color: #64748b; font-weight: 700; text-transform: uppercase; }
-        .kpi-value { font-size: 32px; font-weight: 800; color: var(--brand-dark); }
-        #charts-section { display: var(--charts-visible); grid-template-columns: 1fr 1.6fr; gap: 24px; height: 300px; }
-        .chart-container { padding: 24px; display: flex; flex-direction: column; height: 100%; }
+        .kpi-card { padding: 24px; display: flex; align-items: center; justify-content: space-between; border-left: 4px solid var(--brand-medium); transition: transform 0.2s; }
+        .kpi-card:hover { transform: translateY(-3px); box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); }
+        .kpi-info { display: flex; flex-direction: column; gap: 4px; }
+        .kpi-label { font-size: 12px; color: #64748b; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+        .kpi-value { font-size: 32px; font-weight: 800; color: var(--brand-dark); line-height: 1; }
+        .kpi-icon-wrap { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; background: var(--bg-light); color: var(--brand-medium); }
+
+        /* CHARTS SECTION (3 Columns Beautiful Side Table) */
+        #charts-section { display: var(--charts-visible); grid-template-columns: 1fr 1.5fr 1fr; gap: 24px; height: 320px; }
+        .chart-container { padding: 24px; display: flex; flex-direction: column; min-width: 0; min-height: 0; height: 100%; }
+        .chart-container .relative { flex: 1 1 auto; min-height: 0; min-width: 0; width: 100%; height: 100%; max-height: 220px; position: relative; display: flex; justify-content: center; }
+        .chart-header { font-size: 15px; font-weight: 700; color: var(--brand-dark); margin-bottom: 16px; letter-spacing: -0.3px; }
+
+        /* QUICK INSIGHTS */
+        .insight-item { padding: 16px; border-radius: 12px; transition: background 0.2s; }
+        .insight-item:hover { background: #f8fafc; }
 
         /* TABLE */
         .table-wrapper { overflow-x: auto; max-height: 600px; overflow-y: auto; background: white; border-radius: 16px 16px 0 0; }
@@ -89,40 +100,52 @@
         .col-title { width: auto; text-align: left !important; white-space: normal !important; padding-left: 16px; }
         .col-staff { width: 130px; }
         .col-status { width: 160px; }
-        .col-action { width: 220px; } /* Lebar untuk butang kelulusan & peti mesej */
+        .col-action { width: 190px; }
 
         .editable-text {
             width: 100%; padding: 8px 12px; border: 1px solid transparent; border-radius: 8px;
             font-size: 13px; text-align: center; background: transparent; font-weight: 500; transition: all 0.2s;
         }
-        .editable-text:hover:not(:disabled) { background: white; border-color: #cbd5e1; }
-        .editable-text:focus { background: white; border-color: var(--brand-medium); outline: none; }
-        .editable-text:disabled { opacity: 0.7; cursor: not-allowed; background: transparent !important; border-color: transparent !important; }
+        .editable-text:hover:not(:disabled) { background: white; border-color: #cbd5e1; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+        .editable-text:focus { background: white; border-color: var(--brand-medium); outline: none; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
+        /* Fix Disabled UI to look like normal text */
+        .editable-text:disabled { opacity: 1; cursor: not-allowed; background: transparent !important; border-color: transparent !important; color: #475569; }
+        .col-acc .editable-text:disabled { font-weight: 700; color: #334155; }
 
         /* Status Badges */
         .badge { padding: 6px 12px; border-radius: 99px; font-size: 11px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; width: 100%; letter-spacing: 0.3px; }
-        .b-incomplete { background: #f1f5f9; color: #64748b; }
+        .b-incomplete { background: #f1f5f9; color: #64748b; border: 1px solid #e2e8f0; }
         .b-pending-semak { background: #fff7ed; color: #ea580c; border: 1px solid #fdba74; }
         .b-pending-lulus { background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; }
         .b-completed { background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; }
         .b-rejected { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
 
         /* Action Buttons */
-        .btn-act { padding: 8px 14px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; border: none; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .btn-act { padding: 8px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; border: none; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
         .btn-act:hover { filter: brightness(0.9); transform: translateY(-1px); }
         .btn-act:active { transform: translateY(1px); }
         .act-blue { background: #3b82f6; color: white; }
         .act-green { background: #10b981; color: white; }
         .act-red { background: #ef4444; color: white; }
+        .act-light { background: #f1f5f9; color: #475569; }
 
         /* Loading Overlay */
         #sync-overlay { position: fixed; inset: 0; background: rgba(255,255,255,0.85); backdrop-filter: blur(8px); z-index: 3000; display: none; flex-direction: column; justify-content: center; align-items: center; }
         .loader { width: 48px; height: 48px; border: 4px solid #e2e8f0; border-top-color: var(--brand-medium); border-radius: 50%; animation: spin 1s infinite; margin-bottom: 20px; }
 
         /* Rejection Modal */
-        #reject-modal { position: fixed; inset: 0; background: rgba(15,23,42,0.6); display: none; justify-content: center; align-items: center; z-index: 4000; }
-        .reject-content { background: white; padding: 32px; border-radius: 20px; width: 100%; max-width: 400px; text-align: center; }
-        .msg-box { background: #fef2f2; border: 1px dashed #fca5a5; padding: 12px; border-radius: 8px; font-size: 11px; color: #b91c1c; text-align: left; margin-top: 8px; }
+        #reject-modal { position: fixed; inset: 0; background: rgba(15,23,42,0.6); backdrop-filter: blur(4px); display: none; justify-content: center; align-items: center; z-index: 4000; }
+        .reject-content { background: white; padding: 32px; border-radius: 20px; width: 100%; max-width: 400px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
+        
+        /* Notification Bell Animation */
+        @keyframes ring { 0% { transform: rotate(0); } 10% { transform: rotate(15deg); } 20% { transform: rotate(-15deg); } 30% { transform: rotate(10deg); } 40% { transform: rotate(-10deg); } 50% { transform: rotate(0); } 100% { transform: rotate(0); } }
+        .bell-ringing i { animation: ring 2s ease infinite; }
+        
+        @media (max-width: 1200px) {
+            #charts-section { grid-template-columns: 1fr; height: auto; }
+            .chart-container { height: 300px; }
+            #kpis { grid-template-columns: repeat(2, 1fr); }
+        }
     </style>
 </head>
 <body>
@@ -136,7 +159,7 @@
     <div id="login-screen">
         <div class="login-card">
             <div class="login-header">
-                <div class="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600 mx-auto mb-5 shadow-inner">
+                <div class="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600 mx-auto mb-5 shadow-inner border border-blue-100">
                     <i data-lucide="shield-check" class="w-8 h-8"></i>
                 </div>
                 <h1>IKU Library System</h1>
@@ -156,7 +179,7 @@
                 <div class="relative">
                     <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5 ml-1">Kata Laluan</label>
                     <input type="password" id="login-pass" class="modern-input pr-10" placeholder="••••••••" required>
-                    <button type="button" id="toggle-pass" class="absolute right-3 top-[32px] text-slate-400">
+                    <button type="button" id="toggle-pass" class="absolute right-3 top-[32px] text-slate-400 hover:text-blue-500 transition-colors">
                         <i data-lucide="eye" class="w-4 h-4"></i>
                     </button>
                 </div>
@@ -169,51 +192,104 @@
     <div id="dashboard">
         <nav class="top-navbar">
             <div class="flex items-center gap-4">
-                <div class="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center text-white border border-white/10">
+                <div class="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center text-white border border-white/10 shadow-inner">
                     <i data-lucide="library" class="w-5 h-5"></i>
                 </div>
                 <h2 class="nav-title">IKU LIBRARY SYSTEM</h2>
             </div>
-            <div class="flex items-center gap-6">
-                <div class="flex items-center gap-3 bg-white/10 py-1.5 pl-2 pr-4 rounded-full border border-white/20">
-                    <div class="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold text-sm shadow-inner" id="user-avatar">S</div>
-                    <div class="text-[13px] font-bold text-white uppercase tracking-wider" id="current-username">STAFF</div>
+            <div class="flex items-center gap-5">
+                
+                <!-- NOTIFICATION BELL (PETI MESEJ REJECT) -->
+                <div class="relative cursor-pointer hidden" id="notification-bell" onclick="filterRejected()" title="Lihat Rekod Ditolak">
+                    <div class="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center text-white border border-white/20 hover:bg-white/20 transition-all">
+                        <i data-lucide="bell" class="w-5 h-5"></i>
+                    </div>
+                    <span id="notif-badge" class="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full border-2 border-[#0a1128] shadow-sm">0</span>
                 </div>
-                <button onclick="location.reload()" class="w-10 h-10 rounded-full flex items-center justify-center text-red-300 hover:text-white hover:bg-red-500/20 transition-all" title="Log Keluar">
+
+                <div class="h-8 w-px bg-white/20 hidden md:block"></div>
+
+                <div class="flex items-center gap-3 bg-white/10 py-1.5 pl-1.5 pr-4 rounded-full border border-white/20">
+                    <div class="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold text-sm shadow-inner" id="user-avatar">S</div>
+                    <div class="text-[12px] font-bold text-white uppercase tracking-wider" id="current-username">STAFF</div>
+                </div>
+                <button onclick="location.reload()" class="w-10 h-10 rounded-full flex items-center justify-center text-white/70 hover:text-white hover:bg-red-500/30 transition-all" title="Log Keluar">
                     <i data-lucide="log-out" class="w-5 h-5"></i>
                 </button>
             </div>
         </nav>
 
         <main class="main-content">
-            <!-- KPI CARDS -->
+            <!-- KPI CARDS (Beautiful Original Style) -->
             <section id="kpis" class="fade-in-up">
-                <div class="base-card kpi-card"><div class="kpi-info"><span class="kpi-label">Jumlah Rekod</span><span class="kpi-value" id="kpi-total">0</span></div></div>
-                <div class="base-card kpi-card" style="border-left-color: #10b981;"><div class="kpi-info"><span class="kpi-label">Completed Lulus</span><span class="kpi-value text-emerald-600" id="kpi-complete">0</span></div></div>
-                <div class="base-card kpi-card" style="border-left-color: #3b82f6;"><div class="kpi-info"><span class="kpi-label">Pending Semakan/Lulus</span><span class="kpi-value text-blue-600" id="kpi-pending">0</span></div></div>
-                <div class="base-card kpi-card" style="border-left-color: #ef4444;"><div class="kpi-info"><span class="kpi-label">Rejected</span><span class="kpi-value text-red-500" id="kpi-rejected">0</span></div></div>
+                <div class="base-card kpi-card">
+                    <div class="kpi-info"><span class="kpi-label">Jumlah Rekod</span><span class="kpi-value" id="kpi-total">0</span></div>
+                    <div class="kpi-icon-wrap text-blue-600 bg-blue-50"><i data-lucide="database"></i></div>
+                </div>
+                <div class="base-card kpi-card" style="border-left-color: #10b981;">
+                    <div class="kpi-info"><span class="kpi-label">Completed Lulus</span><span class="kpi-value text-emerald-600" id="kpi-complete">0</span></div>
+                    <div class="kpi-icon-wrap text-emerald-600 bg-emerald-50"><i data-lucide="check-circle-2"></i></div>
+                </div>
+                <div class="base-card kpi-card" style="border-left-color: #f59e0b;">
+                    <div class="kpi-info"><span class="kpi-label">Pending Semakan/Lulus</span><span class="kpi-value text-amber-500" id="kpi-pending">0</span></div>
+                    <div class="kpi-icon-wrap text-amber-600 bg-amber-50"><i data-lucide="clock"></i></div>
+                </div>
+                <div class="base-card kpi-card" style="border-left-color: #ef4444;">
+                    <div class="kpi-info"><span class="kpi-label">Rejected</span><span class="kpi-value text-red-500" id="kpi-rejected">0</span></div>
+                    <div class="kpi-icon-wrap text-red-500 bg-red-50"><i data-lucide="x-circle"></i></div>
+                </div>
             </section>
 
-            <!-- CHARTS -->
+            <!-- CHARTS & QUICK INSIGHTS (3 Columns Beautiful Style) -->
             <section id="charts-section" class="fade-in-up delay-100">
                 <div class="chart-container base-card">
-                    <div class="text-sm font-bold text-slate-800 mb-4">Status Distribution</div>
+                    <div class="chart-header">Status Distribution</div>
                     <div class="flex-1 relative"><canvas id="statusChart"></canvas></div>
                 </div>
+                
                 <div class="chart-container base-card">
-                    <div class="text-sm font-bold text-slate-800 mb-4">Staff Submission Performance</div>
+                    <div class="chart-header">Staff Submission Performance</div>
                     <div class="flex-1 relative"><canvas id="staffChart"></canvas></div>
+                </div>
+
+                <div class="chart-container base-card">
+                    <div class="chart-header">Quick Insights</div>
+                    <div class="flex-1 flex flex-col justify-center gap-4">
+                        <div class="insight-item flex items-center gap-4 border-l-4 border-amber-500 bg-amber-50/50">
+                            <div class="w-12 h-12 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center shrink-0 shadow-sm border border-amber-200">
+                                <i data-lucide="award" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-0.5">Top Performer</div>
+                                <div class="text-base font-extrabold text-slate-800 leading-tight" id="insight-top-staff">-</div>
+                                <div class="text-[11px] text-emerald-600 font-bold mt-0.5" id="insight-top-score">0 Rekod Hantar</div>
+                            </div>
+                        </div>
+                        <div class="insight-item flex items-center gap-4 border-l-4 border-blue-500 bg-blue-50/50 mt-1">
+                            <div class="w-12 h-12 rounded-full bg-white text-blue-600 flex items-center justify-center shrink-0 shadow-sm border border-blue-100">
+                                <i data-lucide="alert-circle" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-0.5">Pending Tasks</div>
+                                <div class="text-base font-extrabold text-slate-800 leading-tight" id="insight-pending">0 Rekod</div>
+                                <div class="text-[11px] text-amber-500 font-bold mt-0.5">Belum Selesai Lulus</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </section>
 
             <!-- FILTERS & ACTIONS -->
-            <section class="base-card p-6 flex flex-wrap gap-6 items-end fade-in-up delay-200">
+            <section class="base-card p-6 flex flex-wrap gap-5 items-end fade-in-up delay-200">
                 <div class="flex flex-wrap gap-4 flex-1">
                     <div class="input-labeled min-w-[200px]">
                         <label>Carian Lanjut</label>
-                        <input type="text" id="search-input" class="modern-input" placeholder="Taip tajuk/accession...">
+                        <div class="relative">
+                            <i data-lucide="search" class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
+                            <input type="text" id="search-input" class="modern-input pl-10" placeholder="Taip tajuk/accession...">
+                        </div>
                     </div>
-                    <div class="input-labeled min-w-[130px]">
+                    <div class="input-labeled min-w-[150px]">
                         <label>Status</label>
                         <select id="filter-status" class="modern-input">
                             <option value="">Semua Status</option>
@@ -226,12 +302,12 @@
                     </div>
                 </div>
                 <div class="flex items-end gap-3">
-                    <button id="btn-sync" class="btn-gradient w-auto h-[44px]">
+                    <button id="btn-sync" class="btn-gradient w-auto h-[44px] shadow-md">
                         <i data-lucide="refresh-cw" class="w-4 h-4 sync-icon"></i> Segerak
                     </button>
-                    <div class="flex flex-col gap-1.5 ml-4">
-                        <label class="text-[10px] font-bold text-emerald-600 uppercase tracking-wider">Laporan Excel</label>
-                        <button id="btn-export" class="btn-gradient w-auto h-[44px] !bg-emerald-600" style="background: linear-gradient(135deg, #10b981, #059669);">
+                    <div class="flex flex-col gap-1.5 ml-2">
+                        <label class="text-[10px] font-bold text-emerald-600 uppercase tracking-wider text-right">Excel</label>
+                        <button id="btn-export" class="btn-gradient w-auto h-[44px] !bg-emerald-600 shadow-md" style="background: linear-gradient(135deg, #10b981, #059669);">
                             <i data-lucide="download" class="w-4 h-4"></i> Muat Turun
                         </button>
                     </div>
@@ -252,7 +328,7 @@
                                 <th class="col-title text-left pl-4">TITLE</th>
                                 <th class="col-staff">STAFF</th>
                                 <th class="col-status">STATUS & JEJAK</th>
-                                <th class="col-action">TINDAKAN / PETI MESEJ</th>
+                                <th class="col-action">TINDAKAN</th>
                             </tr>
                         </thead>
                         <tbody id="table-body">
@@ -290,9 +366,26 @@
         </div>
     </div>
 
+    <!-- VIEW MESSAGE MODAL (PETI MESEJ) -->
+    <div id="message-modal" class="popup-overlay" style="display: none;">
+        <div class="reject-content !max-w-[450px]">
+            <div class="w-14 h-14 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm border border-amber-200">
+                <i data-lucide="mail-warning" class="w-7 h-7"></i>
+            </div>
+            <h3 class="text-xl font-bold text-slate-800 mb-2">Peti Mesej (Rekod Ditolak)</h3>
+            <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4" id="msg-sender">Daripada: Pegawai Penyemak</p>
+            
+            <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 text-left mb-6 shadow-inner">
+                <p id="msg-content" class="text-sm text-slate-700 font-medium leading-relaxed">...</p>
+            </div>
+
+            <button onclick="document.getElementById('message-modal').style.display='none'" class="w-full py-3 bg-slate-800 hover:bg-slate-900 text-white rounded-xl font-bold transition-all shadow-md">Tutup Mesej</button>
+        </div>
+    </div>
+
     <script>
         // PENTING: Gantikan URL ini dengan URL Deployment anda yang baharu!
-        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzpaGctVVI8PFMI0tolNzvdg7JsHLpPnKHM9EhusWbjYdfZTuVDxOcMZwJNBXqFh1FJ/exec"; 
+        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzuHw9qlYsYj5P-Xa9ud9ve0tN9P1mGf-I74FPq6jEEX4jACtY5-G58DmSNQ-U5KuWR/exec"; 
 
         lucide.createIcons();
         const State = { currentUser: null, data: [], filtered: [], currentPage: 1, itemsPerPage: 100, staffList: ["FATIHAH", "FAZILAH", "SAKINAH", "HUSNA"], chartInstances: {} };
@@ -309,13 +402,7 @@
             const user = document.getElementById('login-user').value;
             const pass = document.getElementById('login-pass').value;
 
-            // Kredensial mengikut permintaan
-            const credentials = {
-                'staff': 'staff123',
-                'rosli': 'rosli123',
-                'jaini': 'jaini123',
-                'admin': 'admin123'
-            };
+            const credentials = { 'staff': 'staff123', 'rosli': 'rosli123', 'jaini': 'jaini123', 'admin': 'admin123' };
 
             if (user && credentials[user] === pass) {
                 State.currentUser = { id: user, name: user.toUpperCase() };
@@ -344,7 +431,13 @@
         document.getElementById('btn-sync').addEventListener('click', syncLiveDatabase);
 
         function processData(rawData) {
-            State.data = rawData;
+            State.data = rawData.map(row => {
+                // FIX LOCK ISSUE: Normalisasi status dari backend supaya tidak case-sensitive
+                if(!row['STATUS'] || row['STATUS'].toString().trim().toLowerCase() === 'incomplete') {
+                    row['STATUS'] = 'Incomplete';
+                }
+                return row;
+            });
             applyFilters();
         }
 
@@ -361,11 +454,10 @@
                 const json = await res.json();
                 
                 if(json.success) {
-                    // Update Local State directly to avoid fetching 7000 rows again
                     let record = State.data.find(r => r._rowIndex === rowIndex);
                     updatesArray.forEach(u => record[u.field] = u.value);
-                    applyFilters(false); // Update charts without re-rendering everything
-                    renderTable();       // Re-render table to show new buttons
+                    applyFilters(false); 
+                    renderTable();       
                 } else {
                     alert("Kemas kini ditolak: " + json.message);
                 }
@@ -375,7 +467,6 @@
             els.syncOverlay.style.display = 'none';
         }
 
-        // Triggered when text input changed (e.g. Call No, Control No)
         window.handleEdit = async function(rowIndex, field, value, inputEl) {
             inputEl.disabled = true;
             await multiUpdate(rowIndex, [{field: field, value: value}]);
@@ -387,8 +478,8 @@
             const today = new Date().toLocaleDateString('en-GB');
             multiUpdate(rowIndex, [
                 {field: 'STATUS', value: 'Pending Semakan'},
-                {field: 'DATE', value: today}, // Cop tarikh hantar
-                {field: 'REMARKS', value: ''}  // Clear mesej reject jika ada
+                {field: 'DATE', value: today}, 
+                {field: 'REMARKS', value: ''}  
             ]);
         };
 
@@ -397,7 +488,8 @@
             multiUpdate(rowIndex, [
                 {field: 'STATUS', value: 'Pending Kelulusan'},
                 {field: 'CHECKED BY', value: 'Rosli'},
-                {field: 'DATE CHECKED', value: today}
+                {field: 'DATE CHECKED', value: today},
+                {field: 'REMARKS', value: ''}
             ]);
         };
 
@@ -427,8 +519,15 @@
             multiUpdate(rowIndex, [
                 {field: 'STATUS', value: 'Completed'},
                 {field: 'APPROVED BY', value: 'Jaini'},
-                {field: 'APPROVED DATE', value: today}
+                {field: 'APPROVED DATE', value: today},
+                {field: 'REMARKS', value: ''}
             ]);
+        };
+
+        window.lihatMesej = function(msg, sender) {
+            document.getElementById('msg-content').innerText = msg || "Tiada mesej disertakan.";
+            document.getElementById('msg-sender').innerText = "Catatan Pegawai: " + (sender || "Rosli");
+            document.getElementById('message-modal').style.display = 'flex';
         };
 
         // --- UI RENDERING ---
@@ -437,30 +536,34 @@
             const start = (State.currentPage - 1) * State.itemsPerPage;
             const pageData = State.filtered.slice(start, start + State.itemsPerPage);
 
-            if (pageData.length === 0) { tbody.innerHTML = `<tr><td colspan="9" class="py-16 text-center text-slate-400">Tiada rekod.</td></tr>`; updatePaginationInfo(); return; }
+            if (pageData.length === 0) { tbody.innerHTML = `<tr><td colspan="9" class="py-16 text-center text-slate-400 font-medium">Tiada rekod dijumpai.</td></tr>`; updatePaginationInfo(); return; }
 
             const frag = document.createDocumentFragment();
             pageData.forEach(row => {
                 const tr = document.createElement('tr');
-                const stat = row['STATUS'];
+                const stat = row['STATUS'] || 'Incomplete';
                 const role = State.currentUser.id;
                 
-                // Determine Field Editability (Only Staff can edit if Incomplete/Rejected. Rosli can edit if Pending Semakan)
+                // LOGIK KUNCI (LOCK) YANG DIPERBAIKI
                 let canEdit = false;
                 if (role === 'admin') canEdit = true;
                 if (role === 'staff' && (stat === 'Incomplete' || stat === 'Rejected')) canEdit = true;
                 if (role === 'rosli' && stat === 'Pending Semakan') canEdit = true;
 
-                // Build Action Buttons & Message Box
                 let actionHTML = '';
                 
-                // STAFF UI
+                // STAFF UI (Mesej Notification / Hantar)
                 if (role === 'staff') {
-                    if (stat === 'Incomplete' || stat === 'Rejected') {
-                        actionHTML = `<button onclick="hantarSemakan(${row._rowIndex})" class="btn-act act-blue w-full justify-center"><i data-lucide="send"></i> Hantar Semakan</button>`;
-                        if (stat === 'Rejected' && row['REMARKS']) {
-                            actionHTML += `<div class="msg-box"><i data-lucide="message-square-warning" class="w-3 h-3 inline"></i> <b>Mesej Rosli:</b> ${row['REMARKS']}</div>`;
-                        }
+                    if (stat === 'Incomplete') {
+                        actionHTML = `<button onclick="hantarSemakan(${row._rowIndex})" class="btn-act act-blue w-full"><i data-lucide="send" class="w-4 h-4"></i> Hantar Semakan</button>`;
+                    } else if (stat === 'Rejected') {
+                        const safeMsg = (row['REMARKS'] || '').replace(/'/g, "\\'").replace(/"/g, "&quot;");
+                        actionHTML = `
+                            <div class="flex gap-2">
+                                <button onclick="hantarSemakan(${row._rowIndex})" class="btn-act act-blue flex-1" title="Hantar Semula"><i data-lucide="send" class="w-4 h-4"></i> Hantar</button>
+                                <button onclick="lihatMesej('${safeMsg}', '${row['CHECKED BY']}')" class="btn-act act-red" title="Peti Mesej"><i data-lucide="mail-warning" class="w-4 h-4"></i> Mesej</button>
+                            </div>
+                        `;
                     } else {
                         actionHTML = `<span class="text-[10px] text-slate-400 font-bold uppercase"><i data-lucide="lock" class="w-3 h-3 inline"></i> Dikunci</span>`;
                     }
@@ -470,24 +573,22 @@
                     if (stat === 'Pending Semakan') {
                         actionHTML = `
                             <div class="flex gap-2">
-                                <button onclick="lulusRosli(${row._rowIndex})" class="btn-act act-green flex-1 justify-center" title="Luluskan"><i data-lucide="check"></i></button>
-                                <button onclick="rejectRosli(${row._rowIndex})" class="btn-act act-red flex-1 justify-center" title="Tolak / Komen"><i data-lucide="x"></i></button>
+                                <button onclick="lulusRosli(${row._rowIndex})" class="btn-act act-green flex-1" title="Luluskan"><i data-lucide="check" class="w-4 h-4"></i> Lulus</button>
+                                <button onclick="rejectRosli(${row._rowIndex})" class="btn-act act-red flex-1" title="Tolak"><i data-lucide="x" class="w-4 h-4"></i> Reject</button>
                             </div>
                         `;
-                    } else if (stat === 'Rejected' && row['REMARKS']) {
-                        actionHTML = `<div class="msg-box border-none bg-slate-100 text-slate-600"><i data-lucide="info" class="w-3 h-3 inline"></i> <b>Ditolak:</b> ${row['REMARKS']}</div>`;
+                    } else if (stat === 'Rejected') {
+                        const safeMsg = (row['REMARKS'] || '').replace(/'/g, "\\'").replace(/"/g, "&quot;");
+                        actionHTML = `<button onclick="lihatMesej('${safeMsg}', '${row['CHECKED BY']}')" class="btn-act act-light w-full"><i data-lucide="mail" class="w-4 h-4"></i> Mesej Dihantar</button>`;
                     } else { actionHTML = '-'; }
                 }
                 // JAINI UI
                 else if (role === 'jaini') {
                     if (stat === 'Pending Kelulusan') {
-                        actionHTML = `<button onclick="lulusJaini(${row._rowIndex})" class="btn-act act-green w-full justify-center"><i data-lucide="award"></i> Sahkan Lulus</button>`;
+                        actionHTML = `<button onclick="lulusJaini(${row._rowIndex})" class="btn-act act-green w-full"><i data-lucide="award" class="w-4 h-4"></i> Sahkan Lulus</button>`;
                     } else { actionHTML = '-'; }
                 }
-                // ADMIN UI
-                else if (role === 'admin') {
-                    actionHTML = `<span class="text-[10px] text-slate-400">View Only</span>`;
-                }
+                else if (role === 'admin') { actionHTML = `<span class="text-[10px] text-slate-400">View Only</span>`; }
 
                 // Status Badge UI
                 let badgeClass = 'b-incomplete';
@@ -499,14 +600,14 @@
 
                 // Audit Trail Info
                 let auditHTML = '';
-                if(row['CHECKED BY']) auditHTML += `<div class="text-[9px] text-slate-500 mt-1">S: ${row['CHECKED BY']} (${row['DATE CHECKED']})</div>`;
-                if(row['APPROVED BY']) auditHTML += `<div class="text-[9px] text-emerald-600 mt-0.5">L: ${row['APPROVED BY']} (${row['APPROVED DATE']})</div>`;
+                if(row['CHECKED BY']) auditHTML += `<div class="text-[9px] text-slate-500 mt-1 font-semibold">S: ${row['CHECKED BY']} (${row['DATE CHECKED']})</div>`;
+                if(row['APPROVED BY']) auditHTML += `<div class="text-[9px] text-emerald-600 mt-0.5 font-semibold">L: ${row['APPROVED BY']} (${row['APPROVED DATE']})</div>`;
 
                 tr.innerHTML = `
                     <td class="col-no text-slate-400 font-semibold">${row['NO'] || ''}</td>
                     <td class="col-control"><input type="text" class="editable-text" value="${row['CONTROL NUMBER'] || ''}" ${canEdit?'':'disabled'} onchange="handleEdit(${row._rowIndex}, 'CONTROL NUMBER', this.value, this)"></td>
                     <td class="col-call82"><input type="text" class="editable-text text-slate-500" value="${row['CALL NO (082)'] || ''}" ${canEdit?'':'disabled'} onchange="handleEdit(${row._rowIndex}, 'CALL NO (082)', this.value, this)"></td>
-                    <td class="col-call50"><input type="text" class="editable-text text-blue-600" value="${row['CALL NO (050/060)'] || ''}" ${canEdit?'':'disabled'} onchange="handleEdit(${row._rowIndex}, 'CALL NO (050/060)', this.value, this)"></td>
+                    <td class="col-call50"><input type="text" class="editable-text text-blue-600 font-semibold" value="${row['CALL NO (050/060)'] || ''}" ${canEdit?'':'disabled'} onchange="handleEdit(${row._rowIndex}, 'CALL NO (050/060)', this.value, this)"></td>
                     <td class="col-acc"><input type="text" class="editable-text font-bold text-slate-700" value="${row['ACCESSION'] || ''}" ${canEdit?'':'disabled'} onchange="handleEdit(${row._rowIndex}, 'ACCESSION', this.value, this)"></td>
                     <td class="col-title"><input type="text" class="editable-text text-left" value="${row['TITLE'] || ''}" ${canEdit?'':'disabled'} onchange="handleEdit(${row._rowIndex}, 'TITLE', this.value, this)"></td>
                     <td class="col-staff">
@@ -528,6 +629,36 @@
             updatePaginationInfo();
         }
 
+        // --- NOTIFICATION SYSTEM (BELL) ---
+        function updateNotificationBell() {
+            const bell = document.getElementById('notification-bell');
+            const badge = document.getElementById('notif-badge');
+            
+            // Hanya tunjukkan bell notification kepada Staff jika ada fail yang Rejected
+            if (State.currentUser && State.currentUser.id === 'staff') {
+                const rejectedCount = State.data.filter(r => r['STATUS'] === 'Rejected').length;
+                bell.style.display = 'block';
+                if (rejectedCount > 0) {
+                    badge.innerText = rejectedCount;
+                    badge.classList.remove('hidden');
+                    bell.classList.add('bell-ringing');
+                    setTimeout(() => bell.classList.remove('bell-ringing'), 2000); // Ring for 2s
+                } else {
+                    badge.classList.add('hidden');
+                    bell.classList.remove('bell-ringing');
+                }
+            } else {
+                bell.style.display = 'none';
+            }
+        }
+
+        window.filterRejected = function() {
+            document.getElementById('filter-status').value = 'Rejected';
+            applyFilters();
+            // Scroll to table
+            document.getElementById('table-section').scrollIntoView({behavior: 'smooth', block: 'start'});
+        };
+
         // --- FILTERS & CHARTS ---
         function applyFilters(reRender = true) {
             const fStatus = document.getElementById('filter-status').value;
@@ -539,7 +670,9 @@
                 return true;
             });
             State.currentPage = 1;
-            updateKPIs(); updateCharts();
+            updateKPIs(); 
+            updateCharts();
+            updateNotificationBell();
             if(reRender) renderTable();
         }
 
@@ -559,6 +692,8 @@
             document.getElementById('kpi-complete').innerText = State.filtered.filter(r => r['STATUS'] === 'Completed').length;
             document.getElementById('kpi-pending').innerText = State.filtered.filter(r => r['STATUS'].includes('Pending')).length;
             document.getElementById('kpi-rejected').innerText = State.filtered.filter(r => r['STATUS'] === 'Rejected').length;
+            
+            document.getElementById('insight-pending').innerText = State.filtered.filter(r => r['STATUS'].includes('Pending')).length + " Rekod";
         }
 
         function updateCharts() {
@@ -568,21 +703,31 @@
 
             State.filtered.forEach(r => {
                 if(sCounts[r['STATUS']] !== undefined) sCounts[r['STATUS']]++;
-                // Hanya kira prestasi staff untuk yang dihantar
                 if(r['STAFF'] && r['STATUS'] !== 'Incomplete' && staffCount[r['STAFF']] !== undefined) staffCount[r['STAFF']]++;
             });
+
+            // Quick Insights Top Performer Update
+            let maxCount = 0; let topStaff = "-";
+            for (const [staff, count] of Object.entries(staffCount)) {
+                if (count > maxCount) { maxCount = count; topStaff = staff; }
+            }
+            document.getElementById('insight-top-staff').innerText = topStaff;
+            document.getElementById('insight-top-score').innerText = maxCount + " Rekod Hantar";
 
             if(State.chartInstances.status) State.chartInstances.status.destroy();
             State.chartInstances.status = new Chart(document.getElementById('statusChart').getContext('2d'), { 
                 type: 'doughnut', 
-                data: { labels: Object.keys(sCounts), datasets: [{ data: Object.values(sCounts), backgroundColor: ['#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#cbd5e1'] }] },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { boxWidth: 10, font: { size: 10 } } } } } 
+                data: { labels: Object.keys(sCounts), datasets: [{ data: Object.values(sCounts), backgroundColor: ['#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#cbd5e1'], borderWidth: 2, hoverOffset: 4 }] },
+                options: { responsive: true, maintainAspectRatio: false, cutout: '75%', plugins: { legend: { position: 'right', labels: { boxWidth: 10, font: { size: 11, weight: '600' } } } } } 
             });
+
+            const barColors = ['#0f172a', '#2563eb', '#3b82f6', '#10b981', '#6366f1']; 
+            const bgColors = Object.keys(staffCount).map((_, i) => barColors[i % barColors.length]);
 
             if(State.chartInstances.staff) State.chartInstances.staff.destroy();
             State.chartInstances.staff = new Chart(document.getElementById('staffChart').getContext('2d'), { 
                 type: 'bar', 
-                data: { labels: Object.keys(staffCount), datasets: [{ data: Object.values(staffCount), backgroundColor: '#3b82f6', borderRadius: 4 }] },
+                data: { labels: Object.keys(staffCount), datasets: [{ data: Object.values(staffCount), backgroundColor: bgColors, borderRadius: 6 }] },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } } } } 
             });
         }
