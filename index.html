@@ -551,6 +551,9 @@
             <label class="text-xs font-bold text-gray-700 flex items-center gap-3 cursor-pointer"><input type="checkbox" id="toggle-kpi" checked class="w-4 h-4 text-[--brand-medium] rounded focus:ring-[--brand-medium]"> Papar Kad KPI</label>
             <label class="text-xs font-bold text-gray-700 flex items-center gap-3 cursor-pointer"><input type="checkbox" id="toggle-charts" checked class="w-4 h-4 text-[--brand-medium] rounded focus:ring-[--brand-medium]"> Papar Carta</label>
             <label class="text-xs font-bold text-gray-700 flex items-center gap-3 cursor-pointer"><input type="checkbox" id="toggle-dup-prevent" checked class="w-4 h-4 text-[--brand-medium] rounded focus:ring-[--brand-medium]"> Halang Rekod Pendua</label>
+            <div class="mt-6 text-[10px] uppercase tracking-widest text-gray-400 text-center font-bold">
+                Kemaskini Terakhir<br><span id="admin-last-update" class="text-gray-600 mt-1 block font-normal capitalize">-</span>
+            </div>
         </div>
     </div>
 
@@ -581,7 +584,7 @@
     <script>
         // ==========================================
         // PENTING: Gantikan URL di bawah dengan URL Google Apps Script anda yang BAHARU
-        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxUsxgCbsXC5Uj5pZAzTUtF8m_ZQEpTZXettSGURk-fYxmqGAFvgE2xZ9uVB76pJj1G/exec"; 
+        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzfYvil4hdK0-0H5qePeWp1QzQcjlLDVquayay5QsH2Aj5yoxZCQSnzIyOocWwKsg9z/exec"; 
         
         const State = {
             currentUser: null, data: [], filtered: [], currentPage: 1, itemsPerPage: 100,
@@ -740,7 +743,7 @@
                     inputElement.disabled = false; return;
                 }
             }
-            const params = new URLSearchParams({ action: 'update', rowIndex: rowIndex, field: field, value: value, validateDup: 'false' });
+            const params = newSearchParams({ action: 'update', rowIndex: rowIndex, field: field, value: value, validateDup: 'false' });
             try {
                 const res = await fetch(`${GAS_WEB_APP_URL}?${params.toString()}`); const json = await res.json();
                 if(json.success) State.data.find(r => r._rowIndex === rowIndex)[field] = value;
