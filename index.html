@@ -196,12 +196,14 @@
         /* STRICT TABLE SECTION (11 Columns, Centered & Fluid) */
         #table-section { display: flex; flex-direction: column; overflow: hidden; width: 100%; }
         .table-wrapper { overflow-x: auto; max-height: 650px; overflow-y: auto; width: 100%; }
-        table { width: 100%; margin: 0 auto; border-collapse: separate; border-spacing: 0; font-family: var(--font-table) !important; min-width: 1300px; }
+        
+        /* FIX: Ensure table uses fixed layout so columns don't randomly expand and break structure */
+        table { width: 100%; margin: 0 auto; border-collapse: separate; border-spacing: 0; font-family: var(--font-table) !important; min-width: 1300px; table-layout: fixed; }
         thead { position: sticky; top: 0; z-index: 5; }
         th { background: var(--brand-dark); color: white; font-size: 12px; font-weight: 700; text-align: center; padding: 16px 10px; border-bottom: none; letter-spacing: 0.5px; white-space: nowrap; }
         th:first-child { border-top-left-radius: 8px; }
         th:last-child { border-top-right-radius: 8px; }
-        td { font-size: 12.5px; text-align: center; padding: 12px 10px; border-bottom: 1px solid #F1F5F9; color: #334155; vertical-align: middle; line-height: 1.5; }
+        td { font-size: 12.5px; text-align: center; padding: 12px 10px; border-bottom: 1px solid #F1F5F9; color: #334155; vertical-align: middle; line-height: 1.5; overflow: hidden; }
         tr:nth-child(even) td { background-color: var(--row-alt); }
         tr:hover td { background-color: #F8FAFC; }
         
@@ -211,6 +213,7 @@
         .col-call82 { width: 110px; }
         .col-call50 { width: 150px; }
         .col-acc { width: 110px; }
+        /* Title gets min-width but auto expands securely */
         .col-title { width: auto; min-width: 250px; font-size: 12.5px !important; text-align: left !important; white-space: normal !important; word-break: break-word; }
         .col-staff { width: 120px; }
         .col-date { width: 100px; }
@@ -219,7 +222,7 @@
         .col-action { width: 140px; }
 
         /* Editable Inputs inside table */
-        .editable-input { width: 100%; padding: 8px; border: 1px solid transparent; border-radius: 6px; font-family: var(--font-table) !important; font-size: 12.5px; text-align: center; background: transparent; color: inherit; font-weight: 500; transition: 0.2s; }
+        .editable-input { width: 100%; padding: 8px; border: 1px solid transparent; border-radius: 6px; font-family: var(--font-table) !important; font-size: 12.5px; text-align: center; background: transparent; color: inherit; font-weight: 500; transition: 0.2s; text-overflow: ellipsis; }
         .editable-input:hover:not(:disabled) { border-color: #E2E8F0; background: white; }
         .editable-input:focus { background: white; border-color: var(--brand-medium); box-shadow: 0 0 0 2px rgba(0, 85, 165, 0.1); outline: none; }
         .editable-input:disabled { opacity: 0.9; cursor: not-allowed; background: transparent !important; border-color: transparent !important; color: #475569; }
@@ -240,8 +243,8 @@
         .btn-reject:hover { background-color: #DC2626; }
         .btn-info { background-color: #F59E0B; color: white; }
 
-        /* Status Styling Display */
-        .status-display { font-weight: 700; padding: 6px 10px; border-radius: 6px; display: inline-block; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; text-align: center; }
+        /* Status Styling Display (FIX: bulletproof against overflow text) */
+        .status-display { font-weight: 700; padding: 6px 10px; border-radius: 6px; display: inline-block; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; text-align: center; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .st-pending { color: #F59E0B; background: #FEF3C7; }
         .st-completed { color: #10B981; background: #D1FAE5; }
         .st-rejected { color: #EF4444; background: #FEE2E2; }
@@ -584,7 +587,7 @@
     <script>
         // ==========================================
         // PENTING: Gantikan URL di bawah dengan URL Google Apps Script anda yang BAHARU
-        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzonzanBSPdYlobfnCiHYQyBUJ-k9wMVUAMwmDbh6SCvXR4eZQTb5c27F80W-wk8QL7/exec"; 
+        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwZfDvd2Eao-eCpjAdPye48DbK97eoYTZh5QtQdeedjdrRFaJhphPWccTuGxe-IJgT6/exec"; 
         
         const State = {
             currentUser: null, data: [], filtered: [], currentPage: 1, itemsPerPage: 100,
