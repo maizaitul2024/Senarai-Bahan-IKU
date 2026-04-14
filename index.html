@@ -203,8 +203,8 @@
         th:first-child { border-top-left-radius: 8px; }
         th:last-child { border-top-right-radius: 8px; }
         
-        /* Allow cells to wrap normally and make words visible */
-        td { font-size: 12.5px; text-align: center; padding: 10px 8px; border-bottom: 1px solid #F1F5F9; color: #334155; vertical-align: middle; line-height: 1.5; word-wrap: break-word; }
+        /* FIX: Ensure td forces text wrap natively */
+        td { font-size: 12.5px; text-align: center; padding: 10px 8px; border-bottom: 1px solid #F1F5F9; color: #334155; vertical-align: middle; line-height: 1.5; white-space: normal !important; word-wrap: break-word !important; overflow: visible !important; }
         tr:nth-child(even) td { background-color: var(--row-alt); }
         tr:hover td { background-color: #F8FAFC; }
         
@@ -214,7 +214,7 @@
         .col-call82 { width: 110px; }
         .col-call50 { width: 140px; }
         .col-acc { width: 110px; }
-        .col-title { width: auto; min-width: 250px; font-size: 12.5px !important; text-align: center !important; }
+        .col-title { width: auto; min-width: 250px; }
         .col-staff { width: 110px; }
         .col-date { width: 100px; }
         .col-status { width: 150px; }
@@ -222,17 +222,11 @@
         .col-action { width: 140px; }
 
         /* Editable Inputs inside table */
-        .editable-input { width: 100%; padding: 8px; border: 1px solid transparent; border-radius: 6px; font-family: var(--font-table) !important; font-size: 12.5px; text-align: center; background: transparent; color: inherit; font-weight: 500; transition: 0.2s; }
+        .editable-input { width: 100%; padding: 8px; border: 1px solid transparent; border-radius: 6px; font-family: var(--font-table) !important; font-size: 12.5px; text-align: center; background: transparent; color: inherit; font-weight: 500; transition: 0.2s; white-space: normal !important; resize: none; overflow: hidden; }
         .editable-input:hover:not(:disabled) { border-color: #E2E8F0; background: white; }
         .editable-input:focus { background: white; border-color: var(--brand-medium); box-shadow: 0 0 0 2px rgba(0, 85, 165, 0.1); outline: none; }
-        .editable-input:disabled { opacity: 0.9; cursor: not-allowed; background: transparent !important; border-color: transparent !important; color: #475569; }
-
-        /* Alignment Fixes */
-        .col-title .editable-input { text-align: center !important; }
-        .col-acc { font-weight: 700; color: var(--brand-dark); }
-
+        
         select.editable-input { cursor: pointer; }
-        select.editable-input:disabled { cursor: not-allowed; appearance: none; }
 
         /* Workflow Buttons */
         .btn-sm { padding: 6px 12px; border-radius: 6px; font-weight: 700; font-size: 11px; cursor: pointer; border: none; color: white; transition: 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 4px; }
@@ -500,7 +494,7 @@
                 </div>
             </section>
 
-            <!-- Table Section -->
+            <!-- Table Section (HEADER DITUKAR BAHASA INGGERIS) -->
             <section id="table-section" class="base-card flex-1">
                 <div class="table-wrapper">
                     <table id="library-table">
@@ -511,7 +505,7 @@
                                 <th class="col-call82">CALL NO (082)</th>
                                 <th class="col-call50">CALL NO (050/060)</th>
                                 <th class="col-acc">ACCESSION</th>
-                                <th class="col-title">TITLE</th>
+                                <th class="col-title text-center">TITLE</th>
                                 <th class="col-staff">STAFF</th>
                                 <th class="col-date">DATE</th>
                                 <th class="col-status">STATUS</th>
@@ -882,7 +876,7 @@
                 const stat = row['STATUS'];
                 const roleId = State.currentUser ? State.currentUser.id : 'staff';
                 
-                // Permission Cek (Hanya 4 lajur editable untuk Staf & Rosli)
+                // MENGESAHKAN KEBENARAN EDIT STAFF & ROSLI
                 let canEdit = false;
                 if(roleId === 'admin') canEdit = true;
                 if(roleId === 'staff' && (stat === 'incomplete' || stat === 'Rejected')) canEdit = true;
@@ -897,7 +891,7 @@
                 let sClass = 'st-incomplete';
                 if(stat==='Completed') sClass='st-completed'; else if(stat.includes('Pending')) sClass='st-pending'; else if(stat==='Rejected') sClass='st-rejected';
                 
-                // STATUS HTML (Dropdown Khusus untuk Staff & Rosli, otherwise paparkan text biasa)
+                // HTML STATUS (Boleh Edit / Terkunci)
                 let statusHTML = '';
                 if (roleId === 'staff' && (stat === 'incomplete' || stat === 'Rejected')) {
                     statusHTML = `
@@ -919,12 +913,12 @@
                     statusHTML = `<div class="status-display ${sClass} w-full">${displayStatus}</div>`;
                 }
 
-                // Audit Trail Columns
+                // Audit Trail
                 let semakText = row['CHECKED BY'] ? `<div class="font-bold text-[--brand-dark] text-[10.5px] text-left leading-tight">Checked: ${row['CHECKED BY']} <br><span class="font-normal text-gray-500">(${row['DATE CHECKED'] || ''})</span></div>` : '';
                 let lulusText = row['APPROVED BY'] ? `<div class="font-bold text-[#10B981] text-[10.5px] text-left leading-tight mt-1.5">Approved: ${row['APPROVED BY']} <br><span class="font-normal text-gray-500">(${row['APPROVED DATE'] || ''})</span></div>` : '';
                 let auditHTML = semakText || lulusText ? `<div class="text-left px-1">${semakText}${lulusText}</div>` : `<span class="text-gray-300">-</span>`;
 
-                // Action Column HTML
+                // Tindakan (Action) HTML
                 let actionHTML = '';
                 if (roleId === 'staff') {
                     if (stat === 'incomplete') {
@@ -956,22 +950,20 @@
                 }
                 else { actionHTML = `<span class="text-gray-300">-</span>`; }
 
-                // Pembinaan HTML untuk Teks Yang Boleh "Wrap" dan Jelas
-                let ctrlHtml = canEdit ? `<input type="text" class="editable-input" value="${row['CONTROL NUMBER'] || ''}" onchange="handleEdit(${row._rowIndex}, 'CONTROL NUMBER', this.value, this)">` : `<div class="p-1 break-words">${row['CONTROL NUMBER'] || ''}</div>`;
+                // HTML Untuk Teks - (Guna Div supaya Teks Sentiasa Nampak / Boleh Wrap)
+                let ctrlHtml = canEdit ? `<input type="text" class="editable-input" value="${row['CONTROL NUMBER'] || ''}" onchange="handleEdit(${row._rowIndex}, 'CONTROL NUMBER', this.value, this)">` : `<div class="p-1 break-words whitespace-normal">${row['CONTROL NUMBER'] || ''}</div>`;
                 
-                let call82Html = adminEdit ? `<input type="text" class="editable-input text-gray-500" value="${row['CALL NO (082)'] || ''}" onchange="handleEdit(${row._rowIndex}, 'CALL NO (082)', this.value, this)">` : `<div class="p-1 text-gray-500 break-words">${row['CALL NO (082)'] || ''}</div>`;
+                let call82Html = adminEdit ? `<input type="text" class="editable-input text-gray-500" value="${row['CALL NO (082)'] || ''}" onchange="handleEdit(${row._rowIndex}, 'CALL NO (082)', this.value, this)">` : `<div class="p-1 text-gray-500 break-words whitespace-normal">${row['CALL NO (082)'] || ''}</div>`;
                 
-                // Gunakan textarea jika edit supaya teks tidak tersembunyi
-                let call50Html = canEdit ? `<textarea class="editable-input !text-[--brand-main] font-semibold w-full resize-none" rows="2" onchange="handleEdit(${row._rowIndex}, 'CALL NO (050/060)', this.value, this)">${row['CALL NO (050/060)'] || ''}</textarea>` : `<div class="p-1 text-[--brand-main] font-semibold break-words leading-snug">${row['CALL NO (050/060)'] || ''}</div>`;
+                let call50Html = canEdit ? `<textarea class="editable-input !text-[--brand-main] font-semibold w-full resize-none" rows="2" onchange="handleEdit(${row._rowIndex}, 'CALL NO (050/060)', this.value, this)">${row['CALL NO (050/060)'] || ''}</textarea>` : `<div class="p-1 text-[--brand-main] font-semibold break-words whitespace-normal leading-snug">${row['CALL NO (050/060)'] || ''}</div>`;
                 
-                let accHtml = adminEdit ? `<input type="text" class="editable-input font-bold text-gray-700" value="${row['ACCESSION'] || ''}" onchange="handleEdit(${row._rowIndex}, 'ACCESSION', this.value, this)">` : `<div class="p-1 font-bold text-[--brand-dark] break-words">${row['ACCESSION'] || ''}</div>`;
+                let accHtml = adminEdit ? `<input type="text" class="editable-input font-bold text-gray-700" value="${row['ACCESSION'] || ''}" onchange="handleEdit(${row._rowIndex}, 'ACCESSION', this.value, this)">` : `<div class="p-1 font-bold text-[--brand-dark] break-words whitespace-normal">${row['ACCESSION'] || ''}</div>`;
                 
-                // Center Title dan sentiasa dibenarkan Wrap Multi-line
-                let titleHtml = adminEdit ? `<textarea class="editable-input text-center w-full resize-none" rows="3" onchange="handleEdit(${row._rowIndex}, 'TITLE', this.value, this)">${row['TITLE'] || ''}</textarea>` : `<div class="p-1 text-center font-medium text-gray-800 break-words leading-relaxed">${row['TITLE'] || ''}</div>`;
+                let titleHtml = adminEdit ? `<textarea class="editable-input text-center w-full resize-none" rows="3" onchange="handleEdit(${row._rowIndex}, 'TITLE', this.value, this)">${row['TITLE'] || ''}</textarea>` : `<div class="p-1 text-center font-medium text-gray-800 break-words whitespace-normal leading-relaxed">${row['TITLE'] || ''}</div>`;
                 
-                let staffHtml = canEdit ? `<select class="editable-input" onchange="handleEdit(${row._rowIndex}, 'STAFF', this.value, this)"><option value="">-</option>${State.staffList.map(s => `<option value="${s}" ${row['STAFF'] === s ? 'selected' : ''}>${s}</option>`).join('')}</select>` : `<div class="p-1 break-words uppercase">${row['STAFF'] || '-'}</div>`;
+                let staffHtml = canEdit ? `<select class="editable-input" onchange="handleEdit(${row._rowIndex}, 'STAFF', this.value, this)"><option value="">-</option>${State.staffList.map(s => `<option value="${s}" ${row['STAFF'] === s ? 'selected' : ''}>${s}</option>`).join('')}</select>` : `<div class="p-1 break-words whitespace-normal uppercase">${row['STAFF'] || '-'}</div>`;
 
-                let dateHtml = `<div class="p-1 text-gray-600 break-words">${row['DATE'] || ''}</div>`;
+                let dateHtml = `<div class="p-1 text-gray-600 break-words whitespace-normal">${row['DATE'] || ''}</div>`;
 
                 tr.innerHTML = `
                     <td class="col-no">${row['NO'] || ''}</td>
@@ -1101,7 +1093,7 @@
 
                 const ws = XLSX.utils.json_to_sheet(dataToExport.map((row, index) => ({
                     "NO": index + 1, "CONTROL NUMBER": row['CONTROL NUMBER'] || '', "CALL NO (082)": row['CALL NO (082)'] || '', "CALL NO (050/060)": row['CALL NO (050/060)'] || '',
-                    "ACCESSION": row['ACCESSION'] || '', "TITLE": row['TITLE'] || '', "STAFF": row['STAFF'] || '', "STATUS": row['STATUS'] || '', "DATE": row['DATE'] || '',
+                    "ACCESSION": row['ACCESSION'] || '', "TITLE": row['TITLE'] || '', "STAFF": row['STAFF'] || '', "STATUS": row['STATUS'] || '', "DATE SUBMITTED": row['DATE'] || '',
                     "CHECKED BY": row['CHECKED BY'] || '', "DATE CHECKED": row['DATE CHECKED'] || '', "APPROVED BY": row['APPROVED BY'] || '', "APPROVED DATE": row['APPROVED DATE'] || '', "REMARKS (REJECT)": row['REMARKS'] || ''
                 })));
                 ws['!cols'] = [{wch: 6}, {wch: 18}, {wch: 18}, {wch: 22}, {wch: 18}, {wch: 60}, {wch: 15}, {wch: 20}, {wch: 15}, {wch: 20}, {wch: 15}, {wch: 20}, {wch: 15}, {wch: 30}];
