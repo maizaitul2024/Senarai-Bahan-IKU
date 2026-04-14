@@ -214,11 +214,11 @@
         .col-call50 { width: 9%; }
         .col-acc { width: 8.5%; }
         .col-title { width: auto; text-align: center !important; } 
-        .col-status { width: 10%; }
+        .col-status { width: 11%; }
         .col-staff { width: 8%; }
         .col-date { width: 7.5%; }
-        .col-audit { width: 11%; }
-        .col-action { width: 8%; }
+        .col-audit { width: 12%; }
+        .col-action { width: 10%; }
 
         /* Editable Inputs inside table */
         .editable-input { width: 100%; padding: 6px 4px; border: 1px solid transparent; border-radius: 6px; font-family: var(--font-table) !important; font-size: 11.5px; text-align: center; background: transparent; color: inherit; font-weight: 500; transition: 0.2s; white-space: normal !important; resize: none; overflow: hidden; }
@@ -229,16 +229,9 @@
         .col-title .editable-input { text-align: center !important; }
         td.col-acc { font-weight: 700; color: var(--brand-dark); }
 
+        /* Dropdown custom styling */
         select.editable-input { cursor: pointer; padding: 4px; font-size: 11px; }
         select.editable-input:disabled { cursor: not-allowed; appearance: none; }
-
-        /* Workflow Buttons */
-        .btn-sm { padding: 6px 8px; border-radius: 6px; font-weight: 700; font-size: 10px; cursor: pointer; border: none; color: white; transition: 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 4px; }
-        .btn-sm:active { transform: scale(0.95); }
-        .btn-approve { background-color: #10B981; }
-        .btn-approve:hover { background-color: #059669; }
-        .btn-reject { background-color: #EF4444; }
-        .btn-reject:hover { background-color: #DC2626; }
 
         /* Status Styling Display */
         .status-display { font-weight: 700; padding: 6px 8px; border-radius: 6px; display: inline-block; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.5px; text-align: center; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -361,17 +354,14 @@
 
             <!-- CHARTS SECTION -->
             <section id="charts-section">
-                <!-- Doughnut Chart -->
                 <div class="chart-container">
                     <div class="chart-header">Status Distribution</div>
                     <div class="flex-1 relative"><canvas id="statusChart"></canvas></div>
                 </div>
-                <!-- Bar Chart -->
                 <div class="chart-container">
                     <div class="chart-header">Staff Performance</div>
                     <div class="flex-1 relative"><canvas id="staffChart"></canvas></div>
                 </div>
-                <!-- Quick Insights -->
                 <div class="chart-container">
                     <div class="chart-header">Quick Insights</div>
                     <div class="flex-1 flex flex-col justify-center gap-5">
@@ -536,8 +526,7 @@
     </div>
 
     <script>
-        // Sila masukkan URL anda yang baharu di sini setelah kemas kini Code.gs
-        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxoqAYHBuOPysCrxz4ak2ZazuDIAgydIVrGu5P0SHfKHaRJMdeQVJ8UwIOqCVKJ0L5s/exec"; 
+        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxqK_6JRTV_A9LzPD7Bxyc4PFqMsbG4Tg2wrlfK7_UdqsBqbZusMozeJ33O9qJqKx3E/exec"; 
         
         const State = {
             currentUser: null, data: [], filtered: [], currentPage: 1, itemsPerPage: 100,
@@ -686,46 +675,55 @@
             applyFilters();
         }
 
-        // PENYELESAIAN MUKTAMAD (ANTI-FIREWALL INTRANET)
-        // MENGHANTAR HANYA SATU (1) REKUES PUKAL TANPA JSON ARRAY DI URL
+        // PENYELESAIAN MUKTAMAD 100% ANTI-FIREWALL
+        // Menggunakan arahan 'update' biasa yang dihantar satu persatu dengan sela masa
         async function updateRecordData(rowIndex, updates) {
             if(els.syncOverlay) els.syncOverlay.style.display = 'flex'; 
+            let success = true; let errMsg = "Gagal mengemaskini data.";
             
-            // Cantumkan data menggunakan simbol "|||" untuk dihantar sebagai teks rata.
-            // Ini membolehkan skrip menghantar 10 maklumat dalam 1 butang klik tanpa menggunakan Array []
-            const fieldsJoined = updates.map(u => u.field).join('|||');
-            const valuesJoined = updates.map(u => u.value).join('|||');
-            
-            const params = new URLSearchParams({ 
-                action: 'update_flat', 
-                rowIndex: rowIndex, 
-                fields: fieldsJoined, 
-                values: valuesJoined, 
-                t: Date.now() 
-            });
-
-            try {
-                const res = await fetch(`${GAS_WEB_APP_URL}?${params.toString()}`);
-                const textRes = await res.text();
-                let json;
+            for (let i = 0; i < updates.length; i++) {
+                let upd = updates[i];
+                
+                const params = new URLSearchParams({ 
+                    action: 'update', 
+                    rowIndex: rowIndex, 
+                    field: upd.field, 
+                    value: upd.value, 
+                    validateDup: 'false', 
+                    t: Date.now() 
+                });
+                
                 try {
-                    json = JSON.parse(textRes);
+                    const res = await fetch(`${GAS_WEB_APP_URL}?${params.toString()}`);
+                    const textRes = await res.text();
+                    let json;
+                    try {
+                        json = JSON.parse(textRes);
+                    } catch(e) {
+                        throw new Error("Pelayan gagal memproses maklumat.");
+                    }
+                    if(!json.success) { success = false; errMsg = json.message; break; }
                 } catch(e) {
-                    throw new Error("Pelayan Google gagal memproses data. Sila pastikan anda telah kemas kini fail code.gs dan buat 'New Deployment'.");
+                    success = false; 
+                    errMsg = "Sambungan tersekat. Sila cuba klik sekali lagi."; 
+                    break; 
                 }
                 
-                if(json.success) {
-                    let record = State.data.find(r => r._rowIndex === rowIndex);
-                    if (record) updates.forEach(u => record[u.field] = u.value);
-                    applyFilters(false); 
-                } else { 
-                    showPopup("Ralat Kemas Kini", json.message, "error"); 
+                // Lengahkan 1.2 saat supaya sistem tidak dikesan sebagai bot
+                if (i < updates.length - 1) {
+                    await new Promise(r => setTimeout(r, 1200));
                 }
-            } catch(e) {
-                showPopup("Ralat Rangkaian", e.message, "error"); 
             }
             
             if(els.syncOverlay) els.syncOverlay.style.display = 'none';
+            
+            if(success) {
+                let record = State.data.find(r => r._rowIndex === rowIndex);
+                if (record) updates.forEach(u => record[u.field] = u.value);
+                applyFilters(false); 
+            } else { 
+                showPopup("Ralat Kemas Kini", errMsg, "error"); 
+            }
             renderTable(); 
         }
 
@@ -749,12 +747,20 @@
             inputElement.disabled = false;
         };
 
-        window.staffSubmit = function(rowIndex) {
-            const today = new Date();
-            updateRecordData(rowIndex, [
-                {field: 'STATUS', value: 'Pending Semakan'},
-                {field: 'DATE', value: `${String(today.getDate()).padStart(2, '0')}-${String(today.getMonth() + 1).padStart(2, '0')}-${today.getFullYear()}`}
-            ]);
+        // STAFF SELECT COMPLETE LOGIC
+        window.staffSelectComplete = function(rowIndex, value) {
+            if (value === 'Completed') {
+                const today = new Date();
+                updateRecordData(rowIndex, [
+                    {field: 'STATUS', value: 'Pending Semakan'},
+                    {field: 'DATE', value: `${String(today.getDate()).padStart(2, '0')}-${String(today.getMonth() + 1).padStart(2, '0')}-${today.getFullYear()}`}
+                ]);
+            } else if (value === 'incomplete') {
+                updateRecordData(rowIndex, [
+                    {field: 'STATUS', value: 'incomplete'},
+                    {field: 'DATE', value: ''}
+                ]);
+            }
         };
 
         window.rosliApprove = function(rowIndex) {
@@ -780,6 +786,14 @@
                 {field: 'APPROVED DATE', value: `${String(today.getDate()).padStart(2, '0')}-${String(today.getMonth() + 1).padStart(2, '0')}-${today.getFullYear()}`}
             ]);
         };
+        
+        window.jainiReject = function(rowIndex) {
+            const today = new Date();
+            updateRecordData(rowIndex, [
+                {field: 'STATUS', value: 'Rejected'}, {field: 'APPROVED BY', value: 'Jaini'},
+                {field: 'APPROVED DATE', value: `${String(today.getDate()).padStart(2, '0')}-${String(today.getMonth() + 1).padStart(2, '0')}-${today.getFullYear()}`}
+            ]);
+        };
 
         function renderTable() {
             const tbody = document.getElementById('table-body'); 
@@ -800,7 +814,7 @@
                 const stat = row['STATUS'];
                 const roleId = State.currentUser ? State.currentUser.id : 'staff';
                 
-                // MENGESAHKAN KEBENARAN EDIT STAFF & ROSLI
+                // MENGESAHKAN KEBENARAN EDIT MENGIKUT ROLE (PERANAN) YANG TEPAT
                 let adminEdit = roleId === 'admin';
                 let staffEdit = roleId === 'staff' && (stat === 'incomplete' || stat === 'Rejected');
                 let rosliEdit = roleId === 'rosli' && stat === 'Pending Semakan';
@@ -808,40 +822,39 @@
                 let canEditControlCall50 = adminEdit || staffEdit || rosliEdit;
                 let canEditStaffCol = adminEdit || staffEdit;
 
-                // Status Badge Display
+                // Status Badge Display Text
                 let displayStatus = stat;
                 if(stat === 'Pending Semakan' || stat === 'Pending Kelulusan') displayStatus = 'PENDING FOR APPROVAL';
 
                 let sClass = 'st-incomplete';
                 if(stat==='Completed') sClass='st-completed'; else if(stat.includes('Pending')) sClass='st-pending'; else if(stat==='Rejected') sClass='st-rejected';
                 
-                // HTML STATUS KINI HANYA MEMAPARKAN BADGE SAHAJA (TIADA LAGI DROPDOWN)
-                let statusHTML = `<div class="status-display ${sClass} w-full whitespace-normal break-words">${displayStatus}</div>`;
-
-                // Audit Trail
-                let semakText = row['CHECKED BY'] ? `<div class="font-bold text-[--brand-dark] text-[10.5px] text-left leading-tight">Checked: ${row['CHECKED BY']} <br><span class="font-normal text-gray-500">(${row['DATE CHECKED'] || ''})</span></div>` : '';
-                let lulusText = row['APPROVED BY'] ? `<div class="font-bold text-[#10B981] text-[10.5px] text-left leading-tight mt-1.5">Approved: ${row['APPROVED BY']} <br><span class="font-normal text-gray-500">(${row['APPROVED DATE'] || ''})</span></div>` : '';
-                let auditHTML = semakText || lulusText ? `<div class="text-left px-1">${semakText}${lulusText}</div>` : `<span class="text-gray-300">-</span>`;
-
-                // TINDAKAN (ACTION) HTML DI MANA BUTANG "COMPLETE" BERADA
+                // TUGASAN ROLE: MENETAPKAN STATUS & ACTION COLUMN
+                let statusHTML = '';
                 let actionHTML = '';
+
                 if (roleId === 'staff') {
                     if (stat === 'incomplete' || stat === 'Rejected') {
-                        let btnClass = stat === 'Rejected' ? 'bg-red-500 hover:bg-red-600' : 'bg-[#10B981] hover:bg-[#059669]';
-                        let btnText = stat === 'Rejected' ? 'RESUBMIT' : 'COMPLETE';
-                        
-                        actionHTML = `
-                            <button onclick="staffSubmit(${row._rowIndex})" class="w-full ${btnClass} text-white font-bold py-2 px-2 rounded-md text-[10px] transition-colors shadow-sm tracking-wider">
-                                ${btnText}
-                            </button>
+                        // LAJUR STATUS UNTUK STAFF: Dropdown dengan perkataan sahaja (editable)
+                        statusHTML = `
+                            <select class="editable-input font-bold ${stat === 'Rejected' ? 'text-[#EF4444] border-[#EF4444]' : 'text-[#F59E0B] border-[#F59E0B]'}" onchange="staffSelectComplete(${row._rowIndex}, this.value)">
+                                <option value="incomplete" ${stat === 'incomplete' ? 'selected' : ''}>Incomplete</option>
+                                ${stat === 'Rejected' ? `<option value="Rejected" selected>Rejected</option>` : ''}
+                                <option value="Completed">Completed</option>
+                            </select>
                         `;
+                        // LAJUR ACTION UNTUK STAFF: Dikunci sepenuhnya (locked)
+                        actionHTML = `<div class="text-[10px] text-gray-400 font-bold uppercase text-center"><i data-lucide="lock" class="w-3 h-3 inline"></i> LOCKED</div>`;
                     } else {
+                        statusHTML = `<div class="status-display ${sClass} w-full whitespace-normal break-words">${displayStatus}</div>`;
                         actionHTML = `<div class="text-[10px] text-gray-400 font-bold uppercase text-center"><i data-lucide="lock" class="w-3 h-3 inline"></i> LOCKED</div>`;
                     }
                 }
                 else if (roleId === 'rosli') {
+                    // LAJUR STATUS UNTUK ROSLI: Dikunci sepenuhnya
+                    statusHTML = `<div class="status-display ${sClass} w-full whitespace-normal break-words">${displayStatus}</div>`;
                     if (stat === 'Pending Semakan') {
-                        // DROPDOWN UNTUK ROSLI SAHAJA DI LAJUR ACTION
+                        // LAJUR ACTION UNTUK ROSLI: Dropdown (Accepted / Rejected)
                         actionHTML = `
                             <select class="editable-input font-bold text-[--brand-medium] border-[--brand-medium]" onchange="if(this.value==='Accepted') rosliApprove(${row._rowIndex}); else if(this.value==='Rejected') { this.value=''; rosliReject(${row._rowIndex}); }">
                                 <option value="" disabled selected>Pilih Tindakan</option>
@@ -852,10 +865,12 @@
                     } else { actionHTML = `<span class="text-gray-300">-</span>`; }
                 }
                 else if (roleId === 'jaini') {
+                    // LAJUR STATUS UNTUK JAINI: Dikunci sepenuhnya
+                    statusHTML = `<div class="status-display ${sClass} w-full whitespace-normal break-words">${displayStatus}</div>`;
                     if (stat === 'Pending Kelulusan') {
-                        // DROPDOWN UNTUK JAINI SAHAJA DI LAJUR ACTION
+                        // LAJUR ACTION UNTUK JAINI: Dropdown (Accepted / Rejected)
                         actionHTML = `
-                            <select class="editable-input font-bold text-[#10B981] border-[#10B981]" onchange="if(this.value==='Accepted') jainiApprove(${row._rowIndex}); else if(this.value==='Rejected') { this.value=''; /* Jika Jaini ada fungsi reject */ }">
+                            <select class="editable-input font-bold text-[#10B981] border-[#10B981]" onchange="if(this.value==='Accepted') jainiApprove(${row._rowIndex}); else if(this.value==='Rejected') { this.value=''; jainiReject(${row._rowIndex}); }">
                                 <option value="" disabled selected>Pilih Tindakan</option>
                                 <option value="Accepted">Accepted</option>
                                 <option value="Rejected">Rejected</option>
@@ -863,9 +878,17 @@
                         `;
                     } else { actionHTML = `<span class="text-gray-300">-</span>`; }
                 }
-                else { actionHTML = `<span class="text-gray-300">-</span>`; }
+                else { 
+                    statusHTML = `<div class="status-display ${sClass} w-full whitespace-normal break-words">${displayStatus}</div>`;
+                    actionHTML = `<span class="text-gray-300">-</span>`; 
+                }
 
-                // HTML Untuk Teks - (Hanya Gunakan Input Jika Boleh Edit, Jika Tidak Papar Teks Biasa)
+                // Audit Trail
+                let semakText = row['CHECKED BY'] ? `<div class="font-bold text-[--brand-dark] text-[10.5px] text-left leading-tight">Checked: ${row['CHECKED BY']} <br><span class="font-normal text-gray-500">(${row['DATE CHECKED'] || ''})</span></div>` : '';
+                let lulusText = row['APPROVED BY'] ? `<div class="font-bold text-[#10B981] text-[10.5px] text-left leading-tight mt-1.5">Approved: ${row['APPROVED BY']} <br><span class="font-normal text-gray-500">(${row['APPROVED DATE'] || ''})</span></div>` : '';
+                let auditHTML = semakText || lulusText ? `<div class="text-left px-1">${semakText}${lulusText}</div>` : `<span class="text-gray-300">-</span>`;
+
+                // HTML Untuk Teks
                 let ctrlHtml = canEditControlCall50 ? `<textarea class="editable-input w-full resize-none" rows="2" onchange="handleEdit(${row._rowIndex}, 'CONTROL NUMBER', this.value, this)">${row['CONTROL NUMBER'] || ''}</textarea>` : `<div class="p-1 break-words whitespace-normal">${row['CONTROL NUMBER'] || ''}</div>`;
                 
                 let call82Html = adminEdit ? `<textarea class="editable-input text-gray-500 w-full resize-none" rows="2" onchange="handleEdit(${row._rowIndex}, 'CALL NO (082)', this.value, this)">${row['CALL NO (082)'] || ''}</textarea>` : `<div class="p-1 text-gray-500 break-words whitespace-normal">${row['CALL NO (082)'] || ''}</div>`;
