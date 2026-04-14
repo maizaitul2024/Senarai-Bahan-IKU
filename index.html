@@ -557,7 +557,7 @@
         </div>
     </div>
 
-    <!-- Popup Universal (Ditingkatkan untuk papar ralat sebenar) -->
+    <!-- Popup Universal -->
     <div id="popup" class="popup-overlay">
         <div class="popup-content">
             <div id="popup-icon" class="mx-auto w-14 h-14 rounded-full flex items-center justify-center mb-4 shadow-sm"></div>
@@ -584,7 +584,7 @@
     <script>
         // ==========================================
         // PENTING: Gantikan URL di bawah dengan URL Google Apps Script anda yang BAHARU
-        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzfYvil4hdK0-0H5qePeWp1QzQcjlLDVquayay5QsH2Aj5yoxZCQSnzIyOocWwKsg9z/exec"; 
+        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzonzanBSPdYlobfnCiHYQyBUJ-k9wMVUAMwmDbh6SCvXR4eZQTb5c27F80W-wk8QL7/exec"; 
         
         const State = {
             currentUser: null, data: [], filtered: [], currentPage: 1, itemsPerPage: 100,
@@ -593,6 +593,8 @@
         };
 
         lucide.createIcons();
+        
+        // Memastikan sistem kebal kerosakan walau HTML terpotong (Bulletproof Initialization)
         const els = {
             loginScreen: document.getElementById('login-screen'), dashboard: document.getElementById('dashboard'),
             loginForm: document.getElementById('login-form'), timeDisplay: document.getElementById('live-time'),
@@ -605,58 +607,79 @@
         setInterval(() => {
             const now = new Date(); let h = now.getHours(), m = now.getMinutes(), s = now.getSeconds();
             const ampm = h >= 12 ? 'PM' : 'AM'; h = h % 12 || 12;
-            els.timeDisplay.innerText = `${h}:${m < 10 ? '0'+m:m}:${s < 10 ? '0'+s:s} ${ampm}`;
-            els.dateDisplay.innerText = now.toLocaleDateString('en-MY', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            if(els.timeDisplay) els.timeDisplay.innerText = `${h}:${m < 10 ? '0'+m:m}:${s < 10 ? '0'+s:s} ${ampm}`;
+            if(els.dateDisplay) els.dateDisplay.innerText = now.toLocaleDateString('en-MY', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
         }, 1000);
 
         // --- Logik Log Masuk ---
-        document.getElementById('toggle-pass').addEventListener('click', () => {
-            const passInput = document.getElementById('login-pass');
-            passInput.type = passInput.type === 'password' ? 'text' : 'password';
-            document.getElementById('toggle-pass').innerHTML = passInput.type === 'password' ? '<i data-lucide="eye" class="w-4 h-4"></i>' : '<i data-lucide="eye-off" class="w-4 h-4"></i>';
-            lucide.createIcons();
-        });
+        if(document.getElementById('toggle-pass')){
+            document.getElementById('toggle-pass').addEventListener('click', () => {
+                const passInput = document.getElementById('login-pass');
+                if(passInput) {
+                    passInput.type = passInput.type === 'password' ? 'text' : 'password';
+                    document.getElementById('toggle-pass').innerHTML = passInput.type === 'password' ? '<i data-lucide="eye" class="w-4 h-4"></i>' : '<i data-lucide="eye-off" class="w-4 h-4"></i>';
+                    lucide.createIcons();
+                }
+            });
+        }
 
-        els.loginForm.addEventListener('submit', e => {
-            e.preventDefault();
-            const user = document.getElementById('login-user').value;
-            const pass = document.getElementById('login-pass').value;
-            const credentials = { 'staff': 'staff123', 'rosli': 'rosli123', 'jaini': 'jaini123', 'admin': 'admin123' };
+        if(els.loginForm) {
+            els.loginForm.addEventListener('submit', e => {
+                e.preventDefault();
+                const user = document.getElementById('login-user') ? document.getElementById('login-user').value : '';
+                const pass = document.getElementById('login-pass') ? document.getElementById('login-pass').value : '';
+                const credentials = { 'staff': 'staff123', 'rosli': 'rosli123', 'jaini': 'jaini123', 'admin': 'admin123' };
 
-            if (user && credentials[user] === pass) {
-                State.currentUser = { id: user };
-                let displayRole = user.toUpperCase();
-                if(user === 'rosli') displayRole = 'ROSLI (Penyemak)';
-                if(user === 'jaini') displayRole = 'JAINI (Pelulus)';
-                
-                document.getElementById('current-username').innerText = displayRole;
-                document.getElementById('user-avatar').innerText = user.charAt(0).toUpperCase();
-                document.getElementById('btn-admin-panel').classList.toggle('hidden', user !== 'admin');
-                els.loginScreen.style.display = 'none'; els.dashboard.style.display = 'flex';
-                
-                document.getElementById('notif-wrapper').style.display = user === 'staff' ? 'block' : 'none';
-                syncLiveDatabase();
-            } else {
-                showPopup("Log Masuk Gagal", "Kata Laluan tidak sah.", "error");
-            }
-        });
+                if (user && credentials[user] === pass) {
+                    State.currentUser = { id: user };
+                    let displayRole = user.toUpperCase();
+                    if(user === 'rosli') displayRole = 'ROSLI (Penyemak)';
+                    if(user === 'jaini') displayRole = 'JAINI (Pelulus)';
+                    
+                    if(document.getElementById('current-username')) document.getElementById('current-username').innerText = displayRole;
+                    if(document.getElementById('user-avatar')) document.getElementById('user-avatar').innerText = user.charAt(0).toUpperCase();
+                    if(document.getElementById('btn-admin-panel')) document.getElementById('btn-admin-panel').classList.toggle('hidden', user !== 'admin');
+                    
+                    if(els.loginScreen) els.loginScreen.style.display = 'none'; 
+                    if(els.dashboard) els.dashboard.style.display = 'flex';
+                    if(document.getElementById('notif-wrapper')) document.getElementById('notif-wrapper').style.display = user === 'staff' ? 'block' : 'none';
+                    
+                    syncLiveDatabase();
+                } else {
+                    showPopup("Log Masuk Gagal", "Kata Laluan tidak sah.", "error");
+                }
+            });
+        }
 
-        document.getElementById('btn-logout').addEventListener('click', () => {
-            State.currentUser = null; els.dashboard.style.display = 'none'; els.loginScreen.style.display = 'flex';
-            els.loginForm.reset();
-        });
+        if(document.getElementById('btn-logout')){
+            document.getElementById('btn-logout').addEventListener('click', () => {
+                State.currentUser = null; 
+                if(els.dashboard) els.dashboard.style.display = 'none'; 
+                if(els.loginScreen) els.loginScreen.style.display = 'flex';
+                if(els.loginForm) els.loginForm.reset();
+            });
+        }
 
         function showPopup(title, msg, type="info") {
-            els.popupTitle.innerText = title; els.popupMsg.innerText = msg;
-            els.popupIcon.className = `mx-auto w-14 h-14 rounded-full flex items-center justify-center mb-4 shadow-sm text-white ${type==='error'?'bg-red-500':type==='success'?'bg-[#10B981]':'bg-[--brand-medium]'}`;
-            els.popupIcon.innerHTML = type === 'error' ? '<i data-lucide="alert-triangle" class="w-7 h-7"></i>' : type === 'success' ? '<i data-lucide="check-circle" class="w-7 h-7"></i>' : '<i data-lucide="info" class="w-7 h-7"></i>';
-            lucide.createIcons(); els.popup.style.display = 'flex';
+            if(els.popupTitle) els.popupTitle.innerText = title; 
+            if(els.popupMsg) els.popupMsg.innerText = msg;
+            if(els.popupIcon) {
+                els.popupIcon.className = `mx-auto w-14 h-14 rounded-full flex items-center justify-center mb-4 shadow-sm text-white ${type==='error'?'bg-red-500':type==='success'?'bg-[#10B981]':'bg-[--brand-medium]'}`;
+                els.popupIcon.innerHTML = type === 'error' ? '<i data-lucide="alert-triangle" class="w-7 h-7"></i>' : type === 'success' ? '<i data-lucide="check-circle" class="w-7 h-7"></i>' : '<i data-lucide="info" class="w-7 h-7"></i>';
+            }
+            lucide.createIcons(); 
+            if(els.popup) els.popup.style.display = 'flex';
         }
-        els.popupBtn.addEventListener('click', () => els.popup.style.display = 'none');
+        
+        if(els.popupBtn) {
+            els.popupBtn.addEventListener('click', () => { if(els.popup) els.popup.style.display = 'none'; });
+        }
 
         // --- BACKEND ---
         async function syncLiveDatabase() {
-            els.syncOverlay.style.display = 'flex'; els.btnSync.classList.add('syncing');
+            if(els.syncOverlay) els.syncOverlay.style.display = 'flex'; 
+            if(els.btnSync) els.btnSync.classList.add('syncing');
+            
             try {
                 const response = await fetch(`${GAS_WEB_APP_URL}?action=get`);
                 if (!response.ok) throw new Error("Pautan ke Google Script gagal (Status: " + response.status + ")");
@@ -679,10 +702,11 @@
                 showPopup("Info Ralat Sistem", err.message, "error"); 
                 console.error("Sync Error:", err);
             }
-            els.syncOverlay.style.display = 'none'; els.btnSync.classList.remove('syncing');
+            if(els.syncOverlay) els.syncOverlay.style.display = 'none'; 
+            if(els.btnSync) els.btnSync.classList.remove('syncing');
         }
 
-        els.btnSync.addEventListener('click', syncLiveDatabase);
+        if(els.btnSync) els.btnSync.addEventListener('click', syncLiveDatabase);
 
         function processData(rawData) {
             let uniqueYears = new Set();
@@ -709,13 +733,19 @@
             
             let years = Array.from(uniqueYears).sort((a,b) => b-a);
             if(years.length === 0) years = ["2024", "2025", "2026", "2027"];
-            document.getElementById('export-year').innerHTML = '<option value="all">Keseluruhan</option>' + years.map(y => `<option value="${y}">${y}</option>`).join('');
-            document.getElementById('admin-last-update').innerText = new Date().toLocaleString('en-MY');
+            
+            const exportYearEl = document.getElementById('export-year');
+            if(exportYearEl) exportYearEl.innerHTML = '<option value="all">Keseluruhan</option>' + years.map(y => `<option value="${y}">${y}</option>`).join('');
+            
+            const adminUpdateEl = document.getElementById('admin-last-update');
+            if(adminUpdateEl) adminUpdateEl.innerText = new Date().toLocaleString('en-MY');
+            
             applyFilters();
         }
 
         async function updateRecordData(rowIndex, updates) {
-            els.syncOverlay.style.display = 'flex'; let success = true; let errMsg = "Gagal mengemaskini data.";
+            if(els.syncOverlay) els.syncOverlay.style.display = 'flex'; 
+            let success = true; let errMsg = "Gagal mengemaskini data.";
             for (let upd of updates) {
                 const params = new URLSearchParams({ action: 'update', rowIndex: rowIndex, field: upd.field, value: upd.value, validateDup: 'false' });
                 try {
@@ -724,7 +754,7 @@
                     if(!json.success) { success = false; errMsg = json.message; }
                 } catch(e) { success = false; errMsg = e.message; }
             }
-            els.syncOverlay.style.display = 'none';
+            if(els.syncOverlay) els.syncOverlay.style.display = 'none';
             if(success) {
                 let record = State.data.find(r => r._rowIndex === rowIndex);
                 updates.forEach(u => record[u.field] = u.value);
@@ -743,7 +773,7 @@
                     inputElement.disabled = false; return;
                 }
             }
-            const params = newSearchParams({ action: 'update', rowIndex: rowIndex, field: field, value: value, validateDup: 'false' });
+            const params = new URLSearchParams({ action: 'update', rowIndex: rowIndex, field: field, value: value, validateDup: 'false' });
             try {
                 const res = await fetch(`${GAS_WEB_APP_URL}?${params.toString()}`); const json = await res.json();
                 if(json.success) State.data.find(r => r._rowIndex === rowIndex)[field] = value;
@@ -774,15 +804,20 @@
 
         window.rosliReject = function(rowIndex) {
             const modal = document.getElementById('reject-modal'); const textarea = document.getElementById('reject-reason'); const btn = document.getElementById('confirm-reject-btn');
-            textarea.value = ''; modal.style.display = 'flex';
-            btn.onclick = function() {
-                const reason = textarea.value.trim(); if(!reason) return alert("Sila masukkan sebab penolakan.");
-                modal.style.display = 'none'; const today = new Date();
-                updateRecordData(rowIndex, [
-                    {field: 'STATUS', value: 'Rejected'}, {field: 'REMARKS', value: reason}, {field: 'CHECKED BY', value: 'Rosli'},
-                    {field: 'DATE CHECKED', value: `${String(today.getDate()).padStart(2, '0')}/${String(today.getMonth() + 1).padStart(2, '0')}/${today.getFullYear()}`}
-                ]);
-            };
+            if(textarea) textarea.value = ''; 
+            if(modal) modal.style.display = 'flex';
+            if(btn) {
+                btn.onclick = function() {
+                    const reason = textarea ? textarea.value.trim() : ''; 
+                    if(!reason) return alert("Sila masukkan sebab penolakan.");
+                    if(modal) modal.style.display = 'none'; 
+                    const today = new Date();
+                    updateRecordData(rowIndex, [
+                        {field: 'STATUS', value: 'Rejected'}, {field: 'REMARKS', value: reason}, {field: 'CHECKED BY', value: 'Rosli'},
+                        {field: 'DATE CHECKED', value: `${String(today.getDate()).padStart(2, '0')}/${String(today.getMonth() + 1).padStart(2, '0')}/${today.getFullYear()}`}
+                    ]);
+                };
+            }
         };
 
         window.jainiApprove = function(rowIndex) {
@@ -794,48 +829,60 @@
         };
 
         // --- NOTIFICATION ---
-        document.getElementById('btn-notif').addEventListener('click', () => {
-            const dropdown = document.getElementById('notif-dropdown');
-            dropdown.style.display = dropdown.style.display === 'flex' ? 'none' : 'flex';
-        });
+        if(document.getElementById('btn-notif')){
+            document.getElementById('btn-notif').addEventListener('click', () => {
+                const dropdown = document.getElementById('notif-dropdown');
+                if(dropdown) dropdown.style.display = dropdown.style.display === 'flex' ? 'none' : 'flex';
+            });
+        }
 
         function updateNotificationBell() {
             if(State.currentUser && State.currentUser.id === 'staff') {
                 const rejectedList = State.data.filter(r => r['STATUS'] === 'Rejected');
-                const badge = document.getElementById('notif-badge'); const list = document.getElementById('notif-list');
+                const badge = document.getElementById('notif-badge'); 
+                const list = document.getElementById('notif-list');
+                
                 if (rejectedList.length > 0) {
-                    badge.innerText = rejectedList.length; badge.classList.remove('hidden');
-                    list.innerHTML = rejectedList.map(r => `
-                        <div class="notif-item" onclick="lihatRekodDitolak('${r['ACCESSION']}')">
-                            <div class="notif-item-title">ACCESSION: ${r['ACCESSION']}</div>
-                            <div class="notif-item-desc"><b>Rosli:</b> ${r['REMARKS'] || 'Sila baiki semula.'}</div>
-                        </div>`).join('');
+                    if(badge) { badge.innerText = rejectedList.length; badge.classList.remove('hidden'); }
+                    if(list) {
+                        list.innerHTML = rejectedList.map(r => `
+                            <div class="notif-item" onclick="lihatRekodDitolak('${r['ACCESSION']}')">
+                                <div class="notif-item-title">ACCESSION: ${r['ACCESSION']}</div>
+                                <div class="notif-item-desc"><b>Rosli:</b> ${r['REMARKS'] || 'Sila baiki semula.'}</div>
+                            </div>`).join('');
+                    }
                 } else {
-                    badge.classList.add('hidden'); list.innerHTML = `<div class="p-4 text-center text-xs text-gray-500">Tiada rekod ditolak.</div>`;
+                    if(badge) badge.classList.add('hidden'); 
+                    if(list) list.innerHTML = `<div class="p-4 text-center text-xs text-gray-500">Tiada rekod ditolak.</div>`;
                 }
             }
         }
 
         window.lihatRekodDitolak = function(accessionStr) {
-            document.getElementById('notif-dropdown').style.display = 'none';
-            document.getElementById('search-input').value = accessionStr;
-            document.getElementById('btn-reset-view').classList.remove('hidden');
-            applyFilters(); document.getElementById('table-section').scrollIntoView({behavior: 'smooth', block: 'start'});
+            const dropdown = document.getElementById('notif-dropdown'); if(dropdown) dropdown.style.display = 'none';
+            const searchInput = document.getElementById('search-input'); if(searchInput) searchInput.value = accessionStr;
+            const btnReset = document.getElementById('btn-reset-view'); if(btnReset) btnReset.classList.remove('hidden');
+            applyFilters(); 
+            const tableSec = document.getElementById('table-section'); if(tableSec) tableSec.scrollIntoView({behavior: 'smooth', block: 'start'});
         };
 
         window.kembaliPaparanBiasa = function() {
-            document.getElementById('search-input').value = ''; document.getElementById('filter-status').value = '';
-            document.getElementById('btn-reset-view').classList.add('hidden'); applyFilters();
+            const searchInput = document.getElementById('search-input'); if(searchInput) searchInput.value = ''; 
+            const filterStat = document.getElementById('filter-status'); if(filterStat) filterStat.value = '';
+            const btnReset = document.getElementById('btn-reset-view'); if(btnReset) btnReset.classList.add('hidden'); 
+            applyFilters();
         };
 
         // --- UI RENDERING (11 Columns) ---
         function renderTable() {
-            const tbody = document.getElementById('table-body'); tbody.innerHTML = '';
+            const tbody = document.getElementById('table-body'); 
+            if(!tbody) return;
+            tbody.innerHTML = '';
+            
             const start = (State.currentPage - 1) * State.itemsPerPage;
             const pageData = State.filtered.slice(start, start + State.itemsPerPage);
 
             if (pageData.length === 0) {
-                // Diperbaiki: colspan dilaraskan ke 11 supaya memanjang dengan kemas
                 tbody.innerHTML = `<tr><td colspan="11" class="py-16 text-center text-gray-400">Tiada rekod dijumpai.</td></tr>`;
                 updatePaginationInfo(); return;
             }
@@ -930,8 +977,16 @@
         }
 
         function applyFilters(reRender = true) {
-            const fStaff = document.getElementById('filter-staff').value, fStatus = document.getElementById('filter-status').value;
-            const fYear = document.getElementById('filter-year').value.trim(), search = document.getElementById('search-input').value.toLowerCase();
+            const fStaffEl = document.getElementById('filter-staff');
+            const fStatusEl = document.getElementById('filter-status');
+            const fYearEl = document.getElementById('filter-year');
+            const searchEl = document.getElementById('search-input');
+            
+            const fStaff = fStaffEl ? fStaffEl.value : '';
+            const fStatus = fStatusEl ? fStatusEl.value : '';
+            const fYear = fYearEl ? fYearEl.value.trim() : '';
+            const search = searchEl ? searchEl.value.toLowerCase() : '';
+            
             State.filtered = State.data.filter(row => {
                 if (fStaff && row['STAFF'] !== fStaff) return false;
                 if (fStatus && row['STATUS'] !== fStatus) return false;
@@ -939,29 +994,50 @@
                 if (search && !((row['TITLE']||"").toLowerCase().includes(search) || (row['ACCESSION']||"").toLowerCase().includes(search))) return false;
                 return true;
             });
-            State.currentPage = 1; updateKPIs(); if(document.getElementById('toggle-charts').checked) updateCharts(); updateNotificationBell(); if(reRender) renderTable();
+            
+            State.currentPage = 1; 
+            updateKPIs(); 
+            const toggleCharts = document.getElementById('toggle-charts');
+            if(toggleCharts && toggleCharts.checked) updateCharts(); 
+            updateNotificationBell(); 
+            if(reRender) renderTable();
         }
 
-        ['filter-staff', 'filter-status', 'filter-year'].forEach(id => document.getElementById(id).addEventListener('change', () => applyFilters()));
-        document.getElementById('search-input').addEventListener('input', () => applyFilters());
+        ['filter-staff', 'filter-status', 'filter-year'].forEach(id => {
+            if(document.getElementById(id)) document.getElementById(id).addEventListener('change', () => applyFilters());
+        });
+        if(document.getElementById('search-input')) document.getElementById('search-input').addEventListener('input', () => applyFilters());
 
         function updatePaginationInfo() {
             const t = State.filtered.length, s = t === 0 ? 0 : (State.currentPage - 1) * State.itemsPerPage + 1, e = Math.min(State.currentPage * State.itemsPerPage, t);
-            document.getElementById('page-start').innerText = s; document.getElementById('page-end').innerText = e; document.getElementById('page-total').innerText = t;
-            document.getElementById('page-indicator').innerText = State.currentPage;
-            document.getElementById('btn-prev').disabled = State.currentPage === 1; document.getElementById('btn-next').disabled = State.currentPage === Math.ceil(t / State.itemsPerPage) || 1;
+            
+            const pStart = document.getElementById('page-start'); if(pStart) pStart.innerText = s;
+            const pEnd = document.getElementById('page-end'); if(pEnd) pEnd.innerText = e;
+            const pTot = document.getElementById('page-total'); if(pTot) pTot.innerText = t;
+            const pInd = document.getElementById('page-indicator'); if(pInd) pInd.innerText = State.currentPage;
+            
+            const btnPrev = document.getElementById('btn-prev'); if(btnPrev) btnPrev.disabled = State.currentPage === 1;
+            const btnNext = document.getElementById('btn-next'); if(btnNext) btnNext.disabled = State.currentPage === Math.ceil(t / State.itemsPerPage) || 1;
         }
-        document.getElementById('btn-prev').addEventListener('click', () => { if (State.currentPage > 1) { State.currentPage--; renderTable(); } });
-        document.getElementById('btn-next').addEventListener('click', () => { if (State.currentPage < Math.ceil(State.filtered.length / State.itemsPerPage)) { State.currentPage++; renderTable(); } });
+        
+        if(document.getElementById('btn-prev')) document.getElementById('btn-prev').addEventListener('click', () => { if (State.currentPage > 1) { State.currentPage--; renderTable(); } });
+        if(document.getElementById('btn-next')) document.getElementById('btn-next').addEventListener('click', () => { if (State.currentPage < Math.ceil(State.filtered.length / State.itemsPerPage)) { State.currentPage++; renderTable(); } });
 
         function updateKPIs() {
-            document.getElementById('kpi-total').innerText = State.filtered.length.toLocaleString();
-            document.getElementById('kpi-complete').innerText = State.filtered.filter(r => r['STATUS'] === 'Completed').length.toLocaleString();
+            const total = State.filtered.length;
+            const complete = State.filtered.filter(r => r['STATUS'] === 'Completed').length;
             const pending = State.filtered.filter(r => r['STATUS'].includes('Pending')).length;
-            document.getElementById('kpi-incomplete').innerText = pending.toLocaleString();
-            document.querySelector('#kpis .kpi-card:nth-child(3) .kpi-label').innerText = "PENDING APPROVAL";
-            document.getElementById('kpi-staff').innerText = new Set(State.filtered.filter(r => r['STAFF'] && r['STAFF'].trim() !== "").map(r => r['STAFF'])).size;
-            document.getElementById('insight-pending').innerText = pending.toLocaleString() + " Rekod";
+            const activeStaff = new Set(State.filtered.filter(r => r['STAFF'] && r['STAFF'].trim() !== "").map(r => r['STAFF'])).size;
+
+            const kTot = document.getElementById('kpi-total'); if(kTot) kTot.innerText = total.toLocaleString();
+            const kComp = document.getElementById('kpi-complete'); if(kComp) kComp.innerText = complete.toLocaleString();
+            const kInc = document.getElementById('kpi-incomplete'); if(kInc) kInc.innerText = pending.toLocaleString();
+            
+            const kpiLabel = document.querySelector('#kpis .kpi-card:nth-child(3) .kpi-label'); 
+            if(kpiLabel) kpiLabel.innerText = "PENDING APPROVAL";
+            
+            const kStaff = document.getElementById('kpi-staff'); if(kStaff) kStaff.innerText = activeStaff;
+            const iPend = document.getElementById('insight-pending'); if(iPend) iPend.innerText = pending.toLocaleString() + " Rekod";
         }
 
         function updateCharts() {
@@ -973,50 +1049,75 @@
                 if(r['STATUS'] !== 'incomplete' && r['STAFF'] && staffCount[r['STAFF']] !== undefined) staffCount[r['STAFF']]++;
             });
             let maxCount = 0; let topStaff = "-"; for (const [staff, count] of Object.entries(staffCount)) { if (count > maxCount) { maxCount = count; topStaff = staff; } }
-            document.getElementById('insight-top-staff').innerText = topStaff; document.getElementById('insight-top-score').innerText = maxCount.toLocaleString() + " Rekod Dihantar";
+            
+            const iStaff = document.getElementById('insight-top-staff'); if(iStaff) iStaff.innerText = topStaff;
+            const iScore = document.getElementById('insight-top-score'); if(iScore) iScore.innerText = maxCount.toLocaleString() + " Rekod Dihantar";
 
-            if(State.chartInstances.status) State.chartInstances.status.destroy();
-            State.chartInstances.status = new Chart(document.getElementById('statusChart').getContext('2d'), { 
-                type: 'doughnut', data: { labels: ['Completed', 'Pending', 'Rejected', 'Incomplete'], datasets: [{ data: [sCounts['Completed'], sCounts['Pending Kelulusan']+sCounts['Pending Semakan'], sCounts['Rejected'], sCounts['Incomplete']], backgroundColor: ['#10B981', '#F59E0B', '#EF4444', '#cbd5e1'], borderWidth: 0 }] }, 
-                options: { responsive: true, maintainAspectRatio: false, cutout: '70%', layout: { padding: 10 }, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 11 } } } } } 
-            });
+            const ctxStatus = document.getElementById('statusChart');
+            if(ctxStatus) {
+                if(State.chartInstances.status) State.chartInstances.status.destroy();
+                State.chartInstances.status = new Chart(ctxStatus.getContext('2d'), { 
+                    type: 'doughnut', data: { labels: ['Completed', 'Pending', 'Rejected', 'Incomplete'], datasets: [{ data: [sCounts['Completed'], sCounts['Pending Kelulusan']+sCounts['Pending Semakan'], sCounts['Rejected'], sCounts['Incomplete']], backgroundColor: ['#10B981', '#F59E0B', '#EF4444', '#cbd5e1'], borderWidth: 0 }] }, 
+                    options: { responsive: true, maintainAspectRatio: false, cutout: '70%', layout: { padding: 10 }, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 11 } } } } } 
+                });
+            }
 
             const barColors = ['#003366', '#0055A5', '#3B82F6', '#10B981', '#6366f1']; const bgColors = Object.keys(staffCount).map((_, i) => barColors[i % barColors.length]);
-            if(State.chartInstances.staff) State.chartInstances.staff.destroy();
-            State.chartInstances.staff = new Chart(document.getElementById('staffChart').getContext('2d'), { 
-                type: 'bar', data: { labels: Object.keys(staffCount), datasets: [{ data: Object.values(staffCount), backgroundColor: bgColors, borderRadius: 6 }] }, 
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } } } } 
-            });
+            
+            const ctxStaff = document.getElementById('staffChart');
+            if(ctxStaff) {
+                if(State.chartInstances.staff) State.chartInstances.staff.destroy();
+                State.chartInstances.staff = new Chart(ctxStaff.getContext('2d'), { 
+                    type: 'bar', data: { labels: Object.keys(staffCount), datasets: [{ data: Object.values(staffCount), backgroundColor: bgColors, borderRadius: 6 }] }, 
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } } } } 
+                });
+            }
         }
 
         // --- EXPORT LAPORAN ---
-        document.getElementById('btn-export').addEventListener('click', () => {
-            if (!State.data || State.data.length === 0) return showPopup("Tiada Data", "Tiada data untuk dimuat turun.", "error");
-            const selectedYear = document.getElementById('export-year').value; let dataToExport = State.data;
-            if (selectedYear !== 'all') dataToExport = dataToExport.filter(row => row['DATE'] && row['DATE'].toString().includes(selectedYear));
-            if (dataToExport.length === 0) return showPopup("Tiada Rekod", `Tiada rekod dijumpai untuk tahun ${selectedYear}.`, "info");
+        if(document.getElementById('btn-export')){
+            document.getElementById('btn-export').addEventListener('click', () => {
+                if (!State.data || State.data.length === 0) return showPopup("Tiada Data", "Tiada data untuk dimuat turun.", "error");
+                const exportYearEl = document.getElementById('export-year');
+                const selectedYear = exportYearEl ? exportYearEl.value : 'all'; 
+                let dataToExport = State.data;
+                if (selectedYear !== 'all') dataToExport = dataToExport.filter(row => row['DATE'] && row['DATE'].toString().includes(selectedYear));
+                if (dataToExport.length === 0) return showPopup("Tiada Rekod", `Tiada rekod dijumpai untuk tahun ${selectedYear}.`, "info");
 
-            const ws = XLSX.utils.json_to_sheet(dataToExport.map((row, index) => ({
-                "NO": index + 1, "CONTROL NUMBER": row['CONTROL NUMBER'] || '', "CALL NO (082)": row['CALL NO (082)'] || '', "CALL NO (050/060)": row['CALL NO (050/060)'] || '',
-                "ACCESSION": row['ACCESSION'] || '', "TITLE": row['TITLE'] || '', "STAFF": row['STAFF'] || '', "STATUS": row['STATUS'] || '', "TARIKH DIHANTAR": row['DATE'] || '',
-                "DISEMAK OLEH": row['CHECKED BY'] || '', "TARIKH DISEMAK": row['DATE CHECKED'] || '', "DILULUSKAN OLEH": row['APPROVED BY'] || '', "TARIKH DILULUSKAN": row['APPROVED DATE'] || '', "CATATAN (REJECT)": row['REMARKS'] || ''
-            })));
-            ws['!cols'] = [{wch: 6}, {wch: 18}, {wch: 18}, {wch: 22}, {wch: 18}, {wch: 60}, {wch: 15}, {wch: 20}, {wch: 15}, {wch: 20}, {wch: 15}, {wch: 20}, {wch: 15}, {wch: 30}];
-            const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Laporan Penuh"); XLSX.writeFile(wb, `Laporan_Buku_IKU_${selectedYear === 'all' ? 'Keseluruhan' : selectedYear}.xlsx`);
-            showPopup("Muat Turun Berjaya", "Laporan Excel anda telah siap dimuat turun.", "success");
-        });
+                const ws = XLSX.utils.json_to_sheet(dataToExport.map((row, index) => ({
+                    "NO": index + 1, "CONTROL NUMBER": row['CONTROL NUMBER'] || '', "CALL NO (082)": row['CALL NO (082)'] || '', "CALL NO (050/060)": row['CALL NO (050/060)'] || '',
+                    "ACCESSION": row['ACCESSION'] || '', "TITLE": row['TITLE'] || '', "STAFF": row['STAFF'] || '', "STATUS": row['STATUS'] || '', "TARIKH DIHANTAR": row['DATE'] || '',
+                    "DISEMAK OLEH": row['CHECKED BY'] || '', "TARIKH DISEMAK": row['DATE CHECKED'] || '', "DILULUSKAN OLEH": row['APPROVED BY'] || '', "TARIKH DILULUSKAN": row['APPROVED DATE'] || '', "CATATAN (REJECT)": row['REMARKS'] || ''
+                })));
+                ws['!cols'] = [{wch: 6}, {wch: 18}, {wch: 18}, {wch: 22}, {wch: 18}, {wch: 60}, {wch: 15}, {wch: 20}, {wch: 15}, {wch: 20}, {wch: 15}, {wch: 20}, {wch: 15}, {wch: 30}];
+                const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Laporan Penuh"); XLSX.writeFile(wb, `Laporan_Buku_IKU_${selectedYear === 'all' ? 'Keseluruhan' : selectedYear}.xlsx`);
+                showPopup("Muat Turun Berjaya", "Laporan Excel anda telah siap dimuat turun.", "success");
+            });
+        }
 
         // --- Admin Controls ---
         const adminPanel = document.getElementById('admin-panel');
-        document.getElementById('btn-admin-panel').addEventListener('click', () => adminPanel.style.right = '0');
-        document.getElementById('btn-close-admin').addEventListener('click', () => adminPanel.style.right = '-320px');
-        document.getElementById('admin-font').addEventListener('change', e => document.documentElement.style.setProperty('--font-ui', e.target.value));
-        document.getElementById('admin-dark').addEventListener('input', e => document.documentElement.style.setProperty('--brand-dark', e.target.value));
-        document.getElementById('admin-medium').addEventListener('input', e => document.documentElement.style.setProperty('--brand-medium', e.target.value));
-        document.getElementById('admin-light').addEventListener('input', e => document.documentElement.style.setProperty('--bg-light', e.target.value));
-        document.getElementById('toggle-kpi').addEventListener('change', e => document.documentElement.style.setProperty('--kpi-visible', e.target.checked ? 'grid' : 'none'));
-        document.getElementById('toggle-charts').addEventListener('change', e => { document.documentElement.style.setProperty('--charts-visible', e.target.checked ? 'grid' : 'none'); if(e.target.checked && State.data.length > 0) updateCharts(); });
-        document.getElementById('toggle-dup-prevent').addEventListener('change', e => State.settings.duplicatePrevention = e.target.checked);
+        if(document.getElementById('btn-admin-panel')) document.getElementById('btn-admin-panel').addEventListener('click', () => { if(adminPanel) adminPanel.style.right = '0'; });
+        if(document.getElementById('btn-close-admin')) document.getElementById('btn-close-admin').addEventListener('click', () => { if(adminPanel) adminPanel.style.right = '-320px'; });
+        
+        ['admin-font', 'admin-dark', 'admin-medium', 'admin-light', 'toggle-kpi', 'toggle-charts', 'toggle-dup-prevent'].forEach(id => {
+            const el = document.getElementById(id);
+            if(el) {
+                el.addEventListener('change', e => {
+                    if(id === 'admin-font') document.documentElement.style.setProperty('--font-ui', e.target.value);
+                    if(id === 'toggle-kpi') document.documentElement.style.setProperty('--kpi-visible', e.target.checked ? 'grid' : 'none');
+                    if(id === 'toggle-charts') { document.documentElement.style.setProperty('--charts-visible', e.target.checked ? 'grid' : 'none'); if(e.target.checked && State.data.length > 0) updateCharts(); }
+                    if(id === 'toggle-dup-prevent') State.settings.duplicatePrevention = e.target.checked;
+                });
+                if(id.includes('admin-') && !id.includes('font')) {
+                    el.addEventListener('input', e => {
+                        if(id === 'admin-dark') document.documentElement.style.setProperty('--brand-dark', e.target.value);
+                        if(id === 'admin-medium') document.documentElement.style.setProperty('--brand-medium', e.target.value);
+                        if(id === 'admin-light') document.documentElement.style.setProperty('--bg-light', e.target.value);
+                    });
+                }
+            }
+        });
 
     </script>
 </body>
