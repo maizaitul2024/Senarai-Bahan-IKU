@@ -203,7 +203,7 @@
         th:first-child { border-top-left-radius: 8px; }
         th:last-child { border-top-right-radius: 8px; }
         
-        /* FIX: Ensure td forces text wrap natively */
+        /* Allow cells to wrap normally and make words visible */
         td { font-size: 12.5px; text-align: center; padding: 10px 8px; border-bottom: 1px solid #F1F5F9; color: #334155; vertical-align: middle; line-height: 1.5; white-space: normal !important; word-wrap: break-word !important; overflow: visible !important; }
         tr:nth-child(even) td { background-color: var(--row-alt); }
         tr:hover td { background-color: #F8FAFC; }
@@ -214,7 +214,7 @@
         .col-call82 { width: 110px; }
         .col-call50 { width: 140px; }
         .col-acc { width: 110px; }
-        .col-title { width: auto; min-width: 250px; }
+        .col-title { width: auto; min-width: 250px; font-size: 12.5px !important; text-align: center !important; }
         .col-staff { width: 110px; }
         .col-date { width: 100px; }
         .col-status { width: 150px; }
@@ -225,8 +225,14 @@
         .editable-input { width: 100%; padding: 8px; border: 1px solid transparent; border-radius: 6px; font-family: var(--font-table) !important; font-size: 12.5px; text-align: center; background: transparent; color: inherit; font-weight: 500; transition: 0.2s; white-space: normal !important; resize: none; overflow: hidden; }
         .editable-input:hover:not(:disabled) { border-color: #E2E8F0; background: white; }
         .editable-input:focus { background: white; border-color: var(--brand-medium); box-shadow: 0 0 0 2px rgba(0, 85, 165, 0.1); outline: none; }
-        
+        .editable-input:disabled { opacity: 0.9; cursor: not-allowed; background: transparent !important; border-color: transparent !important; color: #475569; }
+
+        /* Alignment Fixes */
+        .col-title .editable-input { text-align: center !important; }
+        .col-acc { font-weight: 700; color: var(--brand-dark); }
+
         select.editable-input { cursor: pointer; }
+        select.editable-input:disabled { cursor: not-allowed; appearance: none; }
 
         /* Workflow Buttons */
         .btn-sm { padding: 6px 12px; border-radius: 6px; font-weight: 700; font-size: 11px; cursor: pointer; border: none; color: white; transition: 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 4px; }
@@ -494,7 +500,7 @@
                 </div>
             </section>
 
-            <!-- Table Section (HEADER DITUKAR BAHASA INGGERIS) -->
+            <!-- Table Section -->
             <section id="table-section" class="base-card flex-1">
                 <div class="table-wrapper">
                     <table id="library-table">
@@ -578,7 +584,7 @@
     </div>
 
     <script>
-        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzYteBLKKfdGsZT_DZ9y6YubljTtSmat2gOxk_1F0zx9XtCA0_YaR0kJLJ_tKSttKDD/exec"; 
+        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbySKMr5SjRWYgZMAz8-fMbh9eLX15acElBiyrFIHgrUVLTbaBYAg6YYIeE-56cnoR0O/exec"; 
         
         const State = {
             currentUser: null, data: [], filtered: [], currentPage: 1, itemsPerPage: 100,
@@ -728,23 +734,37 @@
             applyFilters();
         }
 
+        // --- PENYELESAIAN MASALAH "FAILED TO FETCH" ---
+        // Dengan membungkus semua arahan kemas kini dalam 1 isyarat (Batch Update)
         async function updateRecordData(rowIndex, updates) {
             if(els.syncOverlay) els.syncOverlay.style.display = 'flex'; 
             let success = true; let errMsg = "Gagal mengemaskini data.";
-            for (let upd of updates) {
-                const params = new URLSearchParams({ action: 'update', rowIndex: rowIndex, field: upd.field, value: upd.value, validateDup: 'false' });
-                try {
-                    const res = await fetch(`${GAS_WEB_APP_URL}?${params.toString()}`);
-                    const json = await res.json(); 
-                    if(!json.success) { success = false; errMsg = json.message; }
-                } catch(e) { success = false; errMsg = e.message; }
+            
+            try {
+                // Gunakan fungsi update_multiple dari Google Apps Script untuk elak Google block banyak arahan serentak
+                const params = new URLSearchParams({ 
+                    action: 'update_multiple', 
+                    rowIndex: rowIndex, 
+                    updates: JSON.stringify(updates) 
+                });
+                
+                const res = await fetch(`${GAS_WEB_APP_URL}?${params.toString()}`);
+                const json = await res.json(); 
+                if(!json.success) { success = false; errMsg = json.message; }
+            } catch(e) { 
+                success = false; errMsg = e.message; 
             }
+            
             if(els.syncOverlay) els.syncOverlay.style.display = 'none';
+            
             if(success) {
                 let record = State.data.find(r => r._rowIndex === rowIndex);
                 updates.forEach(u => record[u.field] = u.value);
-                applyFilters(false); renderTable();
-            } else { showPopup("Ralat Kemas Kini", errMsg, "error"); }
+                applyFilters(false); 
+            } else { 
+                showPopup("Ralat Kemas Kini", "Gagal menghubungi pangkalan data. Sila pastikan sambungan internet stabil.\n\nInfo: " + errMsg, "error"); 
+            }
+            renderTable(); // Paksa render semula table supaya butang kembali ke asal jika ia gagal
         }
 
         window.handleEdit = async function(rowIndex, field, value, inputElement) {
@@ -763,7 +783,7 @@
                 const res = await fetch(`${GAS_WEB_APP_URL}?${params.toString()}`); const json = await res.json();
                 if(json.success) State.data.find(r => r._rowIndex === rowIndex)[field] = value;
                 else { inputElement.value = State.data.find(r => r._rowIndex === rowIndex)[field]; showPopup("Ditolak", json.message, "error"); }
-            } catch(e) { inputElement.value = State.data.find(r => r._rowIndex === rowIndex)[field]; showPopup("Info Ralat", e.message, "error"); }
+            } catch(e) { inputElement.value = State.data.find(r => r._rowIndex === rowIndex)[field]; showPopup("Info Ralat", "Gagal menghubungi pelayan.", "error"); }
             inputElement.disabled = false;
         };
 
