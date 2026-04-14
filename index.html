@@ -445,6 +445,9 @@
                 </div>
 
                 <div class="flex flex-wrap items-end gap-4 ml-auto">
+                    <button id="btn-reset-view" onclick="kembaliPaparanBiasa()" class="btn-action bg-slate-500 text-white hover:bg-slate-600 hidden h-[44px]">
+                        <i data-lucide="arrow-left" class="w-4 h-4"></i> Paparan Biasa
+                    </button>
 
                     <button id="btn-sync" class="btn-action btn-sync whitespace-nowrap h-[44px]">
                         <i data-lucide="refresh-cw" class="w-4 h-4 sync-icon"></i> Segerak Auto
@@ -478,9 +481,9 @@
                                 <th class="col-call50">CALL NO (050/060)</th>
                                 <th class="col-acc">ACCESSION</th>
                                 <th class="col-title text-center">TITLE</th>
+                                <th class="col-status">STATUS</th>
                                 <th class="col-staff">STAFF</th>
                                 <th class="col-date">DATE</th>
-                                <th class="col-status">STATUS</th>
                                 <th class="col-audit">AUDIT TRAIL</th>
                                 <th class="col-action">ACTION</th>
                             </tr>
@@ -536,7 +539,7 @@
     </div>
 
     <script>
-        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyuvRj_o3OGCy8hK2yTlM0ilMZpqEpXINTF6VcTDq_AZBqdcKfn49c-oZrKZkrRuaAZ/exec"; 
+        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyPgcoK2dKQDDqKsUsTnDpanf9kbSCaaiF59xJV-squZ6VAO-kxGMufXOKXeHVljV_T/exec"; 
         
         const State = {
             currentUser: null, data: [], filtered: [], currentPage: 1, itemsPerPage: 100,
@@ -685,48 +688,38 @@
             applyFilters();
         }
 
-        // PENYELESAIAN MASALAH "FAILED TO FETCH" - RINGKASAN DATA
+        // PENYELESAIAN KEKAL "FAILED TO FETCH" - BYPASS FIREWALL INTRANET DENGAN DELAY 700MS
         async function updateRecordData(rowIndex, updates) {
             if(els.syncOverlay) els.syncOverlay.style.display = 'flex'; 
             let success = true; let errMsg = "Gagal mengemaskini data.";
             
-            try {
-                // Cuba kaedah update_multiple (jika backend sokong)
-                const params = new URLSearchParams({ 
-                    action: 'update_multiple', 
+            // Hantar data secara satu-persatu untuk mengelakkan Firewall Intranet (WAF)
+            // yang sering menyekat format Array/JSON di dalam URL (Punca Failed to fetch).
+            for (let i = 0; i < updates.length; i++) {
+                let upd = updates[i];
+                const singleParams = new URLSearchParams({ 
+                    action: 'update', 
                     rowIndex: rowIndex, 
-                    updates: JSON.stringify(updates),
-                    t: Date.now()
+                    field: upd.field, 
+                    value: upd.value, 
+                    validateDup: 'false', 
+                    t: Date.now() 
                 });
-                
-                const res = await fetch(`${GAS_WEB_APP_URL}?${params.toString()}`);
-                const textRes = await res.text();
-                
-                let json;
+
                 try {
-                    json = JSON.parse(textRes);
+                    const res = await fetch(`${GAS_WEB_APP_URL}?${singleParams.toString()}`);
+                    const json = await res.json();
+                    if(!json.success) { success = false; errMsg = json.message; break; }
                 } catch(e) {
-                    throw new Error("Pangkalan data gagal diproses.");
+                    success = false; 
+                    errMsg = "Sambungan disekat oleh rangkaian/pelayan. Sila cuba lagi."; 
+                    break; 
                 }
                 
-                if (!json.success) {
-                    if (json.message && json.message.includes("Tindakan tidak sah")) {
-                        // Fallback kepada satu-persatu secara perlahan jika backend tiada update_multiple
-                        for (let i = 0; i < updates.length; i++) {
-                            let upd = updates[i];
-                            const singleParams = new URLSearchParams({ action: 'update', rowIndex: rowIndex, field: upd.field, value: upd.value, validateDup: 'false', t: Date.now() });
-                            const sRes = await fetch(`${GAS_WEB_APP_URL}?${singleParams.toString()}`);
-                            const sJson = await sRes.json();
-                            if(!sJson.success) { success = false; errMsg = sJson.message; break; }
-                            if (i < updates.length - 1) await new Promise(r => setTimeout(r, 800)); // Delay untuk tak kena block dengan Google
-                        }
-                    } else {
-                        success = false; errMsg = json.message;
-                    }
+                // Lengahkan 700ms supaya Google tidak anggap sebagai spam
+                if (i < updates.length - 1) {
+                    await new Promise(r => setTimeout(r, 700));
                 }
-            } catch(e) {
-                success = false; 
-                errMsg = "Google menyekat sambungan (Failed to fetch). Sila pastikan pautan internet stabil.";
             }
             
             if(els.syncOverlay) els.syncOverlay.style.display = 'none';
@@ -738,7 +731,7 @@
             } else { 
                 showPopup("Ralat Kemas Kini", errMsg, "error"); 
             }
-            renderTable(); // Paksa render semula supaya jadual cantik balik
+            renderTable(); // Paksa render semula supaya jadual kembali cantik
         }
 
         window.handleEdit = async function(rowIndex, field, value, inputElement) {
@@ -779,6 +772,7 @@
             ]);
         };
 
+        // BUTTON REJECT ROSLI - TERUS TUKAR STATUS TANPA MESSAGE
         window.rosliReject = function(rowIndex) {
             const today = new Date();
             updateRecordData(rowIndex, [
@@ -856,7 +850,7 @@
                 let lulusText = row['APPROVED BY'] ? `<div class="font-bold text-[#10B981] text-[10.5px] text-left leading-tight mt-1.5">Approved: ${row['APPROVED BY']} <br><span class="font-normal text-gray-500">(${row['APPROVED DATE'] || ''})</span></div>` : '';
                 let auditHTML = semakText || lulusText ? `<div class="text-left px-1">${semakText}${lulusText}</div>` : `<span class="text-gray-300">-</span>`;
 
-                // Tindakan (Action) HTML - Notifikasi Dibuang
+                // Tindakan (Action) HTML - Notifikasi & Mesej Dibuang Sepenuhnya
                 let actionHTML = '';
                 if (roleId === 'staff') {
                     if (stat === 'incomplete' || stat === 'Rejected') {
@@ -904,9 +898,9 @@
                     <td class="col-call50">${call50Html}</td>
                     <td class="col-acc">${accHtml}</td>
                     <td class="col-title" title="${row['TITLE'] || ''}">${titleHtml}</td>
+                    <td class="col-status px-2 align-middle">${statusHTML}</td>
                     <td class="col-staff">${staffHtml}</td>
                     <td class="col-date">${dateHtml}</td>
-                    <td class="col-status px-2 align-middle">${statusHTML}</td>
                     <td class="col-audit align-middle">${auditHTML}</td>
                     <td class="col-action px-2 align-middle">${actionHTML}</td>
                 `;
@@ -1024,7 +1018,7 @@
 
                 const ws = XLSX.utils.json_to_sheet(dataToExport.map((row, index) => ({
                     "NO": index + 1, "CONTROL NUMBER": row['CONTROL NUMBER'] || '', "CALL NO (082)": row['CALL NO (082)'] || '', "CALL NO (050/060)": row['CALL NO (050/060)'] || '',
-                    "ACCESSION": row['ACCESSION'] || '', "TITLE": row['TITLE'] || '', "STAFF": row['STAFF'] || '', "STATUS": row['STATUS'] || '', "DATE SUBMITTED": row['DATE'] || '',
+                    "ACCESSION": row['ACCESSION'] || '', "TITLE": row['TITLE'] || '', "STATUS": row['STATUS'] || '', "STAFF": row['STAFF'] || '', "DATE SUBMITTED": row['DATE'] || '',
                     "CHECKED BY": row['CHECKED BY'] || '', "DATE CHECKED": row['DATE CHECKED'] || '', "APPROVED BY": row['APPROVED BY'] || '', "APPROVED DATE": row['APPROVED DATE'] || ''
                 })));
                 ws['!cols'] = [{wch: 6}, {wch: 18}, {wch: 18}, {wch: 22}, {wch: 18}, {wch: 60}, {wch: 15}, {wch: 15}, {wch: 15}, {wch: 20}, {wch: 15}, {wch: 20}, {wch: 15}];
