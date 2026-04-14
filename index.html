@@ -554,7 +554,7 @@
         </div>
     </div>
 
-    <!-- Popup Universal -->
+    <!-- Popup Universal (Ditingkatkan untuk papar ralat sebenar) -->
     <div id="popup" class="popup-overlay">
         <div class="popup-content">
             <div id="popup-icon" class="mx-auto w-14 h-14 rounded-full flex items-center justify-center mb-4 shadow-sm"></div>
@@ -581,7 +581,7 @@
     <script>
         // ==========================================
         // PENTING: Gantikan URL di bawah dengan URL Google Apps Script anda yang BAHARU
-        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwYcof6JCNbCXAMdVn5r5MZZgADe3NqL-9rxfPO5cvqx66exUOLQUs3hQEksTcLFWRp/exec"; 
+        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbw3FOKAfEH_btK6FzAjWfmacTPdPK5eFgNSXgv3vNUDNd9iphuu2GTPHlB8L-9QS2_u/exec"; 
         
         const State = {
             currentUser: null, data: [], filtered: [], currentPage: 1, itemsPerPage: 100,
@@ -656,9 +656,26 @@
             els.syncOverlay.style.display = 'flex'; els.btnSync.classList.add('syncing');
             try {
                 const response = await fetch(`${GAS_WEB_APP_URL}?action=get`);
-                const json = await response.json();
-                if(json.success) processData(json.data); else throw new Error(json.message);
-            } catch (err) { showPopup("Ralat Sambungan", "Gagal memuat turun data dari Spreadsheet.", "error"); }
+                if (!response.ok) throw new Error("Pautan ke Google Script gagal (Status: " + response.status + ")");
+                
+                const textRaw = await response.text();
+                let json;
+                try {
+                    json = JSON.parse(textRaw);
+                } catch(parseErr) {
+                    console.error("Format data bukan JSON. Ini mungkin kerana 'Who has access' belum diset kepada 'Anyone'.", textRaw);
+                    throw new Error("Kebenaran (Permission) Apps Script tidak sah, atau URL salah. Pastikan 'Who has access' ditukar kepada 'Anyone'.");
+                }
+                
+                if(json.success) {
+                    processData(json.data);
+                } else { 
+                    throw new Error("Ralat Apps Script: " + json.message);
+                }
+            } catch (err) { 
+                showPopup("Info Ralat Sistem", err.message, "error"); 
+                console.error("Sync Error:", err);
+            }
             els.syncOverlay.style.display = 'none'; els.btnSync.classList.remove('syncing');
         }
 
@@ -695,20 +712,21 @@
         }
 
         async function updateRecordData(rowIndex, updates) {
-            els.syncOverlay.style.display = 'flex'; let success = true;
+            els.syncOverlay.style.display = 'flex'; let success = true; let errMsg = "Gagal mengemaskini data.";
             for (let upd of updates) {
                 const params = new URLSearchParams({ action: 'update', rowIndex: rowIndex, field: upd.field, value: upd.value, validateDup: 'false' });
                 try {
                     const res = await fetch(`${GAS_WEB_APP_URL}?${params.toString()}`);
-                    const json = await res.json(); if(!json.success) success = false;
-                } catch(e) { success = false; }
+                    const json = await res.json(); 
+                    if(!json.success) { success = false; errMsg = json.message; }
+                } catch(e) { success = false; errMsg = e.message; }
             }
             els.syncOverlay.style.display = 'none';
             if(success) {
                 let record = State.data.find(r => r._rowIndex === rowIndex);
                 updates.forEach(u => record[u.field] = u.value);
                 applyFilters(false); renderTable();
-            } else { showPopup("Ralat", "Gagal mengemaskini data.", "error"); }
+            } else { showPopup("Ralat Kemas Kini", errMsg, "error"); }
         }
 
         window.handleEdit = async function(rowIndex, field, value, inputElement) {
@@ -727,7 +745,7 @@
                 const res = await fetch(`${GAS_WEB_APP_URL}?${params.toString()}`); const json = await res.json();
                 if(json.success) State.data.find(r => r._rowIndex === rowIndex)[field] = value;
                 else { inputElement.value = State.data.find(r => r._rowIndex === rowIndex)[field]; showPopup("Ditolak", json.message, "error"); }
-            } catch(e) { inputElement.value = State.data.find(r => r._rowIndex === rowIndex)[field]; }
+            } catch(e) { inputElement.value = State.data.find(r => r._rowIndex === rowIndex)[field]; showPopup("Info Ralat", e.message, "error"); }
             inputElement.disabled = false;
         };
 
