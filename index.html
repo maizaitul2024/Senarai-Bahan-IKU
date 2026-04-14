@@ -537,7 +537,7 @@
     </div>
 
     <script>
-        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyNsJrX44j_a8G1ScXLALIRd2LgOCSXv3vJCQFofDx56OXSVMUdPjMWNc4TOXt1bVK-/exec"; 
+        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzFPMrgF-wzRr6XHXBYjNTHcFcLfUnqvc5tTEOloibncFO2g2-bUsr41XauWMZj96X7/exec"; 
         
         const State = {
             currentUser: null, data: [], filtered: [], currentPage: 1, itemsPerPage: 100,
@@ -686,13 +686,12 @@
             applyFilters();
         }
 
-        // PENYELESAIAN KEKAL "FAILED TO FETCH" - BYPASS FIREWALL INTRANET DENGAN DELAY 700MS
+        // PENYELESAIAN KEKAL "FAILED TO FETCH" - BYPASS FIREWALL INTRANET DENGAN DELAY DAN FORMAT TARIKH "-"
         async function updateRecordData(rowIndex, updates) {
             if(els.syncOverlay) els.syncOverlay.style.display = 'flex'; 
             let success = true; let errMsg = "Gagal mengemaskini data.";
             
             // Hantar data secara satu-persatu untuk mengelakkan Firewall Intranet (WAF)
-            // yang sering menyekat format Array/JSON di dalam URL (Punca Failed to fetch).
             for (let i = 0; i < updates.length; i++) {
                 let upd = updates[i];
                 const singleParams = new URLSearchParams({ 
@@ -706,17 +705,23 @@
 
                 try {
                     const res = await fetch(`${GAS_WEB_APP_URL}?${singleParams.toString()}`);
-                    const json = await res.json();
+                    const text = await res.text();
+                    let json;
+                    try {
+                        json = JSON.parse(text);
+                    } catch(parseErr) {
+                        throw new Error("Rangkaian keselamatan menyekat sambungan ini.");
+                    }
                     if(!json.success) { success = false; errMsg = json.message; break; }
                 } catch(e) {
                     success = false; 
-                    errMsg = "Sambungan disekat oleh rangkaian/pelayan. Sila cuba lagi."; 
+                    errMsg = "Sambungan disekat oleh rangkaian/pelayan pejabat anda. Sila cuba lagi."; 
                     break; 
                 }
                 
-                // Lengahkan 700ms supaya Google tidak anggap sebagai spam
+                // Lengahkan 1500ms (1.5 saat) supaya Firewall tidak kesan sebagai Spam
                 if (i < updates.length - 1) {
-                    await new Promise(r => setTimeout(r, 700));
+                    await new Promise(r => setTimeout(r, 1500));
                 }
             }
             
@@ -757,7 +762,8 @@
                 const today = new Date();
                 updateRecordData(rowIndex, [
                     {field: 'STATUS', value: 'Pending Semakan'},
-                    {field: 'DATE', value: `${String(today.getDate()).padStart(2, '0')}/${String(today.getMonth() + 1).padStart(2, '0')}/${today.getFullYear()}`}
+                    // Format diubah kepada SENGKANG (-) untuk bypass WAF
+                    {field: 'DATE', value: `${String(today.getDate()).padStart(2, '0')}-${String(today.getMonth() + 1).padStart(2, '0')}-${today.getFullYear()}`}
                 ]);
             }
         };
@@ -766,7 +772,7 @@
             const today = new Date();
             updateRecordData(rowIndex, [
                 {field: 'STATUS', value: 'Pending Kelulusan'}, {field: 'CHECKED BY', value: 'Rosli'},
-                {field: 'DATE CHECKED', value: `${String(today.getDate()).padStart(2, '0')}/${String(today.getMonth() + 1).padStart(2, '0')}/${today.getFullYear()}`}
+                {field: 'DATE CHECKED', value: `${String(today.getDate()).padStart(2, '0')}-${String(today.getMonth() + 1).padStart(2, '0')}-${today.getFullYear()}`}
             ]);
         };
 
@@ -775,7 +781,7 @@
             const today = new Date();
             updateRecordData(rowIndex, [
                 {field: 'STATUS', value: 'Rejected'}, {field: 'CHECKED BY', value: 'Rosli'},
-                {field: 'DATE CHECKED', value: `${String(today.getDate()).padStart(2, '0')}/${String(today.getMonth() + 1).padStart(2, '0')}/${today.getFullYear()}`}
+                {field: 'DATE CHECKED', value: `${String(today.getDate()).padStart(2, '0')}-${String(today.getMonth() + 1).padStart(2, '0')}-${today.getFullYear()}`}
             ]);
         };
 
@@ -783,7 +789,7 @@
             const today = new Date();
             updateRecordData(rowIndex, [
                 {field: 'STATUS', value: 'Completed'}, {field: 'APPROVED BY', value: 'Jaini'},
-                {field: 'APPROVED DATE', value: `${String(today.getDate()).padStart(2, '0')}/${String(today.getMonth() + 1).padStart(2, '0')}/${today.getFullYear()}`}
+                {field: 'APPROVED DATE', value: `${String(today.getDate()).padStart(2, '0')}-${String(today.getMonth() + 1).padStart(2, '0')}-${today.getFullYear()}`}
             ]);
         };
 
