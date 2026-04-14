@@ -756,38 +756,59 @@
             inputElement.disabled = false;
         };
 
-        window.staffSelectComplete = function(rowIndex, value) {
+        window.staffSubmit = function(rowIndex, value) {
             if (value === 'Completed') {
                 const today = new Date();
                 updateRecordData(rowIndex, [
                     {field: 'STATUS', value: 'Pending Semakan'},
                     {field: 'DATE', value: `${String(today.getDate()).padStart(2, '0')}-${String(today.getMonth() + 1).padStart(2, '0')}-${today.getFullYear()}`}
                 ]);
+            } else if (value === 'incomplete') {
+                updateRecordData(rowIndex, [
+                    {field: 'STATUS', value: 'incomplete'},
+                    {field: 'DATE', value: ''}
+                ]);
             }
         };
 
-        window.rosliApprove = function(rowIndex) {
+        window.rosliAction = function(rowIndex, value) {
+            if (!value) return;
             const today = new Date();
-            updateRecordData(rowIndex, [
-                {field: 'STATUS', value: 'Pending Kelulusan'}, {field: 'CHECKED BY', value: 'Rosli'},
-                {field: 'DATE CHECKED', value: `${String(today.getDate()).padStart(2, '0')}-${String(today.getMonth() + 1).padStart(2, '0')}-${today.getFullYear()}`}
-            ]);
+            const dateStr = `${String(today.getDate()).padStart(2, '0')}-${String(today.getMonth() + 1).padStart(2, '0')}-${today.getFullYear()}`;
+            
+            if (value === 'Accepted') {
+                updateRecordData(rowIndex, [
+                    {field: 'STATUS', value: 'Pending Kelulusan'},
+                    {field: 'CHECKED BY', value: 'Rosli'},
+                    {field: 'DATE CHECKED', value: dateStr}
+                ]);
+            } else if (value === 'Rejected') {
+                updateRecordData(rowIndex, [
+                    {field: 'STATUS', value: 'Rejected'},
+                    {field: 'CHECKED BY', value: 'Rosli'},
+                    {field: 'DATE CHECKED', value: dateStr}
+                ]);
+            }
         };
 
-        window.rosliReject = function(rowIndex) {
+        window.jainiAction = function(rowIndex, value) {
+            if (!value) return;
             const today = new Date();
-            updateRecordData(rowIndex, [
-                {field: 'STATUS', value: 'Rejected'}, {field: 'CHECKED BY', value: 'Rosli'},
-                {field: 'DATE CHECKED', value: `${String(today.getDate()).padStart(2, '0')}-${String(today.getMonth() + 1).padStart(2, '0')}-${today.getFullYear()}`}
-            ]);
-        };
-
-        window.jainiApprove = function(rowIndex) {
-            const today = new Date();
-            updateRecordData(rowIndex, [
-                {field: 'STATUS', value: 'Completed'}, {field: 'APPROVED BY', value: 'Jaini'},
-                {field: 'APPROVED DATE', value: `${String(today.getDate()).padStart(2, '0')}-${String(today.getMonth() + 1).padStart(2, '0')}-${today.getFullYear()}`}
-            ]);
+            const dateStr = `${String(today.getDate()).padStart(2, '0')}-${String(today.getMonth() + 1).padStart(2, '0')}-${today.getFullYear()}`;
+            
+            if (value === 'Accepted') {
+                updateRecordData(rowIndex, [
+                    {field: 'STATUS', value: 'Completed'},
+                    {field: 'APPROVED BY', value: 'Jaini'},
+                    {field: 'APPROVED DATE', value: dateStr}
+                ]);
+            } else if (value === 'Rejected') {
+                updateRecordData(rowIndex, [
+                    {field: 'STATUS', value: 'Rejected'},
+                    {field: 'APPROVED BY', value: 'Jaini'},
+                    {field: 'APPROVED DATE', value: dateStr}
+                ]);
+            }
         };
 
         function renderTable() {
@@ -809,74 +830,94 @@
                 const stat = row['STATUS'];
                 const roleId = State.currentUser ? State.currentUser.id : 'staff';
                 
-                // MENGESAHKAN KEBENARAN EDIT STAFF & ROSLI
-                let canEdit = false;
-                if(roleId === 'admin') canEdit = true;
-                if(roleId === 'staff' && (stat === 'incomplete' || stat === 'Rejected')) canEdit = true;
-                if(roleId === 'rosli' && stat === 'Pending Semakan') canEdit = true;
-                
                 let adminEdit = roleId === 'admin';
+                
+                // 1. KAWALAN KEBENARAN INPUT BERDASARKAN PERANAN USER
+                let canEditInput = adminEdit || 
+                                   (roleId === 'staff' && (stat === 'incomplete' || stat === 'Rejected')) || 
+                                   (roleId === 'rosli' && stat === 'Pending Semakan');
+                                   
+                let canEditStaff = adminEdit || (roleId === 'staff' && (stat === 'incomplete' || stat === 'Rejected'));
 
-                // Status Badge Display
+                // 2. PAPARAN STATUS (STATUS BADGE DISPLAY)
                 let displayStatus = stat;
                 if(stat === 'Pending Semakan' || stat === 'Pending Kelulusan') displayStatus = 'PENDING FOR APPROVAL';
 
                 let sClass = 'st-incomplete';
                 if(stat==='Completed') sClass='st-completed'; else if(stat.includes('Pending')) sClass='st-pending'; else if(stat==='Rejected') sClass='st-rejected';
                 
-                // HTML STATUS KINI HANYA MEMAPARKAN BADGE SAHAJA (TIADA LAGI DROPDOWN)
-                let statusHTML = `<div class="status-display ${sClass} w-full whitespace-normal break-words">${displayStatus}</div>`;
-
-                // Audit Trail
-                let semakText = row['CHECKED BY'] ? `<div class="font-bold text-[--brand-dark] text-[10.5px] text-left leading-tight">Checked: ${row['CHECKED BY']} <br><span class="font-normal text-gray-500">(${row['DATE CHECKED'] || ''})</span></div>` : '';
-                let lulusText = row['APPROVED BY'] ? `<div class="font-bold text-[#10B981] text-[10.5px] text-left leading-tight mt-1.5">Approved: ${row['APPROVED BY']} <br><span class="font-normal text-gray-500">(${row['APPROVED DATE'] || ''})</span></div>` : '';
-                let auditHTML = semakText || lulusText ? `<div class="text-left px-1">${semakText}${lulusText}</div>` : `<span class="text-gray-300">-</span>`;
-
-                // TINDAKAN (ACTION) HTML DI MANA BUTANG "COMPLETE" BERADA
+                // 3. LOGIK LAJUR STATUS & LAJUR ACTION
+                let statusHTML = '';
                 let actionHTML = '';
+
                 if (roleId === 'staff') {
                     if (stat === 'incomplete' || stat === 'Rejected') {
-                        let btnClass = stat === 'Rejected' ? 'bg-red-500 hover:bg-red-600' : 'bg-[#10B981] hover:bg-[#059669]';
-                        let btnText = stat === 'Rejected' ? 'RESUBMIT' : 'COMPLETE';
-                        
-                        actionHTML = `
-                            <button onclick="staffSelectComplete(${row._rowIndex}, 'Completed')" class="w-full ${btnClass} text-white font-bold py-2 px-2 rounded-md text-[10px] transition-colors shadow-sm tracking-wider">
-                                ${btnText}
-                            </button>
+                        // DROPDOWN DI LAJUR STATUS UNTUK STAFF
+                        statusHTML = `
+                            <select class="editable-input font-bold ${stat === 'Rejected' ? 'text-[#EF4444] border-[#EF4444]' : 'text-[#F59E0B] border-[#F59E0B]'}" onchange="staffSubmit(${row._rowIndex}, this.value)">
+                                <option value="incomplete" ${stat === 'incomplete' ? 'selected' : ''}>Incomplete</option>
+                                ${stat === 'Rejected' ? `<option value="Rejected" selected>Rejected</option>` : ''}
+                                <option value="Completed">Completed</option>
+                            </select>
                         `;
+                        actionHTML = `<div class="text-[10px] text-gray-400 font-bold uppercase text-center"><i data-lucide="lock" class="w-3 h-3 inline"></i> LOCKED</div>`;
                     } else {
+                        statusHTML = `<div class="status-display ${sClass} w-full whitespace-normal break-words">${displayStatus}</div>`;
                         actionHTML = `<div class="text-[10px] text-gray-400 font-bold uppercase text-center"><i data-lucide="lock" class="w-3 h-3 inline"></i> LOCKED</div>`;
                     }
                 }
                 else if (roleId === 'rosli') {
+                    statusHTML = `<div class="status-display ${sClass} w-full whitespace-normal break-words">${displayStatus}</div>`;
                     if (stat === 'Pending Semakan') {
+                        // DROPDOWN DI LAJUR ACTION UNTUK ROSLI
                         actionHTML = `
-                            <div class="flex flex-col gap-1.5 justify-center">
-                                <button onclick="rosliApprove(${row._rowIndex})" class="btn-sm btn-approve w-full justify-center text-[10px] py-1.5 px-2" title="Approve"><i data-lucide="check" class="w-3 h-3"></i> APPROVE</button>
-                                <button onclick="rosliReject(${row._rowIndex})" class="btn-sm btn-reject w-full justify-center text-[10px] py-1.5 px-2" title="Reject"><i data-lucide="x" class="w-3 h-3"></i> REJECT</button>
-                            </div>
+                            <select class="editable-input font-bold text-[--brand-medium] border-[--brand-medium]" onchange="rosliAction(${row._rowIndex}, this.value)">
+                                <option value="" disabled selected>Pilih Tindakan</option>
+                                <option value="Accepted">Accepted</option>
+                                <option value="Rejected">Rejected</option>
+                            </select>
                         `;
-                    } else { actionHTML = `<span class="text-gray-300">-</span>`; }
+                    } else { 
+                        actionHTML = `<span class="text-gray-300">-</span>`; 
+                    }
                 }
                 else if (roleId === 'jaini') {
+                    statusHTML = `<div class="status-display ${sClass} w-full whitespace-normal break-words">${displayStatus}</div>`;
                     if (stat === 'Pending Kelulusan') {
-                        actionHTML = `<button onclick="jainiApprove(${row._rowIndex})" class="btn-sm btn-approve w-full justify-center text-[10px] py-1.5 px-2"><i data-lucide="award" class="w-3 h-3"></i> APPROVE</button>`;
-                    } else { actionHTML = `<span class="text-gray-300">-</span>`; }
+                        // DROPDOWN DI LAJUR ACTION UNTUK JAINI
+                        actionHTML = `
+                            <select class="editable-input font-bold text-[#10B981] border-[#10B981]" onchange="jainiAction(${row._rowIndex}, this.value)">
+                                <option value="" disabled selected>Pilih Tindakan</option>
+                                <option value="Accepted">Accepted</option>
+                                <option value="Rejected">Rejected</option>
+                            </select>
+                        `;
+                    } else { 
+                        actionHTML = `<span class="text-gray-300">-</span>`; 
+                    }
                 }
-                else { actionHTML = `<span class="text-gray-300">-</span>`; }
+                else { 
+                    statusHTML = `<div class="status-display ${sClass} w-full whitespace-normal break-words">${displayStatus}</div>`;
+                    actionHTML = `<span class="text-gray-300">-</span>`; 
+                }
 
-                // HTML Untuk Teks - (Hanya Gunakan Input Jika Boleh Edit, Jika Tidak Papar Teks Biasa)
-                let ctrlHtml = canEdit ? `<textarea class="editable-input w-full resize-none" rows="2" onchange="handleEdit(${row._rowIndex}, 'CONTROL NUMBER', this.value, this)">${row['CONTROL NUMBER'] || ''}</textarea>` : `<div class="p-1 break-words whitespace-normal">${row['CONTROL NUMBER'] || ''}</div>`;
+                // 4. JEJAK AUDIT (AUDIT TRAIL) - Digerakkan menjadi satu lajur
+                let semakText = row['CHECKED BY'] ? `<div class="font-bold text-[--brand-dark] text-[10.5px] text-left leading-tight">Checked: ${row['CHECKED BY']} <br><span class="font-normal text-gray-500">(${row['DATE CHECKED'] || ''})</span></div>` : '';
+                let lulusText = row['APPROVED BY'] ? `<div class="font-bold text-[#10B981] text-[10.5px] text-left leading-tight mt-1.5">Approved: ${row['APPROVED BY']} <br><span class="font-normal text-gray-500">(${row['APPROVED DATE'] || ''})</span></div>` : '';
+                let auditHTML = semakText || lulusText ? `<div class="text-left px-1">${semakText}${lulusText}</div>` : `<span class="text-gray-300">-</span>`;
+
+                // 5. HTML INPUT TEKS BERDASARKAN KEBENARAN EDIT YANG KETAT
+                let ctrlHtml = canEditInput ? `<textarea class="editable-input w-full resize-none" rows="2" onchange="handleEdit(${row._rowIndex}, 'CONTROL NUMBER', this.value, this)">${row['CONTROL NUMBER'] || ''}</textarea>` : `<div class="p-1 break-words whitespace-normal">${row['CONTROL NUMBER'] || ''}</div>`;
                 
                 let call82Html = adminEdit ? `<textarea class="editable-input text-gray-500 w-full resize-none" rows="2" onchange="handleEdit(${row._rowIndex}, 'CALL NO (082)', this.value, this)">${row['CALL NO (082)'] || ''}</textarea>` : `<div class="p-1 text-gray-500 break-words whitespace-normal">${row['CALL NO (082)'] || ''}</div>`;
                 
-                let call50Html = canEdit ? `<textarea class="editable-input !text-[--brand-main] font-semibold w-full resize-none" rows="2" onchange="handleEdit(${row._rowIndex}, 'CALL NO (050/060)', this.value, this)">${row['CALL NO (050/060)'] || ''}</textarea>` : `<div class="p-1 text-[--brand-main] font-semibold break-words whitespace-normal leading-snug">${row['CALL NO (050/060)'] || ''}</div>`;
+                let call50Html = canEditInput ? `<textarea class="editable-input !text-[--brand-main] font-semibold w-full resize-none" rows="2" onchange="handleEdit(${row._rowIndex}, 'CALL NO (050/060)', this.value, this)">${row['CALL NO (050/060)'] || ''}</textarea>` : `<div class="p-1 text-[--brand-main] font-semibold break-words whitespace-normal leading-snug">${row['CALL NO (050/060)'] || ''}</div>`;
                 
                 let accHtml = adminEdit ? `<textarea class="editable-input font-bold text-gray-700 w-full resize-none" rows="2" onchange="handleEdit(${row._rowIndex}, 'ACCESSION', this.value, this)">${row['ACCESSION'] || ''}</textarea>` : `<div class="p-1 font-bold text-[--brand-dark] break-words whitespace-normal">${row['ACCESSION'] || ''}</div>`;
                 
                 let titleHtml = adminEdit ? `<textarea class="editable-input text-center w-full resize-none" rows="3" onchange="handleEdit(${row._rowIndex}, 'TITLE', this.value, this)">${row['TITLE'] || ''}</textarea>` : `<div class="p-1 text-center font-medium text-gray-800 break-words whitespace-normal leading-relaxed">${row['TITLE'] || ''}</div>`;
                 
-                let staffHtml = canEdit ? `<select class="editable-input" onchange="handleEdit(${row._rowIndex}, 'STAFF', this.value, this)"><option value="">-</option>${State.staffList.map(s => `<option value="${s}" ${row['STAFF'] === s ? 'selected' : ''}>${s}</option>`).join('')}</select>` : `<div class="p-1 break-words whitespace-normal uppercase">${row['STAFF'] || '-'}</div>`;
+                let staffHtml = canEditStaff ? `<select class="editable-input" onchange="handleEdit(${row._rowIndex}, 'STAFF', this.value, this)"><option value="">-</option>${State.staffList.map(s => `<option value="${s}" ${row['STAFF'] === s ? 'selected' : ''}>${s}</option>`).join('')}</select>` : `<div class="p-1 break-words whitespace-normal uppercase">${row['STAFF'] || '-'}</div>`;
 
                 let dateHtml = `<div class="p-1 text-gray-600 break-words whitespace-normal">${row['DATE'] || ''}</div>`;
 
