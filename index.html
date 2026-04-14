@@ -193,50 +193,48 @@
         .btn-sync.syncing .sync-icon { animation: spin 1s linear infinite; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        /* STRICT TABLE SECTION (11 Columns, Centered & Fluid) */
+        /* STRICT TABLE SECTION (Compact & Clear Layout) */
         #table-section { display: flex; flex-direction: column; overflow: hidden; width: 100%; }
         .table-wrapper { overflow-x: auto; max-height: 650px; overflow-y: auto; width: 100%; }
         
-        /* KEBAL: Menambahkan saiz dan min-width supaya lajur tidak tenggelam */
-        table { width: 100%; margin: 0 auto; border-collapse: separate; border-spacing: 0; font-family: var(--font-table) !important; min-width: 1500px; table-layout: fixed; }
+        /* FIX: Buang min-width 1500px, jadikan width 100% supaya padat dan masuk skrin */
+        table { width: 100%; margin: 0 auto; border-collapse: separate; border-spacing: 0; font-family: var(--font-table) !important; min-width: 100%; table-layout: fixed; }
         thead { position: sticky; top: 0; z-index: 5; }
-        th { background: var(--brand-dark); color: white; font-size: 12px; font-weight: 700; text-align: center; padding: 16px 10px; border-bottom: none; letter-spacing: 0.5px; white-space: normal; word-break: break-word; }
+        th { background: var(--brand-dark); color: white; font-size: 11px; font-weight: 700; text-align: center; padding: 12px 6px; border-bottom: none; letter-spacing: 0.5px; white-space: normal; word-break: break-word; }
         th:first-child { border-top-left-radius: 8px; }
         th:last-child { border-top-right-radius: 8px; }
         
-        /* Set td to wrap */
-        td { font-size: 12.5px; text-align: center; padding: 12px 10px; border-bottom: 1px solid #F1F5F9; color: #334155; vertical-align: middle; line-height: 1.5; white-space: normal !important; word-wrap: break-word !important; overflow: visible !important; }
+        td { font-size: 11.5px; text-align: center; padding: 8px 6px; border-bottom: 1px solid #F1F5F9; color: #334155; vertical-align: middle; line-height: 1.4; white-space: normal !important; word-wrap: break-word !important; overflow: visible !important; }
         tr:nth-child(even) td { background-color: var(--row-alt); }
         tr:hover td { background-color: #F8FAFC; }
         
-        /* COLUMN WIDTHS (Set MIN-WIDTH supaya tidak ghaib/hilang) */
-        .col-no { width: 50px; min-width: 50px; }
-        .col-control { width: 130px; min-width: 130px; }
-        .col-call82 { width: 120px; min-width: 120px; }
-        .col-call50 { width: 150px; min-width: 150px; }
-        .col-acc { width: 120px; min-width: 120px; }
-        .col-title { width: auto; min-width: 250px; text-align: center !important; }
-        .col-status { width: 150px; min-width: 150px; }
-        .col-staff { width: 120px; min-width: 120px; }
-        .col-date { width: 110px; min-width: 110px; }
-        .col-audit { width: 180px; min-width: 180px; }
-        .col-action { width: 120px; min-width: 120px; }
+        /* COLUMN WIDTHS (Ditukar ke dalam peratusan % dan saiz piksel responsif supaya nampak compact) */
+        .col-no { width: 40px; }
+        .col-control { width: 8.5%; }
+        .col-call82 { width: 7.5%; }
+        .col-call50 { width: 9%; }
+        .col-acc { width: 8.5%; }
+        .col-title { width: auto; text-align: center !important; } /* Title akan isi lebihan ruang automatik */
+        .col-status { width: 10%; }
+        .col-staff { width: 8%; }
+        .col-date { width: 7.5%; }
+        .col-audit { width: 11%; }
+        .col-action { width: 8%; }
 
         /* Editable Inputs inside table */
-        .editable-input { width: 100%; padding: 8px; border: 1px solid transparent; border-radius: 6px; font-family: var(--font-table) !important; font-size: 12.5px; text-align: center; background: transparent; color: inherit; font-weight: 500; transition: 0.2s; white-space: normal !important; resize: none; overflow: hidden; }
+        .editable-input { width: 100%; padding: 6px 4px; border: 1px solid transparent; border-radius: 6px; font-family: var(--font-table) !important; font-size: 11.5px; text-align: center; background: transparent; color: inherit; font-weight: 500; transition: 0.2s; white-space: normal !important; resize: none; overflow: hidden; }
         .editable-input:hover:not(:disabled) { border-color: #E2E8F0; background: white; }
         .editable-input:focus { background: white; border-color: var(--brand-medium); box-shadow: 0 0 0 2px rgba(0, 85, 165, 0.1); outline: none; }
-        .editable-input:disabled { opacity: 0.9; cursor: not-allowed; background: transparent !important; border-color: transparent !important; color: #475569; }
+        .editable-input:disabled { opacity: 1; cursor: not-allowed; background: transparent !important; border-color: transparent !important; color: inherit; }
 
-        /* Alignment Fixes */
         .col-title .editable-input { text-align: center !important; }
         td.col-acc { font-weight: 700; color: var(--brand-dark); }
 
-        select.editable-input { cursor: pointer; }
+        select.editable-input { cursor: pointer; padding: 4px; font-size: 11px; }
         select.editable-input:disabled { cursor: not-allowed; appearance: none; }
 
         /* Workflow Buttons */
-        .btn-sm { padding: 6px 12px; border-radius: 6px; font-weight: 700; font-size: 11px; cursor: pointer; border: none; color: white; transition: 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 4px; }
+        .btn-sm { padding: 6px 8px; border-radius: 6px; font-weight: 700; font-size: 10px; cursor: pointer; border: none; color: white; transition: 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 4px; }
         .btn-sm:active { transform: scale(0.95); }
         .btn-approve { background-color: #10B981; }
         .btn-approve:hover { background-color: #059669; }
@@ -244,7 +242,7 @@
         .btn-reject:hover { background-color: #DC2626; }
 
         /* Status Styling Display */
-        .status-display { font-weight: 700; padding: 6px 10px; border-radius: 6px; display: inline-block; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; text-align: center; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .status-display { font-weight: 700; padding: 6px 8px; border-radius: 6px; display: inline-block; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.5px; text-align: center; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .st-pending { color: #F59E0B; background: #FEF3C7; }
         .st-completed { color: #10B981; background: #D1FAE5; }
         .st-rejected { color: #EF4444; background: #FEE2E2; }
@@ -693,6 +691,8 @@
             if(els.syncOverlay) els.syncOverlay.style.display = 'flex'; 
             let success = true; let errMsg = "Gagal mengemaskini data.";
             
+            // Hantar data secara satu-persatu untuk mengelakkan Firewall Intranet (WAF)
+            // yang sering menyekat format Array/JSON di dalam URL (Punca Failed to fetch).
             for (let i = 0; i < updates.length; i++) {
                 let upd = updates[i];
                 const singleParams = new URLSearchParams({ 
@@ -946,8 +946,9 @@
             const pTot = document.getElementById('page-total'); if(pTot) pTot.innerText = t;
             const pInd = document.getElementById('page-indicator'); if(pInd) pInd.innerText = State.currentPage;
             
+            // PENYELESAIAN BUG BUTANG SETERUSNYA (NEXT PAGE)
             const btnPrev = document.getElementById('btn-prev'); if(btnPrev) btnPrev.disabled = State.currentPage === 1;
-            const btnNext = document.getElementById('btn-next'); if(btnNext) btnNext.disabled = State.currentPage === Math.ceil(t / State.itemsPerPage) || 1;
+            const btnNext = document.getElementById('btn-next'); if(btnNext) btnNext.disabled = State.currentPage >= Math.ceil(t / State.itemsPerPage) || t === 0;
         }
         
         if(document.getElementById('btn-prev')) document.getElementById('btn-prev').addEventListener('click', () => { if (State.currentPage > 1) { State.currentPage--; renderTable(); } });
