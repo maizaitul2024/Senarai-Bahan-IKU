@@ -197,7 +197,6 @@
         #table-section { display: flex; flex-direction: column; overflow: hidden; width: 100%; }
         .table-wrapper { overflow-x: auto; max-height: 650px; overflow-y: auto; width: 100%; }
         
-        /* FIX: Buang min-width 1500px, jadikan width 100% supaya padat dan masuk skrin */
         table { width: 100%; margin: 0 auto; border-collapse: separate; border-spacing: 0; font-family: var(--font-table) !important; min-width: 100%; table-layout: fixed; }
         thead { position: sticky; top: 0; z-index: 5; }
         th { background: var(--brand-dark); color: white; font-size: 11px; font-weight: 700; text-align: center; padding: 12px 6px; border-bottom: none; letter-spacing: 0.5px; white-space: normal; word-break: break-word; }
@@ -208,13 +207,13 @@
         tr:nth-child(even) td { background-color: var(--row-alt); }
         tr:hover td { background-color: #F8FAFC; }
         
-        /* COLUMN WIDTHS (Ditukar ke dalam peratusan % dan saiz piksel responsif supaya nampak compact) */
+        /* COLUMN WIDTHS */
         .col-no { width: 40px; }
         .col-control { width: 8.5%; }
         .col-call82 { width: 7.5%; }
         .col-call50 { width: 9%; }
         .col-acc { width: 8.5%; }
-        .col-title { width: auto; text-align: center !important; } /* Title akan isi lebihan ruang automatik */
+        .col-title { width: auto; text-align: center !important; } 
         .col-status { width: 10%; }
         .col-staff { width: 8%; }
         .col-date { width: 7.5%; }
@@ -537,7 +536,7 @@
     </div>
 
     <script>
-        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycby8ZAR_MGJbJwKILOacFpG88MqeNepgZ3_pGWiV_ym8wyaA_-NZWKRps8Dq7wVopw4o/exec"; 
+        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwHhQg46dy6eo6xQ9klDeCeVPeQ_T7iqEbV-kdQgr3XxSo60hrylx1nCrpiBDaFzawv/exec"; 
         
         const State = {
             currentUser: null, data: [], filtered: [], currentPage: 1, itemsPerPage: 100,
@@ -686,53 +685,55 @@
             applyFilters();
         }
 
-        // PENYELESAIAN MUKTAMAD (BULLETPROOF) UNTUK "FAILED TO FETCH"
-        // Menghantar HANYA 1 Arahan ke Google (Sama seperti handleEdit lama yang terbukti berfungsi)
+        // PENYELESAIAN MUKTAMAD MENGGUNAKAN LOOP SINGLE UPDATE 
+        // Menggunakan "action=update" yang asal, yang dijamin berfungsi 100%
         async function updateRecordData(rowIndex, updates) {
             if(els.syncOverlay) els.syncOverlay.style.display = 'flex'; 
+            let success = true; let errMsg = "Gagal mengemaskini data.";
             
-            try {
-                // Gunakan 1 isyarat menggunakan fungsi update_multiple
-                const params = new URLSearchParams({ 
-                    action: 'update_multiple', 
+            for (let i = 0; i < updates.length; i++) {
+                let upd = updates[i];
+                const singleParams = new URLSearchParams({ 
+                    action: 'update', 
                     rowIndex: rowIndex, 
-                    updates: JSON.stringify(updates),
+                    field: upd.field, 
+                    value: upd.value, 
+                    validateDup: 'false', 
                     t: Date.now() 
                 });
-                
-                const res = await fetch(`${GAS_WEB_APP_URL}?${params.toString()}`);
-                const text = await res.text();
-                
-                let json;
+
                 try {
-                    json = JSON.parse(text);
+                    const res = await fetch(`${GAS_WEB_APP_URL}?${singleParams.toString()}`);
+                    const textRes = await res.text();
+                    let json;
+                    try {
+                        json = JSON.parse(textRes);
+                    } catch(e) {
+                        throw new Error("Pangkalan data gagal diproses. Pastikan Apps Script anda di-Deploy semula.");
+                    }
+                    if(!json.success) { success = false; errMsg = json.message; break; }
                 } catch(e) {
-                    throw new Error("Ralat isyarat: " + text.substring(0, 50));
+                    success = false; 
+                    errMsg = "Rangkaian internet atau Google Apps Script menyekat sambungan ini. Sila cuba lagi."; 
+                    break; 
                 }
                 
-                if(json.success) {
-                    let record = State.data.find(r => r._rowIndex === rowIndex);
-                    if (record) updates.forEach(u => record[u.field] = u.value);
-                    applyFilters(false); 
-                } else {
-                    // FALLBACK KECEMASAN: Jika backend Code.gs pengguna adalah versi lama (tiada update_multiple), 
-                    // ia akan automatik hantar isyarat "update" biasa (Hanya Status diubah).
-                    if (json.message && json.message.toLowerCase().includes("tidak sah")) {
-                         const fallbackParams = new URLSearchParams({ action: 'update', rowIndex: rowIndex, field: updates[0].field, value: updates[0].value, validateDup: 'false', t: Date.now() });
-                         await fetch(`${GAS_WEB_APP_URL}?${fallbackParams.toString()}`);
-                         let record = State.data.find(r => r._rowIndex === rowIndex);
-                         if(record) record[updates[0].field] = updates[0].value;
-                         applyFilters(false);
-                    } else {
-                         showPopup("Ditolak", json.message, "error");
-                    }
+                // Lengahkan masa sedikit (800ms) untuk elak Google anggap bot spam
+                if (i < updates.length - 1) {
+                    await new Promise(r => setTimeout(r, 800));
                 }
-            } catch(e) {
-                showPopup("Ralat Rangkaian", "Gagal menghubungi Google Apps Script. Google mungkin menyekat permintaan terlalu kerap.", "error"); 
             }
             
             if(els.syncOverlay) els.syncOverlay.style.display = 'none';
-            renderTable(); // Paksa render semula table supaya butang dropdown kembali ke asal jika ia gagal
+            
+            if(success) {
+                let record = State.data.find(r => r._rowIndex === rowIndex);
+                if (record) updates.forEach(u => record[u.field] = u.value);
+                applyFilters(false); 
+            } else { 
+                showPopup("Ralat Kemas Kini", errMsg, "error"); 
+            }
+            renderTable(); // Paksa render semula table
         }
 
         window.handleEdit = async function(rowIndex, field, value, inputElement) {
@@ -755,18 +756,12 @@
             inputElement.disabled = false;
         };
 
-        window.staffSelectComplete = function(rowIndex, value, dropdownEl) {
+        window.staffSelectComplete = function(rowIndex, value) {
             if (value === 'Completed') {
                 const today = new Date();
                 updateRecordData(rowIndex, [
                     {field: 'STATUS', value: 'Pending Semakan'},
                     {field: 'DATE', value: `${String(today.getDate()).padStart(2, '0')}-${String(today.getMonth() + 1).padStart(2, '0')}-${today.getFullYear()}`}
-                ]);
-            } else if (value === 'incomplete') {
-                // Membenarkan staf menukar kembali kepada incomplete sekiranya tersilap
-                updateRecordData(rowIndex, [
-                    {field: 'STATUS', value: 'incomplete'},
-                    {field: 'DATE', value: ''}
                 ]);
             }
         };
@@ -829,38 +824,26 @@
                 let sClass = 'st-incomplete';
                 if(stat==='Completed') sClass='st-completed'; else if(stat.includes('Pending')) sClass='st-pending'; else if(stat==='Rejected') sClass='st-rejected';
                 
-                // HTML STATUS (Boleh Edit / Terkunci)
-                let statusHTML = '';
-                if (roleId === 'staff' && (stat === 'incomplete' || stat === 'Rejected')) {
-                    statusHTML = `
-                        <select class="editable-input font-bold ${stat === 'Rejected' ? 'text-[#EF4444] border-[#EF4444]' : 'text-[#F59E0B] border-[#F59E0B]'}" onchange="staffSelectComplete(${row._rowIndex}, this.value, this)">
-                            <option value="incomplete" ${stat === 'incomplete' ? 'selected' : ''}>Incomplete</option>
-                            ${stat === 'Rejected' ? `<option value="Rejected" selected>Rejected</option>` : ''}
-                            <option value="Completed">-> Completed</option>
-                        </select>
-                    `;
-                } else if (roleId === 'rosli' && stat === 'Pending Semakan') {
-                    statusHTML = `
-                        <select class="editable-input font-bold text-[#F59E0B] border-[#F59E0B]" onchange="if(this.value==='Pending Kelulusan') rosliApprove(${row._rowIndex}); else if(this.value==='Rejected') { this.value='Pending Semakan'; rosliReject(${row._rowIndex}); }">
-                            <option value="Pending Semakan" selected>Pending Approval</option>
-                            <option value="Pending Kelulusan">-> Approve</option>
-                            <option value="Rejected">-> Reject</option>
-                        </select>
-                    `;
-                } else {
-                    statusHTML = `<div class="status-display ${sClass} w-full whitespace-normal break-words">${displayStatus}</div>`;
-                }
+                // HTML STATUS KINI HANYA MEMAPARKAN BADGE SAHAJA (TIADA LAGI DROPDOWN)
+                let statusHTML = `<div class="status-display ${sClass} w-full whitespace-normal break-words">${displayStatus}</div>`;
 
                 // Audit Trail
                 let semakText = row['CHECKED BY'] ? `<div class="font-bold text-[--brand-dark] text-[10.5px] text-left leading-tight">Checked: ${row['CHECKED BY']} <br><span class="font-normal text-gray-500">(${row['DATE CHECKED'] || ''})</span></div>` : '';
                 let lulusText = row['APPROVED BY'] ? `<div class="font-bold text-[#10B981] text-[10.5px] text-left leading-tight mt-1.5">Approved: ${row['APPROVED BY']} <br><span class="font-normal text-gray-500">(${row['APPROVED DATE'] || ''})</span></div>` : '';
                 let auditHTML = semakText || lulusText ? `<div class="text-left px-1">${semakText}${lulusText}</div>` : `<span class="text-gray-300">-</span>`;
 
-                // Tindakan (Action) HTML
+                // TINDAKAN (ACTION) HTML DI MANA BUTANG "COMPLETE" BERADA
                 let actionHTML = '';
                 if (roleId === 'staff') {
                     if (stat === 'incomplete' || stat === 'Rejected') {
-                        actionHTML = `<span class="text-gray-300">-</span>`;
+                        let btnClass = stat === 'Rejected' ? 'bg-red-500 hover:bg-red-600' : 'bg-[#10B981] hover:bg-[#059669]';
+                        let btnText = stat === 'Rejected' ? 'RESUBMIT' : 'COMPLETE';
+                        
+                        actionHTML = `
+                            <button onclick="staffSelectComplete(${row._rowIndex}, 'Completed')" class="w-full ${btnClass} text-white font-bold py-2 px-2 rounded-md text-[10px] transition-colors shadow-sm tracking-wider">
+                                ${btnText}
+                            </button>
+                        `;
                     } else {
                         actionHTML = `<div class="text-[10px] text-gray-400 font-bold uppercase text-center"><i data-lucide="lock" class="w-3 h-3 inline"></i> LOCKED</div>`;
                     }
