@@ -214,8 +214,8 @@
         .col-title { width: auto; min-width: 200px; font-size: 12.5px !important; text-align: center !important; white-space: normal !important; word-break: break-word; }
         .col-staff { width: 110px; }
         .col-date { width: 100px; }
-        .col-status { width: 130px; }
-        .col-audit { width: 120px; }
+        .col-status { width: 140px; }
+        .col-audit { width: 170px; }
         .col-action { width: 140px; }
 
         /* Editable Inputs inside table */
@@ -450,8 +450,8 @@
                         <select id="filter-status" class="premium-input !py-2.5">
                             <option value="">Semua Status</option>
                             <option value="Completed">Completed (Lulus)</option>
-                            <option value="Pending Semakan">Pending Semakan</option>
-                            <option value="Pending Kelulusan">Pending Kelulusan</option>
+                            <option value="Pending Semakan">Pending Approval (Rosli)</option>
+                            <option value="Pending Kelulusan">Pending Approval (Jaini)</option>
                             <option value="Rejected">Rejected</option>
                             <option value="incomplete">incomplete</option>
                         </select>
@@ -506,8 +506,7 @@
                                 <th class="col-staff">STAFF</th>
                                 <th class="col-date">TARIKH</th>
                                 <th class="col-status">STATUS</th>
-                                <th class="col-audit">DISEMAK OLEH</th>
-                                <th class="col-audit">DILULUSKAN OLEH</th>
+                                <th class="col-audit">JEJAK AUDIT</th>
                                 <th class="col-action">TINDAKAN</th>
                             </tr>
                         </thead>
@@ -818,24 +817,24 @@
                 const stat = row['STATUS'];
                 const roleId = State.currentUser ? State.currentUser.id : 'staff';
                 
-                // Permission Cek (Inputs editable?)
+                // Permission Cek (Input mana yang boleh di-edit?)
                 let canEdit = false;
                 if(roleId === 'admin') canEdit = true;
                 if(roleId === 'staff' && (stat === 'incomplete' || stat === 'Rejected')) canEdit = true;
                 if(roleId === 'rosli' && stat === 'Pending Semakan') canEdit = true;
 
-                // Status Badge Display
+                // Status Badge Display (Diseragamkan kepada PENDING FOR APPROVAL)
                 let displayStatus = stat;
-                if(stat === 'Pending Semakan') displayStatus = 'Pending (Rosli)';
-                if(stat === 'Pending Kelulusan') displayStatus = 'Pending (Jaini)';
+                if(stat === 'Pending Semakan' || stat === 'Pending Kelulusan') displayStatus = 'PENDING FOR APPROVAL';
 
                 let sClass = 'st-incomplete';
                 if(stat==='Completed') sClass='st-completed'; else if(stat.includes('Pending')) sClass='st-pending'; else if(stat==='Rejected') sClass='st-rejected';
                 let statusBadge = `<div class="status-display ${sClass} w-full">${displayStatus}</div>`;
 
-                // Audit Trail Columns HTML
-                let semakText = row['CHECKED BY'] ? `<div class="font-bold text-[--brand-dark]">${row['CHECKED BY']}</div><div class="text-[9px] text-gray-500 mt-0.5">${row['DATE CHECKED'] || ''}</div>` : `<span class="text-gray-300">-</span>`;
-                let lulusText = row['APPROVED BY'] ? `<div class="font-bold text-[#10B981]">${row['APPROVED BY']}</div><div class="text-[9px] text-gray-500 mt-0.5">${row['APPROVED DATE'] || ''}</div>` : `<span class="text-gray-300">-</span>`;
+                // Audit Trail Columns HTML (Digabungkan menjadi 1 Kolum JEJAK AUDIT)
+                let semakText = row['CHECKED BY'] ? `<div class="font-bold text-[--brand-dark] text-[10px]">Semak: ${row['CHECKED BY']} <span class="font-normal text-gray-500">(${row['DATE CHECKED'] || ''})</span></div>` : '';
+                let lulusText = row['APPROVED BY'] ? `<div class="font-bold text-[#10B981] text-[10px] mt-1">Lulus: ${row['APPROVED BY']} <span class="font-normal text-gray-500">(${row['APPROVED DATE'] || ''})</span></div>` : '';
+                let auditHTML = semakText || lulusText ? `<div class="text-left">${semakText}${lulusText}</div>` : `<span class="text-gray-300">-</span>`;
 
                 // Action Column HTML
                 let actionHTML = '';
@@ -881,10 +880,10 @@
                 tr.innerHTML = `
                     <td class="col-no">${row['NO'] || ''}</td>
                     <td class="col-control"><input type="text" class="editable-input" value="${row['CONTROL NUMBER'] || ''}" ${canEdit?'':'disabled'} onchange="handleEdit(${row._rowIndex}, 'CONTROL NUMBER', this.value, this)"></td>
-                    <td class="col-call82"><input type="text" class="editable-input text-gray-500" value="${row['CALL NO (082)'] || ''}" ${canEdit?'':'disabled'} onchange="handleEdit(${row._rowIndex}, 'CALL NO (082)', this.value, this)"></td>
+                    <td class="col-call82"><input type="text" class="editable-input text-gray-500" value="${row['CALL NO (082)'] || ''}" disabled onchange="handleEdit(${row._rowIndex}, 'CALL NO (082)', this.value, this)"></td>
                     <td class="col-call50"><input type="text" class="editable-input !text-[--brand-main] font-semibold" value="${row['CALL NO (050/060)'] || ''}" ${canEdit?'':'disabled'} onchange="handleEdit(${row._rowIndex}, 'CALL NO (050/060)', this.value, this)"></td>
-                    <td class="col-acc"><input type="text" class="editable-input font-bold text-gray-700" value="${row['ACCESSION'] || ''}" ${canEdit?'':'disabled'} onchange="handleEdit(${row._rowIndex}, 'ACCESSION', this.value, this)"></td>
-                    <td class="col-title" title="${row['TITLE'] || ''}"><input type="text" class="editable-input text-left" value="${row['TITLE'] || ''}" ${canEdit?'':'disabled'} onchange="handleEdit(${row._rowIndex}, 'TITLE', this.value, this)"></td>
+                    <td class="col-acc"><input type="text" class="editable-input font-bold text-gray-700" value="${row['ACCESSION'] || ''}" disabled onchange="handleEdit(${row._rowIndex}, 'ACCESSION', this.value, this)"></td>
+                    <td class="col-title" title="${row['TITLE'] || ''}"><input type="text" class="editable-input text-left" value="${row['TITLE'] || ''}" disabled onchange="handleEdit(${row._rowIndex}, 'TITLE', this.value, this)"></td>
                     <td class="col-staff">
                         <select class="editable-input" ${canEdit?'':'disabled'} onchange="handleEdit(${row._rowIndex}, 'STAFF', this.value, this)">
                             <option value="">-</option>
@@ -893,8 +892,7 @@
                     </td>
                     <td class="col-date"><input type="text" class="editable-input text-gray-600" value="${row['DATE'] || ''}" disabled></td>
                     <td class="col-status px-2 align-middle">${statusBadge}</td>
-                    <td class="col-audit align-middle">${semakText}</td>
-                    <td class="col-audit align-middle">${lulusText}</td>
+                    <td class="col-audit align-middle">${auditHTML}</td>
                     <td class="col-action px-2 align-middle">${actionHTML}</td>
                 `;
                 frag.appendChild(tr);
