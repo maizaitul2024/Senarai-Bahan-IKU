@@ -258,20 +258,6 @@
         .popup-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 4000; }
         .popup-content { background: white; padding: 32px; border-radius: 20px; max-width: 400px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.1); width: 100%; }
 
-        /* Notification Bell */
-        .notif-wrapper { position: relative; }
-        .notif-btn { background: none; border: none; cursor: pointer; color: #64748b; padding: 8px; border-radius: 50%; transition: 0.2s; position: relative; }
-        .notif-btn:hover { background: #F1F5F9; color: var(--brand-dark); }
-        .notif-badge { position: absolute; top: 0; right: 0; background: #EF4444; color: white; font-size: 9px; font-weight: 700; width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; border-radius: 50%; border: 2px solid white; }
-        
-        .notif-dropdown { position: absolute; top: 100%; right: 0; width: 280px; background: white; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border: 1px solid #E2E8F0; display: none; flex-direction: column; overflow: hidden; z-index: 100; }
-        .notif-header { background: var(--brand-dark); color: white; padding: 12px 16px; font-size: 13px; font-weight: 700; display: flex; justify-content: space-between; align-items: center; }
-        .notif-body { max-height: 250px; overflow-y: auto; }
-        .notif-item { padding: 12px 16px; border-bottom: 1px solid #F1F5F9; cursor: pointer; text-align: left; transition: 0.2s; }
-        .notif-item:hover { background: #F8FAFC; }
-        .notif-item-title { font-weight: 700; font-size: 12px; color: #EF4444; margin-bottom: 4px; }
-        .notif-item-desc { font-size: 11px; color: #64748b; line-height: 1.4; }
-
         /* Admin Panel */
         #admin-panel { position: fixed; right: -320px; top: 0; bottom: 0; width: 300px; background: white; box-shadow: -5px 0 25px rgba(0,0,0,0.1); z-index: 1000; transition: right 0.3s; display: flex; flex-direction: column; }
     </style>
@@ -324,23 +310,6 @@
                 <p class="text-sm text-gray-500 font-medium">Executive Collection Management</p>
             </div>
             <div class="flex items-center gap-6">
-                
-                <!-- NOTIFICATION BELL -->
-                <div class="notif-wrapper" id="notif-wrapper" style="display: none;">
-                    <button class="notif-btn" id="btn-notif" title="Peti Mesej (Rejected)">
-                        <i data-lucide="bell"></i>
-                        <span class="notif-badge" id="notif-badge">0</span>
-                    </button>
-                    <div class="notif-dropdown" id="notif-dropdown">
-                        <div class="notif-header">
-                            <span>Peti Mesej Ditolak</span>
-                            <i data-lucide="alert-circle" class="w-4 h-4"></i>
-                        </div>
-                        <div class="notif-body" id="notif-list">
-                            <!-- Injected from JS -->
-                        </div>
-                    </div>
-                </div>
 
                 <div class="text-right">
                     <div id="live-time" class="text-xl font-bold text-[--brand-dark] font-mono">--:--:-- --</div>
@@ -476,9 +445,6 @@
                 </div>
 
                 <div class="flex flex-wrap items-end gap-4 ml-auto">
-                    <button id="btn-reset-view" onclick="kembaliPaparanBiasa()" class="btn-action bg-slate-500 text-white hover:bg-slate-600 hidden h-[44px]">
-                        <i data-lucide="arrow-left" class="w-4 h-4"></i> Paparan Biasa
-                    </button>
 
                     <button id="btn-sync" class="btn-action btn-sync whitespace-nowrap h-[44px]">
                         <i data-lucide="refresh-cw" class="w-4 h-4 sync-icon"></i> Segerak Auto
@@ -512,9 +478,9 @@
                                 <th class="col-call50">CALL NO (050/060)</th>
                                 <th class="col-acc">ACCESSION</th>
                                 <th class="col-title text-center">TITLE</th>
-                                <th class="col-status">STATUS</th>
                                 <th class="col-staff">STAFF</th>
                                 <th class="col-date">DATE</th>
+                                <th class="col-status">STATUS</th>
                                 <th class="col-audit">AUDIT TRAIL</th>
                                 <th class="col-action">ACTION</th>
                             </tr>
@@ -566,20 +532,6 @@
             <h3 id="popup-title" class="text-xl font-bold mb-2 text-[--brand-dark]">Notifikasi</h3>
             <p id="popup-msg" class="text-gray-500 text-sm mb-6 leading-relaxed">Message</p>
             <button id="popup-btn" class="w-full py-3 bg-[--brand-medium] text-white rounded-xl font-bold transition-transform active:scale-95 shadow-md">OK</button>
-        </div>
-    </div>
-
-    <!-- REJECTION MODAL -->
-    <div id="reject-modal" class="popup-overlay" style="z-index: 4001;">
-        <div class="popup-content">
-            <div class="w-14 h-14 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4"><i data-lucide="alert-triangle" class="w-7 h-7"></i></div>
-            <h3 class="text-xl font-bold text-[--brand-dark] mb-2">Tolak Rekod</h3>
-            <p class="text-sm text-gray-500 mb-4">Sila masukkan sebab penolakan supaya Staff boleh membuat pembetulan.</p>
-            <textarea id="reject-reason" class="premium-input h-24 resize-none mb-4" placeholder="Cth: Call number salah format..."></textarea>
-            <div class="flex gap-3">
-                <button onclick="document.getElementById('reject-modal').style.display='none'" class="flex-1 py-2.5 rounded-xl font-bold text-gray-600 bg-gray-100 hover:bg-gray-200 transition-colors">Batal</button>
-                <button id="confirm-reject-btn" class="flex-1 py-2.5 rounded-xl font-bold text-white bg-red-500 hover:bg-red-600 transition-colors">Hantar Mesej</button>
-            </div>
         </div>
     </div>
 
@@ -640,7 +592,6 @@
                     
                     if(els.loginScreen) els.loginScreen.style.display = 'none'; 
                     if(els.dashboard) els.dashboard.style.display = 'flex';
-                    if(document.getElementById('notif-wrapper')) document.getElementById('notif-wrapper').style.display = user === 'staff' ? 'block' : 'none';
                     
                     syncLiveDatabase();
                 } else {
@@ -734,13 +685,13 @@
             applyFilters();
         }
 
-        // PENYELESAIAN MASALAH "FAILED TO FETCH" - PENGHANTARAN PUKAL (BATCH UPDATE)
+        // PENYELESAIAN MASALAH "FAILED TO FETCH" - RINGKASAN DATA
         async function updateRecordData(rowIndex, updates) {
             if(els.syncOverlay) els.syncOverlay.style.display = 'flex'; 
             let success = true; let errMsg = "Gagal mengemaskini data.";
             
             try {
-                // Sentiasa gunakan update_multiple untuk mengelakkan Google block sebagai spam
+                // Cuba kaedah update_multiple (jika backend sokong)
                 const params = new URLSearchParams({ 
                     action: 'update_multiple', 
                     rowIndex: rowIndex, 
@@ -755,19 +706,19 @@
                 try {
                     json = JSON.parse(textRes);
                 } catch(e) {
-                    throw new Error("Pangkalan data gagal diproses. Pastikan backend Code.gs anda telah dikemas kini.");
+                    throw new Error("Pangkalan data gagal diproses.");
                 }
                 
                 if (!json.success) {
-                    // Fallback jika backend lama digunakan (Satu persatu dengan delay 1.5s)
                     if (json.message && json.message.includes("Tindakan tidak sah")) {
+                        // Fallback kepada satu-persatu secara perlahan jika backend tiada update_multiple
                         for (let i = 0; i < updates.length; i++) {
                             let upd = updates[i];
                             const singleParams = new URLSearchParams({ action: 'update', rowIndex: rowIndex, field: upd.field, value: upd.value, validateDup: 'false', t: Date.now() });
                             const sRes = await fetch(`${GAS_WEB_APP_URL}?${singleParams.toString()}`);
                             const sJson = await sRes.json();
                             if(!sJson.success) { success = false; errMsg = sJson.message; break; }
-                            if (i < updates.length - 1) await new Promise(r => setTimeout(r, 1500));
+                            if (i < updates.length - 1) await new Promise(r => setTimeout(r, 800)); // Delay untuk tak kena block dengan Google
                         }
                     } else {
                         success = false; errMsg = json.message;
@@ -775,7 +726,7 @@
                 }
             } catch(e) {
                 success = false; 
-                errMsg = "Google menyekat sambungan (Ralat Rangkaian). Jika ralat berterusan, pastikan anda hanya log masuk ke SATU akaun Google sahaja dalam browser anda atau cuba tetingkap Incognito.";
+                errMsg = "Google menyekat sambungan (Failed to fetch). Sila pastikan pautan internet stabil.";
             }
             
             if(els.syncOverlay) els.syncOverlay.style.display = 'none';
@@ -787,7 +738,7 @@
             } else { 
                 showPopup("Ralat Kemas Kini", errMsg, "error"); 
             }
-            renderTable(); // Paksa render semula table supaya butang dropdown kembali ke asal jika ia gagal
+            renderTable(); // Paksa render semula supaya jadual cantik balik
         }
 
         window.handleEdit = async function(rowIndex, field, value, inputElement) {
@@ -815,8 +766,7 @@
                 const today = new Date();
                 updateRecordData(rowIndex, [
                     {field: 'STATUS', value: 'Pending Semakan'},
-                    {field: 'DATE', value: `${String(today.getDate()).padStart(2, '0')}/${String(today.getMonth() + 1).padStart(2, '0')}/${today.getFullYear()}`},
-                    {field: 'REMARKS', value: ''}
+                    {field: 'DATE', value: `${String(today.getDate()).padStart(2, '0')}/${String(today.getMonth() + 1).padStart(2, '0')}/${today.getFullYear()}`}
                 ]);
             }
         };
@@ -825,27 +775,16 @@
             const today = new Date();
             updateRecordData(rowIndex, [
                 {field: 'STATUS', value: 'Pending Kelulusan'}, {field: 'CHECKED BY', value: 'Rosli'},
-                {field: 'DATE CHECKED', value: `${String(today.getDate()).padStart(2, '0')}/${String(today.getMonth() + 1).padStart(2, '0')}/${today.getFullYear()}`},
-                {field: 'REMARKS', value: ''}
+                {field: 'DATE CHECKED', value: `${String(today.getDate()).padStart(2, '0')}/${String(today.getMonth() + 1).padStart(2, '0')}/${today.getFullYear()}`}
             ]);
         };
 
         window.rosliReject = function(rowIndex) {
-            const modal = document.getElementById('reject-modal'); const textarea = document.getElementById('reject-reason'); const btn = document.getElementById('confirm-reject-btn');
-            if(textarea) textarea.value = ''; 
-            if(modal) modal.style.display = 'flex';
-            if(btn) {
-                btn.onclick = function() {
-                    const reason = textarea ? textarea.value.trim() : ''; 
-                    if(!reason) return alert("Sila masukkan sebab penolakan.");
-                    if(modal) modal.style.display = 'none'; 
-                    const today = new Date();
-                    updateRecordData(rowIndex, [
-                        {field: 'STATUS', value: 'Rejected'}, {field: 'REMARKS', value: reason}, {field: 'CHECKED BY', value: 'Rosli'},
-                        {field: 'DATE CHECKED', value: `${String(today.getDate()).padStart(2, '0')}/${String(today.getMonth() + 1).padStart(2, '0')}/${today.getFullYear()}`}
-                    ]);
-                };
-            }
+            const today = new Date();
+            updateRecordData(rowIndex, [
+                {field: 'STATUS', value: 'Rejected'}, {field: 'CHECKED BY', value: 'Rosli'},
+                {field: 'DATE CHECKED', value: `${String(today.getDate()).padStart(2, '0')}/${String(today.getMonth() + 1).padStart(2, '0')}/${today.getFullYear()}`}
+            ]);
         };
 
         window.jainiApprove = function(rowIndex) {
@@ -854,50 +793,6 @@
                 {field: 'STATUS', value: 'Completed'}, {field: 'APPROVED BY', value: 'Jaini'},
                 {field: 'APPROVED DATE', value: `${String(today.getDate()).padStart(2, '0')}/${String(today.getMonth() + 1).padStart(2, '0')}/${today.getFullYear()}`}
             ]);
-        };
-
-        if(document.getElementById('btn-notif')){
-            document.getElementById('btn-notif').addEventListener('click', () => {
-                const dropdown = document.getElementById('notif-dropdown');
-                if(dropdown) dropdown.style.display = dropdown.style.display === 'flex' ? 'none' : 'flex';
-            });
-        }
-
-        function updateNotificationBell() {
-            if(State.currentUser && State.currentUser.id === 'staff') {
-                const rejectedList = State.data.filter(r => r['STATUS'] === 'Rejected');
-                const badge = document.getElementById('notif-badge'); 
-                const list = document.getElementById('notif-list');
-                
-                if (rejectedList.length > 0) {
-                    if(badge) { badge.innerText = rejectedList.length; badge.classList.remove('hidden'); }
-                    if(list) {
-                        list.innerHTML = rejectedList.map(r => `
-                            <div class="notif-item" onclick="lihatRekodDitolak('${r['ACCESSION']}')">
-                                <div class="notif-item-title">ACCESSION: ${r['ACCESSION']}</div>
-                                <div class="notif-item-desc"><b>Rosli:</b> ${r['REMARKS'] || 'Sila baiki semula.'}</div>
-                            </div>`).join('');
-                    }
-                } else {
-                    if(badge) badge.classList.add('hidden'); 
-                    if(list) list.innerHTML = `<div class="p-4 text-center text-xs text-gray-500">Tiada rekod ditolak.</div>`;
-                }
-            }
-        }
-
-        window.lihatRekodDitolak = function(accessionStr) {
-            const dropdown = document.getElementById('notif-dropdown'); if(dropdown) dropdown.style.display = 'none';
-            const searchInput = document.getElementById('search-input'); if(searchInput) searchInput.value = accessionStr;
-            const btnReset = document.getElementById('btn-reset-view'); if(btnReset) btnReset.classList.remove('hidden');
-            applyFilters(); 
-            const tableSec = document.getElementById('table-section'); if(tableSec) tableSec.scrollIntoView({behavior: 'smooth', block: 'start'});
-        };
-
-        window.kembaliPaparanBiasa = function() {
-            const searchInput = document.getElementById('search-input'); if(searchInput) searchInput.value = ''; 
-            const filterStat = document.getElementById('filter-status'); if(filterStat) filterStat.value = '';
-            const btnReset = document.getElementById('btn-reset-view'); if(btnReset) btnReset.classList.add('hidden'); 
-            applyFilters();
         };
 
         function renderTable() {
@@ -961,14 +856,11 @@
                 let lulusText = row['APPROVED BY'] ? `<div class="font-bold text-[#10B981] text-[10.5px] text-left leading-tight mt-1.5">Approved: ${row['APPROVED BY']} <br><span class="font-normal text-gray-500">(${row['APPROVED DATE'] || ''})</span></div>` : '';
                 let auditHTML = semakText || lulusText ? `<div class="text-left px-1">${semakText}${lulusText}</div>` : `<span class="text-gray-300">-</span>`;
 
-                // Tindakan (Action) HTML
+                // Tindakan (Action) HTML - Notifikasi Dibuang
                 let actionHTML = '';
                 if (roleId === 'staff') {
-                    if (stat === 'incomplete') {
+                    if (stat === 'incomplete' || stat === 'Rejected') {
                         actionHTML = `<span class="text-gray-300">-</span>`;
-                    } else if (stat === 'Rejected') {
-                        const safeMsg = (row['REMARKS'] || '').replace(/'/g, "\\'").replace(/"/g, "&quot;");
-                        actionHTML = `<button onclick="showPopup('Sebab Ditolak', '${safeMsg}')" class="btn-sm btn-info text-[10px] py-1.5 px-3 w-full justify-center"><i data-lucide="message-square" class="w-3 h-3"></i> MESSAGE</button>`;
                     } else {
                         actionHTML = `<div class="text-[10px] text-gray-400 font-bold uppercase text-center"><i data-lucide="lock" class="w-3 h-3 inline"></i> LOCKED</div>`;
                     }
@@ -981,9 +873,6 @@
                                 <button onclick="rosliReject(${row._rowIndex})" class="btn-sm btn-reject w-full justify-center text-[10px] py-1.5 px-2" title="Reject"><i data-lucide="x" class="w-3 h-3"></i> REJECT</button>
                             </div>
                         `;
-                    } else if (stat === 'Rejected') {
-                        const safeMsg = (row['REMARKS'] || '').replace(/'/g, "\\'").replace(/"/g, "&quot;");
-                        actionHTML = `<button onclick="showPopup('Sebab Ditolak', '${safeMsg}')" class="btn-sm btn-info text-[10px] py-1.5 px-3 w-full justify-center"><i data-lucide="message-square" class="w-3 h-3"></i> MESSAGE</button>`;
                     } else { actionHTML = `<span class="text-gray-300">-</span>`; }
                 }
                 else if (roleId === 'jaini') {
@@ -1015,9 +904,9 @@
                     <td class="col-call50">${call50Html}</td>
                     <td class="col-acc">${accHtml}</td>
                     <td class="col-title" title="${row['TITLE'] || ''}">${titleHtml}</td>
-                    <td class="col-status px-2 align-middle">${statusHTML}</td>
                     <td class="col-staff">${staffHtml}</td>
                     <td class="col-date">${dateHtml}</td>
+                    <td class="col-status px-2 align-middle">${statusHTML}</td>
                     <td class="col-audit align-middle">${auditHTML}</td>
                     <td class="col-action px-2 align-middle">${actionHTML}</td>
                 `;
@@ -1049,7 +938,6 @@
             updateKPIs(); 
             const toggleCharts = document.getElementById('toggle-charts');
             if(toggleCharts && toggleCharts.checked) updateCharts(); 
-            updateNotificationBell(); 
             if(reRender) renderTable();
         }
 
@@ -1136,10 +1024,10 @@
 
                 const ws = XLSX.utils.json_to_sheet(dataToExport.map((row, index) => ({
                     "NO": index + 1, "CONTROL NUMBER": row['CONTROL NUMBER'] || '', "CALL NO (082)": row['CALL NO (082)'] || '', "CALL NO (050/060)": row['CALL NO (050/060)'] || '',
-                    "ACCESSION": row['ACCESSION'] || '', "TITLE": row['TITLE'] || '', "STATUS": row['STATUS'] || '', "STAFF": row['STAFF'] || '', "DATE SUBMITTED": row['DATE'] || '',
-                    "CHECKED BY": row['CHECKED BY'] || '', "DATE CHECKED": row['DATE CHECKED'] || '', "APPROVED BY": row['APPROVED BY'] || '', "APPROVED DATE": row['APPROVED DATE'] || '', "REMARKS (REJECT)": row['REMARKS'] || ''
+                    "ACCESSION": row['ACCESSION'] || '', "TITLE": row['TITLE'] || '', "STAFF": row['STAFF'] || '', "STATUS": row['STATUS'] || '', "DATE SUBMITTED": row['DATE'] || '',
+                    "CHECKED BY": row['CHECKED BY'] || '', "DATE CHECKED": row['DATE CHECKED'] || '', "APPROVED BY": row['APPROVED BY'] || '', "APPROVED DATE": row['APPROVED DATE'] || ''
                 })));
-                ws['!cols'] = [{wch: 6}, {wch: 18}, {wch: 18}, {wch: 22}, {wch: 18}, {wch: 60}, {wch: 15}, {wch: 15}, {wch: 15}, {wch: 20}, {wch: 15}, {wch: 20}, {wch: 15}, {wch: 30}];
+                ws['!cols'] = [{wch: 6}, {wch: 18}, {wch: 18}, {wch: 22}, {wch: 18}, {wch: 60}, {wch: 15}, {wch: 15}, {wch: 15}, {wch: 20}, {wch: 15}, {wch: 20}, {wch: 15}];
                 const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Laporan Penuh"); XLSX.writeFile(wb, `Laporan_Buku_IKU_${selectedYear === 'all' ? 'Keseluruhan' : selectedYear}.xlsx`);
                 showPopup("Muat Turun Berjaya", "Laporan Excel anda telah siap dimuat turun.", "success");
             });
