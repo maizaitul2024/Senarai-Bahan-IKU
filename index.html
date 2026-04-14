@@ -34,7 +34,7 @@
 
         body {
             font-family: var(--font-ui);
-            background-color: #F1F5F9; /* Warna latar sedikit gelap untuk tonjolkan kad putih */
+            background-color: #F1F5F9; 
             color: #334155;
             margin: 0;
             padding: 0;
@@ -151,7 +151,6 @@
             gap: 20px;
         }
 
-        /* DESIGN BARU: KAD MELENGKUNG & SHADOW LEMBUT */
         .base-card {
             background: white;
             border-radius: 16px;
@@ -161,61 +160,18 @@
 
         /* COMPACT KPI CARDS */
         #kpis { display: var(--kpi-visible); grid-template-columns: repeat(4, 1fr); gap: 20px; }
-        
-        .kpi-card {
-            padding: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border-left: 4px solid var(--brand-medium);
-        }
-        
+        .kpi-card { padding: 24px; display: flex; align-items: center; justify-content: space-between; border-left: 4px solid var(--brand-medium); }
         .kpi-info { display: flex; flex-direction: column; gap: 4px; }
         .kpi-label { font-size: 12px; color: #64748b; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
         .kpi-value { font-size: 32px; font-weight: 700; color: var(--brand-dark); line-height: 1; }
+        .kpi-icon-wrap { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; background: var(--bg-light); color: var(--brand-medium); }
 
-        .kpi-icon-wrap {
-            width: 48px; height: 48px; border-radius: 12px;
-            display: flex; align-items: center; justify-content: center;
-            background: var(--bg-light); color: var(--brand-medium);
-        }
-
-        /* DESIGN BARU: CHARTS SECTION (LEBIH KECIL & KETAT) */
-        #charts-section { 
-            display: var(--charts-visible); 
-            grid-template-columns: 1fr 1.5fr 1fr; 
-            gap: 20px; 
-            height: 280px; 
-        }
-        
-        .chart-container { 
-            padding: 20px 24px; 
-            display: flex; 
-            flex-direction: column; 
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
-            border: 1px solid #F1F5F9;
-            min-width: 0; 
-            min-height: 0; 
-            height: 100%;
-        }
-        
-        .chart-container .relative { 
-            flex: 1 1 auto; 
-            min-height: 0; 
-            min-width: 0;
-            width: 100%; 
-            height: 100%;
-            max-height: 190px;
-            position: relative; 
-            display: flex;
-            justify-content: center;
-        }
-        
+        /* CHARTS SECTION */
+        #charts-section { display: var(--charts-visible); grid-template-columns: 1fr 1.5fr 1fr; gap: 20px; height: 280px; }
+        .chart-container { padding: 20px 24px; display: flex; flex-direction: column; background: white; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03); border: 1px solid #F1F5F9; min-width: 0; min-height: 0; height: 100%; }
+        .chart-container .relative { flex: 1 1 auto; min-height: 0; min-width: 0; width: 100%; height: 100%; max-height: 190px; position: relative; display: flex; justify-content: center; }
         .chart-header { font-size: 14px; font-weight: 700; color: var(--brand-dark); margin-bottom: 12px; }
 
-        /* SUSUNAN RESPONSIVE */
         @media (max-width: 1200px) {
             #charts-section { grid-template-columns: 1fr; height: auto; }
             .chart-container { height: 280px; }
@@ -237,45 +193,15 @@
         .btn-sync.syncing .sync-icon { animation: spin 1s linear infinite; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        /* STRICT TABLE SECTION */
-        #table-section { 
-            display: flex; 
-            flex-direction: column; 
-            overflow: hidden; 
-        }
-        
-        .table-wrapper { 
-            overflow-x: auto; 
-            max-height: 650px;
-            overflow-y: auto; 
-        }
-        
-        table {
-            width: 100%; border-collapse: separate; border-spacing: 0;
-            font-family: var(--font-table) !important; table-layout: fixed; min-width: 1200px;
-        }
-
+        /* STRICT TABLE SECTION (9 Columns) */
+        #table-section { display: flex; flex-direction: column; overflow: hidden; }
+        .table-wrapper { overflow-x: auto; max-height: 650px; overflow-y: auto; }
+        table { width: 100%; border-collapse: separate; border-spacing: 0; font-family: var(--font-table) !important; table-layout: fixed; min-width: 1100px; }
         thead { position: sticky; top: 0; z-index: 5; }
-
-        th {
-            background: var(--brand-dark); color: white;
-            font-size: 12px; font-weight: 700; text-align: center;
-            padding: 14px 8px; border-bottom: none;
-            letter-spacing: 0.5px;
-        }
-        
+        th { background: var(--brand-dark); color: white; font-size: 12px; font-weight: 700; text-align: center; padding: 14px 8px; border-bottom: none; letter-spacing: 0.5px; }
         th:first-child { border-top-left-radius: 8px; }
         th:last-child { border-top-right-radius: 8px; }
-
-        td {
-            font-size: 12.5px; text-align: center; padding: 12px 8px;
-            border-bottom: 1px solid #F1F5F9; color: #334155; vertical-align: middle;
-            line-height: 1.5;
-            white-space: nowrap; 
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
+        td { font-size: 12.5px; text-align: center; padding: 12px 8px; border-bottom: 1px solid #F1F5F9; color: #334155; vertical-align: middle; line-height: 1.5; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         tr:nth-child(even) td { background-color: var(--row-alt); }
         tr:hover td { background-color: #F8FAFC; }
         
@@ -283,35 +209,23 @@
         .col-no { width: 50px; }
         .col-control { width: 140px; }
         .col-call82 { width: 110px; }
-        .col-call50 { width: 160px; }
+        .col-call50 { width: 150px; }
         .col-acc { width: 110px; }
-        .col-title { 
-            width: auto; 
-            font-size: 12.5px !important; 
-            text-align: center !important; 
-            white-space: normal !important; 
-            word-break: break-word;
-        }
-        .col-status { width: 150px; }
+        .col-title { width: auto; min-width: 200px; font-size: 12.5px !important; text-align: center !important; white-space: normal !important; word-break: break-word; }
         .col-staff { width: 110px; }
         .col-date { width: 100px; }
-        .col-action { width: 180px; } /* Untuk butang approve/reject */
+        .col-status { width: 130px; }
+        .col-audit { width: 120px; }
+        .col-action { width: 140px; }
 
         /* Editable Inputs inside table */
-        .editable-input {
-            width: 100%; padding: 6px; border: 1px solid transparent; border-radius: 6px;
-            font-family: var(--font-table) !important; font-size: 12.5px; text-align: center;
-            background: transparent; color: inherit; font-weight: 500;
-        }
+        .editable-input { width: 100%; padding: 6px; border: 1px solid transparent; border-radius: 6px; font-family: var(--font-table) !important; font-size: 12.5px; text-align: center; background: transparent; color: inherit; font-weight: 500; transition: 0.2s; }
         .editable-input:hover:not(:disabled) { border-color: #E2E8F0; background: white; }
-        .editable-input:focus {
-            background: white; border-color: var(--brand-medium);
-            box-shadow: 0 0 0 2px rgba(0, 85, 165, 0.1); outline: none;
-        }
-        .editable-input:disabled { opacity: 0.8; cursor: not-allowed; background: transparent !important; border-color: transparent !important; }
+        .editable-input:focus { background: white; border-color: var(--brand-medium); box-shadow: 0 0 0 2px rgba(0, 85, 165, 0.1); outline: none; }
+        .editable-input:disabled { opacity: 0.8; cursor: not-allowed; background: transparent !important; border-color: transparent !important; color: #475569; }
 
         select.editable-input { cursor: pointer; }
-        select.editable-input:disabled { cursor: not-allowed; appearance: none; } /* Hide arrow when disabled */
+        select.editable-input:disabled { cursor: not-allowed; appearance: none; }
 
         /* Workflow Buttons */
         .btn-sm { padding: 6px 12px; border-radius: 6px; font-weight: 700; font-size: 11px; cursor: pointer; border: none; color: white; transition: 0.2s; display: inline-flex; align-items: center; gap: 4px; }
@@ -330,20 +244,11 @@
         .st-incomplete { color: #64748b; background: #F1F5F9; }
 
         /* Loading Overlay */
-        #sync-overlay {
-            position: fixed; inset: 0; background: rgba(255,255,255,0.8); backdrop-filter: blur(4px);
-            z-index: 3000; display: none; flex-direction: column; justify-content: center; align-items: center;
-        }
-        .loader {
-            width: 40px; height: 40px; border: 4px solid var(--bg-light);
-            border-top-color: var(--brand-medium); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 16px;
-        }
+        #sync-overlay { position: fixed; inset: 0; background: rgba(255,255,255,0.8); backdrop-filter: blur(4px); z-index: 3000; display: none; flex-direction: column; justify-content: center; align-items: center; }
+        .loader { width: 40px; height: 40px; border: 4px solid var(--bg-light); border-top-color: var(--brand-medium); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 16px; }
 
         /* Popups */
-        .popup-overlay {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none;
-            justify-content: center; align-items: center; z-index: 4000;
-        }
+        .popup-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 4000; }
         .popup-content { background: white; padding: 32px; border-radius: 20px; max-width: 400px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.1); width: 100%; }
 
         /* Notification Bell */
@@ -361,11 +266,7 @@
         .notif-item-desc { font-size: 11px; color: #64748b; line-height: 1.4; }
 
         /* Admin Panel */
-        #admin-panel {
-            position: fixed; right: -320px; top: 0; bottom: 0; width: 300px;
-            background: white; box-shadow: -5px 0 25px rgba(0,0,0,0.1); z-index: 1000;
-            transition: right 0.3s; display: flex; flex-direction: column;
-        }
+        #admin-panel { position: fixed; right: -320px; top: 0; bottom: 0; width: 300px; background: white; box-shadow: -5px 0 25px rgba(0,0,0,0.1); z-index: 1000; transition: right 0.3s; display: flex; flex-direction: column; }
     </style>
 </head>
 <body>
@@ -453,7 +354,7 @@
         </nav>
 
         <main class="main-content">
-            <!-- 4 KPI Cards -->
+            <!-- KPI CARDS -->
             <section id="kpis">
                 <div class="base-card kpi-card">
                     <div class="kpi-info">
@@ -471,7 +372,7 @@
                 </div>
                 <div class="base-card kpi-card" style="border-left-color: #F59E0B;">
                     <div class="kpi-info">
-                        <span class="kpi-label">Incomplete</span>
+                        <span class="kpi-label">Pending Approval</span>
                         <span class="kpi-value text-[#F59E0B]" id="kpi-incomplete">0</span>
                     </div>
                     <div class="kpi-icon-wrap" style="color: #F59E0B; background: #fffbeb;"><i data-lucide="clock"></i></div>
@@ -485,25 +386,22 @@
                 </div>
             </section>
 
-            <!-- Charts Section (3 Columns) -->
+            <!-- CHARTS SECTION -->
             <section id="charts-section">
                 <!-- Doughnut Chart -->
                 <div class="chart-container">
                     <div class="chart-header">Status Distribution</div>
                     <div class="flex-1 relative"><canvas id="statusChart"></canvas></div>
                 </div>
-                
                 <!-- Bar Chart -->
                 <div class="chart-container">
                     <div class="chart-header">Staff Performance</div>
                     <div class="flex-1 relative"><canvas id="staffChart"></canvas></div>
                 </div>
-
-                <!-- Quick Insights Card -->
+                <!-- Quick Insights -->
                 <div class="chart-container">
                     <div class="chart-header">Quick Insights</div>
                     <div class="flex-1 flex flex-col justify-center gap-5">
-                        <!-- Insight 1: Top Performer -->
                         <div class="flex items-center gap-4">
                             <div class="w-12 h-12 rounded-full bg-orange-50 text-[#F59E0B] flex items-center justify-center shadow-sm border border-orange-100 shrink-0">
                                 <i data-lucide="award" class="w-6 h-6"></i>
@@ -511,13 +409,10 @@
                             <div>
                                 <div class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-0.5">Top Performer</div>
                                 <div class="text-[15px] font-bold text-[--brand-dark] leading-tight" id="insight-top-staff">-</div>
-                                <div class="text-[11px] text-[#10B981] font-semibold mt-0.5" id="insight-top-score">0 Rekod Siap</div>
+                                <div class="text-[11px] text-[#10B981] font-semibold mt-0.5" id="insight-top-score">0 Rekod Dihantar</div>
                             </div>
                         </div>
-                        
                         <div class="w-full h-px bg-gray-100"></div>
-                        
-                        <!-- Insight 2: Pending Tasks -->
                         <div class="flex items-center gap-4">
                             <div class="w-12 h-12 rounded-full bg-blue-50 text-[--brand-medium] flex items-center justify-center shadow-sm border border-blue-100 shrink-0">
                                 <i data-lucide="alert-circle" class="w-6 h-6"></i>
@@ -525,7 +420,7 @@
                             <div>
                                 <div class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-0.5">Pending Tasks</div>
                                 <div class="text-[15px] font-bold text-[--brand-dark] leading-tight" id="insight-pending">0 Rekod</div>
-                                <div class="text-[11px] text-red-500 font-semibold mt-0.5">Belum Siap</div>
+                                <div class="text-[11px] text-red-500 font-semibold mt-0.5">Belum Selesai Lulus</div>
                             </div>
                         </div>
                     </div>
@@ -596,9 +491,6 @@
                             </button>
                         </div>
                     </div>
-                </div>
-            </section>
-
             <!-- Table Section -->
             <section id="table-section" class="base-card flex-1">
                 <div class="table-wrapper">
@@ -612,9 +504,11 @@
                                 <th class="col-acc">ACCESSION</th>
                                 <th class="col-title">TITLE</th>
                                 <th class="col-staff">STAFF</th>
+                                <th class="col-date">TARIKH</th>
                                 <th class="col-status">STATUS</th>
-                                <th class="col-date">DATE</th>
-                                <th class="col-action">TINDAKAN / INFO</th>
+                                <th class="col-audit">DISEMAK OLEH</th>
+                                <th class="col-audit">DILULUSKAN OLEH</th>
+                                <th class="col-action">TINDAKAN</th>
                             </tr>
                         </thead>
                         <tbody id="table-body">
@@ -643,35 +537,14 @@
             <button id="btn-close-admin" class="hover:text-gray-300 transition-colors"><i data-lucide="x" class="w-5 h-5"></i></button>
         </div>
         <div class="p-6 flex flex-col gap-5">
-            <label class="text-xs font-bold text-gray-700 flex justify-between items-center">
-                Font Header:
-                <select id="admin-font" class="border border-gray-200 p-1.5 rounded-md text-xs outline-none">
-                    <option value="'Montserrat', sans-serif">Montserrat</option>
-                    <option value="'Poppins', sans-serif">Poppins</option>
-                </select>
-            </label>
-            <label class="text-xs font-bold text-gray-700 flex justify-between items-center">
-                Warna Gelap: <input type="color" id="admin-dark" value="#003366" class="cursor-pointer border-0 w-6 h-6 p-0 rounded">
-            </label>
-            <label class="text-xs font-bold text-gray-700 flex justify-between items-center">
-                Warna Medium: <input type="color" id="admin-medium" value="#0055A5" class="cursor-pointer border-0 w-6 h-6 p-0 rounded">
-            </label>
-            <label class="text-xs font-bold text-gray-700 flex justify-between items-center">
-                Bg Cerah: <input type="color" id="admin-light" value="#CCE5FF" class="cursor-pointer border-0 w-6 h-6 p-0 rounded">
-            </label>
+            <label class="text-xs font-bold text-gray-700 flex justify-between items-center">Font Header: <select id="admin-font" class="border border-gray-200 p-1.5 rounded-md text-xs outline-none"><option value="'Montserrat', sans-serif">Montserrat</option><option value="'Poppins', sans-serif">Poppins</option></select></label>
+            <label class="text-xs font-bold text-gray-700 flex justify-between items-center">Warna Gelap: <input type="color" id="admin-dark" value="#003366" class="cursor-pointer border-0 w-6 h-6 p-0 rounded"></label>
+            <label class="text-xs font-bold text-gray-700 flex justify-between items-center">Warna Medium: <input type="color" id="admin-medium" value="#0055A5" class="cursor-pointer border-0 w-6 h-6 p-0 rounded"></label>
+            <label class="text-xs font-bold text-gray-700 flex justify-between items-center">Bg Cerah: <input type="color" id="admin-light" value="#CCE5FF" class="cursor-pointer border-0 w-6 h-6 p-0 rounded"></label>
             <hr class="border-gray-100">
-            <label class="text-xs font-bold text-gray-700 flex items-center gap-3 cursor-pointer">
-                <input type="checkbox" id="toggle-kpi" checked class="w-4 h-4 text-[--brand-medium] rounded focus:ring-[--brand-medium]"> Papar Kad KPI
-            </label>
-            <label class="text-xs font-bold text-gray-700 flex items-center gap-3 cursor-pointer">
-                <input type="checkbox" id="toggle-charts" checked class="w-4 h-4 text-[--brand-medium] rounded focus:ring-[--brand-medium]"> Papar Carta
-            </label>
-            <label class="text-xs font-bold text-gray-700 flex items-center gap-3 cursor-pointer">
-                <input type="checkbox" id="toggle-dup-prevent" checked class="w-4 h-4 text-[--brand-medium] rounded focus:ring-[--brand-medium]"> Halang Rekod Pendua
-            </label>
-            <div class="mt-6 text-[10px] uppercase tracking-widest text-gray-400 text-center font-bold">
-                Kemaskini Terakhir<br><span id="admin-last-update" class="text-gray-600 mt-1 block font-normal capitalize">-</span>
-            </div>
+            <label class="text-xs font-bold text-gray-700 flex items-center gap-3 cursor-pointer"><input type="checkbox" id="toggle-kpi" checked class="w-4 h-4 text-[--brand-medium] rounded focus:ring-[--brand-medium]"> Papar Kad KPI</label>
+            <label class="text-xs font-bold text-gray-700 flex items-center gap-3 cursor-pointer"><input type="checkbox" id="toggle-charts" checked class="w-4 h-4 text-[--brand-medium] rounded focus:ring-[--brand-medium]"> Papar Carta</label>
+            <label class="text-xs font-bold text-gray-700 flex items-center gap-3 cursor-pointer"><input type="checkbox" id="toggle-dup-prevent" checked class="w-4 h-4 text-[--brand-medium] rounded focus:ring-[--brand-medium]"> Halang Rekod Pendua</label>
         </div>
     </div>
 
@@ -685,55 +558,60 @@
         </div>
     </div>
 
+    <!-- REJECTION MODAL -->
+    <div id="reject-modal" class="popup-overlay" style="z-index: 4001;">
+        <div class="popup-content">
+            <div class="w-14 h-14 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4"><i data-lucide="alert-triangle" class="w-7 h-7"></i></div>
+            <h3 class="text-xl font-bold text-[--brand-dark] mb-2">Tolak Rekod</h3>
+            <p class="text-sm text-gray-500 mb-4">Sila masukkan sebab penolakan supaya Staff boleh membuat pembetulan.</p>
+            <textarea id="reject-reason" class="premium-input h-24 resize-none mb-4" placeholder="Cth: Call number salah format..."></textarea>
+            <div class="flex gap-3">
+                <button onclick="document.getElementById('reject-modal').style.display='none'" class="flex-1 py-2.5 rounded-xl font-bold text-gray-600 bg-gray-100 hover:bg-gray-200 transition-colors">Batal</button>
+                <button id="confirm-reject-btn" class="flex-1 py-2.5 rounded-xl font-bold text-white bg-red-500 hover:bg-red-600 transition-colors">Hantar Mesej</button>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // ==========================================
-        // KONFIGURASI SISTEM
         // ==========================================
         // PENTING: Gantikan URL di bawah dengan URL Google Apps Script anda yang BAHARU
         const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwItBO-5x5OIeMhrMAcbjFRWuIao_AeuZqxBhg7WzwkBnWDVn_Qx9lYDu6gHWD9CQTn/exec"; 
         
         const State = {
-            currentUser: null, data: [], filtered: [],
-            currentPage: 1, itemsPerPage: 100,
+            currentUser: null, data: [], filtered: [], currentPage: 1, itemsPerPage: 100,
             settings: { duplicatePrevention: true },
-            staffList: ["FATIHAH", "FAZILAH", "SAKINAH", "HUSNA", "ADMIN"],
-            chartInstances: {}
+            staffList: ["FATIHAH", "FAZILAH", "SAKINAH", "HUSNA", "ADMIN"], chartInstances: {}
         };
 
         lucide.createIcons();
         const els = {
             loginScreen: document.getElementById('login-screen'), dashboard: document.getElementById('dashboard'),
-            loginForm: document.getElementById('login-form'), 
-            timeDisplay: document.getElementById('live-time'),
+            loginForm: document.getElementById('login-form'), timeDisplay: document.getElementById('live-time'),
             dateDisplay: document.getElementById('live-date'), popup: document.getElementById('popup'),
             popupTitle: document.getElementById('popup-title'), popupMsg: document.getElementById('popup-msg'),
             popupIcon: document.getElementById('popup-icon'), popupBtn: document.getElementById('popup-btn'),
             syncOverlay: document.getElementById('sync-overlay'), btnSync: document.getElementById('btn-sync')
         };
 
-        // --- Jam & Tarikh ---
         setInterval(() => {
-            const now = new Date();
-            let h = now.getHours(), m = now.getMinutes(), s = now.getSeconds();
+            const now = new Date(); let h = now.getHours(), m = now.getMinutes(), s = now.getSeconds();
             const ampm = h >= 12 ? 'PM' : 'AM'; h = h % 12 || 12;
             els.timeDisplay.innerText = `${h}:${m < 10 ? '0'+m:m}:${s < 10 ? '0'+s:s} ${ampm}`;
             els.dateDisplay.innerText = now.toLocaleDateString('en-MY', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
         }, 1000);
 
-        // --- Logik Log Masuk (Dikemas Kini untuk Rosli & Jaini) ---
+        // --- Logik Log Masuk ---
         document.getElementById('toggle-pass').addEventListener('click', () => {
             const passInput = document.getElementById('login-pass');
-            const type = passInput.getAttribute('type') === 'password' ? 'text' : 'password';
-            passInput.setAttribute('type', type);
-            document.getElementById('toggle-pass').innerHTML = type === 'password' ? '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>' : '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye-off"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" x2="22" y1="2" y2="22"/></svg>';
+            passInput.type = passInput.type === 'password' ? 'text' : 'password';
+            document.getElementById('toggle-pass').innerHTML = passInput.type === 'password' ? '<i data-lucide="eye" class="w-4 h-4"></i>' : '<i data-lucide="eye-off" class="w-4 h-4"></i>';
+            lucide.createIcons();
         });
 
         els.loginForm.addEventListener('submit', e => {
             e.preventDefault();
             const user = document.getElementById('login-user').value;
             const pass = document.getElementById('login-pass').value;
-
-            // Kredensial untuk akses
             const credentials = { 'staff': 'staff123', 'rosli': 'rosli123', 'jaini': 'jaini123', 'admin': 'admin123' };
 
             if (user && credentials[user] === pass) {
@@ -745,13 +623,9 @@
                 document.getElementById('current-username').innerText = displayRole;
                 document.getElementById('user-avatar').innerText = user.charAt(0).toUpperCase();
                 document.getElementById('btn-admin-panel').classList.toggle('hidden', user !== 'admin');
+                els.loginScreen.style.display = 'none'; els.dashboard.style.display = 'flex';
                 
-                els.loginScreen.style.display = 'none';
-                els.dashboard.style.display = 'flex';
-                
-                // Show notification bell ONLY for staff
                 document.getElementById('notif-wrapper').style.display = user === 'staff' ? 'block' : 'none';
-
                 syncLiveDatabase();
             } else {
                 showPopup("Log Masuk Gagal", "Kata Laluan tidak sah.", "error");
@@ -764,39 +638,21 @@
         });
 
         function showPopup(title, msg, type="info") {
-            try {
-                els.popupTitle.innerText = title; 
-                els.popupMsg.innerText = msg;
-                els.popupIcon.className = `mx-auto w-14 h-14 rounded-full flex items-center justify-center mb-4 shadow-sm text-white ${type==='error'?'bg-red-500':type==='success'?'bg-[#10B981]':'bg-[--brand-medium]'}`;
-                
-                let svgIcon = '';
-                if (type === 'error') {
-                    svgIcon = '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>';
-                } else if (type === 'success') {
-                    svgIcon = '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>';
-                } else {
-                    svgIcon = '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>';
-                }
-                els.popupIcon.innerHTML = svgIcon;
-                els.popup.style.display = 'flex';
-            } catch (error) { alert(title + ": " + msg); }
+            els.popupTitle.innerText = title; els.popupMsg.innerText = msg;
+            els.popupIcon.className = `mx-auto w-14 h-14 rounded-full flex items-center justify-center mb-4 shadow-sm text-white ${type==='error'?'bg-red-500':type==='success'?'bg-[#10B981]':'bg-[--brand-medium]'}`;
+            els.popupIcon.innerHTML = type === 'error' ? '<i data-lucide="alert-triangle" class="w-7 h-7"></i>' : type === 'success' ? '<i data-lucide="check-circle" class="w-7 h-7"></i>' : '<i data-lucide="info" class="w-7 h-7"></i>';
+            lucide.createIcons(); els.popup.style.display = 'flex';
         }
         els.popupBtn.addEventListener('click', () => els.popup.style.display = 'none');
 
-        // ==========================================
-        // BACKEND SYNC (GOOGLE APPS SCRIPT)
-        // ==========================================
+        // --- BACKEND ---
         async function syncLiveDatabase() {
             els.syncOverlay.style.display = 'flex'; els.btnSync.classList.add('syncing');
             try {
                 const response = await fetch(`${GAS_WEB_APP_URL}?action=get`);
                 const json = await response.json();
-                if(json.success) {
-                    processData(json.data);
-                } else { throw new Error(json.message); }
-            } catch (err) {
-                showPopup("Ralat Sambungan", "Gagal memuat turun data dari Spreadsheet. Pastikan URL Apps Script disalin dari New Deployment.", "error");
-            }
+                if(json.success) processData(json.data); else throw new Error(json.message);
+            } catch (err) { showPopup("Ralat Sambungan", "Gagal memuat turun data dari Spreadsheet.", "error"); }
             els.syncOverlay.style.display = 'none'; els.btnSync.classList.remove('syncing');
         }
 
@@ -804,175 +660,113 @@
 
         function processData(rawData) {
             let uniqueYears = new Set();
-
             State.data = rawData.map(row => {
                 if (row.STAFF) {
                     let staffUpper = row.STAFF.toString().trim().toUpperCase();
-                    if (["NABIL", "ALIA", "EYZAN", "ADMIN", "USER"].includes(staffUpper)) {
-                        row.STAFF = "ADMIN";
-                    } else { row.STAFF = staffUpper; }
+                    row.STAFF = ["NABIL", "ALIA", "EYZAN", "ADMIN", "USER"].includes(staffUpper) ? "ADMIN" : staffUpper;
                 }
-                
-                // Normalisasi STATUS jika kosong/Incomplete ejaan berbeza
-                if(!row['STATUS'] || row['STATUS'].toString().trim().toLowerCase() === 'incomplete') {
-                    row['STATUS'] = 'incomplete';
-                }
+                if(!row['STATUS'] || row['STATUS'].toString().trim().toLowerCase() === 'incomplete') row['STATUS'] = 'incomplete';
 
-                // Format tarikh jika perlu
                 if (row.DATE) {
                     let dStr = row.DATE.toString();
                     if (!/^\d{2}\/\d{2}\/\d{4}$/.test(dStr)) {
                         let dObj = new Date(dStr);
                         if (!isNaN(dObj.getTime())) {
-                            let dd = String(dObj.getDate()).padStart(2, '0');
-                            let mm = String(dObj.getMonth() + 1).padStart(2, '0');
-                            let yyyy = dObj.getFullYear();
-                            row.DATE = `${dd}/${mm}/${yyyy}`;
+                            row.DATE = `${String(dObj.getDate()).padStart(2, '0')}/${String(dObj.getMonth() + 1).padStart(2, '0')}/${dObj.getFullYear()}`;
                         }
                     }
                     let yearMatch = row.DATE.match(/\b(20\d{2})\b/);
                     if(yearMatch) uniqueYears.add(yearMatch[1]);
                 }
-                
                 return row;
             });
             
-            const exportYearFilter = document.getElementById('export-year');
             let years = Array.from(uniqueYears).sort((a,b) => b-a);
             if(years.length === 0) years = ["2024", "2025", "2026", "2027"];
-            exportYearFilter.innerHTML = '<option value="all">Keseluruhan</option>' + 
-                years.map(y => `<option value="${y}">${y}</option>`).join('');
-                
+            document.getElementById('export-year').innerHTML = '<option value="all">Keseluruhan</option>' + years.map(y => `<option value="${y}">${y}</option>`).join('');
             document.getElementById('admin-last-update').innerText = new Date().toLocaleString('en-MY');
             applyFilters();
         }
 
-        // ==========================================
-        // WORKFLOW LOGIC (KEMAS KINI DATA MULTIPLE)
-        // ==========================================
-        // Membantu untuk update banyak kolum (seperti status, audit, remarks) sekaligus
         async function updateRecordData(rowIndex, updates) {
-            els.syncOverlay.style.display = 'flex';
-            let success = true;
-            
-            // Loop single updates sekiranya backend belum sedia update_multiple
-            // Kita gunakan url fetching standard dari versi sedia ada
+            els.syncOverlay.style.display = 'flex'; let success = true;
             for (let upd of updates) {
-                const params = new URLSearchParams({
-                    action: 'update',
-                    rowIndex: rowIndex,
-                    field: upd.field,
-                    value: upd.value,
-                    validateDup: 'false' 
-                });
+                const params = new URLSearchParams({ action: 'update', rowIndex: rowIndex, field: upd.field, value: upd.value, validateDup: 'false' });
                 try {
                     const res = await fetch(`${GAS_WEB_APP_URL}?${params.toString()}`);
-                    const json = await res.json();
-                    if(!json.success) success = false;
+                    const json = await res.json(); if(!json.success) success = false;
                 } catch(e) { success = false; }
             }
-            
             els.syncOverlay.style.display = 'none';
             if(success) {
                 let record = State.data.find(r => r._rowIndex === rowIndex);
                 updates.forEach(u => record[u.field] = u.value);
-                applyFilters(false); 
-                renderTable();
-            } else {
-                showPopup("Ralat", "Gagal mengemaskini sebahagian data. Pastikan lajur (Column) 10-14 wujud di dalam Spreadsheet dan Code.gs anda telah di-deploy semula.", "error");
-            }
+                applyFilters(false); renderTable();
+            } else { showPopup("Ralat", "Gagal mengemaskini data.", "error"); }
         }
 
-        // Fungsi standard edit input teks (Tajuk, Call no)
         window.handleEdit = async function(rowIndex, field, value, inputElement) {
             inputElement.disabled = true;
-            
-            // Semakan Pendua
             if(State.settings.duplicatePrevention && (field === 'CONTROL NUMBER' || field === 'ACCESSION')) {
                 let record = State.data.find(r => r._rowIndex === rowIndex);
                 const tempControl = field === 'CONTROL NUMBER' ? value : record['CONTROL NUMBER'];
                 const tempAcc = field === 'ACCESSION' ? value : record['ACCESSION'];
-                if(tempControl && tempAcc) {
-                    const isDup = State.data.some(r => r._rowIndex !== rowIndex && r['CONTROL NUMBER'] === tempControl && r['ACCESSION'] === tempAcc);
-                    if(isDup) {
-                        inputElement.value = record[field];
-                        showPopup("Rekod Pendua", "Kemas kini dibatalkan kerana rekod ini sudah wujud.", "error");
-                        inputElement.disabled = false;
-                        return;
-                    }
+                if(tempControl && tempAcc && State.data.some(r => r._rowIndex !== rowIndex && r['CONTROL NUMBER'] === tempControl && r['ACCESSION'] === tempAcc)) {
+                    inputElement.value = record[field]; showPopup("Rekod Pendua", "Kemas kini dibatalkan kerana rekod ini sudah wujud.", "error");
+                    inputElement.disabled = false; return;
                 }
             }
-
-            // Hantar ke Google Sheet
             const params = new URLSearchParams({ action: 'update', rowIndex: rowIndex, field: field, value: value, validateDup: 'false' });
             try {
-                const res = await fetch(`${GAS_WEB_APP_URL}?${params.toString()}`);
-                const json = await res.json();
-                if(json.success) {
-                    State.data.find(r => r._rowIndex === rowIndex)[field] = value;
-                } else {
-                    inputElement.value = State.data.find(r => r._rowIndex === rowIndex)[field];
-                    showPopup("Ditolak", json.message, "error");
-                }
-            } catch(e) {
-                inputElement.value = State.data.find(r => r._rowIndex === rowIndex)[field];
-            }
+                const res = await fetch(`${GAS_WEB_APP_URL}?${params.toString()}`); const json = await res.json();
+                if(json.success) State.data.find(r => r._rowIndex === rowIndex)[field] = value;
+                else { inputElement.value = State.data.find(r => r._rowIndex === rowIndex)[field]; showPopup("Ditolak", json.message, "error"); }
+            } catch(e) { inputElement.value = State.data.find(r => r._rowIndex === rowIndex)[field]; }
             inputElement.disabled = false;
         };
 
-        // FUNGSI BUTANG WORKFLOW
         window.staffSelectComplete = function(rowIndex, value, dropdownEl) {
             if (value === 'Completed') {
                 const today = new Date();
-                const formattedDate = `${String(today.getDate()).padStart(2, '0')}/${String(today.getMonth() + 1).padStart(2, '0')}/${today.getFullYear()}`;
-                
                 updateRecordData(rowIndex, [
                     {field: 'STATUS', value: 'Pending Semakan'},
-                    {field: 'DATE', value: formattedDate},
-                    {field: 'REMARKS', value: ''} // padam mesej reject kalau ada
+                    {field: 'DATE', value: `${String(today.getDate()).padStart(2, '0')}/${String(today.getMonth() + 1).padStart(2, '0')}/${today.getFullYear()}`},
+                    {field: 'REMARKS', value: ''}
                 ]);
             }
         };
 
         window.rosliApprove = function(rowIndex) {
             const today = new Date();
-            const formattedDate = `${String(today.getDate()).padStart(2, '0')}/${String(today.getMonth() + 1).padStart(2, '0')}/${today.getFullYear()}`;
             updateRecordData(rowIndex, [
-                {field: 'STATUS', value: 'Pending Kelulusan'},
-                {field: 'CHECKED BY', value: 'Rosli'},
-                {field: 'DATE CHECKED', value: formattedDate},
+                {field: 'STATUS', value: 'Pending Kelulusan'}, {field: 'CHECKED BY', value: 'Rosli'},
+                {field: 'DATE CHECKED', value: `${String(today.getDate()).padStart(2, '0')}/${String(today.getMonth() + 1).padStart(2, '0')}/${today.getFullYear()}`},
                 {field: 'REMARKS', value: ''}
             ]);
         };
 
         window.rosliReject = function(rowIndex) {
-            const reason = prompt("Sila nyatakan sebab untuk di-reject (cth: Call number salah format):");
-            if(reason === null) return; // User cancel
-            
-            const today = new Date();
-            const formattedDate = `${String(today.getDate()).padStart(2, '0')}/${String(today.getMonth() + 1).padStart(2, '0')}/${today.getFullYear()}`;
-            
-            updateRecordData(rowIndex, [
-                {field: 'STATUS', value: 'Rejected'},
-                {field: 'REMARKS', value: reason},
-                {field: 'CHECKED BY', value: 'Rosli'},
-                {field: 'DATE CHECKED', value: formattedDate}
-            ]);
+            const modal = document.getElementById('reject-modal'); const textarea = document.getElementById('reject-reason'); const btn = document.getElementById('confirm-reject-btn');
+            textarea.value = ''; modal.style.display = 'flex';
+            btn.onclick = function() {
+                const reason = textarea.value.trim(); if(!reason) return alert("Sila masukkan sebab penolakan.");
+                modal.style.display = 'none'; const today = new Date();
+                updateRecordData(rowIndex, [
+                    {field: 'STATUS', value: 'Rejected'}, {field: 'REMARKS', value: reason}, {field: 'CHECKED BY', value: 'Rosli'},
+                    {field: 'DATE CHECKED', value: `${String(today.getDate()).padStart(2, '0')}/${String(today.getMonth() + 1).padStart(2, '0')}/${today.getFullYear()}`}
+                ]);
+            };
         };
 
         window.jainiApprove = function(rowIndex) {
             const today = new Date();
-            const formattedDate = `${String(today.getDate()).padStart(2, '0')}/${String(today.getMonth() + 1).padStart(2, '0')}/${today.getFullYear()}`;
             updateRecordData(rowIndex, [
-                {field: 'STATUS', value: 'Completed'},
-                {field: 'APPROVED BY', value: 'Jaini'},
-                {field: 'APPROVED DATE', value: formattedDate}
+                {field: 'STATUS', value: 'Completed'}, {field: 'APPROVED BY', value: 'Jaini'},
+                {field: 'APPROVED DATE', value: `${String(today.getDate()).padStart(2, '0')}/${String(today.getMonth() + 1).padStart(2, '0')}/${today.getFullYear()}`}
             ]);
         };
 
-        // ==========================================
-        // NOTIFIKASI PETI MESEJ (LOCENG)
-        // ==========================================
+        // --- NOTIFICATION ---
         document.getElementById('btn-notif').addEventListener('click', () => {
             const dropdown = document.getElementById('notif-dropdown');
             dropdown.style.display = dropdown.style.display === 'flex' ? 'none' : 'flex';
@@ -981,25 +775,16 @@
         function updateNotificationBell() {
             if(State.currentUser && State.currentUser.id === 'staff') {
                 const rejectedList = State.data.filter(r => r['STATUS'] === 'Rejected');
-                const badge = document.getElementById('notif-badge');
-                const list = document.getElementById('notif-list');
-                
+                const badge = document.getElementById('notif-badge'); const list = document.getElementById('notif-list');
                 if (rejectedList.length > 0) {
-                    badge.innerText = rejectedList.length;
-                    badge.classList.remove('hidden');
-                    
-                    let html = '';
-                    rejectedList.forEach(r => {
-                        html += `
+                    badge.innerText = rejectedList.length; badge.classList.remove('hidden');
+                    list.innerHTML = rejectedList.map(r => `
                         <div class="notif-item" onclick="lihatRekodDitolak('${r['ACCESSION']}')">
                             <div class="notif-item-title">ACCESSION: ${r['ACCESSION']}</div>
                             <div class="notif-item-desc"><b>Rosli:</b> ${r['REMARKS'] || 'Sila baiki semula.'}</div>
-                        </div>`;
-                    });
-                    list.innerHTML = html;
+                        </div>`).join('');
                 } else {
-                    badge.classList.add('hidden');
-                    list.innerHTML = `<div class="p-4 text-center text-xs text-gray-500">Tiada rekod ditolak.</div>`;
+                    badge.classList.add('hidden'); list.innerHTML = `<div class="p-4 text-center text-xs text-gray-500">Tiada rekod ditolak.</div>`;
                 }
             }
         }
@@ -1008,26 +793,22 @@
             document.getElementById('notif-dropdown').style.display = 'none';
             document.getElementById('search-input').value = accessionStr;
             document.getElementById('btn-reset-view').classList.remove('hidden');
-            applyFilters();
+            applyFilters(); document.getElementById('table-section').scrollIntoView({behavior: 'smooth', block: 'start'});
         };
 
         window.kembaliPaparanBiasa = function() {
-            document.getElementById('search-input').value = '';
-            document.getElementById('filter-status').value = '';
-            document.getElementById('btn-reset-view').classList.add('hidden');
-            applyFilters();
+            document.getElementById('search-input').value = ''; document.getElementById('filter-status').value = '';
+            document.getElementById('btn-reset-view').classList.add('hidden'); applyFilters();
         };
 
-        // ==========================================
-        // UI RENDERING & CHARTS
-        // ==========================================
+        // --- UI RENDERING (9 Columns) ---
         function renderTable() {
             const tbody = document.getElementById('table-body'); tbody.innerHTML = '';
             const start = (State.currentPage - 1) * State.itemsPerPage;
             const pageData = State.filtered.slice(start, start + State.itemsPerPage);
 
             if (pageData.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="10" class="py-16 text-center text-gray-400">Tiada rekod dijumpai.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="9" class="py-16 text-center text-gray-400">Tiada rekod dijumpai.</td></tr>`;
                 updatePaginationInfo(); return;
             }
 
@@ -1037,53 +818,64 @@
                 const stat = row['STATUS'];
                 const roleId = State.currentUser ? State.currentUser.id : 'staff';
                 
-                // Permission Cek (Bila input boleh di-edit)
+                // Permission Cek (Inputs editable?)
                 let canEdit = false;
                 if(roleId === 'admin') canEdit = true;
                 if(roleId === 'staff' && (stat === 'incomplete' || stat === 'Rejected')) canEdit = true;
                 if(roleId === 'rosli' && stat === 'Pending Semakan') canEdit = true;
 
-                // Lajur STATUS (Display)
-                let displayStatusHTML = '';
-                if (stat === 'Completed') displayStatusHTML = `<span class="status-display st-completed">Completed</span>`;
-                else if (stat === 'Pending Kelulusan' || stat === 'Pending Semakan') displayStatusHTML = `<span class="status-display st-pending">PENDING FOR APPROVAL</span>`;
-                else if (stat === 'Rejected') displayStatusHTML = `<span class="status-display st-rejected">REJECTED</span>`;
-                else displayStatusHTML = `<span class="status-display st-incomplete">INCOMPLETE</span>`;
+                // Status Badge Display
+                let displayStatus = stat;
+                if(stat === 'Pending Semakan') displayStatus = 'Pending (Rosli)';
+                if(stat === 'Pending Kelulusan') displayStatus = 'Pending (Jaini)';
 
-                // Lajur ACTION (Workflow Buttons)
+                let sClass = 'st-incomplete';
+                if(stat==='Completed') sClass='st-completed'; else if(stat.includes('Pending')) sClass='st-pending'; else if(stat==='Rejected') sClass='st-rejected';
+                let statusBadge = `<div class="status-display ${sClass} w-full">${displayStatus}</div>`;
+
+                // Audit Trail Columns HTML
+                let semakText = row['CHECKED BY'] ? `<div class="font-bold text-[--brand-dark]">${row['CHECKED BY']}</div><div class="text-[9px] text-gray-500 mt-0.5">${row['DATE CHECKED'] || ''}</div>` : `<span class="text-gray-300">-</span>`;
+                let lulusText = row['APPROVED BY'] ? `<div class="font-bold text-[#10B981]">${row['APPROVED BY']}</div><div class="text-[9px] text-gray-500 mt-0.5">${row['APPROVED DATE'] || ''}</div>` : `<span class="text-gray-300">-</span>`;
+
+                // Action Column HTML
                 let actionHTML = '';
                 if (roleId === 'staff') {
                     if (stat === 'incomplete' || stat === 'Rejected') {
-                        // Dropdown khas staf
                         actionHTML = `
-                            <select class="editable-input font-bold text-[#F59E0B] border-[#F59E0B]" onchange="staffSelectComplete(${row._rowIndex}, this.value, this)">
-                                <option value="incomplete" selected>Incomplete</option>
-                                <option value="Completed">Tukar -> Completed</option>
+                            <select class="editable-input font-bold ${stat === 'Rejected' ? 'text-[#EF4444] border-[#EF4444]' : 'text-[#F59E0B] border-[#F59E0B]'}" onchange="staffSelectComplete(${row._rowIndex}, this.value, this)">
+                                <option value="incomplete" ${stat === 'incomplete' ? 'selected' : ''}>Incomplete</option>
+                                ${stat === 'Rejected' ? `<option value="Rejected" selected>Rejected</option>` : ''}
+                                <option value="Completed">-> Completed</option>
                             </select>
                         `;
+                        if (stat === 'Rejected') {
+                            const safeMsg = (row['REMARKS'] || '').replace(/'/g, "\\'").replace(/"/g, "&quot;");
+                            actionHTML += `<div class="mt-1"><button onclick="showPopup('Sebab Ditolak', '${safeMsg}')" class="btn-sm btn-info text-[9px] py-1 px-2 w-full justify-center"><i data-lucide="message-square" class="w-3 h-3"></i> Komen</button></div>`;
+                        }
                     } else {
-                        actionHTML = `<span class="text-xs text-gray-400 font-bold"><i data-lucide="lock" class="w-3 h-3 inline"></i> Dikunci</span>`;
+                        actionHTML = `<div class="text-[10px] text-gray-400 font-bold uppercase text-center"><i data-lucide="lock" class="w-3 h-3 inline"></i> Dikunci</div>`;
                     }
                 }
                 else if (roleId === 'rosli') {
                     if (stat === 'Pending Semakan') {
                         actionHTML = `
                             <div class="flex gap-1 justify-center">
-                                <button onclick="rosliApprove(${row._rowIndex})" class="btn-sm btn-approve" title="Approve"><i data-lucide="check" class="w-3 h-3"></i></button>
-                                <button onclick="rosliReject(${row._rowIndex})" class="btn-sm btn-reject" title="Reject"><i data-lucide="x" class="w-3 h-3"></i></button>
+                                <button onclick="rosliApprove(${row._rowIndex})" class="btn-sm btn-approve flex-1 justify-center text-[10px] py-1.5 px-2" title="Lulus"><i data-lucide="check" class="w-3 h-3"></i> Lulus</button>
+                                <button onclick="rosliReject(${row._rowIndex})" class="btn-sm btn-reject flex-1 justify-center text-[10px] py-1.5 px-2" title="Tolak"><i data-lucide="x" class="w-3 h-3"></i> Tolak</button>
                             </div>
                         `;
                     } else if (stat === 'Rejected') {
-                        actionHTML = `<button onclick="showPopup('Sebab Ditolak', '${row['REMARKS'] || '-'}')" class="btn-sm btn-info" title="Lihat Komen"><i data-lucide="message-square" class="w-3 h-3"></i> Komen</button>`;
-                    } else { actionHTML = '-'; }
+                        const safeMsg = (row['REMARKS'] || '').replace(/'/g, "\\'").replace(/"/g, "&quot;");
+                        actionHTML = `<button onclick="showPopup('Sebab Ditolak', '${safeMsg}')" class="btn-sm btn-info text-[9px] py-1 px-2 w-full justify-center"><i data-lucide="message-square" class="w-3 h-3"></i> Komen</button>`;
+                    } else { actionHTML = `<span class="text-gray-300">-</span>`; }
                 }
                 else if (roleId === 'jaini') {
                     if (stat === 'Pending Kelulusan') {
-                        actionHTML = `<button onclick="jainiApprove(${row._rowIndex})" class="btn-sm btn-approve"><i data-lucide="award" class="w-3 h-3"></i> Luluskan</button>`;
-                    } else { actionHTML = '-'; }
+                        actionHTML = `<button onclick="jainiApprove(${row._rowIndex})" class="btn-sm btn-approve w-full justify-center text-[10px] py-1.5 px-2"><i data-lucide="award" class="w-3 h-3"></i> Sahkan Lulus</button>`;
+                    } else { actionHTML = `<span class="text-gray-300">-</span>`; }
                 }
-                else if (roleId === 'admin') {
-                    actionHTML = '-';
+                else {
+                    actionHTML = `<span class="text-gray-300">-</span>`;
                 }
 
                 tr.innerHTML = `
@@ -1099,49 +891,28 @@
                             ${State.staffList.map(s => `<option value="${s}" ${row['STAFF'] === s ? 'selected' : ''}>${s}</option>`).join('')}
                         </select>
                     </td>
-                    <td class="col-status">${displayStatusHTML}</td>
                     <td class="col-date"><input type="text" class="editable-input text-gray-600" value="${row['DATE'] || ''}" disabled></td>
-                    <td class="col-action">${actionHTML}</td>
+                    <td class="col-status px-2 align-middle">${statusBadge}</td>
+                    <td class="col-audit align-middle">${semakText}</td>
+                    <td class="col-audit align-middle">${lulusText}</td>
+                    <td class="col-action px-2 align-middle">${actionHTML}</td>
                 `;
                 frag.appendChild(tr);
             });
-            tbody.appendChild(frag);
-            lucide.createIcons();
-            updatePaginationInfo();
+            tbody.appendChild(frag); lucide.createIcons(); updatePaginationInfo();
         }
 
         function applyFilters(reRender = true) {
-            const fStaff = document.getElementById('filter-staff').value;
-            const fStatus = document.getElementById('filter-status').value;
-            const fYear = document.getElementById('filter-year').value.trim();
-            const search = document.getElementById('search-input').value.toLowerCase();
-
+            const fStaff = document.getElementById('filter-staff').value, fStatus = document.getElementById('filter-status').value;
+            const fYear = document.getElementById('filter-year').value.trim(), search = document.getElementById('search-input').value.toLowerCase();
             State.filtered = State.data.filter(row => {
-                let match = true;
-                if (fStaff && row['STAFF'] !== fStaff) match = false;
-                
-                if (fStatus) {
-                    if (fStatus === 'Completed' && row['STATUS'] !== 'Completed') match = false;
-                    else if (fStatus === 'Pending Semakan' && row['STATUS'] !== 'Pending Semakan') match = false;
-                    else if (fStatus === 'Pending Kelulusan' && row['STATUS'] !== 'Pending Kelulusan') match = false;
-                    else if (fStatus === 'Rejected' && row['STATUS'] !== 'Rejected') match = false;
-                    else if (fStatus === 'incomplete' && row['STATUS'] !== 'incomplete') match = false;
-                }
-                
-                if (fYear) {
-                    if (!row['DATE'] || !row['DATE'].toString().includes(fYear)) match = false;
-                }
-                if (search) {
-                    const t = (row['TITLE'] || "").toLowerCase(), a = (row['ACCESSION'] || "").toLowerCase();
-                    if (!t.includes(search) && !a.includes(search)) match = false;
-                }
-                return match;
+                if (fStaff && row['STAFF'] !== fStaff) return false;
+                if (fStatus && row['STATUS'] !== fStatus) return false;
+                if (fYear && (!row['DATE'] || !row['DATE'].toString().includes(fYear))) return false;
+                if (search && !((row['TITLE']||"").toLowerCase().includes(search) || (row['ACCESSION']||"").toLowerCase().includes(search))) return false;
+                return true;
             });
-            State.currentPage = 1;
-            updateKPIs(); 
-            if(document.getElementById('toggle-charts').checked) updateCharts();
-            updateNotificationBell();
-            if(reRender) renderTable();
+            State.currentPage = 1; updateKPIs(); if(document.getElementById('toggle-charts').checked) updateCharts(); updateNotificationBell(); if(reRender) renderTable();
         }
 
         ['filter-staff', 'filter-status', 'filter-year'].forEach(id => document.getElementById(id).addEventListener('change', () => applyFilters()));
@@ -1149,111 +920,66 @@
 
         function updatePaginationInfo() {
             const t = State.filtered.length, s = t === 0 ? 0 : (State.currentPage - 1) * State.itemsPerPage + 1, e = Math.min(State.currentPage * State.itemsPerPage, t);
-            const maxPage = Math.ceil(t / State.itemsPerPage) || 1;
-            document.getElementById('page-start').innerText = s; document.getElementById('page-end').innerText = e;
-            document.getElementById('page-total').innerText = t; document.getElementById('page-indicator').innerText = State.currentPage;
-            document.getElementById('btn-prev').disabled = State.currentPage === 1; document.getElementById('btn-next').disabled = State.currentPage === maxPage;
+            document.getElementById('page-start').innerText = s; document.getElementById('page-end').innerText = e; document.getElementById('page-total').innerText = t;
+            document.getElementById('page-indicator').innerText = State.currentPage;
+            document.getElementById('btn-prev').disabled = State.currentPage === 1; document.getElementById('btn-next').disabled = State.currentPage === Math.ceil(t / State.itemsPerPage) || 1;
         }
         document.getElementById('btn-prev').addEventListener('click', () => { if (State.currentPage > 1) { State.currentPage--; renderTable(); } });
         document.getElementById('btn-next').addEventListener('click', () => { if (State.currentPage < Math.ceil(State.filtered.length / State.itemsPerPage)) { State.currentPage++; renderTable(); } });
 
         function updateKPIs() {
-            const total = State.filtered.length;
-            const complete = State.filtered.filter(r => r['STATUS'] === 'Completed').length;
-            const pending = State.filtered.filter(r => r['STATUS'] === 'Pending Semakan' || r['STATUS'] === 'Pending Kelulusan').length;
-            const activeStaff = new Set(State.filtered.filter(r => r['STAFF'] && r['STAFF'].trim() !== "").map(r => r['STAFF'])).size;
-
-            document.getElementById('kpi-total').innerText = total.toLocaleString();
-            document.getElementById('kpi-complete').innerText = complete.toLocaleString();
+            document.getElementById('kpi-total').innerText = State.filtered.length.toLocaleString();
+            document.getElementById('kpi-complete').innerText = State.filtered.filter(r => r['STATUS'] === 'Completed').length.toLocaleString();
+            const pending = State.filtered.filter(r => r['STATUS'].includes('Pending')).length;
             document.getElementById('kpi-incomplete').innerText = pending.toLocaleString();
-            document.querySelector('#kpis .kpi-card:nth-child(3) .kpi-label').innerText = "PENDING APPROVAL"; // Change text label dynamically
-            document.getElementById('kpi-staff').innerText = activeStaff;
-            
+            document.querySelector('#kpis .kpi-card:nth-child(3) .kpi-label').innerText = "PENDING APPROVAL";
+            document.getElementById('kpi-staff').innerText = new Set(State.filtered.filter(r => r['STAFF'] && r['STAFF'].trim() !== "").map(r => r['STAFF'])).size;
             document.getElementById('insight-pending').innerText = pending.toLocaleString() + " Rekod";
         }
 
         function updateCharts() {
             Chart.defaults.font.family = "'Montserrat', sans-serif";
-            
-            const total = State.filtered.length;
-            const comp = State.filtered.filter(r => r['STATUS'] === 'Completed').length;
-            const pending = State.filtered.filter(r => r['STATUS'] === 'Pending Semakan' || r['STATUS'] === 'Pending Kelulusan').length;
-            const rejected = State.filtered.filter(r => r['STATUS'] === 'Rejected').length;
-            const incomplete = State.filtered.filter(r => r['STATUS'] === 'incomplete').length;
-
-            const ctx1 = document.getElementById('statusChart').getContext('2d');
-            if (State.chartInstances.status) State.chartInstances.status.destroy();
-            State.chartInstances.status = new Chart(ctx1, { 
-                type: 'doughnut', 
-                data: { 
-                    labels: ['Completed', 'Pending', 'Rejected', 'Incomplete'], 
-                    datasets: [{ data: [comp, pending, rejected, incomplete], backgroundColor: ['#10B981', '#F59E0B', '#EF4444', '#cbd5e1'], borderWidth: 0 }] 
-                }, 
-                options: { 
-                    responsive: true, maintainAspectRatio: false, cutout: '70%', 
-                    layout: { padding: 10 },
-                    plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 11 } } } }
-                } 
-            });
-
+            const sCounts = { 'Completed':0, 'Pending Kelulusan':0, 'Pending Semakan':0, 'Rejected':0, 'Incomplete':0 };
             const staffCount = {}; State.staffList.forEach(s => staffCount[s] = 0);
-            State.filtered.forEach(r => { 
-                if (r['STATUS'] !== 'incomplete' && r['STAFF'] && staffCount[r['STAFF']] !== undefined) {
-                    staffCount[r['STAFF']]++; 
-                }
+            State.filtered.forEach(r => {
+                if(sCounts[r['STATUS']] !== undefined) sCounts[r['STATUS']]++;
+                if(r['STATUS'] !== 'incomplete' && r['STAFF'] && staffCount[r['STAFF']] !== undefined) staffCount[r['STAFF']]++;
             });
-            
-            let maxCount = 0; let topStaff = "-";
-            for (const [staff, count] of Object.entries(staffCount)) {
-                if (count > maxCount) { maxCount = count; topStaff = staff; }
-            }
-            document.getElementById('insight-top-staff').innerText = topStaff;
-            document.getElementById('insight-top-score').innerText = maxCount.toLocaleString() + " Rekod Dihantar";
+            let maxCount = 0; let topStaff = "-"; for (const [staff, count] of Object.entries(staffCount)) { if (count > maxCount) { maxCount = count; topStaff = staff; } }
+            document.getElementById('insight-top-staff').innerText = topStaff; document.getElementById('insight-top-score').innerText = maxCount.toLocaleString() + " Rekod Dihantar";
 
-            const barColors = ['#003366', '#0055A5', '#3B82F6', '#10B981', '#6366f1']; 
-            const bgColors = Object.keys(staffCount).map((_, i) => barColors[i % barColors.length]);
+            if(State.chartInstances.status) State.chartInstances.status.destroy();
+            State.chartInstances.status = new Chart(document.getElementById('statusChart').getContext('2d'), { 
+                type: 'doughnut', data: { labels: ['Completed', 'Pending', 'Rejected', 'Incomplete'], datasets: [{ data: [sCounts['Completed'], sCounts['Pending Kelulusan']+sCounts['Pending Semakan'], sCounts['Rejected'], sCounts['Incomplete']], backgroundColor: ['#10B981', '#F59E0B', '#EF4444', '#cbd5e1'], borderWidth: 0 }] }, 
+                options: { responsive: true, maintainAspectRatio: false, cutout: '70%', layout: { padding: 10 }, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 11 } } } } } 
+            });
 
-            const ctx2 = document.getElementById('staffChart').getContext('2d');
-            if (State.chartInstances.staff) State.chartInstances.staff.destroy();
-            State.chartInstances.staff = new Chart(ctx2, { 
-                type: 'bar', 
-                data: { labels: Object.keys(staffCount), datasets: [{ data: Object.values(staffCount), backgroundColor: bgColors, borderRadius: 6 }] }, 
+            const barColors = ['#003366', '#0055A5', '#3B82F6', '#10B981', '#6366f1']; const bgColors = Object.keys(staffCount).map((_, i) => barColors[i % barColors.length]);
+            if(State.chartInstances.staff) State.chartInstances.staff.destroy();
+            State.chartInstances.staff = new Chart(document.getElementById('staffChart').getContext('2d'), { 
+                type: 'bar', data: { labels: Object.keys(staffCount), datasets: [{ data: Object.values(staffCount), backgroundColor: bgColors, borderRadius: 6 }] }, 
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } } } } 
             });
         }
 
-        // ==========================================
-        // EKSPORT LAPORAN (EXCEL)
-        // ==========================================
+        // --- EXPORT LAPORAN ---
         document.getElementById('btn-export').addEventListener('click', () => {
             if (!State.data || State.data.length === 0) return showPopup("Tiada Data", "Tiada data untuk dimuat turun.", "error");
-
-            const selectedYear = document.getElementById('export-year').value;
-            let dataToExport = State.data;
-
+            const selectedYear = document.getElementById('export-year').value; let dataToExport = State.data;
             if (selectedYear !== 'all') dataToExport = dataToExport.filter(row => row['DATE'] && row['DATE'].toString().includes(selectedYear));
             if (dataToExport.length === 0) return showPopup("Tiada Rekod", `Tiada rekod dijumpai untuk tahun ${selectedYear}.`, "info");
 
-            const worksheetData = dataToExport.map((row, index) => ({
-                "NO": index + 1, "CONTROL NUMBER": row['CONTROL NUMBER'] || '', "CALL NO (082)": row['CALL NO (082)'] || '',
-                "CALL NO (050/060)": row['CALL NO (050/060)'] || '', "ACCESSION": row['ACCESSION'] || '', "TITLE": row['TITLE'] || '',
-                "STAFF": row['STAFF'] || '', "STATUS": row['STATUS'] || '', "TARIKH DIHANTAR": row['DATE'] || '',
-                "DISEMAK OLEH": row['CHECKED BY'] || '', "TARIKH DISEMAK": row['DATE CHECKED'] || '',
-                "DILULUSKAN OLEH": row['APPROVED BY'] || '', "TARIKH DILULUSKAN": row['APPROVED DATE'] || '',
-                "CATATAN (REJECT)": row['REMARKS'] || ''
-            }));
-
-            const ws = XLSX.utils.json_to_sheet(worksheetData);
-            const wscols = [{wch: 6}, {wch: 18}, {wch: 18}, {wch: 22}, {wch: 18}, {wch: 60}, {wch: 15}, {wch: 20}, {wch: 15}, {wch: 20}, {wch: 15}, {wch: 20}, {wch: 15}, {wch: 30}];
-            ws['!cols'] = wscols;
-
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "Laporan Penuh");
-            XLSX.writeFile(wb, `Laporan_Buku_IKU_${selectedYear === 'all' ? 'Keseluruhan' : selectedYear}.xlsx`);
+            const ws = XLSX.utils.json_to_sheet(dataToExport.map((row, index) => ({
+                "NO": index + 1, "CONTROL NUMBER": row['CONTROL NUMBER'] || '', "CALL NO (082)": row['CALL NO (082)'] || '', "CALL NO (050/060)": row['CALL NO (050/060)'] || '',
+                "ACCESSION": row['ACCESSION'] || '', "TITLE": row['TITLE'] || '', "STAFF": row['STAFF'] || '', "STATUS": row['STATUS'] || '', "TARIKH DIHANTAR": row['DATE'] || '',
+                "DISEMAK OLEH": row['CHECKED BY'] || '', "TARIKH DISEMAK": row['DATE CHECKED'] || '', "DILULUSKAN OLEH": row['APPROVED BY'] || '', "TARIKH DILULUSKAN": row['APPROVED DATE'] || '', "CATATAN (REJECT)": row['REMARKS'] || ''
+            })));
+            ws['!cols'] = [{wch: 6}, {wch: 18}, {wch: 18}, {wch: 22}, {wch: 18}, {wch: 60}, {wch: 15}, {wch: 20}, {wch: 15}, {wch: 20}, {wch: 15}, {wch: 20}, {wch: 15}, {wch: 30}];
+            const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Laporan Penuh"); XLSX.writeFile(wb, `Laporan_Buku_IKU_${selectedYear === 'all' ? 'Keseluruhan' : selectedYear}.xlsx`);
             showPopup("Muat Turun Berjaya", "Laporan Excel anda telah siap dimuat turun.", "success");
         });
 
-        // --- Admin Panel Controls ---
+        // --- Admin Controls ---
         const adminPanel = document.getElementById('admin-panel');
         document.getElementById('btn-admin-panel').addEventListener('click', () => adminPanel.style.right = '0');
         document.getElementById('btn-close-admin').addEventListener('click', () => adminPanel.style.right = '-320px');
