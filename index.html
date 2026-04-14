@@ -167,7 +167,7 @@
         .kpi-icon-wrap { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; background: var(--bg-light); color: var(--brand-medium); }
 
         /* CHARTS SECTION */
-        #charts-section { display: var(--charts-visible); grid-template-columns: 1fr 1.5fr 1fr; gap: 20px; height: 280px; }
+        #charts-section { display: var(--charts-visible); grid-template-columns: 1.5fr 1.5fr 1fr; gap: 20px; height: 280px; }
         .chart-container { padding: 20px 24px; display: flex; flex-direction: column; background: white; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03); border: 1px solid #F1F5F9; min-width: 0; min-height: 0; height: 100%; }
         .chart-container .relative { flex: 1 1 auto; min-height: 0; min-width: 0; width: 100%; height: 100%; max-height: 190px; position: relative; display: flex; justify-content: center; }
         .chart-header { font-size: 14px; font-weight: 700; color: var(--brand-dark); margin-bottom: 12px; }
@@ -197,29 +197,30 @@
         #table-section { display: flex; flex-direction: column; overflow: hidden; width: 100%; }
         .table-wrapper { overflow-x: auto; max-height: 650px; overflow-y: auto; width: 100%; }
         
-        table { width: 100%; margin: 0 auto; border-collapse: separate; border-spacing: 0; font-family: var(--font-table) !important; min-width: 1300px; table-layout: fixed; }
+        /* KEBAL: Menambahkan saiz dan min-width supaya lajur tidak tenggelam */
+        table { width: 100%; margin: 0 auto; border-collapse: separate; border-spacing: 0; font-family: var(--font-table) !important; min-width: 1500px; table-layout: fixed; }
         thead { position: sticky; top: 0; z-index: 5; }
         th { background: var(--brand-dark); color: white; font-size: 12px; font-weight: 700; text-align: center; padding: 16px 10px; border-bottom: none; letter-spacing: 0.5px; white-space: normal; word-break: break-word; }
         th:first-child { border-top-left-radius: 8px; }
         th:last-child { border-top-right-radius: 8px; }
         
-        /* Allow cells to wrap normally and make words visible */
-        td { font-size: 12.5px; text-align: center; padding: 10px 8px; border-bottom: 1px solid #F1F5F9; color: #334155; vertical-align: middle; line-height: 1.5; white-space: normal !important; word-wrap: break-word !important; overflow: visible !important; }
+        /* Set td to wrap */
+        td { font-size: 12.5px; text-align: center; padding: 12px 10px; border-bottom: 1px solid #F1F5F9; color: #334155; vertical-align: middle; line-height: 1.5; white-space: normal !important; word-wrap: break-word !important; overflow: visible !important; }
         tr:nth-child(even) td { background-color: var(--row-alt); }
         tr:hover td { background-color: #F8FAFC; }
         
-        /* COLUMN WIDTHS */
-        .col-no { width: 50px; }
-        .col-control { width: 120px; }
-        .col-call82 { width: 110px; }
-        .col-call50 { width: 140px; }
-        .col-acc { width: 110px; }
-        .col-title { width: auto; min-width: 250px; font-size: 12.5px !important; text-align: center !important; }
-        .col-status { width: 150px; }
-        .col-staff { width: 110px; }
-        .col-date { width: 100px; }
-        .col-audit { width: 170px; }
-        .col-action { width: 140px; }
+        /* COLUMN WIDTHS (Set MIN-WIDTH supaya tidak ghaib/hilang) */
+        .col-no { width: 50px; min-width: 50px; }
+        .col-control { width: 130px; min-width: 130px; }
+        .col-call82 { width: 120px; min-width: 120px; }
+        .col-call50 { width: 150px; min-width: 150px; }
+        .col-acc { width: 120px; min-width: 120px; }
+        .col-title { width: auto; min-width: 250px; text-align: center !important; }
+        .col-status { width: 150px; min-width: 150px; }
+        .col-staff { width: 120px; min-width: 120px; }
+        .col-date { width: 110px; min-width: 110px; }
+        .col-audit { width: 180px; min-width: 180px; }
+        .col-action { width: 120px; min-width: 120px; }
 
         /* Editable Inputs inside table */
         .editable-input { width: 100%; padding: 8px; border: 1px solid transparent; border-radius: 6px; font-family: var(--font-table) !important; font-size: 12.5px; text-align: center; background: transparent; color: inherit; font-weight: 500; transition: 0.2s; white-space: normal !important; resize: none; overflow: hidden; }
@@ -227,7 +228,6 @@
         .editable-input:focus { background: white; border-color: var(--brand-medium); box-shadow: 0 0 0 2px rgba(0, 85, 165, 0.1); outline: none; }
         .editable-input:disabled { opacity: 0.9; cursor: not-allowed; background: transparent !important; border-color: transparent !important; color: #475569; }
 
-        /* Alignment Fixes */
         .col-title .editable-input { text-align: center !important; }
         .col-acc { font-weight: 700; color: var(--brand-dark); }
 
@@ -241,7 +241,6 @@
         .btn-approve:hover { background-color: #059669; }
         .btn-reject { background-color: #EF4444; }
         .btn-reject:hover { background-color: #DC2626; }
-        .btn-info { background-color: #F59E0B; color: white; }
 
         /* Status Styling Display */
         .status-display { font-weight: 700; padding: 6px 10px; border-radius: 6px; display: inline-block; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; text-align: center; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -539,7 +538,7 @@
     </div>
 
     <script>
-        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyPgcoK2dKQDDqKsUsTnDpanf9kbSCaaiF59xJV-squZ6VAO-kxGMufXOKXeHVljV_T/exec"; 
+        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzpWeck4ZA1eR9UdeTZxHRuir-oieWuR-N_iij3AhB8P8JmmJ6CkbJnPp4g9tkCdOl6/exec"; 
         
         const State = {
             currentUser: null, data: [], filtered: [], currentPage: 1, itemsPerPage: 100,
@@ -693,8 +692,6 @@
             if(els.syncOverlay) els.syncOverlay.style.display = 'flex'; 
             let success = true; let errMsg = "Gagal mengemaskini data.";
             
-            // Hantar data secara satu-persatu untuk mengelakkan Firewall Intranet (WAF)
-            // yang sering menyekat format Array/JSON di dalam URL (Punca Failed to fetch).
             for (let i = 0; i < updates.length; i++) {
                 let upd = updates[i];
                 const singleParams = new URLSearchParams({ 
@@ -972,14 +969,25 @@
             const iPend = document.getElementById('insight-pending'); if(iPend) iPend.innerText = pending.toLocaleString() + " Rekod";
         }
 
+        // KEMAS KINI CARTA PIE (DOUGHNUT) SUPAYA 5 WARNA BERBEZA & LEGEND DI SEBELAH KANAN
         function updateCharts() {
             Chart.defaults.font.family = "'Montserrat', sans-serif";
             const sCounts = { 'Completed':0, 'Pending Kelulusan':0, 'Pending Semakan':0, 'Rejected':0, 'Incomplete':0 };
             const staffCount = {}; State.staffList.forEach(s => staffCount[s] = 0);
+            
             State.filtered.forEach(r => {
-                if(sCounts[r['STATUS']] !== undefined) sCounts[r['STATUS']]++;
-                if(r['STATUS'] !== 'incomplete' && r['STAFF'] && staffCount[r['STAFF']] !== undefined) staffCount[r['STAFF']]++;
+                let stat = r['STATUS'];
+                if(stat === 'Completed') sCounts['Completed']++;
+                else if(stat === 'Pending Kelulusan') sCounts['Pending Kelulusan']++;
+                else if(stat === 'Pending Semakan') sCounts['Pending Semakan']++;
+                else if(stat === 'Rejected') sCounts['Rejected']++;
+                else sCounts['Incomplete']++;
+
+                if(stat !== 'incomplete' && r['STAFF'] && staffCount[r['STAFF']] !== undefined) {
+                    staffCount[r['STAFF']]++;
+                }
             });
+
             let maxCount = 0; let topStaff = "-"; for (const [staff, count] of Object.entries(staffCount)) { if (count > maxCount) { maxCount = count; topStaff = staff; } }
             
             const iStaff = document.getElementById('insight-top-staff'); if(iStaff) iStaff.innerText = topStaff;
@@ -989,8 +997,34 @@
             if(ctxStatus) {
                 if(State.chartInstances.status) State.chartInstances.status.destroy();
                 State.chartInstances.status = new Chart(ctxStatus.getContext('2d'), { 
-                    type: 'doughnut', data: { labels: ['Completed', 'Pending', 'Rejected', 'Incomplete'], datasets: [{ data: [sCounts['Completed'], sCounts['Pending Kelulusan']+sCounts['Pending Semakan'], sCounts['Rejected'], sCounts['Incomplete']], backgroundColor: ['#10B981', '#F59E0B', '#EF4444', '#cbd5e1'], borderWidth: 0 }] }, 
-                    options: { responsive: true, maintainAspectRatio: false, cutout: '70%', layout: { padding: 10 }, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 11 } } } } } 
+                    type: 'doughnut', 
+                    data: { 
+                        labels: ['Completed', 'Pending Semakan', 'Pending Kelulusan', 'Rejected', 'Incomplete'], 
+                        datasets: [{ 
+                            data: [
+                                sCounts['Completed'], 
+                                sCounts['Pending Semakan'], 
+                                sCounts['Pending Kelulusan'], 
+                                sCounts['Rejected'], 
+                                sCounts['Incomplete']
+                            ], 
+                            backgroundColor: ['#10B981', '#FCD34D', '#F59E0B', '#EF4444', '#CBD5E1'], 
+                            borderWidth: 2,
+                            borderColor: '#ffffff'
+                        }] 
+                    }, 
+                    options: { 
+                        responsive: true, 
+                        maintainAspectRatio: false, 
+                        cutout: '65%', 
+                        layout: { padding: 10 }, 
+                        plugins: { 
+                            legend: { 
+                                position: 'right', // Legend di sebelah kanan supaya nampak semua senarai status
+                                labels: { boxWidth: 12, font: { size: 10 } } 
+                            } 
+                        } 
+                    } 
                 });
             }
 
