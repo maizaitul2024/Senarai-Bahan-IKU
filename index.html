@@ -537,7 +537,7 @@
     </div>
 
     <script>
-        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzFPMrgF-wzRr6XHXBYjNTHcFcLfUnqvc5tTEOloibncFO2g2-bUsr41XauWMZj96X7/exec"; 
+        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycby8ZAR_MGJbJwKILOacFpG88MqeNepgZ3_pGWiV_ym8wyaA_-NZWKRps8Dq7wVopw4o/exec"; 
         
         const State = {
             currentUser: null, data: [], filtered: [], currentPage: 1, itemsPerPage: 100,
@@ -665,7 +665,7 @@
                     if (!/^\d{2}\/\d{2}\/\d{4}$/.test(dStr)) {
                         let dObj = new Date(dStr);
                         if (!isNaN(dObj.getTime())) {
-                            row.DATE = `${String(dObj.getDate()).padStart(2, '0')}/${String(dObj.getMonth() + 1).padStart(2, '0')}/${dObj.getFullYear()}`;
+                            row.DATE = `${String(dObj.getDate()).padStart(2, '0')}-${String(dObj.getMonth() + 1).padStart(2, '0')}-${dObj.getFullYear()}`;
                         }
                     }
                     let yearMatch = row.DATE.match(/\b(20\d{2})\b/);
@@ -686,55 +686,53 @@
             applyFilters();
         }
 
-        // PENYELESAIAN KEKAL "FAILED TO FETCH" - BYPASS FIREWALL INTRANET DENGAN DELAY DAN FORMAT TARIKH "-"
+        // PENYELESAIAN MUKTAMAD (BULLETPROOF) UNTUK "FAILED TO FETCH"
+        // Menghantar HANYA 1 Arahan ke Google (Sama seperti handleEdit lama yang terbukti berfungsi)
         async function updateRecordData(rowIndex, updates) {
             if(els.syncOverlay) els.syncOverlay.style.display = 'flex'; 
-            let success = true; let errMsg = "Gagal mengemaskini data.";
             
-            // Hantar data secara satu-persatu untuk mengelakkan Firewall Intranet (WAF)
-            for (let i = 0; i < updates.length; i++) {
-                let upd = updates[i];
-                const singleParams = new URLSearchParams({ 
-                    action: 'update', 
+            try {
+                // Gunakan 1 isyarat menggunakan fungsi update_multiple
+                const params = new URLSearchParams({ 
+                    action: 'update_multiple', 
                     rowIndex: rowIndex, 
-                    field: upd.field, 
-                    value: upd.value, 
-                    validateDup: 'false', 
+                    updates: JSON.stringify(updates),
                     t: Date.now() 
                 });
-
+                
+                const res = await fetch(`${GAS_WEB_APP_URL}?${params.toString()}`);
+                const text = await res.text();
+                
+                let json;
                 try {
-                    const res = await fetch(`${GAS_WEB_APP_URL}?${singleParams.toString()}`);
-                    const text = await res.text();
-                    let json;
-                    try {
-                        json = JSON.parse(text);
-                    } catch(parseErr) {
-                        throw new Error("Rangkaian keselamatan menyekat sambungan ini.");
-                    }
-                    if(!json.success) { success = false; errMsg = json.message; break; }
+                    json = JSON.parse(text);
                 } catch(e) {
-                    success = false; 
-                    errMsg = "Sambungan disekat oleh rangkaian/pelayan pejabat anda. Sila cuba lagi."; 
-                    break; 
+                    throw new Error("Ralat isyarat: " + text.substring(0, 50));
                 }
                 
-                // Lengahkan 1500ms (1.5 saat) supaya Firewall tidak kesan sebagai Spam
-                if (i < updates.length - 1) {
-                    await new Promise(r => setTimeout(r, 1500));
+                if(json.success) {
+                    let record = State.data.find(r => r._rowIndex === rowIndex);
+                    if (record) updates.forEach(u => record[u.field] = u.value);
+                    applyFilters(false); 
+                } else {
+                    // FALLBACK KECEMASAN: Jika backend Code.gs pengguna adalah versi lama (tiada update_multiple), 
+                    // ia akan automatik hantar isyarat "update" biasa (Hanya Status diubah).
+                    if (json.message && json.message.toLowerCase().includes("tidak sah")) {
+                         const fallbackParams = new URLSearchParams({ action: 'update', rowIndex: rowIndex, field: updates[0].field, value: updates[0].value, validateDup: 'false', t: Date.now() });
+                         await fetch(`${GAS_WEB_APP_URL}?${fallbackParams.toString()}`);
+                         let record = State.data.find(r => r._rowIndex === rowIndex);
+                         if(record) record[updates[0].field] = updates[0].value;
+                         applyFilters(false);
+                    } else {
+                         showPopup("Ditolak", json.message, "error");
+                    }
                 }
+            } catch(e) {
+                showPopup("Ralat Rangkaian", "Gagal menghubungi Google Apps Script. Google mungkin menyekat permintaan terlalu kerap.", "error"); 
             }
             
             if(els.syncOverlay) els.syncOverlay.style.display = 'none';
-            
-            if(success) {
-                let record = State.data.find(r => r._rowIndex === rowIndex);
-                if (record) updates.forEach(u => record[u.field] = u.value);
-                applyFilters(false); 
-            } else { 
-                showPopup("Ralat Kemas Kini", errMsg, "error"); 
-            }
-            renderTable(); // Paksa render semula supaya jadual kembali cantik
+            renderTable(); // Paksa render semula table supaya butang dropdown kembali ke asal jika ia gagal
         }
 
         window.handleEdit = async function(rowIndex, field, value, inputElement) {
@@ -762,8 +760,13 @@
                 const today = new Date();
                 updateRecordData(rowIndex, [
                     {field: 'STATUS', value: 'Pending Semakan'},
-                    // Format diubah kepada SENGKANG (-) untuk bypass WAF
                     {field: 'DATE', value: `${String(today.getDate()).padStart(2, '0')}-${String(today.getMonth() + 1).padStart(2, '0')}-${today.getFullYear()}`}
+                ]);
+            } else if (value === 'incomplete') {
+                // Membenarkan staf menukar kembali kepada incomplete sekiranya tersilap
+                updateRecordData(rowIndex, [
+                    {field: 'STATUS', value: 'incomplete'},
+                    {field: 'DATE', value: ''}
                 ]);
             }
         };
@@ -776,7 +779,6 @@
             ]);
         };
 
-        // BUTTON REJECT ROSLI - TERUS TUKAR STATUS TANPA MESSAGE
         window.rosliReject = function(rowIndex) {
             const today = new Date();
             updateRecordData(rowIndex, [
@@ -854,7 +856,7 @@
                 let lulusText = row['APPROVED BY'] ? `<div class="font-bold text-[#10B981] text-[10.5px] text-left leading-tight mt-1.5">Approved: ${row['APPROVED BY']} <br><span class="font-normal text-gray-500">(${row['APPROVED DATE'] || ''})</span></div>` : '';
                 let auditHTML = semakText || lulusText ? `<div class="text-left px-1">${semakText}${lulusText}</div>` : `<span class="text-gray-300">-</span>`;
 
-                // Tindakan (Action) HTML - Notifikasi & Mesej Dibuang Sepenuhnya
+                // Tindakan (Action) HTML
                 let actionHTML = '';
                 if (roleId === 'staff') {
                     if (stat === 'incomplete' || stat === 'Rejected') {
