@@ -536,7 +536,8 @@
     </div>
 
     <script>
-        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwn4vytNEag2lARonpyY3t1RiG_t0rYRLSq_4UCOoyWVvMHstG2YxTgn-uWB8jrXZ5u/exec"; 
+        // Sila masukkan URL anda yang baharu di sini setelah kemas kini Code.gs
+        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxoqAYHBuOPysCrxz4ak2ZazuDIAgydIVrGu5P0SHfKHaRJMdeQVJ8UwIOqCVKJ0L5s/exec"; 
         
         const State = {
             currentUser: null, data: [], filtered: [], currentPage: 1, itemsPerPage: 100,
@@ -685,55 +686,46 @@
             applyFilters();
         }
 
-        // PENYELESAIAN MUKTAMAD SEBENAR - HANYA HANTAR ARAHAN 'UPDATE' BIASA 
-        // (Dihantar satu-persatu untuk mengelakkan sebarang sekatan WAF Intranet terhadap format tatasusunan/JSON)
+        // PENYELESAIAN MUKTAMAD (ANTI-FIREWALL INTRANET)
+        // MENGHANTAR HANYA SATU (1) REKUES PUKAL TANPA JSON ARRAY DI URL
         async function updateRecordData(rowIndex, updates) {
             if(els.syncOverlay) els.syncOverlay.style.display = 'flex'; 
-            let success = true; let errMsg = "Gagal mengemaskini data.";
             
-            for (let i = 0; i < updates.length; i++) {
-                let upd = updates[i];
-                
-                // Gunakan format action='update' biasa yang terbukti 100% berjaya pada fungsi 'Edit'
-                const params = new URLSearchParams();
-                params.append('action', 'update');
-                params.append('rowIndex', rowIndex);
-                params.append('field', upd.field);
-                params.append('value', upd.value);
-                params.append('validateDup', 'false');
-                params.append('t', Date.now());
-                
+            // Cantumkan data menggunakan simbol "|||" untuk dihantar sebagai teks rata.
+            // Ini membolehkan skrip menghantar 10 maklumat dalam 1 butang klik tanpa menggunakan Array []
+            const fieldsJoined = updates.map(u => u.field).join('|||');
+            const valuesJoined = updates.map(u => u.value).join('|||');
+            
+            const params = new URLSearchParams({ 
+                action: 'update_flat', 
+                rowIndex: rowIndex, 
+                fields: fieldsJoined, 
+                values: valuesJoined, 
+                t: Date.now() 
+            });
+
+            try {
+                const res = await fetch(`${GAS_WEB_APP_URL}?${params.toString()}`);
+                const textRes = await res.text();
+                let json;
                 try {
-                    const res = await fetch(`${GAS_WEB_APP_URL}?${params.toString()}`);
-                    const textRes = await res.text();
-                    let json;
-                    try {
-                        json = JSON.parse(textRes);
-                    } catch(e) {
-                        throw new Error("Pelayan gagal memproses (Format Tidak Sah).");
-                    }
-                    if(!json.success) { success = false; errMsg = json.message; break; }
+                    json = JSON.parse(textRes);
                 } catch(e) {
-                    success = false; 
-                    errMsg = "Rangkaian internet menyekat kemas kini (Ralat Pusingan " + (i+1) + "). Sila cuba lagi."; 
-                    break; 
+                    throw new Error("Pelayan Google gagal memproses data. Sila pastikan anda telah kemas kini fail code.gs dan buat 'New Deployment'.");
                 }
                 
-                // Rehat 1 saat penuh sebelum hantar arahan seterusnya supaya tidak disangka bot/spam
-                if (i < updates.length - 1) {
-                    await new Promise(r => setTimeout(r, 1000));
+                if(json.success) {
+                    let record = State.data.find(r => r._rowIndex === rowIndex);
+                    if (record) updates.forEach(u => record[u.field] = u.value);
+                    applyFilters(false); 
+                } else { 
+                    showPopup("Ralat Kemas Kini", json.message, "error"); 
                 }
+            } catch(e) {
+                showPopup("Ralat Rangkaian", e.message, "error"); 
             }
             
             if(els.syncOverlay) els.syncOverlay.style.display = 'none';
-            
-            if(success) {
-                let record = State.data.find(r => r._rowIndex === rowIndex);
-                if (record) updates.forEach(u => record[u.field] = u.value);
-                applyFilters(false); 
-            } else { 
-                showPopup("Ralat Kemas Kini", errMsg, "error"); 
-            }
             renderTable(); 
         }
 
@@ -838,7 +830,6 @@
                         let btnClass = stat === 'Rejected' ? 'bg-red-500 hover:bg-red-600' : 'bg-[#10B981] hover:bg-[#059669]';
                         let btnText = stat === 'Rejected' ? 'RESUBMIT' : 'COMPLETE';
                         
-                        // INI ADALAH BUTANG COMPLETE YANG DIMINTA
                         actionHTML = `
                             <button onclick="staffSubmit(${row._rowIndex})" class="w-full ${btnClass} text-white font-bold py-2 px-2 rounded-md text-[10px] transition-colors shadow-sm tracking-wider">
                                 ${btnText}
