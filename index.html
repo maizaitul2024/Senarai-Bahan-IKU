@@ -193,42 +193,46 @@
         .btn-sync.syncing .sync-icon { animation: spin 1s linear infinite; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        /* STRICT TABLE SECTION (9 Columns) */
-        #table-section { display: flex; flex-direction: column; overflow: hidden; }
-        .table-wrapper { overflow-x: auto; max-height: 650px; overflow-y: auto; }
-        table { width: 100%; border-collapse: separate; border-spacing: 0; font-family: var(--font-table) !important; table-layout: fixed; min-width: 1100px; }
+        /* STRICT TABLE SECTION (11 Columns, Centered & Fluid) */
+        #table-section { display: flex; flex-direction: column; overflow: hidden; width: 100%; }
+        .table-wrapper { overflow-x: auto; max-height: 650px; overflow-y: auto; width: 100%; }
+        table { width: 100%; margin: 0 auto; border-collapse: separate; border-spacing: 0; font-family: var(--font-table) !important; min-width: 1300px; }
         thead { position: sticky; top: 0; z-index: 5; }
-        th { background: var(--brand-dark); color: white; font-size: 12px; font-weight: 700; text-align: center; padding: 14px 8px; border-bottom: none; letter-spacing: 0.5px; }
+        th { background: var(--brand-dark); color: white; font-size: 12px; font-weight: 700; text-align: center; padding: 16px 10px; border-bottom: none; letter-spacing: 0.5px; white-space: nowrap; }
         th:first-child { border-top-left-radius: 8px; }
         th:last-child { border-top-right-radius: 8px; }
-        td { font-size: 12.5px; text-align: center; padding: 12px 8px; border-bottom: 1px solid #F1F5F9; color: #334155; vertical-align: middle; line-height: 1.5; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        td { font-size: 12.5px; text-align: center; padding: 12px 10px; border-bottom: 1px solid #F1F5F9; color: #334155; vertical-align: middle; line-height: 1.5; }
         tr:nth-child(even) td { background-color: var(--row-alt); }
         tr:hover td { background-color: #F8FAFC; }
         
-        /* COLUMN WIDTHS */
+        /* COLUMN WIDTHS (Suggested widths for neatness) */
         .col-no { width: 50px; }
         .col-control { width: 140px; }
         .col-call82 { width: 110px; }
         .col-call50 { width: 150px; }
         .col-acc { width: 110px; }
-        .col-title { width: auto; min-width: 200px; font-size: 12.5px !important; text-align: center !important; white-space: normal !important; word-break: break-word; }
-        .col-staff { width: 110px; }
+        .col-title { width: auto; min-width: 250px; font-size: 12.5px !important; text-align: left !important; white-space: normal !important; word-break: break-word; }
+        .col-staff { width: 120px; }
         .col-date { width: 100px; }
         .col-status { width: 140px; }
         .col-audit { width: 170px; }
         .col-action { width: 140px; }
 
         /* Editable Inputs inside table */
-        .editable-input { width: 100%; padding: 6px; border: 1px solid transparent; border-radius: 6px; font-family: var(--font-table) !important; font-size: 12.5px; text-align: center; background: transparent; color: inherit; font-weight: 500; transition: 0.2s; }
+        .editable-input { width: 100%; padding: 8px; border: 1px solid transparent; border-radius: 6px; font-family: var(--font-table) !important; font-size: 12.5px; text-align: center; background: transparent; color: inherit; font-weight: 500; transition: 0.2s; }
         .editable-input:hover:not(:disabled) { border-color: #E2E8F0; background: white; }
         .editable-input:focus { background: white; border-color: var(--brand-medium); box-shadow: 0 0 0 2px rgba(0, 85, 165, 0.1); outline: none; }
-        .editable-input:disabled { opacity: 0.8; cursor: not-allowed; background: transparent !important; border-color: transparent !important; color: #475569; }
+        .editable-input:disabled { opacity: 0.9; cursor: not-allowed; background: transparent !important; border-color: transparent !important; color: #475569; }
+
+        /* Alignment Fixes for Readability */
+        .col-title .editable-input { text-align: left !important; padding-left: 12px; }
+        .col-acc .editable-input { font-weight: 700; color: var(--brand-dark); }
 
         select.editable-input { cursor: pointer; }
         select.editable-input:disabled { cursor: not-allowed; appearance: none; }
 
         /* Workflow Buttons */
-        .btn-sm { padding: 6px 12px; border-radius: 6px; font-weight: 700; font-size: 11px; cursor: pointer; border: none; color: white; transition: 0.2s; display: inline-flex; align-items: center; gap: 4px; }
+        .btn-sm { padding: 6px 12px; border-radius: 6px; font-weight: 700; font-size: 11px; cursor: pointer; border: none; color: white; transition: 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 4px; }
         .btn-sm:active { transform: scale(0.95); }
         .btn-approve { background-color: #10B981; }
         .btn-approve:hover { background-color: #059669; }
@@ -237,7 +241,7 @@
         .btn-info { background-color: #F59E0B; color: white; }
 
         /* Status Styling Display */
-        .status-display { font-weight: 700; padding: 4px 8px; border-radius: 4px; display: inline-block; font-size: 11px; text-transform: uppercase; }
+        .status-display { font-weight: 700; padding: 6px 10px; border-radius: 6px; display: inline-block; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; text-align: center; }
         .st-pending { color: #F59E0B; background: #FEF3C7; }
         .st-completed { color: #10B981; background: #D1FAE5; }
         .st-rejected { color: #EF4444; background: #FEE2E2; }
@@ -491,6 +495,9 @@
                             </button>
                         </div>
                     </div>
+                </div>
+            </section>
+
             <!-- Table Section -->
             <section id="table-section" class="base-card flex-1">
                 <div class="table-wrapper">
@@ -574,7 +581,7 @@
     <script>
         // ==========================================
         // PENTING: Gantikan URL di bawah dengan URL Google Apps Script anda yang BAHARU
-        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyAqPST96LaMkBNd1qWgegHcoOKHMj0hOYB0QOvCCdi7PKGsQszo1VlpqtgVKCoXCwV/exec"; 
+        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyvBTLwNGYgWwiixfZ-U6Z1qIQlmm_bw7qcsnvRBX5EEFG9EooDpg4_qATGu75HzVU/exec"; 
         
         const State = {
             currentUser: null, data: [], filtered: [], currentPage: 1, itemsPerPage: 100,
@@ -800,14 +807,15 @@
             document.getElementById('btn-reset-view').classList.add('hidden'); applyFilters();
         };
 
-        // --- UI RENDERING (9 Columns) ---
+        // --- UI RENDERING (11 Columns) ---
         function renderTable() {
             const tbody = document.getElementById('table-body'); tbody.innerHTML = '';
             const start = (State.currentPage - 1) * State.itemsPerPage;
             const pageData = State.filtered.slice(start, start + State.itemsPerPage);
 
             if (pageData.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="9" class="py-16 text-center text-gray-400">Tiada rekod dijumpai.</td></tr>`;
+                // Diperbaiki: colspan dilaraskan ke 11 supaya memanjang dengan kemas
+                tbody.innerHTML = `<tr><td colspan="11" class="py-16 text-center text-gray-400">Tiada rekod dijumpai.</td></tr>`;
                 updatePaginationInfo(); return;
             }
 
@@ -832,9 +840,9 @@
                 let statusBadge = `<div class="status-display ${sClass} w-full">${displayStatus}</div>`;
 
                 // Audit Trail Columns HTML (Digabungkan menjadi 1 Kolum JEJAK AUDIT)
-                let semakText = row['CHECKED BY'] ? `<div class="font-bold text-[--brand-dark] text-[10px]">Semak: ${row['CHECKED BY']} <span class="font-normal text-gray-500">(${row['DATE CHECKED'] || ''})</span></div>` : '';
-                let lulusText = row['APPROVED BY'] ? `<div class="font-bold text-[#10B981] text-[10px] mt-1">Lulus: ${row['APPROVED BY']} <span class="font-normal text-gray-500">(${row['APPROVED DATE'] || ''})</span></div>` : '';
-                let auditHTML = semakText || lulusText ? `<div class="text-left">${semakText}${lulusText}</div>` : `<span class="text-gray-300">-</span>`;
+                let semakText = row['CHECKED BY'] ? `<div class="font-bold text-[--brand-dark] text-[10px] text-left">Semak: ${row['CHECKED BY']} <span class="font-normal text-gray-500">(${row['DATE CHECKED'] || ''})</span></div>` : '';
+                let lulusText = row['APPROVED BY'] ? `<div class="font-bold text-[#10B981] text-[10px] text-left mt-1">Lulus: ${row['APPROVED BY']} <span class="font-normal text-gray-500">(${row['APPROVED DATE'] || ''})</span></div>` : '';
+                let auditHTML = semakText || lulusText ? `<div class="text-left px-2">${semakText}${lulusText}</div>` : `<span class="text-gray-300">-</span>`;
 
                 // Action Column HTML
                 let actionHTML = '';
