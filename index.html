@@ -228,8 +228,9 @@
         .editable-input:focus { background: white; border-color: var(--brand-medium); box-shadow: 0 0 0 2px rgba(0, 85, 165, 0.1); outline: none; }
         .editable-input:disabled { opacity: 0.9; cursor: not-allowed; background: transparent !important; border-color: transparent !important; color: #475569; }
 
+        /* Alignment Fixes */
         .col-title .editable-input { text-align: center !important; }
-        .col-acc { font-weight: 700; color: var(--brand-dark); }
+        td.col-acc { font-weight: 700; color: var(--brand-dark); }
 
         select.editable-input { cursor: pointer; }
         select.editable-input:disabled { cursor: not-allowed; appearance: none; }
@@ -538,7 +539,7 @@
     </div>
 
     <script>
-        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzpWeck4ZA1eR9UdeTZxHRuir-oieWuR-N_iij3AhB8P8JmmJ6CkbJnPp4g9tkCdOl6/exec"; 
+        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyNsJrX44j_a8G1ScXLALIRd2LgOCSXv3vJCQFofDx56OXSVMUdPjMWNc4TOXt1bVK-/exec"; 
         
         const State = {
             currentUser: null, data: [], filtered: [], currentPage: 1, itemsPerPage: 100,
