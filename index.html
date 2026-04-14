@@ -584,7 +584,7 @@
     </div>
 
     <script>
-        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbySKMr5SjRWYgZMAz8-fMbh9eLX15acElBiyrFIHgrUVLTbaBYAg6YYIeE-56cnoR0O/exec"; 
+        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwexouw0J9LupqfHmrrpDcwaYX5j6yTa-Cy3b9sGwArOLRiiGmZEy-7TMsxEPlD_zCx/exec"; 
         
         const State = {
             currentUser: null, data: [], filtered: [], currentPage: 1, itemsPerPage: 100,
@@ -734,35 +734,35 @@
             applyFilters();
         }
 
-        // --- PENYELESAIAN MASALAH "FAILED TO FETCH" ---
-        // Dengan membungkus semua arahan kemas kini dalam 1 isyarat (Batch Update)
+        // PENYELESAIAN MASALAH "FAILED TO FETCH" DENGAN DELAY
         async function updateRecordData(rowIndex, updates) {
             if(els.syncOverlay) els.syncOverlay.style.display = 'flex'; 
             let success = true; let errMsg = "Gagal mengemaskini data.";
             
-            try {
-                // Gunakan fungsi update_multiple dari Google Apps Script untuk elak Google block banyak arahan serentak
-                const params = new URLSearchParams({ 
-                    action: 'update_multiple', 
-                    rowIndex: rowIndex, 
-                    updates: JSON.stringify(updates) 
-                });
-                
-                const res = await fetch(`${GAS_WEB_APP_URL}?${params.toString()}`);
-                const json = await res.json(); 
-                if(!json.success) { success = false; errMsg = json.message; }
-            } catch(e) { 
-                success = false; errMsg = e.message; 
+            for (let i = 0; i < updates.length; i++) {
+                let upd = updates[i];
+                const params = new URLSearchParams({ action: 'update', rowIndex: rowIndex, field: upd.field, value: upd.value, validateDup: 'false' });
+                try {
+                    const res = await fetch(`${GAS_WEB_APP_URL}?${params.toString()}`);
+                    const json = await res.json();
+                    if(!json.success) { success = false; errMsg = json.message; break; }
+                } catch(e) {
+                    success = false; errMsg = "Ralat pelayan Google. Sila cuba sebentar lagi."; break;
+                }
+                // Lengahkan masa sedikit (400ms) supaya Google tak block sbg spam
+                if (i < updates.length - 1) {
+                    await new Promise(r => setTimeout(r, 400));
+                }
             }
             
             if(els.syncOverlay) els.syncOverlay.style.display = 'none';
             
             if(success) {
                 let record = State.data.find(r => r._rowIndex === rowIndex);
-                updates.forEach(u => record[u.field] = u.value);
+                if (record) updates.forEach(u => record[u.field] = u.value);
                 applyFilters(false); 
             } else { 
-                showPopup("Ralat Kemas Kini", "Gagal menghubungi pangkalan data. Sila pastikan sambungan internet stabil.\n\nInfo: " + errMsg, "error"); 
+                showPopup("Ralat Kemas Kini", errMsg, "error"); 
             }
             renderTable(); // Paksa render semula table supaya butang kembali ke asal jika ia gagal
         }
@@ -930,7 +930,7 @@
                         </select>
                     `;
                 } else {
-                    statusHTML = `<div class="status-display ${sClass} w-full">${displayStatus}</div>`;
+                    statusHTML = `<div class="status-display ${sClass} w-full whitespace-normal break-words">${displayStatus}</div>`;
                 }
 
                 // Audit Trail
@@ -970,14 +970,14 @@
                 }
                 else { actionHTML = `<span class="text-gray-300">-</span>`; }
 
-                // HTML Untuk Teks - (Guna Div supaya Teks Sentiasa Nampak / Boleh Wrap)
-                let ctrlHtml = canEdit ? `<input type="text" class="editable-input" value="${row['CONTROL NUMBER'] || ''}" onchange="handleEdit(${row._rowIndex}, 'CONTROL NUMBER', this.value, this)">` : `<div class="p-1 break-words whitespace-normal">${row['CONTROL NUMBER'] || ''}</div>`;
+                // HTML Untuk Teks - (Hanya Gunakan Input Jika Boleh Edit, Jika Tidak Papar Teks Biasa)
+                let ctrlHtml = canEdit ? `<textarea class="editable-input w-full resize-none" rows="2" onchange="handleEdit(${row._rowIndex}, 'CONTROL NUMBER', this.value, this)">${row['CONTROL NUMBER'] || ''}</textarea>` : `<div class="p-1 break-words whitespace-normal">${row['CONTROL NUMBER'] || ''}</div>`;
                 
-                let call82Html = adminEdit ? `<input type="text" class="editable-input text-gray-500" value="${row['CALL NO (082)'] || ''}" onchange="handleEdit(${row._rowIndex}, 'CALL NO (082)', this.value, this)">` : `<div class="p-1 text-gray-500 break-words whitespace-normal">${row['CALL NO (082)'] || ''}</div>`;
+                let call82Html = adminEdit ? `<textarea class="editable-input text-gray-500 w-full resize-none" rows="2" onchange="handleEdit(${row._rowIndex}, 'CALL NO (082)', this.value, this)">${row['CALL NO (082)'] || ''}</textarea>` : `<div class="p-1 text-gray-500 break-words whitespace-normal">${row['CALL NO (082)'] || ''}</div>`;
                 
                 let call50Html = canEdit ? `<textarea class="editable-input !text-[--brand-main] font-semibold w-full resize-none" rows="2" onchange="handleEdit(${row._rowIndex}, 'CALL NO (050/060)', this.value, this)">${row['CALL NO (050/060)'] || ''}</textarea>` : `<div class="p-1 text-[--brand-main] font-semibold break-words whitespace-normal leading-snug">${row['CALL NO (050/060)'] || ''}</div>`;
                 
-                let accHtml = adminEdit ? `<input type="text" class="editable-input font-bold text-gray-700" value="${row['ACCESSION'] || ''}" onchange="handleEdit(${row._rowIndex}, 'ACCESSION', this.value, this)">` : `<div class="p-1 font-bold text-[--brand-dark] break-words whitespace-normal">${row['ACCESSION'] || ''}</div>`;
+                let accHtml = adminEdit ? `<textarea class="editable-input font-bold text-gray-700 w-full resize-none" rows="2" onchange="handleEdit(${row._rowIndex}, 'ACCESSION', this.value, this)">${row['ACCESSION'] || ''}</textarea>` : `<div class="p-1 font-bold text-[--brand-dark] break-words whitespace-normal">${row['ACCESSION'] || ''}</div>`;
                 
                 let titleHtml = adminEdit ? `<textarea class="editable-input text-center w-full resize-none" rows="3" onchange="handleEdit(${row._rowIndex}, 'TITLE', this.value, this)">${row['TITLE'] || ''}</textarea>` : `<div class="p-1 text-center font-medium text-gray-800 break-words whitespace-normal leading-relaxed">${row['TITLE'] || ''}</div>`;
                 
