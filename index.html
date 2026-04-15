@@ -478,7 +478,7 @@
         // ==========================================
         // SILA PASTIKAN URL WEB APP INI ADALAH YANG TERKINI
         // ==========================================
-        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyJbhcSmQlG-TjC9niq7BC119SqNlN57M5keU6LtNPtl085IUMCIgQRHKKOYRlD8dfS/exec"; 
+        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxE-zWwvSjg1qjMuC-9CxiUAv31tts4xykNcQTtrWjozqS41h_vzMFSc3Am8dEcqavh/exec"; 
         
         const State = {
             currentUser: null, data: [], filtered: [], currentPage: 1, itemsPerPage: 100,
@@ -566,8 +566,7 @@
             return `${String(today.getDate()).padStart(2, '0')}/${String(today.getMonth() + 1).padStart(2, '0')}/${today.getFullYear()}`;
         }
 
-        async function syncLiveDatabase() {
-            if(!GAS_WEB_APP_URL || GAS_WEB_APP_URL.includes("SILA_LETAK_URL_GOOGLE_APPS_SCRIPT_ANDA_DI_SINI")) {
+        async function syncLiveDatabase() {https://script.google.com/macros/s/AKfycbxE-zWwvSjg1qjMuC-9CxiUAv31tts4xykNcQTtrWjozqS41h_vzMFSc3Am8dEcqavh/execSILA_LETAK_URL_GOOGLE_APPS_SCRIPT_ANDA_DI_SINI")) {
                 showPopup("Ralat Sistem", "URL Google Apps Script tidak dijumpai. Sila tetapkan URL di dalam kod HTML.", "error"); return;
             }
             els.syncOverlay.style.display = 'flex'; els.btnSync.classList.add('syncing');
@@ -1062,4 +1061,14 @@
                     "CHECKED BY": row['CHECKED BY'] || '', "DATE CHECKED": row['DATE CHECKED'] || '', "APPROVED BY": row['APPROVED BY'] || '', "APPROVED DATE": row['APPROVED DATE'] || ''
                 })));
                 ws['!cols'] = [{wch: 6}, {wch: 18}, {wch: 18}, {wch: 22}, {wch: 18}, {wch: 60}, {wch: 15}, {wch: 15}, {wch: 15}, {wch: 20}, {wch: 15}, {wch: 20}, {wch: 15}];
-                const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Laporan Penuh"); XLSX.writeFile(wb, `Laporan_Buku_IKU_${selectedYear ===
+                const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Laporan Penuh"); XLSX.writeFile(wb, `Laporan_Buku_IKU_${selectedYear === 'all' ? 'Keseluruhan' : selectedYear}.xlsx`);
+            });
+        }
+
+        const adminPanel = document.getElementById('admin-panel');
+        if(document.getElementById('btn-admin-panel')) document.getElementById('btn-admin-panel').addEventListener('click', () => { if(adminPanel) adminPanel.style.right = '0'; });
+        if(document.getElementById('btn-close-admin')) document.getElementById('btn-close-admin').addEventListener('click', () => { if(adminPanel) adminPanel.style.right = '-320px'; });
+        
+    </script>
+</body>
+</html>
