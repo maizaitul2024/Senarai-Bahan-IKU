@@ -4,17 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Senarai Buku IKU - Sistem Pengurusan Koleksi Buku</title>
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Montserrat:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- SheetJS (For Professional Excel Export) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
     <style>
         :root {
-            /* STRICT Corporate Blue Executive System */
             --brand-dark: #003366;
             --brand-medium: #0055A5;
             --bg-light: #CCE5FF;
@@ -36,124 +40,45 @@
             min-height: 100vh;
         }
 
-        /* --- STRICT PAGE 1: LOGIN SCREEN --- */
+        /* --- LOGIN SCREEN --- */
         #login-screen {
-            position: fixed;
-            inset: 0;
-            background-color: #F1F5F9;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 100;
-            padding: 20px;
+            position: fixed; inset: 0; background-color: #F1F5F9;
+            display: flex; align-items: center; justify-content: center;
+            z-index: 100; padding: 20px;
         }
 
         .login-card {
-            background: white;
-            width: 100%;
-            max-width: 600px;
-            min-height: 400px;
-            border-radius: 20px;
-            box-shadow: 0 10px 40px rgba(0, 51, 102, 0.08);
-            padding: 40px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
+            background: white; width: 100%; max-width: 600px; min-height: 400px;
+            border-radius: 20px; box-shadow: 0 10px 40px rgba(0, 51, 102, 0.08);
+            padding: 40px; display: flex; flex-direction: column; justify-content: center;
         }
 
-        .login-header {
-            text-align: center;
-            margin-bottom: 32px;
-        }
-
-        .login-header h1 {
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 700;
-            font-size: 28px;
-            color: var(--brand-dark);
-            margin-bottom: 8px;
-        }
-
-        .login-header p {
-            color: var(--brand-medium);
-            font-size: 15px;
-            font-weight: 500;
-        }
+        .login-header { text-align: center; margin-bottom: 32px; }
+        .login-header h1 { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 28px; color: var(--brand-dark); margin-bottom: 8px; }
+        .login-header p { color: var(--brand-medium); font-size: 15px; font-weight: 500; }
 
         .premium-input {
-            width: 100%;
-            padding: 12px 16px;
-            background: #F8FAFC;
-            border: 1px solid #E2E8F0;
-            border-radius: 10px;
-            font-size: 14px;
-            color: var(--brand-dark);
-            outline: none;
-            transition: all 0.2s;
-            font-family: var(--font-ui);
+            width: 100%; padding: 12px 16px; background: #F8FAFC;
+            border: 1px solid #E2E8F0; border-radius: 10px; font-size: 14px;
+            color: var(--brand-dark); outline: none; transition: all 0.2s; font-family: var(--font-ui);
         }
-
-        .premium-input:focus {
-            background: white;
-            border-color: var(--brand-medium);
-            box-shadow: 0 0 0 3px rgba(0, 85, 165, 0.1);
-        }
+        .premium-input:focus { background: white; border-color: var(--brand-medium); box-shadow: 0 0 0 3px rgba(0, 85, 165, 0.1); }
 
         .login-btn {
             background: linear-gradient(135deg, var(--brand-medium), var(--brand-dark));
-            color: white;
-            padding: 14px;
-            border-radius: 10px;
-            font-weight: 600;
-            font-size: 16px;
-            border: none;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 10px;
-            transition: opacity 0.2s, transform 0.1s;
+            color: white; padding: 14px; border-radius: 10px; font-weight: 600;
+            font-size: 16px; border: none; cursor: pointer; width: 100%; margin-top: 10px; transition: 0.2s;
         }
-
         .login-btn:hover { opacity: 0.9; }
         .login-btn:active { transform: scale(0.98); }
 
         /* --- DASHBOARD LAYOUT --- */
-        #dashboard {
-            display: none;
-            flex-direction: column;
-            min-height: 100vh;
-            max-width: 1920px;
-            margin: 0 auto;
-            width: 100%;
-        }
+        #dashboard { display: none; flex-direction: column; min-height: 100vh; max-width: 1920px; margin: 0 auto; width: 100%; }
+        .top-navbar { background: white; padding: 16px 32px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.03); position: sticky; top: 0; z-index: 50; }
+        .main-content { flex: 1; padding: 24px 32px; display: flex; flex-direction: column; gap: 20px; }
+        .base-card { background: white; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03); border: 1px solid #F1F5F9; }
 
-        .top-navbar {
-            background: white;
-            padding: 16px 32px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
-            position: sticky;
-            top: 0;
-            z-index: 50;
-        }
-
-        .main-content {
-            flex: 1;
-            padding: 24px 32px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .base-card {
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
-            border: 1px solid #F1F5F9;
-        }
-
-        /* COMPACT KPI CARDS */
+        /* KPI CARDS */
         #kpis { display: var(--kpi-visible); grid-template-columns: repeat(4, 1fr); gap: 20px; }
         .kpi-card { padding: 24px; display: flex; align-items: center; justify-content: space-between; border-left: 4px solid var(--brand-medium); }
         .kpi-info { display: flex; flex-direction: column; gap: 4px; }
@@ -167,28 +92,18 @@
         .chart-container .relative { flex: 1 1 auto; min-height: 0; min-width: 0; width: 100%; height: 100%; max-height: 190px; position: relative; display: flex; justify-content: center; }
         .chart-header { font-size: 14px; font-weight: 700; color: var(--brand-dark); margin-bottom: 12px; }
 
-        @media (max-width: 1200px) {
-            #charts-section { grid-template-columns: 1fr; height: auto; }
-            .chart-container { height: 280px; }
-            #kpis { grid-template-columns: repeat(2, 1fr); }
-        }
-
         /* Controls / Filter Card */
         .filter-card { padding: 20px 24px; display: flex; gap: 16px; align-items: flex-end; flex-wrap: wrap; }
         .input-labeled { display: flex; flex-direction: column; gap: 8px; flex: 1; min-width: 150px; }
         .input-labeled label { font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; }
 
-        .btn-action {
-            padding: 10px 24px; border-radius: 10px; font-weight: 600; font-size: 14px;
-            display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; height: 44px;
-            border: none; transition: background 0.2s;
-        }
+        .btn-action { padding: 10px 24px; border-radius: 10px; font-weight: 600; font-size: 14px; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; height: 44px; border: none; transition: background 0.2s; }
         .btn-sync { background: var(--brand-medium); color: white; }
         .btn-sync:hover { background: var(--brand-dark); }
         .btn-sync.syncing .sync-icon { animation: spin 1s linear infinite; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        /* STRICT TABLE SECTION */
+        /* STRICT TABLE SECTION (NO HORIZONTAL SCROLL) */
         #table-section { display: flex; flex-direction: column; overflow: hidden; width: 100%; }
         .table-wrapper { overflow-x: auto; max-height: 650px; overflow-y: auto; width: 100%; }
         
@@ -206,15 +121,15 @@
         .group-header { background-color: #E2E8F0 !important; font-weight: 700; color: var(--brand-dark); text-align: left; }
         
         /* COLUMN WIDTHS */
-        .col-no { width: 40px; }
-        .col-control { width: 8.5%; }
-        .col-call82 { width: 7.5%; }
-        .col-call50 { width: 9%; }
-        .col-acc { width: 8.5%; }
+        .col-no { width: 4%; }
+        .col-control { width: 9%; }
+        .col-call82 { width: 8%; }
+        .col-call50 { width: 10%; }
+        .col-acc { width: 9%; }
         .col-title { width: auto; text-align: center !important; } 
         .col-status { width: 11%; }
         .col-staff { width: 8%; }
-        .col-date { width: 7.5%; }
+        .col-date { width: 8%; }
         .col-audit { width: 12%; }
         .col-action { width: 10%; }
 
@@ -226,12 +141,11 @@
 
         .col-title .editable-input { text-align: center !important; }
         td.col-acc { font-weight: 700; color: var(--brand-dark); }
-
-        select.editable-input { cursor: pointer; padding: 4px; font-size: 11px; }
-        select.editable-input:disabled { cursor: not-allowed; appearance: none; }
+        select.editable-input { cursor: pointer; padding: 4px; font-size: 11px; border: 1px solid #E2E8F0; }
+        select.editable-input:disabled { cursor: not-allowed; appearance: none; border-color: transparent;}
 
         /* Workflow Buttons */
-        .btn-sm { padding: 6px 8px; border-radius: 6px; font-weight: 700; font-size: 10px; cursor: pointer; border: none; color: white; transition: 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 4px; }
+        .btn-sm { padding: 6px 8px; border-radius: 6px; font-weight: 700; font-size: 10px; cursor: pointer; border: none; color: white; transition: 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 4px; width: 100%; }
         .btn-sm:active { transform: scale(0.95); }
         .btn-approve { background-color: #3B82F6; } /* Checked - Blue */
         .btn-approve:hover { background-color: #2563EB; }
@@ -244,21 +158,20 @@
 
         /* Status Styling Display (NEW COLORS) */
         .status-display { font-weight: 700; padding: 6px 8px; border-radius: 6px; display: inline-block; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.5px; text-align: center; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: normal; }
-        .st-pending { color: #F59E0B; background: #FEF3C7; } /* Orange */
-        .st-checked { color: #3B82F6; background: #DBEAFE; } /* Blue */
-        .st-completed { color: #10B981; background: #D1FAE5; } /* Green */
-        .st-rejected { color: #EF4444; background: #FEE2E2; } /* Red */
-        .st-incomplete { color: #64748b; background: #F1F5F9; } /* Gray */
+        .st-pending { color: #F59E0B; background: #FEF3C7; border: 1px solid #FCD34D; } /* Orange */
+        .st-checked { color: #3B82F6; background: #DBEAFE; border: 1px solid #93C5FD; } /* Blue */
+        .st-completed { color: #10B981; background: #D1FAE5; border: 1px solid #6EE7B7; } /* Green */
+        .st-rejected { color: #EF4444; background: #FEE2E2; border: 1px solid #FCA5A5; } /* Red */
+        .st-incomplete { color: #64748b; background: #F1F5F9; border: 1px solid #CBD5E1; } /* Gray */
 
         /* Loading Overlay */
-        #sync-overlay { position: fixed; inset: 0; background: rgba(255,255,255,0.8); backdrop-filter: blur(4px); z-index: 3000; display: none; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.3s; }
+        #sync-overlay { position: fixed; inset: 0; background: rgba(255,255,255,0.8); backdrop-filter: blur(4px); z-index: 3000; display: none; flex-direction: column; justify-content: center; align-items: center; }
         .loader { width: 40px; height: 40px; border: 4px solid var(--bg-light); border-top-color: var(--brand-medium); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 16px; }
 
         /* Popups */
         .popup-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 4000; }
         .popup-content { background: white; padding: 32px; border-radius: 20px; max-width: 400px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.1); width: 100%; }
-        
-        /* Admin Panel */
+
         #admin-panel { position: fixed; right: -320px; top: 0; bottom: 0; width: 300px; background: white; box-shadow: -5px 0 25px rgba(0,0,0,0.1); z-index: 1000; transition: right 0.3s; display: flex; flex-direction: column; }
     </style>
 </head>
@@ -270,6 +183,7 @@
         <p class="text-sm text-gray-500 font-medium" id="sync-status-text">Sila tunggu sebentar.</p>
     </div>
 
+    <!-- LOGIN SCREEN -->
     <div id="login-screen">
         <div class="login-card">
             <div class="login-header">
@@ -299,6 +213,7 @@
         </div>
     </div>
 
+    <!-- DASHBOARD -->
     <div id="dashboard">
         <nav class="top-navbar">
             <div>
@@ -325,6 +240,7 @@
         </nav>
 
         <main class="main-content">
+            <!-- KPI CARDS -->
             <section id="kpis">
                 <div class="base-card kpi-card">
                     <div class="kpi-info">
@@ -342,20 +258,21 @@
                 </div>
                 <div class="base-card kpi-card" style="border-left-color: #3B82F6;">
                     <div class="kpi-info">
-                        <span class="kpi-label">Checked (Menunggu Lulus)</span>
+                        <span class="kpi-label">Checked (Sedia Lulus)</span>
                         <span class="kpi-value text-[#3B82F6]" id="kpi-checked">0</span>
                     </div>
                     <div class="kpi-icon-wrap" style="color: #3B82F6; background: #DBEAFE;"><i data-lucide="check-square"></i></div>
                 </div>
                 <div class="base-card kpi-card" style="border-left-color: #10B981;">
                     <div class="kpi-info">
-                        <span class="kpi-label">Completed</span>
+                        <span class="kpi-label">Complete</span>
                         <span class="kpi-value text-[#10B981]" id="kpi-complete">0</span>
                     </div>
                     <div class="kpi-icon-wrap" style="color: #10B981; background: #D1FAE5;"><i data-lucide="check-circle-2"></i></div>
                 </div>
             </section>
 
+            <!-- CHARTS & INSIGHTS -->
             <section id="charts-section">
                 <div class="chart-container">
                     <div class="chart-header">Status Distribution</div>
@@ -393,6 +310,7 @@
                 </div>
             </section>
 
+            <!-- Filters & Actions -->
             <section class="base-card filter-card !gap-5 !p-5 relative">
                 <div class="flex flex-wrap gap-4 flex-1 w-full xl:w-auto">
                     <div class="input-labeled flex-1 min-w-[200px]">
@@ -452,6 +370,7 @@
                 </div>
             </section>
 
+            <!-- Table Section -->
             <section id="table-section" class="base-card flex-1">
                 <div class="table-wrapper">
                     <table id="library-table">
@@ -471,9 +390,11 @@
                             </tr>
                         </thead>
                         <tbody id="table-body">
-                            </tbody>
+                            <!-- Data populated here -->
+                        </tbody>
                     </table>
                 </div>
+                <!-- Pagination -->
                 <div class="flex justify-between items-center p-4 border-t border-gray-100 bg-white" style="border-bottom-left-radius: 16px; border-bottom-right-radius: 16px;" id="pagination-controls">
                     <div class="text-xs text-gray-500 font-bold uppercase tracking-wider">
                         Memaparkan <span id="page-start">0</span> ke <span id="page-end">0</span> dari <span id="page-total">0</span> rekod
@@ -488,6 +409,7 @@
         </main>
     </div>
 
+    <!-- Popup Universal -->
     <div id="popup" class="popup-overlay">
         <div class="popup-content">
             <div id="popup-icon" class="mx-auto w-14 h-14 rounded-full flex items-center justify-center mb-4 shadow-sm"></div>
@@ -497,6 +419,7 @@
         </div>
     </div>
 
+    <!-- Admin Panel -->
     <div id="admin-panel">
         <div class="bg-[--brand-dark] text-white p-4 flex justify-between items-center">
             <h3 class="font-bold text-sm tracking-wide uppercase">Kawalan Pentadbir</h3>
@@ -511,25 +434,20 @@
             <label class="text-xs font-bold text-gray-700 flex items-center gap-3 cursor-pointer"><input type="checkbox" id="toggle-kpi" checked class="w-4 h-4 text-[--brand-medium] rounded focus:ring-[--brand-medium]"> Papar Kad KPI</label>
             <label class="text-xs font-bold text-gray-700 flex items-center gap-3 cursor-pointer"><input type="checkbox" id="toggle-charts" checked class="w-4 h-4 text-[--brand-medium] rounded focus:ring-[--brand-medium]"> Papar Carta</label>
             <label class="text-xs font-bold text-gray-700 flex items-center gap-3 cursor-pointer"><input type="checkbox" id="toggle-dup-prevent" checked class="w-4 h-4 text-[--brand-medium] rounded focus:ring-[--brand-medium]"> Halang Rekod Pendua</label>
-            <div class="mt-6 text-[10px] uppercase tracking-widest text-gray-400 text-center font-bold">
-                Kemaskini Terakhir<br><span id="admin-last-update" class="text-gray-600 mt-1 block font-normal capitalize">-</span>
-            </div>
         </div>
     </div>
 
+    <!-- JAVASCRIPT LOGIC -->
     <script>
-        // Sila masukkan URL Web App Google Apps Script anda yang tepat di sini
-        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxM0wLL7GQMKnsvJtIZ8eUbnIoxyKGZ_etVxP6GQ-XA832JNt8Ni5aE02EpHDYwu3Jr/exec"; 
+        // ==========================================
+        // 1. URL GOOGLE APPS SCRIPT (SILA PASTIKAN URL INI BETUL)
+        // ==========================================
+        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycby6sl0klQtZVMApRua_9GGycb_8bRxSkGBGt_hEuoejQ7UuJ0J009DnSBZgvVb-PUL8/exec"; 
         
         const State = {
-            currentUser: null, 
-            data: [], 
-            filtered: [], 
-            currentPage: 1, 
-            itemsPerPage: 100,
+            currentUser: null, data: [], filtered: [], currentPage: 1, itemsPerPage: 100,
             settings: { duplicatePrevention: true },
-            staffList: ["FATIHAH", "FAZILAH", "SAKINAH", "HUSNA", "ADMIN"],
-            chartInstances: {}
+            staffList: ["FATIHAH", "FAZILAH", "SAKINAH", "HUSNA", "ADMIN"], chartInstances: {}
         };
 
         lucide.createIcons();
@@ -578,7 +496,6 @@
                     document.getElementById('current-username').innerText = displayRole;
                     document.getElementById('user-avatar').innerText = user.charAt(0).toUpperCase();
                     
-                    // Sembunyikan filter staf bagi Rosli & Jaini sebab mereka nampak Grouping sahaja
                     if(user === 'rosli' || user === 'jaini') {
                         document.getElementById('filter-staff-container').style.display = 'none';
                         document.getElementById('filter-status-container').style.display = 'none';
@@ -655,8 +572,13 @@
                     row.STAFF = ["NABIL", "ALIA", "EYZAN", "ADMIN", "USER"].includes(staffUpper) ? "ADMIN" : staffUpper;
                 }
                 
-                let currentStatus = row['STATUS'] ? row['STATUS'].toString().trim() : '';
-                if(!currentStatus || currentStatus.toLowerCase() === 'incomplete') row['STATUS'] = 'Incomplete';
+                // Standardize Status Text untuk mengelakkan ralat ejaan
+                let rawStatus = row['STATUS'] ? row['STATUS'].toString().trim() : 'Incomplete';
+                if (rawStatus.toLowerCase() === 'pending semakan' || rawStatus.toLowerCase() === 'pending approval') row['STATUS'] = 'Pending Approval';
+                else if (rawStatus.toLowerCase() === 'pending kelulusan' || rawStatus.toLowerCase() === 'checked') row['STATUS'] = 'Checked';
+                else if (rawStatus.toLowerCase() === 'completed' || rawStatus.toLowerCase() === 'complete') row['STATUS'] = 'Complete';
+                else if (rawStatus.toLowerCase() === 'rejected') row['STATUS'] = 'Rejected';
+                else row['STATUS'] = 'Incomplete';
 
                 if (row.DATE) {
                     let dStr = row.DATE.toString();
@@ -678,168 +600,174 @@
             const exportYearEl = document.getElementById('export-year');
             if(exportYearEl) exportYearEl.innerHTML = '<option value="all">Keseluruhan</option>' + years.map(y => `<option value="${y}">${y}</option>`).join('');
             
-            const adminUpdateEl = document.getElementById('admin-last-update');
-            if(adminUpdateEl) adminUpdateEl.innerText = new Date().toLocaleString('en-MY');
-            
-            applyFilters(true); // Wajib reset ke page 1 bila sync dari mula
+            applyFilters(true); // Reset ke page 1 hanya waktu tarik data pertama
         }
 
         // ==========================================
-        // UPDATE_FLAT API CALL (Satu isyarat ke backend menggunakan string dipisah dengan "|||")
-        // Sangat berkesan memintas masalah "Failed to Fetch" (Optimistic UI Update)
+        // 2. API INTEGRATION: UPDATE_FLAT
         // ==========================================
         async function updateRowSilent(rowIndex, updates) {
-            const fieldsJoined = updates.map(u => u.field).join('|||');
-            const valuesJoined = updates.map(u => u.value).join('|||');
+            const fieldsJoined = updates.map(u => encodeURIComponent(u.field)).join('|||');
+            const valuesJoined = updates.map(u => encodeURIComponent(u.value)).join('|||');
             
-            const params = new URLSearchParams({ 
-                action: 'update_flat', 
-                rowIndex: rowIndex, 
-                fields: fieldsJoined, 
-                values: valuesJoined, 
-                t: Date.now() 
-            });
+            const url = `${GAS_WEB_APP_URL}?action=update_flat&rowIndex=${rowIndex}&fields=${fieldsJoined}&values=${valuesJoined}&t=${Date.now()}`;
 
             try {
-                // Menggunakan fetch biasa, tetapi secara senyap di background (no await overlay)
-                const res = await fetch(`${GAS_WEB_APP_URL}?${params.toString()}`);
+                const res = await fetch(url);
                 const json = await res.json();
-                if(!json.success) console.error("Ralat backend:", json.message);
+                
+                if (json.success) {
+                    let record = State.data.find(r => r._rowIndex === rowIndex);
+                    if (record) updates.forEach(u => record[u.field] = u.value);
+                    return true;
+                }
+                return false;
             } catch(e) {
-                console.error("Ralat rangkaian ketika sinkronisasi belakang tabir.");
+                return false;
             }
         }
 
         // ==========================================
-        // SINGLE ROW UPDATE HANDLERS (STAFF EDIT TEXT)
+        // 3. STAFF ACTION: EDIT TEXT
         // ==========================================
-        window.handleEdit = function(rowIndex, field, value, inputElement) {
-            let record = State.data.find(r => r._rowIndex === rowIndex);
-            if (!record) return;
-
+        window.handleEdit = async function(rowIndex, field, value, inputElement) {
+            inputElement.disabled = true;
+            
             if(State.settings.duplicatePrevention && (field === 'CONTROL NUMBER' || field === 'ACCESSION')) {
+                let record = State.data.find(r => r._rowIndex === rowIndex);
                 const tempControl = field === 'CONTROL NUMBER' ? value : record['CONTROL NUMBER'];
                 const tempAcc = field === 'ACCESSION' ? value : record['ACCESSION'];
                 if(tempControl && tempAcc && State.data.some(r => r._rowIndex !== rowIndex && r['CONTROL NUMBER'] === tempControl && r['ACCESSION'] === tempAcc)) {
                     inputElement.value = record[field];
                     showPopup("Rekod Pendua", "Kemas kini dibatalkan kerana rekod ini sudah wujud.", "error");
-                    return;
+                    inputElement.disabled = false; return;
                 }
             }
 
-            // UI Update terus jalan
-            record[field] = value;
-            inputElement.style.backgroundColor = '#ecfdf5'; 
-            setTimeout(() => { inputElement.style.backgroundColor = 'transparent'; }, 800);
-
-            // Sync API Backend
-            updateRowSilent(rowIndex, [{field: field, value: value}]);
+            let success = await updateRowSilent(rowIndex, [{field: field, value: value}]);
+            
+            if(success) {
+                inputElement.style.backgroundColor = '#ecfdf5'; 
+                setTimeout(() => { inputElement.style.backgroundColor = 'transparent'; }, 800);
+            } else {
+                inputElement.value = State.data.find(r => r._rowIndex === rowIndex)[field];
+                showPopup("Ralat Server", "Sistem gagal mengemas kini data. Pastikan 'update_flat' ada dalam code.gs.", "error");
+            }
+            inputElement.disabled = false;
         };
 
         // ==========================================
-        // WORKFLOW BUTTONS
+        // 4. WORKFLOW: STAFF COMPLETE BUTTON
         // ==========================================
-
-        // 1. STAFF: Hantar untuk Kelulusan (Complete Button)
-        window.staffSubmit = function(rowIndex) {
-            let record = State.data.find(r => r._rowIndex === rowIndex);
-            if (record) {
-                record['STATUS'] = 'Pending Approval';
-                record['DATE'] = getFormattedDate();
-            }
-            applyFilters(false); // Jangan reset pagination
-
-            updateRowSilent(rowIndex, [
+        window.staffSubmit = async function(rowIndex) {
+            els.syncOverlay.style.display = 'flex'; 
+            els.syncStatusText.innerText = "Menyimpan status...";
+            
+            let updates = [
                 {field: 'STATUS', value: 'Pending Approval'},
                 {field: 'DATE', value: getFormattedDate()}
-            ]);
+            ];
+            
+            let success = await updateRowSilent(rowIndex, updates);
+            
+            els.syncOverlay.style.display = 'none';
+            if(success) {
+                applyFilters(false); // KEKAL DI PAGE YANG SAMA (JANGAN RESET)
+            } else {
+                showPopup("Ralat Server", "Gagal menyimpan ke pangkalan data.", "error");
+            }
         };
 
-        // 2. BULK ACTION: ROSLI CHECK ALL (Berdasarkan Kumpulan Staff)
+        // ==========================================
+        // 5. WORKFLOW: ROSLI CHECK ALL (GROUP ACTION)
+        // ==========================================
         window.bulkCheck = async function(staffName) {
-            let targetRows = State.data.filter(r => r.STAFF === staffName && r.STATUS === 'Pending Approval');
+            let targetRows = State.filtered.filter(r => r.STAFF === staffName);
             if (targetRows.length === 0) return;
-
-            if(!confirm(`Adakah anda pasti mahu menyemak ${targetRows.length} rekod dari ${staffName}?`)) return;
+            if(!confirm(`Adakah anda pasti mahu menyemak semua ${targetRows.length} rekod dari ${staffName}?`)) return;
 
             els.syncOverlay.style.display = 'flex'; 
-            els.syncStatusText.innerText = `Menyemak ${targetRows.length} rekod secara pukal...`;
+            els.syncStatusText.innerText = `Menyemak ${targetRows.length} rekod. Sila tunggu...`;
 
             for (let i = 0; i < targetRows.length; i++) {
                 let row = targetRows[i];
-                row['STATUS'] = 'Checked';
-                row['CHECKED BY'] = 'Rosli';
-                row['DATE CHECKED'] = getFormattedDate();
-
-                await updateRowSilent(row._rowIndex, [
+                let updates = [
                     {field: 'STATUS', value: 'Checked'},
                     {field: 'CHECKED BY', value: 'Rosli'},
                     {field: 'DATE CHECKED', value: getFormattedDate()}
-                ]);
+                ];
                 
-                await new Promise(r => setTimeout(r, 600)); // Lengahkan 600ms sikit elak limit
+                await updateRowSilent(row._rowIndex, updates);
+                
+                // Lengahkan 1000ms (1 saat) untuk selamat melepasi firewall
+                if (i < targetRows.length - 1) {
+                    await new Promise(r => setTimeout(r, 1000));
+                }
             }
 
             els.syncOverlay.style.display = 'none'; 
-            applyFilters(false); 
-            showPopup("Berjaya", `${targetRows.length} rekod telah disemak.`, "success");
+            applyFilters(false); // KEKAL DI PAGE YANG SAMA (JANGAN RESET)
+            showPopup("Berjaya", `Semua rekod ${staffName} telah disemak.`, "success");
         };
 
-        // 3. BULK ACTION: JAINI APPROVE ALL (Berdasarkan Kumpulan Staff)
+        // ==========================================
+        // 6. WORKFLOW: JAINI APPROVE ALL (GROUP ACTION)
+        // ==========================================
         window.bulkApprove = async function(staffName) {
-            let targetRows = State.data.filter(r => r.STAFF === staffName && r.STATUS === 'Checked');
+            let targetRows = State.filtered.filter(r => r.STAFF === staffName);
             if (targetRows.length === 0) return;
-
-            if(!confirm(`Adakah anda pasti mahu meluluskan ${targetRows.length} rekod dari ${staffName}?`)) return;
+            if(!confirm(`Adakah anda pasti mahu meluluskan semua ${targetRows.length} rekod dari ${staffName}?`)) return;
 
             els.syncOverlay.style.display = 'flex'; 
-            els.syncStatusText.innerText = `Meluluskan ${targetRows.length} rekod secara pukal...`;
+            els.syncStatusText.innerText = `Meluluskan ${targetRows.length} rekod. Sila tunggu...`;
 
             for (let i = 0; i < targetRows.length; i++) {
                 let row = targetRows[i];
-                row['STATUS'] = 'Complete';
-                row['APPROVED BY'] = 'Jaini';
-                row['APPROVED DATE'] = getFormattedDate();
-
-                await updateRowSilent(row._rowIndex, [
+                let updates = [
                     {field: 'STATUS', value: 'Complete'},
                     {field: 'APPROVED BY', value: 'Jaini'},
                     {field: 'APPROVED DATE', value: getFormattedDate()}
-                ]);
+                ];
                 
-                await new Promise(r => setTimeout(r, 600));
+                await updateRowSilent(row._rowIndex, updates);
+                
+                // Lengahkan 1000ms (1 saat) untuk selamat melepasi firewall
+                if (i < targetRows.length - 1) {
+                    await new Promise(r => setTimeout(r, 1000));
+                }
             }
 
             els.syncOverlay.style.display = 'none'; 
-            applyFilters(false); 
-            showPopup("Berjaya", `${targetRows.length} rekod telah diluluskan sepenuhnya.`, "success");
+            applyFilters(false); // KEKAL DI PAGE YANG SAMA (JANGAN RESET)
+            showPopup("Berjaya", `Semua rekod ${staffName} diluluskan sepenuhnya.`, "success");
         };
 
-        // KAWALAN PAPARAN HTML BARIS DEMI BARIS
+        // ==========================================
+        // HTML KAWALAN PAPARAN (UI DESIGN)
+        // ==========================================
         function createRowHTML(row, roleId) {
             const tr = document.createElement('tr');
-            const stat = row['STATUS'];
+            const stat = row['STATUS'] || 'Incomplete';
 
-            // KAWALAN EDIT
             let adminEdit = roleId === 'admin';
             let staffEdit = roleId === 'staff' && (stat === 'Incomplete' || stat === 'Rejected');
-            let rosliEdit = roleId === 'rosli' && stat === 'Pending Approval';
             
-            let canEditControlCall50 = adminEdit || staffEdit || rosliEdit;
+            // KAWALAN EDIT YANG KETAT
+            let canEditControlCall50 = adminEdit || staffEdit;
             let canEditStaffCol = adminEdit || staffEdit;
 
-            // FORMAT STATUS WARNA BARU
+            // STATUS DISPLAY TEXT AND COLOR
             let displayStatus = stat;
-            let sClass = 'st-incomplete'; // Kelabu
-            if(stat === 'Pending Approval') sClass = 'st-pending'; // Oren
-            else if(stat === 'Checked') sClass = 'st-checked'; // Biru
-            else if(stat === 'Complete') sClass = 'st-completed'; // Hijau
-            else if(stat === 'Rejected') sClass = 'st-rejected'; // Merah
+            let sClass = 'st-incomplete'; 
+            if(stat === 'Pending Approval') sClass = 'st-pending'; 
+            else if(stat === 'Checked') sClass = 'st-checked'; 
+            else if(stat === 'Complete') sClass = 'st-completed'; 
+            else if(stat === 'Rejected') sClass = 'st-rejected'; 
 
             let statusHTML = `<div class="status-display ${sClass} w-full whitespace-normal break-words">${displayStatus}</div>`;
             let actionHTML = '';
 
-            // TUGASAN ROLE: ACTION COLUMN
+            // TUGASAN ACTION COLUMN MENGGUNAKAN BUTANG
             if (roleId === 'staff') {
                 if (stat === 'Incomplete' || stat === 'Rejected') {
                     let btnClass = stat === 'Rejected' ? 'btn-reject' : 'btn-submit';
@@ -855,29 +783,21 @@
                 }
             }
             else if (roleId === 'rosli') {
-                if (stat === 'Pending Approval') {
-                    actionHTML = `<div class="text-[9px] text-[--brand-medium] font-bold uppercase text-center">MENUNGGU SEMAKAN PUKAL</div>`;
-                } else { 
-                    actionHTML = `<span class="text-gray-300">-</span>`; 
-                }
+                actionHTML = `<div class="text-[9px] text-[--brand-medium] font-bold uppercase text-center">MENUNGGU SEMAKAN PUKAL</div>`;
             }
             else if (roleId === 'jaini') {
-                if (stat === 'Checked') {
-                    actionHTML = `<div class="text-[9px] text-[#10B981] font-bold uppercase text-center">MENUNGGU LULUS PUKAL</div>`;
-                } else { 
-                    actionHTML = `<span class="text-gray-300">-</span>`; 
-                }
+                actionHTML = `<div class="text-[9px] text-[#10B981] font-bold uppercase text-center">MENUNGGU LULUS PUKAL</div>`;
             }
             else { 
                 actionHTML = `<span class="text-gray-300">-</span>`; 
             }
 
-            // Audit Trail
+            // GABUNGAN AUDIT TRAIL KE DALAM SATU LAJUR
             let semakText = row['CHECKED BY'] ? `<div class="font-bold text-[--brand-dark] text-[10.5px] text-left leading-tight">Checked: ${row['CHECKED BY']} <br><span class="font-normal text-gray-500">(${row['DATE CHECKED'] || ''})</span></div>` : '';
             let lulusText = row['APPROVED BY'] ? `<div class="font-bold text-[#10B981] text-[10.5px] text-left leading-tight mt-1.5">Approved: ${row['APPROVED BY']} <br><span class="font-normal text-gray-500">(${row['APPROVED DATE'] || ''})</span></div>` : '';
             let auditHTML = semakText || lulusText ? `<div class="text-left px-1">${semakText}${lulusText}</div>` : `<span class="text-gray-300">-</span>`;
 
-            // HTML Teks & Inputs
+            // HTML INPUTS
             let ctrlHtml = canEditControlCall50 ? `<textarea class="editable-input w-full resize-none" rows="2" onchange="handleEdit(${row._rowIndex}, 'CONTROL NUMBER', this.value, this)">${row['CONTROL NUMBER'] || ''}</textarea>` : `<div class="p-1 break-words whitespace-normal">${row['CONTROL NUMBER'] || ''}</div>`;
             let call82Html = adminEdit ? `<textarea class="editable-input text-gray-500 w-full resize-none" rows="2" onchange="handleEdit(${row._rowIndex}, 'CALL NO (082)', this.value, this)">${row['CALL NO (082)'] || ''}</textarea>` : `<div class="p-1 text-gray-500 break-words whitespace-normal">${row['CALL NO (082)'] || ''}</div>`;
             let call50Html = canEditControlCall50 ? `<textarea class="editable-input !text-[--brand-main] font-semibold w-full resize-none" rows="2" onchange="handleEdit(${row._rowIndex}, 'CALL NO (050/060)', this.value, this)">${row['CALL NO (050/060)'] || ''}</textarea>` : `<div class="p-1 text-[--brand-main] font-semibold break-words whitespace-normal leading-snug">${row['CALL NO (050/060)'] || ''}</div>`;
@@ -903,7 +823,7 @@
         }
 
         // ==========================================
-        // RENDER TABLE (Logik Pukal Grouping vs Biasa)
+        // RENDER TABLE (GROUPING ROSLI/JAINI)
         // ==========================================
         function renderTable() {
             const tbody = document.getElementById('table-body'); 
@@ -919,7 +839,7 @@
             const frag = document.createDocumentFragment();
 
             if (roleId === 'rosli' || roleId === 'jaini') {
-                // TIADA PAGINATION UNTUK GROUPING
+                // TIADA PAGINATION UNTUK GROUPING SUPAYA BOLEH LULUSKAN SEMUA
                 document.getElementById('pagination-controls').style.display = 'none';
 
                 let grouped = {};
@@ -934,9 +854,9 @@
                     
                     let bulkButton = '';
                     if (roleId === 'rosli') {
-                        bulkButton = `<button onclick="bulkCheck('${staffName}')" class="btn-approve px-4 py-2 text-xs font-bold rounded-lg shadow-sm tracking-widest"><i data-lucide="check-square" class="w-4 h-4 mr-1"></i> CHECK ALL</button>`;
+                        bulkButton = `<button onclick="bulkCheck('${staffName}')" class="btn-approve px-4 py-2 text-xs font-bold rounded-lg shadow-sm tracking-widest text-white"><i data-lucide="check-square" class="w-4 h-4 mr-1"></i> SEMAK SEMUA REKOD INI</button>`;
                     } else if (roleId === 'jaini') {
-                        bulkButton = `<button onclick="bulkApprove('${staffName}')" class="btn-complete px-4 py-2 text-xs font-bold rounded-lg shadow-sm tracking-widest"><i data-lucide="award" class="w-4 h-4 mr-1"></i> APPROVE ALL</button>`;
+                        bulkButton = `<button onclick="bulkApprove('${staffName}')" class="btn-complete px-4 py-2 text-xs font-bold rounded-lg shadow-sm tracking-widest text-white"><i data-lucide="award" class="w-4 h-4 mr-1"></i> LULUS SEMUA REKOD INI</button>`;
                     }
 
                     groupTr.innerHTML = `
@@ -974,13 +894,18 @@
         }
 
         // ==========================================
-        // FILTER & PAGINATION
+        // PENGASINGAN DATA IKUT ROLE
         // ==========================================
         function applyFilters(resetPage = true) {
-            const fStaff = document.getElementById('filter-staff').value;
-            const fStatus = document.getElementById('filter-status').value;
-            const fYear = document.getElementById('filter-year').value.trim();
-            const search = document.getElementById('search-input').value.toLowerCase();
+            const fStaffEl = document.getElementById('filter-staff');
+            const fStatusEl = document.getElementById('filter-status');
+            const fYearEl = document.getElementById('filter-year');
+            const searchEl = document.getElementById('search-input');
+            
+            const fStaff = fStaffEl ? fStaffEl.value : '';
+            const fStatus = fStatusEl ? fStatusEl.value : '';
+            const fYear = fYearEl ? fYearEl.value.trim() : '';
+            const search = searchEl ? searchEl.value.toLowerCase() : '';
             const roleId = State.currentUser ? State.currentUser.id : 'staff';
             
             State.filtered = State.data.filter(row => {
@@ -989,20 +914,20 @@
                 if (fYear && (!row['DATE'] || !row['DATE'].toString().includes(fYear))) return false;
                 if (search && !((row['TITLE']||"").toLowerCase().includes(search) || (row['ACCESSION']||"").toLowerCase().includes(search))) return false;
                 
-                // SIMULASI KAWALAN PERANAN (HARD FILTER)
+                // SIMULASI KAWALAN PERANAN (ROSLI HANYA NAMPAK PENDING APPROVAL, JAINI HANYA NAMPAK CHECKED)
                 if (roleId === 'rosli' && row['STATUS'] !== 'Pending Approval') return false;
                 if (roleId === 'jaini' && row['STATUS'] !== 'Checked') return false;
                 
                 return true;
             });
             
-            // WAJIB BETUL: Jangan reset page ke 1 secara automatik bila edit!
+            // JANGAN RESET PAGE KETIKA UPDATE STATUS!
             if (resetPage) {
                 State.currentPage = 1; 
             }
             
             updateKPIs(); 
-            if(document.getElementById('toggle-charts').checked) updateCharts(); 
+            if(document.getElementById('toggle-charts') && document.getElementById('toggle-charts').checked) updateCharts(); 
             renderTable();
         }
 
@@ -1072,13 +997,7 @@
                     data: { 
                         labels: ['Complete', 'Checked', 'Pending Approval', 'Rejected', 'Incomplete'], 
                         datasets: [{ 
-                            data: [
-                                sCounts['Complete'], 
-                                sCounts['Checked'], 
-                                sCounts['Pending Approval'], 
-                                sCounts['Rejected'], 
-                                sCounts['Incomplete']
-                            ], 
+                            data: [ sCounts['Complete'], sCounts['Checked'], sCounts['Pending Approval'], sCounts['Rejected'], sCounts['Incomplete'] ], 
                             backgroundColor: ['#10B981', '#3B82F6', '#F59E0B', '#EF4444', '#CBD5E1'], 
                             borderWidth: 2, borderColor: '#ffffff'
                         }] 
@@ -1099,7 +1018,6 @@
             }
         }
 
-        // --- EXPORT LAPORAN ---
         if(document.getElementById('btn-export')){
             document.getElementById('btn-export').addEventListener('click', () => {
                 if (!State.data || State.data.length === 0) return showPopup("Tiada Data", "Tiada data untuk dimuat turun.", "error");
@@ -1131,16 +1049,8 @@
                     if(id === 'toggle-charts') { document.documentElement.style.setProperty('--charts-visible', e.target.checked ? 'grid' : 'none'); if(e.target.checked && State.data.length > 0) updateCharts(); }
                     if(id === 'toggle-dup-prevent') State.settings.duplicatePrevention = e.target.checked;
                 });
-                if(id.includes('admin-') && !id.includes('font')) {
-                    el.addEventListener('input', e => {
-                        if(id === 'admin-dark') document.documentElement.style.setProperty('--brand-dark', e.target.value);
-                        if(id === 'admin-medium') document.documentElement.style.setProperty('--brand-medium', e.target.value);
-                        if(id === 'admin-light') document.documentElement.style.setProperty('--bg-light', e.target.value);
-                    });
-                }
             }
         });
-
     </script>
 </body>
 </html>
