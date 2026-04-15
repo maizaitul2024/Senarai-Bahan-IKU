@@ -307,7 +307,7 @@
                         <label>Carian</label>
                         <input type="text" id="search-input" class="premium-input !py-2.5" placeholder="Cari Tajuk atau Accession...">
                     </div>
-                    <div class="input-labeled min-w-[130px]">
+                    <div class="input-labeled min-w-[130px]" id="filter-staff-container">
                         <label>Staff</label>
                         <select id="filter-staff" class="premium-input !py-2.5">
                             <option value="">Semua Staff</option>
@@ -318,7 +318,7 @@
                             <option value="ADMIN">ADMIN</option>
                         </select>
                     </div>
-                    <div class="input-labeled min-w-[130px]">
+                    <div class="input-labeled min-w-[130px]" id="filter-status-container">
                         <label>Status</label>
                         <select id="filter-status" class="premium-input !py-2.5">
                             <option value="">Semua Status</option>
@@ -430,7 +430,7 @@
     <!-- JAVASCRIPT LOGIC -->
     <script>
         // SILA PASTIKAN URL WEB APP INI ADALAH YANG TERKINI
-        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwe24GZsHZdFm2tDRpwxzcMFgGWGFBBZUcUThLU-MDjIZCnDJua4Sz7zEu634I2aVgH/exec"; 
+        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycby7pBm3cEooNNHJeYuli5PH8uCxT5PRDH0gki8Tfmceo26NNg5bex4lEbJ3okn-Ceee/exec"; 
         
         const State = {
             currentUser: null, 
@@ -478,6 +478,13 @@
                     document.getElementById('current-username').innerText = displayRole;
                     document.getElementById('user-avatar').innerText = user.charAt(0).toUpperCase();
                     
+                    if(user === 'rosli' || user === 'jaini') {
+                        document.getElementById('filter-staff-container').style.display = 'none';
+                        document.getElementById('filter-status-container').style.display = 'none';
+                    } else {
+                        document.getElementById('filter-staff-container').style.display = 'flex';
+                        document.getElementById('filter-status-container').style.display = 'flex';
+                    }
                     if(user === 'admin') document.getElementById('btn-admin-panel').classList.remove('hidden');
 
                     els.loginScreen.style.display = 'none'; 
@@ -636,7 +643,7 @@
                 }
             }
 
-            const params = newSearchParams({ action: 'update', rowIndex: rowIndex, field: field, value: value, validateDup: 'false', t: Date.now() });
+            const params = new URLSearchParams({ action: 'update', rowIndex: rowIndex, field: field, value: value, validateDup: 'false', t: Date.now() });
             try {
                 let res = await fetch(GAS_WEB_APP_URL + "?" + params.toString());
                 let json = await res.json();
@@ -857,7 +864,13 @@
             
             State.filtered = State.data.filter(row => {
                 if (fStaff && row['STAFF'] !== fStaff) return false;
-                if (fStatus && row['STATUS'] !== fStatus) return false;
+                
+                let cStatus = row['STATUS'] || '';
+                if(cStatus === 'Pending Semakan') cStatus = 'Pending Approval';
+                if(cStatus === 'Pending Kelulusan') cStatus = 'Checked';
+                if(cStatus === 'Completed') cStatus = 'Complete';
+                
+                if (fStatus && cStatus !== fStatus) return false;
                 if (fYear && (!row['DATE'] || !row['DATE'].toString().includes(fYear))) return false;
                 if (search && !((row['TITLE']||"").toLowerCase().includes(search) || (row['ACCESSION']||"").toLowerCase().includes(search))) return false;
                 
