@@ -18,10 +18,8 @@
             --brand-medium: #0055A5;
             --bg-light: #CCE5FF;
             --row-alt: #F8FAFC;
-            
             --font-ui: 'Montserrat', sans-serif;
             --font-table: 'DM Sans', sans-serif !important;
-
             --kpi-visible: grid;
             --charts-visible: grid;
         }
@@ -97,6 +95,7 @@
         .filter-card { padding: 20px 24px; display: flex; gap: 16px; align-items: flex-end; flex-wrap: wrap; }
         .input-labeled { display: flex; flex-direction: column; gap: 8px; flex: 1; min-width: 150px; }
         .input-labeled label { font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; }
+
         .btn-action { padding: 10px 24px; border-radius: 10px; font-weight: 600; font-size: 14px; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; height: 44px; border: none; transition: background 0.2s; }
         .btn-sync { background: var(--brand-medium); color: white; }
         .btn-sync:hover { background: var(--brand-dark); }
@@ -111,6 +110,7 @@
         th { background: var(--brand-dark); color: white; font-size: 11px; font-weight: 700; text-align: center; padding: 12px 6px; border-bottom: none; letter-spacing: 0.5px; white-space: normal; word-break: break-word; }
         th:first-child { border-top-left-radius: 8px; }
         th:last-child { border-top-right-radius: 8px; }
+        
         td { font-size: 11.5px; text-align: center; padding: 8px 6px; border-bottom: 1px solid #F1F5F9; color: #334155; vertical-align: middle; line-height: 1.4; white-space: normal !important; word-wrap: break-word !important; overflow: visible !important; }
         tr:nth-child(even) td { background-color: var(--row-alt); }
         tr:hover td { background-color: #F8FAFC; }
@@ -259,7 +259,7 @@
                 </div>
                 <div class="base-card kpi-card" style="border-left-color: #10B981;">
                     <div class="kpi-info">
-                        <span class="kpi-label">Completed</span>
+                        <span class="kpi-label">Complete</span>
                         <span class="kpi-value text-[#10B981]" id="kpi-complete">0</span>
                     </div>
                     <div class="kpi-icon-wrap" style="color: #10B981; background: #D1FAE5;"><i data-lucide="check-circle-2"></i></div>
@@ -421,15 +421,12 @@
             <label class="text-xs font-bold text-gray-700 flex items-center gap-3 cursor-pointer"><input type="checkbox" id="toggle-kpi" checked class="w-4 h-4 text-[--brand-medium] rounded focus:ring-[--brand-medium]"> Papar Kad KPI</label>
             <label class="text-xs font-bold text-gray-700 flex items-center gap-3 cursor-pointer"><input type="checkbox" id="toggle-charts" checked class="w-4 h-4 text-[--brand-medium] rounded focus:ring-[--brand-medium]"> Papar Carta</label>
             <label class="text-xs font-bold text-gray-700 flex items-center gap-3 cursor-pointer"><input type="checkbox" id="toggle-dup-prevent" checked class="w-4 h-4 text-[--brand-medium] rounded focus:ring-[--brand-medium]"> Halang Rekod Pendua</label>
-            <div class="mt-6 text-[10px] uppercase tracking-widest text-gray-400 text-center font-bold">
-                Kemaskini Terakhir<br><span id="admin-last-update" class="text-gray-600 mt-1 block font-normal capitalize">-</span>
-            </div>
         </div>
     </div>
 
     <script>
-        // Sila pastikan Pautan Web App di bawah adalah pautan yang paling terkini!
-        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbx4r27lWxuuxt_Gx8SU44-nhuQv3zgXZluflljIfbHuLVOHzTD6w-OnwQaWLzF0jBlx/exec"; 
+        // Sila pastikan Pautan Web App di bawah adalah yang paling terkini (selepas update_flat diletakkan di backend code.gs)
+        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxj8IpQFfW4YW24D0RcBTJUDhZL5mvPG2q4cZVjQfZGRQcB0EVHbCc-pHHvzHkI7YUW/exec"; 
         
         const State = {
             currentUser: null, 
@@ -488,21 +485,29 @@
                     document.getElementById('current-username').innerText = displayRole;
                     document.getElementById('user-avatar').innerText = user.charAt(0).toUpperCase();
                     
+                    const fStaffContainer = document.getElementById('filter-staff-container');
+                    const fStatusContainer = document.getElementById('filter-status-container');
+                    
                     if(user === 'rosli' || user === 'jaini') {
-                        document.getElementById('filter-staff-container').style.display = 'none';
-                        document.getElementById('filter-status-container').style.display = 'none';
+                        if(fStaffContainer) fStaffContainer.style.display = 'none';
+                        if(fStatusContainer) fStatusContainer.style.display = 'none';
                     } else {
-                        document.getElementById('filter-staff-container').style.display = 'flex';
-                        document.getElementById('filter-status-container').style.display = 'flex';
+                        if(fStaffContainer) fStaffContainer.style.display = 'flex';
+                        if(fStatusContainer) fStatusContainer.style.display = 'flex';
                     }
-                    if(user === 'admin') document.getElementById('btn-admin-panel').classList.remove('hidden');
+                    
+                    const adminPanelBtn = document.getElementById('btn-admin-panel');
+                    if(adminPanelBtn) {
+                        if(user === 'admin') adminPanelBtn.classList.remove('hidden');
+                        else adminPanelBtn.classList.add('hidden');
+                    }
 
                     els.loginScreen.style.display = 'none'; 
                     els.dashboard.style.display = 'flex';
                     
                     syncLiveDatabase();
                 } else {
-                    showPopup("Log Masuk Gagal", "Kata Laluan tidak sah.", "error");
+                    showPopup("Log Masuk Gagal", "Sila semak semula ID Pengguna atau Kata Laluan.", "error");
                 }
             });
         }
@@ -587,17 +592,14 @@
             const exportYearEl = document.getElementById('export-year');
             if(exportYearEl) exportYearEl.innerHTML = '<option value="all">Keseluruhan</option>' + years.map(y => `<option value="${y}">${y}</option>`).join('');
             
-            const adminUpdateEl = document.getElementById('admin-last-update');
-            if(adminUpdateEl) adminUpdateEl.innerText = new Date().toLocaleString('en-MY');
-            
             applyFilters(true);
         }
 
         // ==========================================
-        // SINGLE API CALL: UPDATE_FLAT (Mesti ada di backend `code.gs` yang baru)
+        // UPDATE_FLAT API CALL (Satu isyarat pukal tanpa format array)
         // ==========================================
         async function updateRowSilent(rowIndex, updates) {
-            els.syncOverlay.style.display = 'flex';
+            if(els.syncOverlay) els.syncOverlay.style.display = 'flex'; 
             els.syncStatusText.innerText = "Menyimpan ke pangkalan data...";
 
             const fieldsJoined = updates.map(u => encodeURIComponent(u.field)).join('|||');
@@ -609,21 +611,17 @@
                 const response = await fetch(url);
                 const json = await response.json();
                 
-                if (json.success) {
-                    let record = State.data.find(r => r._rowIndex === rowIndex);
-                    if (record) updates.forEach(u => record[u.field] = u.value);
-                    applyFilters(false); // Jangan Reset Page
-                } else {
-                    showPopup("Ralat Server", "Sistem gagal mengemas kini data. Pastikan Apps Script 'update_flat' telah dimasukkan.", "error");
+                if (!json.success) {
+                    showPopup("Ralat Server", "Sistem gagal mengemas kini data. Sila pastikan Apps Script versi 'update_flat' telah dimasukkan.", "error");
                 }
             } catch(e) {
-                showPopup("Ralat Rangkaian", "Internet atau Firewall menyekat sambungan ini.", "error");
+                showPopup("Ralat Rangkaian", "Data anda telah disimpan di skrin, tetapi internet/firewall menyekat ia dari dihantar ke pelayan utama.", "error");
             }
-            els.syncOverlay.style.display = 'none';
+            if(els.syncOverlay) els.syncOverlay.style.display = 'none';
         }
 
         // ==========================================
-        // WORKFLOW BUTTONS & HANDLERS
+        // SINGLE ROW EDIT HANDLER (STAFF & ROSLI)
         // ==========================================
         window.handleEdit = function(rowIndex, field, value, inputElement) {
             let record = State.data.find(r => r._rowIndex === rowIndex);
@@ -639,20 +637,382 @@
                 }
             }
 
-            updateRowSilent(rowIndex, [{field: field, value: value}]);
-            
+            // Kemas kini UI secara langsung dan hantar API secara background
+            record[field] = value;
             inputElement.style.backgroundColor = '#ecfdf5'; 
             setTimeout(() => { inputElement.style.backgroundColor = 'transparent'; }, 800);
+            updateRowSilent(rowIndex, [{field: field, value: value}]);
         };
 
-        window.staffSubmit = function(rowIndex) {
-            updateRowSilent(rowIndex, [
+        // ==========================================
+        // WORKFLOW BUTTONS
+        // ==========================================
+        window.staffSubmit = async function(rowIndex) {
+            let record = State.data.find(r => r._rowIndex === rowIndex);
+            if (!record) return;
+            
+            const dateStr = getFormattedDate();
+            record['STATUS'] = 'Pending Approval';
+            record['DATE'] = dateStr;
+            
+            applyFilters(false); // Kekalkan page semasa
+
+            await updateRowSilent(rowIndex, [
                 {field: 'STATUS', value: 'Pending Approval'},
-                {field: 'DATE', value: getFormattedDate()}
+                {field: 'DATE', value: dateStr}
             ]);
         };
 
         window.bulkCheck = async function(staffName) {
             let targetRows = State.data.filter(r => r.STAFF === staffName && r.STATUS === 'Pending Approval');
             if (targetRows.length === 0) return;
-            if(!confirm(`Menyemak ${targetRows.length} rekod dari ${staffName}?
+            if(!confirm(`Adakah anda pasti mahu menyemak ${targetRows.length} rekod dari ${staffName}?`)) return;
+
+            if(els.syncOverlay) els.syncOverlay.style.display = 'flex'; 
+            els.syncStatusText.innerText = `Menyemak ${targetRows.length} rekod...`;
+
+            for (let i = 0; i < targetRows.length; i++) {
+                let row = targetRows[i];
+                row['STATUS'] = 'Checked';
+                row['CHECKED BY'] = 'Rosli';
+                row['DATE CHECKED'] = getFormattedDate();
+                
+                const fieldsJoined = ['STATUS', 'CHECKED BY', 'DATE CHECKED'].join('|||');
+                const valuesJoined = ['Checked', 'Rosli', getFormattedDate()].join('|||');
+                const url = `${GAS_WEB_APP_URL}?action=update_flat&rowIndex=${row._rowIndex}&fields=${fieldsJoined}&values=${valuesJoined}&t=${Date.now()}`;
+                
+                await fetch(url).catch(e=>{});
+            }
+
+            if(els.syncOverlay) els.syncOverlay.style.display = 'none'; 
+            applyFilters(false); 
+            showPopup("Berjaya", `${targetRows.length} rekod disemak.`, "success");
+        };
+
+        window.bulkApprove = async function(staffName) {
+            let targetRows = State.data.filter(r => r.STAFF === staffName && r.STATUS === 'Checked');
+            if (targetRows.length === 0) return;
+            if(!confirm(`Adakah anda pasti mahu meluluskan ${targetRows.length} rekod dari ${staffName}?`)) return;
+
+            if(els.syncOverlay) els.syncOverlay.style.display = 'flex'; 
+            els.syncStatusText.innerText = `Meluluskan ${targetRows.length} rekod...`;
+
+            for (let i = 0; i < targetRows.length; i++) {
+                let row = targetRows[i];
+                row['STATUS'] = 'Complete';
+                row['APPROVED BY'] = 'Jaini';
+                row['APPROVED DATE'] = getFormattedDate();
+                
+                const fieldsJoined = ['STATUS', 'APPROVED BY', 'APPROVED DATE'].join('|||');
+                const valuesJoined = ['Complete', 'Jaini', getFormattedDate()].join('|||');
+                const url = `${GAS_WEB_APP_URL}?action=update_flat&rowIndex=${row._rowIndex}&fields=${fieldsJoined}&values=${valuesJoined}&t=${Date.now()}`;
+                
+                await fetch(url).catch(e=>{});
+            }
+
+            if(els.syncOverlay) els.syncOverlay.style.display = 'none'; 
+            applyFilters(false); 
+            showPopup("Berjaya", `${targetRows.length} rekod diluluskan.`, "success");
+        };
+
+        // ==========================================
+        // KAWALAN PAPARAN HTML BARIS DEMI BARIS
+        // ==========================================
+        function createRowHTML(row, roleId) {
+            const tr = document.createElement('tr');
+            const stat = row['STATUS'] || 'Incomplete';
+
+            let adminEdit = roleId === 'admin';
+            let staffEdit = roleId === 'staff' && (stat === 'Incomplete' || stat === 'Rejected');
+            let rosliEdit = roleId === 'rosli' && stat === 'Pending Approval';
+            
+            // KAWALAN LAJUR
+            let canEditControlCall50 = adminEdit || staffEdit || rosliEdit;
+            let canEditStaffCol = adminEdit || staffEdit;
+
+            let sClass = 'st-incomplete'; 
+            if(stat === 'Pending Approval') sClass = 'st-pending'; 
+            else if(stat === 'Checked') sClass = 'st-checked'; 
+            else if(stat === 'Complete') sClass = 'st-completed'; 
+            else if(stat === 'Rejected') sClass = 'st-rejected'; 
+
+            let statusHTML = `<div class="status-display ${sClass} w-full whitespace-normal break-words">${stat}</div>`;
+            let actionHTML = '';
+
+            // LOGIK ACTION BERDASARKAN PERANAN
+            if (roleId === 'staff') {
+                if (stat === 'Incomplete' || stat === 'Rejected') {
+                    let btnClass = stat === 'Rejected' ? 'btn-reject' : 'btn-submit';
+                    let btnText = stat === 'Rejected' ? 'RESUBMIT' : 'COMPLETE';
+                    actionHTML = `<button onclick="staffSubmit(${row._rowIndex})" class="w-full ${btnClass} text-white font-bold py-2 px-2 rounded-md text-[10px] transition-colors shadow-sm tracking-wider">${btnText}</button>`;
+                } else {
+                    actionHTML = `<div class="text-[10px] text-gray-400 font-bold uppercase text-center"><i data-lucide="lock" class="w-3 h-3 inline"></i> LOCKED</div>`;
+                }
+            }
+            else if (roleId === 'rosli') {
+                if (stat === 'Pending Approval') {
+                    actionHTML = `<div class="text-[9px] text-[--brand-medium] font-bold uppercase text-center">MENUNGGU SEMAKAN PUKAL</div>`;
+                } else { 
+                    actionHTML = `<span class="text-gray-300">-</span>`; 
+                }
+            }
+            else if (roleId === 'jaini') {
+                if (stat === 'Checked') {
+                    actionHTML = `<div class="text-[9px] text-[#10B981] font-bold uppercase text-center">MENUNGGU KELULUSAN</div>`;
+                } else { 
+                    actionHTML = `<span class="text-gray-300">-</span>`; 
+                }
+            }
+            else { 
+                actionHTML = `<span class="text-gray-300">-</span>`; 
+            }
+
+            let semakText = row['CHECKED BY'] ? `<div class="font-bold text-[--brand-dark] text-[10.5px] text-left leading-tight">Checked: ${row['CHECKED BY']} <br><span class="font-normal text-gray-500">(${row['DATE CHECKED'] || ''})</span></div>` : '';
+            let lulusText = row['APPROVED BY'] ? `<div class="font-bold text-[#10B981] text-[10.5px] text-left leading-tight mt-1.5">Approved: ${row['APPROVED BY']} <br><span class="font-normal text-gray-500">(${row['APPROVED DATE'] || ''})</span></div>` : '';
+            let auditHTML = semakText || lulusText ? `<div class="text-left px-1">${semakText}${lulusText}</div>` : `<span class="text-gray-300">-</span>`;
+
+            let ctrlHtml = canEditControlCall50 ? `<textarea class="editable-input w-full resize-none" rows="2" onchange="handleEdit(${row._rowIndex}, 'CONTROL NUMBER', this.value, this)">${row['CONTROL NUMBER'] || ''}</textarea>` : `<div class="p-1 break-words whitespace-normal">${row['CONTROL NUMBER'] || ''}</div>`;
+            let call82Html = adminEdit ? `<textarea class="editable-input text-gray-500 w-full resize-none" rows="2" onchange="handleEdit(${row._rowIndex}, 'CALL NO (082)', this.value, this)">${row['CALL NO (082)'] || ''}</textarea>` : `<div class="p-1 text-gray-500 break-words whitespace-normal">${row['CALL NO (082)'] || ''}</div>`;
+            let call50Html = canEditControlCall50 ? `<textarea class="editable-input !text-[--brand-main] font-semibold w-full resize-none" rows="2" onchange="handleEdit(${row._rowIndex}, 'CALL NO (050/060)', this.value, this)">${row['CALL NO (050/060)'] || ''}</textarea>` : `<div class="p-1 text-[--brand-main] font-semibold break-words whitespace-normal leading-snug">${row['CALL NO (050/060)'] || ''}</div>`;
+            let accHtml = adminEdit ? `<textarea class="editable-input font-bold text-gray-700 w-full resize-none" rows="2" onchange="handleEdit(${row._rowIndex}, 'ACCESSION', this.value, this)">${row['ACCESSION'] || ''}</textarea>` : `<div class="p-1 font-bold text-[--brand-dark] break-words whitespace-normal">${row['ACCESSION'] || ''}</div>`;
+            let titleHtml = adminEdit ? `<textarea class="editable-input text-center w-full resize-none" rows="3" onchange="handleEdit(${row._rowIndex}, 'TITLE', this.value, this)">${row['TITLE'] || ''}</textarea>` : `<div class="p-1 text-center font-medium text-gray-800 break-words whitespace-normal leading-relaxed">${row['TITLE'] || ''}</div>`;
+            let staffHtml = canEditStaffCol ? `<select class="editable-input" onchange="handleEdit(${row._rowIndex}, 'STAFF', this.value, this)"><option value="">-</option>${State.staffList.map(s => `<option value="${s}" ${row['STAFF'] === s ? 'selected' : ''}>${s}</option>`).join('')}</select>` : `<div class="p-1 break-words whitespace-normal uppercase">${row['STAFF'] || '-'}</div>`;
+            let dateHtml = `<div class="p-1 text-gray-600 break-words whitespace-normal">${row['DATE'] || ''}</div>`;
+
+            tr.innerHTML = `
+                <td class="col-no">${row['NO'] || ''}</td>
+                <td class="col-control">${ctrlHtml}</td>
+                <td class="col-call82">${call82Html}</td>
+                <td class="col-call50">${call50Html}</td>
+                <td class="col-acc">${accHtml}</td>
+                <td class="col-title" title="${row['TITLE'] || ''}">${titleHtml}</td>
+                <td class="col-status px-2 align-middle">${statusHTML}</td>
+                <td class="col-staff">${staffHtml}</td>
+                <td class="col-date">${dateHtml}</td>
+                <td class="col-audit align-middle">${auditHTML}</td>
+                <td class="col-action px-2 align-middle">${actionHTML}</td>
+            `;
+            return tr;
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('table-body'); 
+            if(!tbody) return;
+            tbody.innerHTML = '';
+            
+            if (State.filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="11" class="py-16 text-center text-gray-400">Tiada rekod dijumpai.</td></tr>`;
+                updatePaginationInfo(); return;
+            }
+
+            const roleId = State.currentUser ? State.currentUser.id : 'staff';
+            const frag = document.createDocumentFragment();
+
+            if (roleId === 'rosli' || roleId === 'jaini') {
+                if(document.getElementById('pagination-controls')) document.getElementById('pagination-controls').style.display = 'none';
+
+                let grouped = {};
+                State.filtered.forEach(r => {
+                    let s = r.STAFF || 'TIADA NAMA';
+                    if(!grouped[s]) grouped[s] = [];
+                    grouped[s].push(r);
+                });
+
+                Object.keys(grouped).forEach(staffName => {
+                    let groupTr = document.createElement('tr');
+                    let bulkButton = '';
+                    if (roleId === 'rosli') {
+                        bulkButton = `<button onclick="bulkCheck('${staffName}')" class="btn-approve px-4 py-2 text-xs font-bold rounded-lg shadow-sm tracking-widest text-white"><i data-lucide="check-square" class="w-4 h-4 mr-1"></i> CHECK ALL</button>`;
+                    } else if (roleId === 'jaini') {
+                        bulkButton = `<button onclick="bulkApprove('${staffName}')" class="btn-complete px-4 py-2 text-xs font-bold rounded-lg shadow-sm tracking-widest text-white"><i data-lucide="award" class="w-4 h-4 mr-1"></i> APPROVE ALL</button>`;
+                    }
+
+                    groupTr.innerHTML = `
+                        <td colspan="11" class="group-header p-4">
+                            <div class="flex justify-between items-center w-full px-2">
+                                <div class="flex flex-col">
+                                    <span class="text-[10px] text-gray-500 font-bold tracking-wider">KUMPULAN STAFF</span>
+                                    <span class="text-base text-[--brand-dark] uppercase font-bold mt-0.5">${staffName} <span class="text-xs font-normal text-[--brand-medium] ml-2">(${grouped[staffName].length} Rekod)</span></span>
+                                </div>
+                                <div>${bulkButton}</div>
+                            </div>
+                        </td>
+                    `;
+                    frag.appendChild(groupTr);
+
+                    grouped[staffName].forEach(row => {
+                        frag.appendChild(createRowHTML(row, roleId));
+                    });
+                });
+
+            } else {
+                if(document.getElementById('pagination-controls')) document.getElementById('pagination-controls').style.display = 'flex';
+                const start = (State.currentPage - 1) * State.itemsPerPage;
+                const pageData = State.filtered.slice(start, start + State.itemsPerPage);
+
+                pageData.forEach(row => {
+                    frag.appendChild(createRowHTML(row, roleId));
+                });
+            }
+
+            tbody.appendChild(frag); 
+            lucide.createIcons(); 
+            updatePaginationInfo();
+        }
+
+        function applyFilters(resetPage = true) {
+            const fStaffEl = document.getElementById('filter-staff');
+            const fStatusEl = document.getElementById('filter-status');
+            const fYearEl = document.getElementById('filter-year');
+            const searchEl = document.getElementById('search-input');
+            
+            const fStaff = fStaffEl ? fStaffEl.value : '';
+            const fStatus = fStatusEl ? fStatusEl.value : '';
+            const fYear = fYearEl ? fYearEl.value.trim() : '';
+            const search = searchEl ? searchEl.value.toLowerCase() : '';
+            
+            const roleId = State.currentUser ? State.currentUser.id : 'staff';
+            
+            State.filtered = State.data.filter(row => {
+                if (fStaff && row['STAFF'] !== fStaff) return false;
+                if (fStatus && row['STATUS'] !== fStatus) return false;
+                if (fYear && (!row['DATE'] || !row['DATE'].toString().includes(fYear))) return false;
+                if (search && !((row['TITLE']||"").toLowerCase().includes(search) || (row['ACCESSION']||"").toLowerCase().includes(search))) return false;
+                
+                if (roleId === 'rosli' && row['STATUS'] !== 'Pending Approval') return false;
+                if (roleId === 'jaini' && row['STATUS'] !== 'Checked') return false;
+                
+                return true;
+            });
+            
+            if (resetPage) State.currentPage = 1; 
+            
+            updateKPIs(); 
+            if(document.getElementById('toggle-charts') && document.getElementById('toggle-charts').checked) updateCharts(); 
+            renderTable();
+        }
+
+        ['filter-staff', 'filter-status', 'filter-year'].forEach(id => {
+            if(document.getElementById(id)) document.getElementById(id).addEventListener('change', () => applyFilters(true));
+        });
+        if(document.getElementById('search-input')) document.getElementById('search-input').addEventListener('input', () => applyFilters(true));
+
+        function updatePaginationInfo() {
+            if (!document.getElementById('pagination-controls') || document.getElementById('pagination-controls').style.display === 'none') return;
+            
+            const t = State.filtered.length;
+            const s = t === 0 ? 0 : (State.currentPage - 1) * State.itemsPerPage + 1;
+            const e = Math.min(State.currentPage * State.itemsPerPage, t);
+            
+            document.getElementById('page-start').innerText = s;
+            document.getElementById('page-end').innerText = e;
+            document.getElementById('page-total').innerText = t;
+            document.getElementById('page-indicator').innerText = State.currentPage;
+            
+            document.getElementById('btn-prev').disabled = State.currentPage === 1;
+            document.getElementById('btn-next').disabled = State.currentPage >= Math.ceil(t / State.itemsPerPage) || t === 0;
+        }
+        
+        if(document.getElementById('btn-prev')) document.getElementById('btn-prev').addEventListener('click', () => { if (State.currentPage > 1) { State.currentPage--; renderTable(); } });
+        if(document.getElementById('btn-next')) document.getElementById('btn-next').addEventListener('click', () => { if (State.currentPage < Math.ceil(State.filtered.length / State.itemsPerPage)) { State.currentPage++; renderTable(); } });
+
+        function updateKPIs() {
+            const complete = State.data.filter(r => r['STATUS'] === 'Complete').length;
+            const pending = State.data.filter(r => r['STATUS'] === 'Pending Approval').length;
+            const checked = State.data.filter(r => r['STATUS'] === 'Checked').length;
+
+            document.getElementById('kpi-total').innerText = State.data.length.toLocaleString();
+            document.getElementById('kpi-complete').innerText = complete.toLocaleString();
+            document.getElementById('kpi-pending').innerText = pending.toLocaleString();
+            document.getElementById('kpi-checked').innerText = checked.toLocaleString();
+        }
+
+        function updateCharts() {
+            Chart.defaults.font.family = "'Montserrat', sans-serif";
+            const sCounts = { 'Complete':0, 'Checked':0, 'Pending Approval':0, 'Rejected':0, 'Incomplete':0 };
+            const staffCount = {}; State.staffList.forEach(s => staffCount[s] = 0);
+            
+            State.filtered.forEach(r => {
+                let stat = r['STATUS'];
+                if(stat === 'Complete') sCounts['Complete']++;
+                else if(stat === 'Checked') sCounts['Checked']++;
+                else if(stat === 'Pending Approval') sCounts['Pending Approval']++;
+                else if(stat === 'Rejected') sCounts['Rejected']++;
+                else sCounts['Incomplete']++;
+
+                if(stat !== 'Incomplete' && r['STAFF'] && staffCount[r['STAFF']] !== undefined) {
+                    staffCount[r['STAFF']]++;
+                }
+            });
+
+            let maxCount = 0; let topStaff = "-"; for (const [staff, count] of Object.entries(staffCount)) { if (count > maxCount) { maxCount = count; topStaff = staff; } }
+            
+            document.getElementById('insight-top-staff').innerText = topStaff;
+            document.getElementById('insight-top-score').innerText = maxCount.toLocaleString() + " Rekod Dihantar";
+
+            const ctxStatus = document.getElementById('statusChart');
+            if(ctxStatus) {
+                if(State.chartInstances.status) State.chartInstances.status.destroy();
+                State.chartInstances.status = new Chart(ctxStatus.getContext('2d'), { 
+                    type: 'doughnut', 
+                    data: { 
+                        labels: ['Complete', 'Checked', 'Pending Approval', 'Rejected', 'Incomplete'], 
+                        datasets: [{ 
+                            data: [ sCounts['Complete'], sCounts['Checked'], sCounts['Pending Approval'], sCounts['Rejected'], sCounts['Incomplete'] ], 
+                            backgroundColor: ['#10B981', '#3B82F6', '#F59E0B', '#EF4444', '#CBD5E1'], 
+                            borderWidth: 2, borderColor: '#ffffff'
+                        }] 
+                    }, 
+                    options: { responsive: true, maintainAspectRatio: false, cutout: '65%', layout: { padding: 10 }, plugins: { legend: { position: 'right', labels: { boxWidth: 12, font: { size: 10 } } } } } 
+                });
+            }
+
+            const barColors = ['#003366', '#0055A5', '#3B82F6', '#10B981', '#6366f1']; const bgColors = Object.keys(staffCount).map((_, i) => barColors[i % barColors.length]);
+            
+            const ctxStaff = document.getElementById('staffChart');
+            if(ctxStaff) {
+                if(State.chartInstances.staff) State.chartInstances.staff.destroy();
+                State.chartInstances.staff = new Chart(ctxStaff.getContext('2d'), { 
+                    type: 'bar', data: { labels: Object.keys(staffCount), datasets: [{ data: Object.values(staffCount), backgroundColor: bgColors, borderRadius: 6 }] }, 
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } } } } 
+                });
+            }
+        }
+
+        if(document.getElementById('btn-export')){
+            document.getElementById('btn-export').addEventListener('click', () => {
+                if (!State.data || State.data.length === 0) return showPopup("Tiada Data", "Tiada data untuk dimuat turun.", "error");
+                const exportYearEl = document.getElementById('export-year');
+                const selectedYear = exportYearEl ? exportYearEl.value : 'all'; 
+                let dataToExport = State.data;
+                if (selectedYear !== 'all') dataToExport = dataToExport.filter(row => row['DATE'] && row['DATE'].toString().includes(selectedYear));
+                
+                const ws = XLSX.utils.json_to_sheet(dataToExport.map((row, index) => ({
+                    "NO": index + 1, "CONTROL NUMBER": row['CONTROL NUMBER'] || '', "CALL NO (082)": row['CALL NO (082)'] || '', "CALL NO (050/060)": row['CALL NO (050/060)'] || '',
+                    "ACCESSION": row['ACCESSION'] || '', "TITLE": row['TITLE'] || '', "STATUS": row['STATUS'] || '', "STAFF": row['STAFF'] || '', "DATE SUBMITTED": row['DATE'] || '',
+                    "CHECKED BY": row['CHECKED BY'] || '', "DATE CHECKED": row['DATE CHECKED'] || '', "APPROVED BY": row['APPROVED BY'] || '', "APPROVED DATE": row['APPROVED DATE'] || ''
+                })));
+                ws['!cols'] = [{wch: 6}, {wch: 18}, {wch: 18}, {wch: 22}, {wch: 18}, {wch: 60}, {wch: 15}, {wch: 15}, {wch: 15}, {wch: 20}, {wch: 15}, {wch: 20}, {wch: 15}];
+                const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Laporan Penuh"); XLSX.writeFile(wb, `Laporan_Buku_IKU_${selectedYear === 'all' ? 'Keseluruhan' : selectedYear}.xlsx`);
+            });
+        }
+
+        const adminPanel = document.getElementById('admin-panel');
+        if(document.getElementById('btn-admin-panel')) document.getElementById('btn-admin-panel').addEventListener('click', () => { if(adminPanel) adminPanel.style.right = '0'; });
+        if(document.getElementById('btn-close-admin')) document.getElementById('btn-close-admin').addEventListener('click', () => { if(adminPanel) adminPanel.style.right = '-320px'; });
+        
+        ['admin-font', 'admin-dark', 'admin-medium', 'admin-light', 'toggle-kpi', 'toggle-charts', 'toggle-dup-prevent'].forEach(id => {
+            const el = document.getElementById(id);
+            if(el) {
+                el.addEventListener('change', e => {
+                    if(id === 'admin-font') document.documentElement.style.setProperty('--font-ui', e.target.value);
+                    if(id === 'toggle-kpi') document.documentElement.style.setProperty('--kpi-visible', e.target.checked ? 'grid' : 'none');
+                    if(id === 'toggle-charts') { document.documentElement.style.setProperty('--charts-visible', e.target.checked ? 'grid' : 'none'); if(e.target.checked && State.data.length > 0) updateCharts(); }
+                    if(id === 'toggle-dup-prevent') State.settings.duplicatePrevention = e.target.checked;
+                });
+            }
+        });
+
+    </script>
+</body>
+</html>
