@@ -286,7 +286,7 @@
         </nav>
 
         <main class="main-content">
-            <!-- 4 KPI Cards (Updated Colors based on screenshot) -->
+            <!-- 4 KPI Cards -->
             <section id="kpis">
                 <div class="kpi-card" style="border-left: 4px solid var(--brand-medium);">
                     <div class="kpi-info">
@@ -318,17 +318,17 @@
                 </div>
             </section>
 
-            <!-- Charts Section -->
+            <!-- Charts Section (DITAMBAH KOTAK QUICK INSIGHTS DI SINI) -->
             <section id="charts-section">
-                <div class="chart-container">
+                <div class="base-card chart-container">
                     <div class="chart-header">Status Distribution</div>
                     <div class="flex-1 relative"><canvas id="statusChart"></canvas></div>
                 </div>
-                <div class="chart-container" style="flex: 2;">
+                <div class="base-card chart-container" style="flex: 1.5;">
                     <div class="chart-header">Staff Performance</div>
                     <div class="flex-1 relative"><canvas id="staffChart"></canvas></div>
                 </div>
-                <div class="chart-container">
+                <div class="base-card chart-container">
                     <div class="chart-header">Quick Insights</div>
                     <div class="flex-1 flex flex-col justify-center gap-5">
                         <div class="flex items-center gap-4">
@@ -417,7 +417,6 @@
                 <div class="table-wrapper">
                     <table id="library-table">
                         <thead>
-                            <!-- TABLE HEADERS REORDERED TO MATCH SCREENSHOT -->
                             <tr>
                                 <th class="col-no">NO</th>
                                 <th class="col-control">CONTROL NUMBER</th>
@@ -482,8 +481,7 @@
 
     <!-- JAVASCRIPT LOGIC -->
     <script>
-        // SILA PASTIKAN URL WEB APP INI ADALAH YANG TERKINI
-        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxwoFmXFmHj8r82UHKuMu1QopSlt9Md0zCIIKB0e9cunOKLxBxkcN5FiYlyZLk18qDc/exec"; 
+        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbx0toPsLiqdSawvhWPtoazYrGH2PuXk4w_5rqOC4hyZojzPXP_MWF42C8KuI1AHglVM/exec"; 
         
         const State = {
             currentUser: null, 
@@ -1087,6 +1085,10 @@
             document.getElementById('kpi-complete').innerText = complete.toLocaleString();
             document.getElementById('kpi-pending').innerText = pending.toLocaleString();
             document.getElementById('kpi-checked').innerText = checked.toLocaleString();
+            
+            // UPDATE "QUICK INSIGHTS" PENDING TASKS
+            const insightPending = document.getElementById('insight-pending');
+            if (insightPending) insightPending.innerText = pending.toLocaleString() + " Rekod";
         }
 
         function updateCharts() {
@@ -1109,8 +1111,11 @@
 
             let maxCount = 0; let topStaff = "-"; for (const [staff, count] of Object.entries(staffCount)) { if (count > maxCount) { maxCount = count; topStaff = staff; } }
             
-            document.getElementById('insight-top-staff').innerText = topStaff;
-            document.getElementById('insight-top-score').innerText = maxCount.toLocaleString() + " Rekod Dihantar";
+            const insightTopStaff = document.getElementById('insight-top-staff');
+            if(insightTopStaff) insightTopStaff.innerText = topStaff;
+            
+            const insightTopScore = document.getElementById('insight-top-score');
+            if(insightTopScore) insightTopScore.innerText = maxCount.toLocaleString() + " Rekod Dihantar";
 
             const ctxStatus = document.getElementById('statusChart');
             if(ctxStatus) {
@@ -1129,7 +1134,8 @@
                 });
             }
 
-            const barColors = ['#003366', '#0055A5', '#3B82F6', '#10B981', '#6366f1']; const bgColors = Object.keys(staffCount).map((_, i) => barColors[i % barColors.length]);
+            const barColors = ['#003366', '#0055A5', '#3B82F6', '#10B981', '#6366f1']; 
+            const bgColors = Object.keys(staffCount).map((_, i) => barColors[i % barColors.length]);
             
             const ctxStaff = document.getElementById('staffChart');
             if(ctxStaff) {
