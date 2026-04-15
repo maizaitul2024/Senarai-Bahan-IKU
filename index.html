@@ -180,7 +180,8 @@
 
         .col-title .editable-input { text-align: left !important; padding-left: 12px; }
         td.col-acc { font-weight: 700; color: var(--brand-dark); }
-        select.editable-input { cursor: pointer; padding: 4px; font-size: 11px; }
+        select.editable-input { cursor: pointer; padding: 4px; font-size: 11px; border: 1px solid #E2E8F0; }
+        select.editable-input:disabled { cursor: not-allowed; appearance: none; border-color: transparent;}
 
         /* Workflow Buttons */
         .btn-sm { padding: 6px 12px; border-radius: 6px; font-weight: 700; font-size: 11px; cursor: pointer; border: none; color: white; transition: 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 4px; width: 100%; }
@@ -194,13 +195,13 @@
         .btn-submit { background-color: #F59E0B; } 
         .btn-submit:hover { background-color: #D97706; }
 
-        /* Status Styling Display */
+        /* Status Styling Display (Colors mapping) */
         .status-display { font-weight: 700; padding: 6px 8px; border-radius: 6px; display: inline-block; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.5px; text-align: center; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: normal; }
-        .st-pending { color: #F59E0B; background: #FEF3C7; border: 1px solid #FCD34D;} 
-        .st-checked { color: #3B82F6; background: #DBEAFE; border: 1px solid #93C5FD;} 
-        .st-completed { color: #10B981; background: #D1FAE5; border: 1px solid #6EE7B7;} 
-        .st-rejected { color: #EF4444; background: #FEE2E2; border: 1px solid #FCA5A5;} 
-        .st-incomplete { color: #64748b; background: #F1F5F9; border: 1px solid #CBD5E1;} 
+        .st-pending { color: #F59E0B; background: #FEF3C7; border: 1px solid #FCD34D; } /* Orange */
+        .st-checked { color: #3B82F6; background: #DBEAFE; border: 1px solid #93C5FD; } /* Blue */
+        .st-completed { color: #10B981; background: #D1FAE5; border: 1px solid #6EE7B7; } /* Green */
+        .st-rejected { color: #EF4444; background: #FEE2E2; border: 1px solid #FCA5A5; } /* Red */
+        .st-incomplete { color: #64748b; background: #F1F5F9; border: 1px solid #CBD5E1; } /* Gray */
 
         /* Loading Overlay */
         #sync-overlay { position: fixed; inset: 0; background: rgba(255,255,255,0.8); backdrop-filter: blur(4px); z-index: 3000; display: none; flex-direction: column; justify-content: center; align-items: center; }
@@ -208,7 +209,7 @@
 
         /* Popups */
         .popup-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 4000; }
-        .popup-content { background: white; padding: 32px; border-radius: 12px; max-width: 400px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+        .popup-content { background: white; padding: 32px; border-radius: 12px; max-width: 400px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.1); width: 100%; }
 
         /* Admin Panel */
         #admin-panel { position: fixed; right: -320px; top: 0; bottom: 0; width: 300px; background: white; box-shadow: -5px 0 25px rgba(0,0,0,0.1); z-index: 1000; transition: right 0.3s; display: flex; flex-direction: column; }
@@ -260,21 +261,14 @@
                 <p class="text-sm text-gray-500 font-medium">Executive Collection Management</p>
             </div>
             <div class="flex items-center gap-6">
-                
-                <!-- Notification Bell Area -->
-                <div class="relative cursor-pointer hover:bg-gray-50 p-2 rounded-full transition-colors">
-                    <i data-lucide="bell" class="w-6 h-6 text-gray-500"></i>
-                    <span class="absolute top-1 right-1 bg-red-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full border-2 border-white">0</span>
-                </div>
-
                 <div class="text-right">
-                    <div id="live-time" class="text-lg font-bold text-[--brand-dark] font-mono leading-none">--:--:-- --</div>
-                    <div id="live-date" class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mt-1">---</div>
+                    <div id="live-time" class="text-xl font-bold text-[--brand-dark] font-mono">--:--:-- --</div>
+                    <div id="live-date" class="text-[11px] font-bold text-gray-500 uppercase tracking-widest">---</div>
                 </div>
-                <div class="h-10 w-px bg-gray-200"></div>
+                <div class="h-8 w-px bg-gray-200"></div>
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-full bg-[--bg-light] text-[--brand-medium] flex items-center justify-center font-bold text-base" id="user-avatar">S</div>
-                    <div class="text-sm font-bold text-gray-700 uppercase tracking-wide" id="current-username">USER</div>
+                    <div class="w-9 h-9 rounded-full bg-[--bg-light] text-[--brand-medium] flex items-center justify-center font-bold text-sm" id="user-avatar">S</div>
+                    <div class="text-[13px] font-bold text-gray-700 uppercase tracking-wide" id="current-username">USER</div>
                 </div>
                 <button id="btn-admin-panel" class="hidden text-gray-400 hover:text-[--brand-dark] transition-colors ml-2" title="Admin Panel">
                     <i data-lucide="settings" class="w-5 h-5"></i>
@@ -288,28 +282,28 @@
         <main class="main-content">
             <!-- 4 KPI Cards -->
             <section id="kpis">
-                <div class="kpi-card" style="border-left: 4px solid var(--brand-medium);">
+                <div class="base-card kpi-card" style="border-left-color: var(--brand-medium);">
                     <div class="kpi-info">
                         <span class="kpi-label">JUMLAH REKOD</span>
-                        <span class="kpi-value text-[--brand-medium]" id="kpi-total">0</span>
+                        <span class="kpi-value text-[--brand-dark]" id="kpi-total">0</span>
                     </div>
                     <div class="kpi-icon-wrap" style="color: var(--brand-medium); background: #eff6ff;"><i data-lucide="database"></i></div>
                 </div>
-                <div class="kpi-card" style="border-left: 4px solid #10B981;">
+                <div class="base-card kpi-card" style="border-left-color: #10B981;">
                     <div class="kpi-info">
                         <span class="kpi-label">COMPLETED</span>
                         <span class="kpi-value text-[#10B981]" id="kpi-complete">0</span>
                     </div>
                     <div class="kpi-icon-wrap" style="color: #10B981; background: #ecfdf5;"><i data-lucide="check-circle-2"></i></div>
                 </div>
-                <div class="kpi-card" style="border-left: 4px solid #F59E0B;">
+                <div class="base-card kpi-card" style="border-left-color: #F59E0B;">
                     <div class="kpi-info">
                         <span class="kpi-label">PENDING APPROVAL</span>
                         <span class="kpi-value text-[#F59E0B]" id="kpi-pending">0</span>
                     </div>
                     <div class="kpi-icon-wrap" style="color: #F59E0B; background: #fffbeb;"><i data-lucide="clock"></i></div>
                 </div>
-                <div class="kpi-card" style="border-left: 4px solid #6366F1;">
+                <div class="base-card kpi-card" style="border-left-color: #6366F1;">
                     <div class="kpi-info">
                         <span class="kpi-label">STAFF ACTIVE</span>
                         <span class="kpi-value text-[#6366F1]" id="kpi-staff">0</span>
@@ -318,7 +312,7 @@
                 </div>
             </section>
 
-            <!-- Charts Section (DITAMBAH KOTAK QUICK INSIGHTS DI SINI) -->
+            <!-- Charts Section -->
             <section id="charts-section">
                 <div class="base-card chart-container">
                     <div class="chart-header">Status Distribution</div>
@@ -360,11 +354,11 @@
             <section class="base-card filter-card">
                 <div class="input-labeled flex-1">
                     <label>CARIAN</label>
-                    <input type="text" id="search-input" class="premium-input" placeholder="Cari Tajuk atau Accession...">
+                    <input type="text" id="search-input" class="premium-input !py-2.5" placeholder="Cari Tajuk atau Accession...">
                 </div>
                 <div class="input-labeled" id="filter-staff-container">
                     <label>STAFF</label>
-                    <select id="filter-staff" class="premium-input">
+                    <select id="filter-staff" class="premium-input !py-2.5">
                         <option value="">Semua Staff</option>
                         <option value="FATIHAH">FATIHAH</option>
                         <option value="FAZILAH">FAZILAH</option>
@@ -375,10 +369,10 @@
                 </div>
                 <div class="input-labeled" id="filter-status-container">
                     <label>STATUS</label>
-                    <select id="filter-status" class="premium-input">
+                    <select id="filter-status" class="premium-input !py-2.5">
                         <option value="">Semua Status</option>
-                        <option value="Complete">Complete</option>
-                        <option value="Checked">Checked</option>
+                        <option value="Complete">Complete (Jaini)</option>
+                        <option value="Checked">Checked (Rosli)</option>
                         <option value="Pending Approval">Pending Approval</option>
                         <option value="Rejected">Rejected</option>
                         <option value="Incomplete">Incomplete</option>
@@ -386,7 +380,7 @@
                 </div>
                 <div class="input-labeled">
                     <label>TAHUN</label>
-                    <select id="filter-year" class="premium-input">
+                    <select id="filter-year" class="premium-input !py-2.5">
                         <option value="">Semua Tahun</option>
                         <option value="2024">2024</option>
                         <option value="2025">2025</option>
@@ -395,16 +389,17 @@
                     </select>
                 </div>
                 <div class="flex items-end gap-4 ml-auto">
-                    <button id="btn-sync" class="btn-action btn-sync">
+                    <button id="btn-sync" class="btn-action btn-sync whitespace-nowrap h-[44px]">
                         <i data-lucide="refresh-cw" class="w-4 h-4 sync-icon"></i> Segerak Auto
                     </button>
+                    <div class="w-px h-10 bg-gray-200 hidden md:block mx-1"></div>
                     <div class="input-labeled">
                         <label class="text-[#10B981]">LAPORAN EXCEL</label>
                         <div class="flex gap-2">
-                            <select id="export-year" class="premium-input" style="width: 130px; border-color: #10B981;">
+                            <select id="export-year" class="premium-input !py-2.5" style="width: 130px; border-color: #10B981;">
                                 <option value="all">Keseluruhan</option>
                             </select>
-                            <button id="btn-export" class="btn-action bg-[#10B981] text-white hover:bg-[#059669]">
+                            <button id="btn-export" class="btn-action bg-[#10B981] text-white hover:bg-[#059669] whitespace-nowrap h-[44px]">
                                 <i data-lucide="download" class="w-4 h-4"></i> Muat Turun
                             </button>
                         </div>
@@ -436,7 +431,6 @@
                         </tbody>
                     </table>
                 </div>
-                <!-- Pagination -->
                 <div class="flex justify-between items-center p-4 border-t border-gray-100 bg-white" style="border-bottom-left-radius: 12px; border-bottom-right-radius: 12px;" id="pagination-controls">
                     <div class="text-xs text-gray-500 font-bold uppercase tracking-wider">
                         Memaparkan <span id="page-start">0</span> ke <span id="page-end">0</span> dari <span id="page-total">0</span> rekod
@@ -481,21 +475,18 @@
 
     <!-- JAVASCRIPT LOGIC -->
     <script>
-        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwINhq1DZco-NlTkz_n3M6R7dkR0vmFBVN3kF_NKsVBqxeudRRD2Jj71YkyyiwddrMB/exec"; 
+        // ==========================================
+        // SILA PASTIKAN URL WEB APP INI ADALAH YANG TERKINI
+        // ==========================================
+        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyJbhcSmQlG-TjC9niq7BC119SqNlN57M5keU6LtNPtl085IUMCIgQRHKKOYRlD8dfS/exec"; 
         
         const State = {
-            currentUser: null, 
-            data: [], 
-            filtered: [], 
-            currentPage: 1, 
-            itemsPerPage: 100,
+            currentUser: null, data: [], filtered: [], currentPage: 1, itemsPerPage: 100,
             settings: { duplicatePrevention: true },
-            staffList: ["FATIHAH", "FAZILAH", "SAKINAH", "HUSNA", "ADMIN"],
-            chartInstances: {}
+            staffList: ["FATIHAH", "FAZILAH", "SAKINAH", "HUSNA", "ADMIN"], chartInstances: {}
         };
 
         lucide.createIcons();
-        
         const els = {
             loginScreen: document.getElementById('login-screen'), dashboard: document.getElementById('dashboard'),
             loginForm: document.getElementById('login-form'), roleSelect: document.getElementById('login-user'),
@@ -509,126 +500,122 @@
         setInterval(() => {
             const now = new Date(); let h = now.getHours(), m = now.getMinutes(), s = now.getSeconds();
             const ampm = h >= 12 ? 'PM' : 'AM'; h = h % 12 || 12;
-            if(els.timeDisplay) els.timeDisplay.innerText = `${h}:${m < 10 ? '0'+m:m}:${s < 10 ? '0'+s:s} ${ampm}`;
-            if(els.dateDisplay) els.dateDisplay.innerText = now.toLocaleDateString('en-MY', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            els.timeDisplay.innerText = `${h}:${m < 10 ? '0'+m:m}:${s < 10 ? '0'+s:s} ${ampm}`;
+            els.dateDisplay.innerText = now.toLocaleDateString('en-MY', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
         }, 1000);
 
-        if(document.getElementById('toggle-pass')){
-            document.getElementById('toggle-pass').addEventListener('click', () => {
-                const passInput = document.getElementById('login-pass');
-                if(passInput) {
-                    passInput.type = passInput.type === 'password' ? 'text' : 'password';
-                    document.getElementById('toggle-pass').innerHTML = passInput.type === 'password' ? '<i data-lucide="eye" class="w-4 h-4"></i>' : '<i data-lucide="eye-off" class="w-4 h-4"></i>';
-                    lucide.createIcons();
-                }
-            });
-        }
+        document.getElementById('toggle-pass').addEventListener('click', () => {
+            const passInput = document.getElementById('login-pass');
+            const type = passInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passInput.setAttribute('type', type);
+            document.getElementById('toggle-pass').innerHTML = type === 'password' ? '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>' : '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye-off"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" x2="22" y1="2" y2="22"/></svg>';
+        });
 
-        if(els.loginForm) {
-            els.loginForm.addEventListener('submit', e => {
-                e.preventDefault();
-                const user = document.getElementById('login-user').value;
-                const pass = document.getElementById('login-pass').value;
-                const credentials = { 'staff': 'staff123', 'rosli': 'rosli123', 'jaini': 'jaini123', 'admin': 'admin123' };
+        els.loginForm.addEventListener('submit', e => {
+            e.preventDefault();
+            const user = document.getElementById('login-user').value;
+            const pass = document.getElementById('login-pass').value;
+            const credentials = { 'staff': 'staff123', 'rosli': 'rosli123', 'jaini': 'jaini123', 'admin': 'admin123' };
 
-                if (user && credentials[user] === pass) {
-                    State.currentUser = { id: user };
-                    let displayRole = user.toUpperCase();
-                    if(user === 'rosli') displayRole = 'ROSLI (Penyemak)';
-                    if(user === 'jaini') displayRole = 'JAINI (Pelulus)';
-                    
-                    document.getElementById('current-username').innerText = displayRole;
-                    document.getElementById('user-avatar').innerText = user.charAt(0).toUpperCase();
-                    
-                    if(user === 'rosli' || user === 'jaini') {
-                        document.getElementById('filter-staff-container').style.display = 'none';
-                        document.getElementById('filter-status-container').style.display = 'none';
-                    } else {
-                        document.getElementById('filter-staff-container').style.display = 'flex';
-                        document.getElementById('filter-status-container').style.display = 'flex';
-                    }
-                    if(user === 'admin') document.getElementById('btn-admin-panel').classList.remove('hidden');
-
-                    els.loginScreen.style.display = 'none'; 
-                    els.dashboard.style.display = 'flex';
-                    
-                    syncLiveDatabase();
+            if (user && credentials[user] === pass) {
+                State.currentUser = { id: user };
+                let displayRole = user.toUpperCase();
+                if(user === 'rosli') displayRole = 'ROSLI (Penyemak)';
+                if(user === 'jaini') displayRole = 'JAINI (Pelulus)';
+                
+                document.getElementById('current-username').innerText = displayRole;
+                document.getElementById('user-avatar').innerText = user.charAt(0).toUpperCase();
+                
+                if(user === 'rosli' || user === 'jaini') {
+                    document.getElementById('filter-staff-container').style.display = 'none';
+                    document.getElementById('filter-status-container').style.display = 'none';
                 } else {
-                    showPopup("Log Masuk Gagal", "Kata Laluan tidak sah.", "error");
+                    document.getElementById('filter-staff-container').style.display = 'flex';
+                    document.getElementById('filter-status-container').style.display = 'flex';
                 }
-            });
-        }
+                
+                document.getElementById('btn-admin-panel').classList.toggle('hidden', user !== 'admin');
 
-        if(document.getElementById('btn-logout')){
-            document.getElementById('btn-logout').addEventListener('click', () => {
-                State.currentUser = null; 
-                els.dashboard.style.display = 'none'; 
-                els.loginScreen.style.display = 'flex';
-                els.loginForm.reset();
-            });
-        }
+                els.loginScreen.style.display = 'none';
+                els.dashboard.style.display = 'flex';
+                syncLiveDatabase();
+            } else {
+                showPopup("Log Masuk Gagal", "Sila semak semula pilihan Pengguna dan Kata Laluan.", "error");
+            }
+        });
+
+        document.getElementById('btn-logout').addEventListener('click', () => {
+            State.currentUser = null; els.dashboard.style.display = 'none'; els.loginScreen.style.display = 'flex';
+            els.loginForm.reset();
+        });
 
         function showPopup(title, msg, type="info") {
-            els.popupTitle.innerText = title; 
-            els.popupMsg.innerText = msg;
+            els.popupTitle.innerText = title; els.popupMsg.innerText = msg;
             els.popupIcon.className = `mx-auto w-12 h-12 rounded-full flex items-center justify-center mb-3 text-white ${type==='error'?'bg-red-500':type==='success'?'bg-[#10B981]':'bg-[--brand-medium]'}`;
-            els.popupIcon.innerHTML = type === 'error' ? '<i data-lucide="alert-triangle" class="w-7 h-7"></i>' : type === 'success' ? '<i data-lucide="check-circle" class="w-7 h-7"></i>' : '<i data-lucide="info" class="w-7 h-7"></i>';
-            lucide.createIcons(); 
+            let svgIcon = '';
+            if (type === 'error') svgIcon = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>';
+            else if (type === 'success') svgIcon = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>';
+            else svgIcon = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>';
+            els.popupIcon.innerHTML = svgIcon;
             els.popup.style.display = 'flex';
         }
-        
-        if(els.popupBtn) els.popupBtn.addEventListener('click', () => { els.popup.style.display = 'none'; });
+        els.popupBtn.addEventListener('click', () => els.popup.style.display = 'none');
 
         function getFormattedDate() {
             const today = new Date();
-            return `${String(today.getDate()).padStart(2, '0')}-${String(today.getMonth() + 1).padStart(2, '0')}-${today.getFullYear()}`;
+            return `${String(today.getDate()).padStart(2, '0')}/${String(today.getMonth() + 1).padStart(2, '0')}/${today.getFullYear()}`;
         }
 
         async function syncLiveDatabase() {
-            els.syncOverlay.style.display = 'flex'; 
-            els.syncStatusText.innerText = "Menarik data terkini dari pangkalan data...";
-            els.btnSync.classList.add('syncing');
-            
-            try {
-                const response = await fetch(`${GAS_WEB_APP_URL}?action=get`);
-                if (!response.ok) throw new Error("Pautan ke Google Script gagal");
-                
-                const textRaw = await response.text();
-                let json = JSON.parse(textRaw);
-                
-                if(json.success) processData(json.data);
-                else throw new Error(json.message);
-                
-            } catch (err) { 
-                showPopup("Ralat", "Gagal menghubungi pangkalan data. Sila semak pautan API.", "error"); 
+            if(!GAS_WEB_APP_URL || GAS_WEB_APP_URL.includes("SILA_LETAK_URL_GOOGLE_APPS_SCRIPT_ANDA_DI_SINI")) {
+                showPopup("Ralat Sistem", "URL Google Apps Script tidak dijumpai. Sila tetapkan URL di dalam kod HTML.", "error"); return;
             }
-            els.syncOverlay.style.display = 'none'; 
-            els.btnSync.classList.remove('syncing');
+            els.syncOverlay.style.display = 'flex'; els.btnSync.classList.add('syncing');
+            try {
+                const response = await fetch(`${GAS_WEB_APP_URL}?action=get&t=${Date.now()}`);
+                const textRaw = await response.text();
+                
+                let json;
+                try {
+                    json = JSON.parse(textRaw);
+                } catch(e) {
+                    console.error("Bukan JSON:", textRaw.substring(0, 100));
+                    throw new Error("Google menyekat akses. Sila pastikan Apps Script di Deploy sebagai 'Anyone'.");
+                }
+                
+                if(json.success) processData(json.data); else throw new Error(json.message);
+            } catch (err) {
+                showPopup("Ralat Sambungan", "Gagal memuat turun data dari Spreadsheet. " + err.message, "error");
+            }
+            els.syncOverlay.style.display = 'none'; els.btnSync.classList.remove('syncing');
         }
 
-        if(els.btnSync) els.btnSync.addEventListener('click', syncLiveDatabase);
+        els.btnSync.addEventListener('click', syncLiveDatabase);
 
         function processData(rawData) {
             let uniqueYears = new Set();
             State.data = rawData.map(row => {
                 if (row.STAFF) {
                     let staffUpper = row.STAFF.toString().trim().toUpperCase();
-                    row.STAFF = ["NABIL", "ALIA", "EYZAN", "ADMIN", "USER"].includes(staffUpper) ? "ADMIN" : staffUpper;
+                    if (["NABIL", "ALIA", "EYZAN", "ADMIN", "USER"].includes(staffUpper)) {
+                        row.STAFF = "ADMIN";
+                    } else {
+                        row.STAFF = staffUpper;
+                    }
                 }
                 
                 let currentStatus = row['STATUS'] ? row['STATUS'].toString().trim() : '';
                 if(!currentStatus || currentStatus.toLowerCase() === 'incomplete') row['STATUS'] = 'Incomplete';
-                
-                if (row['STATUS'].toLowerCase() === 'pending semakan') row['STATUS'] = 'Pending Approval';
-                if (row['STATUS'].toLowerCase() === 'pending kelulusan') row['STATUS'] = 'Checked';
-                if (row['STATUS'].toLowerCase() === 'completed') row['STATUS'] = 'Complete';
+                if(currentStatus.toLowerCase() === 'pending semakan') row['STATUS'] = 'Pending Approval';
+                if(currentStatus.toLowerCase() === 'pending kelulusan') row['STATUS'] = 'Checked';
+                if(currentStatus.toLowerCase() === 'completed') row['STATUS'] = 'Complete';
 
                 if (row.DATE) {
                     let dStr = row.DATE.toString();
                     if (!/^\d{2}\-\d{2}\-\d{4}$/.test(dStr) && !/^\d{2}\/\d{2}\/\d{4}$/.test(dStr)) {
                         let dObj = new Date(dStr);
                         if (!isNaN(dObj.getTime())) {
-                            row.DATE = `${String(dObj.getDate()).padStart(2, '0')}-${String(dObj.getMonth() + 1).padStart(2, '0')}-${dObj.getFullYear()}`;
+                            row.DATE = `${String(dObj.getDate()).padStart(2, '0')}/${String(dObj.getMonth() + 1).padStart(2, '0')}/${dObj.getFullYear()}`;
                         }
                     }
                     let yearMatch = row.DATE.match(/\b(20\d{2})\b/);
@@ -639,125 +626,91 @@
             
             let years = Array.from(uniqueYears).sort((a,b) => b-a);
             if(years.length === 0) years = ["2024", "2025", "2026", "2027"];
-            
-            const exportYearEl = document.getElementById('export-year');
-            if(exportYearEl) exportYearEl.innerHTML = '<option value="all">Keseluruhan</option>' + years.map(y => `<option value="${y}">${y}</option>`).join('');
-            
+            document.getElementById('export-year').innerHTML = '<option value="all">Keseluruhan</option>' + years.map(y => `<option value="${y}">${y}</option>`).join('');
             applyFilters(true);
         }
 
         // ==========================================
-        // KEMAS KINI MENGGUNAKAN API ASAL (100% SELAMAT)
+        // UPDATE_FLAT API CALL (HANTAR DATA SERENTAK)
         // ==========================================
-        async function updateRecordSilent(rowIndex, updates) {
-            let success = true;
-            
-            for (let i = 0; i < updates.length; i++) {
-                let u = updates[i];
-                const params = new URLSearchParams({ 
-                    action: 'update', rowIndex: rowIndex, field: u.field, value: u.value, validateDup: 'false', t: Date.now() 
-                });
-                
-                try {
-                    await fetch(GAS_WEB_APP_URL + "?" + params.toString());
-                } catch(e) {
-                    console.error("Ralat Update:", e);
-                }
-                
-                if (i < updates.length - 1) {
-                    await new Promise(r => setTimeout(r, 600)); 
-                }
+        async function updateRowSilent(rowIndex, updates) {
+            let record = State.data.find(r => r._rowIndex === rowIndex);
+            if (record) {
+                updates.forEach(u => record[u.field] = u.value);
             }
+            
+            applyFilters(false); // FALSE = JANGAN RESET PAGE
+
+            const fieldsJoined = updates.map(u => encodeURIComponent(u.field)).join('|||');
+            const valuesJoined = updates.map(u => encodeURIComponent(u.value)).join('|||');
+            
+            const params = new URLSearchParams({ 
+                action: 'update_flat', 
+                rowIndex: rowIndex, 
+                fields: fieldsJoined, 
+                values: valuesJoined, 
+                t: Date.now() 
+            });
+
+            return fetch(`${GAS_WEB_APP_URL}?${params.toString()}`)
+                .then(res => res.json())
+                .catch(e => console.error("Ralat Sync:", e));
         }
 
-        // ==========================================
-        // SINGLE ROW EDIT HANDLER (TEKS)
-        // ==========================================
         window.handleEdit = async function(rowIndex, field, value, inputElement) {
-            let record = State.data.find(r => r._rowIndex === rowIndex);
-            if (!record) return;
+            const record = State.data.find(r => r._rowIndex === rowIndex);
+            if(!record) return;
 
             if(State.settings.duplicatePrevention && (field === 'CONTROL NUMBER' || field === 'ACCESSION')) {
                 const tempControl = field === 'CONTROL NUMBER' ? value : record['CONTROL NUMBER'];
                 const tempAcc = field === 'ACCESSION' ? value : record['ACCESSION'];
-                if(tempControl && tempAcc && State.data.some(r => r._rowIndex !== rowIndex && r['CONTROL NUMBER'] === tempControl && r['ACCESSION'] === tempAcc)) {
-                    inputElement.value = record[field];
-                    showPopup("Rekod Pendua", "Kemas kini dibatalkan kerana rekod ini sudah wujud.", "error");
-                    return;
+                if(tempControl && tempAcc) {
+                    const isDup = State.data.some(r => r._rowIndex !== rowIndex && r['CONTROL NUMBER'] === tempControl && r['ACCESSION'] === tempAcc);
+                    if(isDup) {
+                        inputElement.value = record[field];
+                        showPopup("Rekod Pendua", "Rekod pendua dikesan. Kemas kini dibatalkan.", "error");
+                        return;
+                    }
                 }
             }
 
             inputElement.disabled = true;
-            record[field] = value;
-            
+
+            // Jika Staff tukar ke "Completed" dari dropdown status
             if (field === 'STATUS' && value === 'Completed') {
                 const dateStr = getFormattedDate();
-                record['STATUS'] = 'Pending Approval';
-                record['DATE'] = dateStr;
-                
-                applyFilters(false);
-                await updateRecordSilent(rowIndex, [
+                await updateRowSilent(rowIndex, [
                     {field: 'STATUS', value: 'Pending Approval'},
                     {field: 'DATE', value: dateStr}
                 ]);
-            } else if (field === 'STATUS' && value === 'Incomplete') {
-                record['STATUS'] = 'Incomplete';
-                record['DATE'] = '';
-                
-                applyFilters(false);
-                await updateRecordSilent(rowIndex, [
-                    {field: 'STATUS', value: 'Incomplete'},
-                    {field: 'DATE', value: ''}
-                ]);
             } else {
-                applyFilters(false);
-                await updateRecordSilent(rowIndex, [{field: field, value: value}]);
+                await updateRowSilent(rowIndex, [{field: field, value: value}]);
+                inputElement.style.backgroundColor = '#ecfdf5'; 
+                setTimeout(() => { inputElement.style.backgroundColor = 'transparent'; }, 800);
             }
 
-            inputElement.style.backgroundColor = '#ecfdf5'; 
-            setTimeout(() => { inputElement.style.backgroundColor = 'transparent'; }, 800);
             inputElement.disabled = false;
         };
 
-        // ==========================================
-        // WORKFLOW DROPDOWN HANDLERS & BUTTONS
-        // ==========================================
-        
         window.staffSubmit = function(rowIndex) {
-            let record = State.data.find(r => r._rowIndex === rowIndex);
-            if(record) {
-                const dateStr = getFormattedDate();
-                record['STATUS'] = 'Pending Approval';
-                record['DATE'] = dateStr;
-                applyFilters(false);
-                updateRecordSilent(rowIndex, [
-                    {field: 'STATUS', value: 'Pending Approval'},
-                    {field: 'DATE', value: dateStr}
-                ]);
-            }
+            const dateStr = getFormattedDate();
+            updateRowSilent(rowIndex, [
+                {field: 'STATUS', value: 'Pending Approval'},
+                {field: 'DATE', value: dateStr}
+            ]);
         };
 
         window.rosliAction = function(rowIndex, actionVal) {
             if(!actionVal) return;
             const dateStr = getFormattedDate();
-            let record = State.data.find(r => r._rowIndex === rowIndex);
-            
             if(actionVal === 'Accepted') {
-                record['STATUS'] = 'Checked';
-                record['CHECKED BY'] = 'Rosli';
-                record['DATE CHECKED'] = dateStr;
-                applyFilters(false);
-                updateRecordSilent(rowIndex, [
-                    {field: 'STATUS', value: 'Checked'}, 
+                updateRowSilent(rowIndex, [
+                    {field: 'STATUS', value: 'Checked'},
                     {field: 'CHECKED BY', value: 'Rosli'},
                     {field: 'DATE CHECKED', value: dateStr}
                 ]);
             } else if (actionVal === 'Rejected') {
-                record['STATUS'] = 'Rejected';
-                record['CHECKED BY'] = 'Rosli';
-                record['DATE CHECKED'] = dateStr;
-                applyFilters(false);
-                updateRecordSilent(rowIndex, [
+                updateRowSilent(rowIndex, [
                     {field: 'STATUS', value: 'Rejected'},
                     {field: 'CHECKED BY', value: 'Rosli'},
                     {field: 'DATE CHECKED', value: dateStr}
@@ -768,24 +721,14 @@
         window.jainiAction = function(rowIndex, actionVal) {
             if(!actionVal) return;
             const dateStr = getFormattedDate();
-            let record = State.data.find(r => r._rowIndex === rowIndex);
-
             if(actionVal === 'Accepted') {
-                record['STATUS'] = 'Complete';
-                record['APPROVED BY'] = 'Jaini';
-                record['APPROVED DATE'] = dateStr;
-                applyFilters(false);
-                updateRecordSilent(rowIndex, [
+                updateRowSilent(rowIndex, [
                     {field: 'STATUS', value: 'Complete'},
                     {field: 'APPROVED BY', value: 'Jaini'},
                     {field: 'APPROVED DATE', value: dateStr}
                 ]);
             } else if (actionVal === 'Rejected') {
-                record['STATUS'] = 'Rejected';
-                record['APPROVED BY'] = 'Jaini';
-                record['APPROVED DATE'] = dateStr;
-                applyFilters(false);
-                updateRecordSilent(rowIndex, [
+                updateRowSilent(rowIndex, [
                     {field: 'STATUS', value: 'Rejected'},
                     {field: 'APPROVED BY', value: 'Jaini'},
                     {field: 'APPROVED DATE', value: dateStr}
@@ -802,20 +745,15 @@
             els.syncStatusText.innerText = `Menyemak ${targetRows.length} rekod...`;
 
             for (let i = 0; i < targetRows.length; i++) {
-                let row = targetRows[i];
-                row['STATUS'] = 'Checked';
-                row['CHECKED BY'] = 'Rosli';
-                row['DATE CHECKED'] = getFormattedDate();
-
-                await updateRecordSilent(row._rowIndex, [
+                await updateRowSilent(targetRows[i]._rowIndex, [
                     {field: 'STATUS', value: 'Checked'},
                     {field: 'CHECKED BY', value: 'Rosli'},
                     {field: 'DATE CHECKED', value: getFormattedDate()}
                 ]);
+                await new Promise(r => setTimeout(r, 600)); 
             }
 
             els.syncOverlay.style.display = 'none'; 
-            applyFilters(false); 
             showPopup("Berjaya", `${targetRows.length} rekod disemak.`, "success");
         };
 
@@ -828,39 +766,28 @@
             els.syncStatusText.innerText = `Meluluskan ${targetRows.length} rekod...`;
 
             for (let i = 0; i < targetRows.length; i++) {
-                let row = targetRows[i];
-                row['STATUS'] = 'Complete';
-                row['APPROVED BY'] = 'Jaini';
-                row['APPROVED DATE'] = getFormattedDate();
-
-                await updateRecordSilent(row._rowIndex, [
+                await updateRowSilent(targetRows[i]._rowIndex, [
                     {field: 'STATUS', value: 'Complete'},
                     {field: 'APPROVED BY', value: 'Jaini'},
                     {field: 'APPROVED DATE', value: getFormattedDate()}
                 ]);
+                await new Promise(r => setTimeout(r, 600));
             }
 
             els.syncOverlay.style.display = 'none'; 
-            applyFilters(false); 
             showPopup("Berjaya", `${targetRows.length} rekod diluluskan.`, "success");
         };
 
-        // ==========================================
-        // KAWALAN PAPARAN HTML BARIS DEMI BARIS
-        // ==========================================
         function createRowHTML(row, roleId) {
             const tr = document.createElement('tr');
             const stat = row['STATUS'] || 'Incomplete';
 
             let adminEdit = roleId === 'admin';
             let staffEdit = roleId === 'staff' && (stat === 'Incomplete' || stat === 'Rejected');
-            let rosliEdit = roleId === 'rosli' && stat === 'Pending Approval';
             
-            // CUMA 4 KOLUM INI BOLEH DIEDIT UNTUK STAFF
-            let canEditControlCall50 = adminEdit || staffEdit || rosliEdit;
+            let canEditControlCall50 = adminEdit || staffEdit;
             let canEditStaffCol = adminEdit || staffEdit;
 
-            // STATUS DISPLAY TEXT AND COLOR
             let displayStatus = stat;
             let sClass = 'st-incomplete'; 
             if(stat === 'Pending Approval') sClass = 'st-pending'; 
@@ -871,10 +798,8 @@
             let statusHTML = '';
             let actionHTML = '';
 
-            // TUGASAN ROLE: ACTION COLUMN
             if (roleId === 'staff') {
                 if (stat === 'Incomplete' || stat === 'Rejected') {
-                    // STAFF: Dropdown Status (Pilihan: Incomplete / Completed)
                     statusHTML = `
                         <select class="editable-input font-bold ${stat === 'Rejected' ? 'text-[#EF4444] border-[#EF4444]' : 'text-[#F59E0B] border-[#F59E0B]'}" onchange="handleEdit(${row._rowIndex}, 'STATUS', this.value, this)">
                             <option value="Incomplete" ${stat === 'Incomplete' ? 'selected' : ''}>Incomplete</option>
@@ -891,7 +816,6 @@
             else if (roleId === 'rosli') {
                 statusHTML = `<div class="status-display ${sClass} w-full whitespace-normal break-words">${displayStatus}</div>`;
                 if (stat === 'Pending Approval') {
-                    // ROSLI: Dropdown di kolum Action (Accepted / Rejected)
                     actionHTML = `
                         <select class="editable-input font-bold text-[--brand-medium] border-[--brand-medium]" onchange="rosliAction(${row._rowIndex}, this.value)">
                             <option value="" disabled selected>Pilih Tindakan</option>
@@ -904,7 +828,6 @@
             else if (roleId === 'jaini') {
                 statusHTML = `<div class="status-display ${sClass} w-full whitespace-normal break-words">${displayStatus}</div>`;
                 if (stat === 'Checked') {
-                    // JAINI: Dropdown di kolum Action (Accepted / Rejected)
                     actionHTML = `
                         <select class="editable-input font-bold text-[#10B981] border-[#10B981]" onchange="jainiAction(${row._rowIndex}, this.value)">
                             <option value="" disabled selected>Pilih Tindakan</option>
@@ -919,12 +842,10 @@
                 actionHTML = `<span class="text-gray-300">-</span>`; 
             }
 
-            // Audit Trail
             let semakText = row['CHECKED BY'] ? `<div class="font-bold text-[--brand-dark] text-[10.5px] text-left leading-tight">Checked: ${row['CHECKED BY']} <br><span class="font-normal text-gray-500">(${row['DATE CHECKED'] || ''})</span></div>` : '';
             let lulusText = row['APPROVED BY'] ? `<div class="font-bold text-[#10B981] text-[10.5px] text-left leading-tight mt-1.5">Approved: ${row['APPROVED BY']} <br><span class="font-normal text-gray-500">(${row['APPROVED DATE'] || ''})</span></div>` : '';
             let auditHTML = semakText || lulusText ? `<div class="text-left px-1">${semakText}${lulusText}</div>` : `<span class="text-gray-300">-</span>`;
 
-            // HTML Input Texts (SUSUNAN BARU MENGIKUT GAMBAR)
             let ctrlHtml = canEditControlCall50 ? `<textarea class="editable-input w-full resize-none" rows="2" onchange="handleEdit(${row._rowIndex}, 'CONTROL NUMBER', this.value, this)">${row['CONTROL NUMBER'] || ''}</textarea>` : `<div class="p-1 break-words whitespace-normal">${row['CONTROL NUMBER'] || ''}</div>`;
             let call82Html = adminEdit ? `<textarea class="editable-input text-gray-500 w-full resize-none" rows="2" onchange="handleEdit(${row._rowIndex}, 'CALL NO (082)', this.value, this)">${row['CALL NO (082)'] || ''}</textarea>` : `<div class="p-1 text-gray-500 break-words whitespace-normal">${row['CALL NO (082)'] || ''}</div>`;
             let call50Html = canEditControlCall50 ? `<textarea class="editable-input !text-[--brand-main] font-semibold w-full resize-none" rows="2" onchange="handleEdit(${row._rowIndex}, 'CALL NO (050/060)', this.value, this)">${row['CALL NO (050/060)'] || ''}</textarea>` : `<div class="p-1 text-[--brand-main] font-semibold break-words whitespace-normal leading-snug">${row['CALL NO (050/060)'] || ''}</div>`;
@@ -949,9 +870,6 @@
             return tr;
         }
 
-        // ==========================================
-        // RENDER TABLE
-        // ==========================================
         function renderTable() {
             const tbody = document.getElementById('table-body'); 
             if(!tbody) return;
@@ -966,7 +884,6 @@
             const frag = document.createDocumentFragment();
 
             if (roleId === 'rosli' || roleId === 'jaini') {
-                // TIADA PAGINATION UNTUK GROUPING SUPAYA BOLEH LULUSKAN SEMUA
                 document.getElementById('pagination-controls').style.display = 'none';
 
                 let grouped = {};
@@ -1005,7 +922,6 @@
                 });
 
             } else {
-                // STAFF: ADA PAGINATION
                 document.getElementById('pagination-controls').style.display = 'flex';
                 const start = (State.currentPage - 1) * State.itemsPerPage;
                 const pageData = State.filtered.slice(start, start + State.itemsPerPage);
@@ -1020,9 +936,6 @@
             updatePaginationInfo();
         }
 
-        // ==========================================
-        // KAWALAN PENAPIS (FILTER)
-        // ==========================================
         function applyFilters(resetPage = true) {
             const fStaff = document.getElementById('filter-staff').value;
             const fStatus = document.getElementById('filter-status').value;
@@ -1034,25 +947,17 @@
                 if (fStaff && row['STAFF'] !== fStaff) return false;
                 
                 let cStatus = row['STATUS'] || '';
-                if(cStatus === 'Pending Semakan') cStatus = 'Pending Approval';
-                if(cStatus === 'Pending Kelulusan') cStatus = 'Checked';
-                if(cStatus === 'Completed') cStatus = 'Complete';
-                
                 if (fStatus && cStatus !== fStatus) return false;
                 if (fYear && (!row['DATE'] || !row['DATE'].toString().includes(fYear))) return false;
                 if (search && !((row['TITLE']||"").toLowerCase().includes(search) || (row['ACCESSION']||"").toLowerCase().includes(search))) return false;
                 
-                // SIMULASI KAWALAN PERANAN (HARD FILTER)
                 if (roleId === 'rosli' && cStatus !== 'Pending Approval') return false;
                 if (roleId === 'jaini' && cStatus !== 'Checked') return false;
                 
                 return true;
             });
             
-            // JANGAN RESET PAGE KETIKA UPDATE STATUS!
-            if (resetPage) {
-                State.currentPage = 1; 
-            }
+            if (resetPage) State.currentPage = 1; 
             
             updateKPIs(); 
             if(document.getElementById('toggle-charts').checked) updateCharts(); 
@@ -1077,18 +982,17 @@
         if(document.getElementById('btn-next')) document.getElementById('btn-next').addEventListener('click', () => { if (State.currentPage < Math.ceil(State.filtered.length / State.itemsPerPage)) { State.currentPage++; renderTable(); } });
 
         function updateKPIs() {
-            const complete = State.data.filter(r => r['STATUS'] === 'Complete' || r['STATUS'] === 'Completed').length;
-            const pending = State.data.filter(r => r['STATUS'] === 'Pending Approval' || r['STATUS'] === 'Pending Semakan').length;
-            const checked = State.data.filter(r => r['STATUS'] === 'Checked' || r['STATUS'] === 'Pending Kelulusan').length;
+            const total = State.filtered.length;
+            const complete = State.filtered.filter(r => r['STATUS'] === 'Complete' || r['STATUS'] === 'Completed').length;
+            const pending = State.filtered.filter(r => r['STATUS'] === 'Pending Approval' || r['STATUS'] === 'Pending Semakan').length;
+            const checked = State.filtered.filter(r => r['STATUS'] === 'Checked' || r['STATUS'] === 'Pending Kelulusan').length;
 
             document.getElementById('kpi-total').innerText = State.data.length.toLocaleString();
             document.getElementById('kpi-complete').innerText = complete.toLocaleString();
             document.getElementById('kpi-pending').innerText = pending.toLocaleString();
-            document.getElementById('kpi-checked').innerText = checked.toLocaleString();
             
-            // UPDATE "QUICK INSIGHTS" PENDING TASKS
             const insightPending = document.getElementById('insight-pending');
-            if (insightPending) insightPending.innerText = pending.toLocaleString() + " Rekod";
+            if(insightPending) insightPending.innerText = pending.toLocaleString() + " Rekod";
         }
 
         function updateCharts() {
@@ -1111,11 +1015,8 @@
 
             let maxCount = 0; let topStaff = "-"; for (const [staff, count] of Object.entries(staffCount)) { if (count > maxCount) { maxCount = count; topStaff = staff; } }
             
-            const insightTopStaff = document.getElementById('insight-top-staff');
-            if(insightTopStaff) insightTopStaff.innerText = topStaff;
-            
-            const insightTopScore = document.getElementById('insight-top-score');
-            if(insightTopScore) insightTopScore.innerText = maxCount.toLocaleString() + " Rekod Dihantar";
+            document.getElementById('insight-top-staff').innerText = topStaff;
+            document.getElementById('insight-top-score').innerText = maxCount.toLocaleString() + " Rekod Dihantar";
 
             const ctxStatus = document.getElementById('statusChart');
             if(ctxStatus) {
@@ -1161,33 +1062,4 @@
                     "CHECKED BY": row['CHECKED BY'] || '', "DATE CHECKED": row['DATE CHECKED'] || '', "APPROVED BY": row['APPROVED BY'] || '', "APPROVED DATE": row['APPROVED DATE'] || ''
                 })));
                 ws['!cols'] = [{wch: 6}, {wch: 18}, {wch: 18}, {wch: 22}, {wch: 18}, {wch: 60}, {wch: 15}, {wch: 15}, {wch: 15}, {wch: 20}, {wch: 15}, {wch: 20}, {wch: 15}];
-                const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Laporan Penuh"); XLSX.writeFile(wb, `Laporan_Buku_IKU_${selectedYear === 'all' ? 'Keseluruhan' : selectedYear}.xlsx`);
-            });
-        }
-
-        const adminPanel = document.getElementById('admin-panel');
-        if(document.getElementById('btn-admin-panel')) document.getElementById('btn-admin-panel').addEventListener('click', () => { if(adminPanel) adminPanel.style.right = '0'; });
-        if(document.getElementById('btn-close-admin')) document.getElementById('btn-close-admin').addEventListener('click', () => { if(adminPanel) adminPanel.style.right = '-320px'; });
-        
-        ['admin-font', 'admin-dark', 'admin-medium', 'admin-light', 'toggle-kpi', 'toggle-charts', 'toggle-dup-prevent'].forEach(id => {
-            const el = document.getElementById(id);
-            if(el) {
-                el.addEventListener('change', e => {
-                    if(id === 'admin-font') document.documentElement.style.setProperty('--font-ui', e.target.value);
-                    if(id === 'toggle-kpi') document.documentElement.style.setProperty('--kpi-visible', e.target.checked ? 'grid' : 'none');
-                    if(id === 'toggle-charts') { document.documentElement.style.setProperty('--charts-visible', e.target.checked ? 'flex' : 'none'); if(e.target.checked && State.data.length > 0) updateCharts(); }
-                    if(id === 'toggle-dup-prevent') State.settings.duplicatePrevention = e.target.checked;
-                });
-                if(id.includes('admin-') && !id.includes('font')) {
-                    el.addEventListener('input', e => {
-                        if(id === 'admin-dark') document.documentElement.style.setProperty('--brand-dark', e.target.value);
-                        if(id === 'admin-medium') document.documentElement.style.setProperty('--brand-medium', e.target.value);
-                        if(id === 'admin-light') document.documentElement.style.setProperty('--bg-light', e.target.value);
-                    });
-                }
-            }
-        });
-
-    </script>
-</body>
-</html>
+                const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Laporan Penuh"); XLSX.writeFile(wb, `Laporan_Buku_IKU_${selectedYear ===
