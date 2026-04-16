@@ -390,7 +390,7 @@
                 if (GAS_WEB_APP_URL === "LETAK_URL_GOOGLE_APPS_SCRIPT_ANDA_DI_SINI") {
                     const idx = MOCK_DB.findIndex(r => r.id === record.id);
                     if(idx > -1) MOCK_DB[idx] = {...record};
-                    setTimeout(() => this.cb(true), 500); 
+                    setTimeout(() => { if(this.cb) this.cb(true); }, 500); 
                     return;
                 }
                 
@@ -411,11 +411,6 @@
                     hideLoading(); 
                     showToast("Gagal menyimpan ke Google Apps Script."); 
                 });
-            },
-            
-            bulkApproveGroup: function(staffTarget, role, actionName) { 
-                // Fungsi ini tidak lagi digunakan secara terus untuk elakkan ralat backend lama.
-                // Logik baru telah dipindahkan ke processBulkApproval() menggunakan updateRow.
             }
         };
 
@@ -646,7 +641,7 @@
             
             let recordsToUpdate = [];
             
-            // OPTIMISTIC UPDATE: Kita kemaskini data di paparan (frontend) serta-merta
+            // 1. OPTIMISTIC UPDATE: Kita kemaskini data di paparan (frontend) serta-merta
             dataset.forEach(r => {
                 if (r.staff === staffName) {
                     if (currentUserRole === 'rosli' && (r.status === 'Pending Semakan' || r.status === 'Pending For Approval')) {
@@ -671,33 +666,25 @@
                 return;
             }
 
-            // Kemaskini UI dengan segera tanpa tunggu backend selesai
+            // Kemaskini UI dengan segera untuk hilangkan rekod dari paparan
             applyFilters();
             
-            // Hantar kemaskini ke Google Sheets satu per satu di belakang tabir (Background Sync)
-            // Ini akan memintas sekatan logik lama di Code.gs dan memastikan data betul-betul dikemaskini.
+            // 2. HANTAR KE GOOGLE SHEETS SATU-PERSATU (Sama macam butang Save supaya tidak gagal)
             recordsToUpdate.forEach((record, index) => {
                 setTimeout(() => {
-                    if (GAS_WEB_APP_URL !== "LETAK_URL_GOOGLE_APPS_SCRIPT_ANDA_DI_SINI") {
-                        fetch(GAS_WEB_APP_URL, {
-                            method: 'POST', 
-                            mode: 'no-cors', 
-                            body: JSON.stringify({ action: 'updateRow', record: record }), 
-                            headers: { 'Content-Type': 'text/plain' }
-                        }).catch(e => console.error(e));
-                    } else {
-                        // Mock DB update
-                        const idx = MOCK_DB.findIndex(r => r.id === record.id);
-                        if(idx > -1) MOCK_DB[idx] = {...record};
-                    }
-                }, index * 300); // 300ms sela masa untuk elakkan Google Sheets jammed
+                    server.withSuccessHandler(function() {
+                        console.log("Berjaya hantar rekod ID:", record.id);
+                    }).updateRow(record);
+                }, index * 800); // Tunggu 800ms antara setiap satu rekod supaya Google Sheets tak jammed
             });
             
-            // Selesai memproses paparan
+            // 3. Selesai memproses paparan, tarik data segar dari Google Sheets untuk pengesahan terakhir
+            const waitTime = (recordsToUpdate.length * 800) + 1500;
             setTimeout(() => {
                 hideLoading();
                 showToast(`${recordsToUpdate.length} Rekod berjaya disemak/diluluskan!`);
-            }, 1000);
+                fetchDataFromGoogleSheet(); // Auto-refresh data
+            }, waitTime);
         }
 
         function generateRowHTML(row, isEditing, isReadonlyView) {
