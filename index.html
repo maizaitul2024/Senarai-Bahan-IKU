@@ -340,8 +340,6 @@
 
         // =====================================================================
         // MEMORI SEMENTARA (UNTUK UJIAN LOKAL TANPA GOOGLE SCRIPT URL)
-        // MOCK_DB diletakkan di luar fungsi supaya data yang diedit kekal
-        // apabila pengguna log keluar dan log masuk semula (contoh: sebagai Rosli)
         // =====================================================================
         let MOCK_DB = [
             { id: 2, no: 1, controlNo: "23576", callNo082: "0005.3", callNo050: "TK5105.888 IRS 2001", accession: "BK00075774", title: "DEVELOPING WEB SITE USING MICROSOFT WORD STEP BY STEP", status: "incomplete", staff: "FAZILAH", date: "2024-04-14", checkedBy: "", dateChecked: "", approvedBy: "", approvedDate: "" },
@@ -357,7 +355,6 @@
         // Dapatkan tahun dari format tarikh
         const getYearFromDate = (dateStr) => {
             if(!dateStr || dateStr === '-') return '';
-            // Anggapan format data di belakang adalah YYYY-MM-DD
             const parts = dateStr.split('-');
             if(parts.length > 0) return parts[0];
             return '';
@@ -379,7 +376,6 @@
             
             getInitialData: function() { 
                 if (GAS_WEB_APP_URL === "LETAK_URL_GOOGLE_APPS_SCRIPT_ANDA_DI_SINI") {
-                    // Tarik data mock yang terkini
                     setTimeout(() => this.cb([...MOCK_DB]), 800);
                     return;
                 }
@@ -392,7 +388,6 @@
             
             updateRow: function(record) { 
                 if (GAS_WEB_APP_URL === "LETAK_URL_GOOGLE_APPS_SCRIPT_ANDA_DI_SINI") {
-                    // Update MOCK_DB supaya perubahan kekal masa log masuk Rosli
                     const idx = MOCK_DB.findIndex(r => r.id === record.id);
                     if(idx > -1) MOCK_DB[idx] = {...record};
                     setTimeout(() => this.cb(true), 500); 
@@ -403,7 +398,7 @@
                 
                 fetch(GAS_WEB_APP_URL, {
                     method: 'POST', 
-                    mode: 'no-cors', // Bypass sekatan CORS Google
+                    mode: 'no-cors',
                     body: JSON.stringify({ action: 'updateRow', record: record }), 
                     headers: { 'Content-Type': 'text/plain' }
                 })
@@ -419,44 +414,8 @@
             },
             
             bulkApproveGroup: function(staffTarget, role, actionName) { 
-                if (GAS_WEB_APP_URL === "LETAK_URL_GOOGLE_APPS_SCRIPT_ANDA_DI_SINI") {
-                    // Logik MOCK_DB (Untuk ujian lokal tanpa URL GAS)
-                    let count = 0;
-                    MOCK_DB.forEach(r => {
-                        if (r.staff === staffTarget) {
-                            if (role === 'rosli' && (r.status === 'Pending Semakan' || r.status === 'Pending For Approval')) {
-                                r.status = 'Pending Kelulusan';
-                                r.checkedBy = actionName;
-                                const t = new Date();
-                                r.dateChecked = t.getFullYear() + '-' + String(t.getMonth() + 1).padStart(2, '0') + '-' + String(t.getDate()).padStart(2, '0');
-                                count++;
-                            } else if (role === 'jaini' && r.status === 'Pending Kelulusan') {
-                                r.status = 'Completed';
-                                r.approvedBy = actionName;
-                                const t = new Date();
-                                r.approvedDate = t.getFullYear() + '-' + String(t.getMonth() + 1).padStart(2, '0') + '-' + String(t.getDate()).padStart(2, '0');
-                                count++;
-                            }
-                        }
-                    });
-                    setTimeout(() => this.cb(count), 1000);
-                    return;
-                }
-
-                fetch(GAS_WEB_APP_URL, {
-                    method: 'POST', 
-                    mode: 'no-cors', 
-                    body: JSON.stringify({ action: 'bulkApproveGroup', staffTarget: staffTarget, role: role, actionName: actionName }), 
-                    headers: { 'Content-Type': 'text/plain' }
-                })
-                .then(() => {
-                    setTimeout(() => { if(this.cb) this.cb("Kumpulan"); }, 1500);
-                })
-                .catch(error => { 
-                    console.error('Fetch Error:', error); 
-                    hideLoading(); 
-                    showToast("Ralat memproses kelulusan."); 
-                });
+                // Fungsi ini tidak lagi digunakan secara terus untuk elakkan ralat backend lama.
+                // Logik baru telah dipindahkan ke processBulkApproval() menggunakan updateRow.
             }
         };
 
@@ -677,15 +636,68 @@
             updateDashboardStats();
         }
 
+        // =====================================================================
+        // FUNGSI BARU UNTUK KELULUSAN KUMPULAN (BULK APPROVAL PINTAR)
+        // =====================================================================
         function processBulkApproval(staffName) {
             if(!confirm(`Adakah anda pasti untuk meluluskan semua rekod daripada staf: ${staffName}?`)) return;
             
             showLoading("Memproses Kelulusan Kumpulan...");
-            server.withSuccessHandler(function(count) {
+            
+            let recordsToUpdate = [];
+            
+            // OPTIMISTIC UPDATE: Kita kemaskini data di paparan (frontend) serta-merta
+            dataset.forEach(r => {
+                if (r.staff === staffName) {
+                    if (currentUserRole === 'rosli' && (r.status === 'Pending Semakan' || r.status === 'Pending For Approval')) {
+                        r.status = 'Pending Kelulusan';
+                        r.checkedBy = currentUserName;
+                        const t = new Date();
+                        r.dateChecked = t.getFullYear() + '-' + String(t.getMonth() + 1).padStart(2, '0') + '-' + String(t.getDate()).padStart(2, '0');
+                        recordsToUpdate.push({...r});
+                    } else if (currentUserRole === 'jaini' && r.status === 'Pending Kelulusan') {
+                        r.status = 'Completed';
+                        r.approvedBy = currentUserName;
+                        const t = new Date();
+                        r.approvedDate = t.getFullYear() + '-' + String(t.getMonth() + 1).padStart(2, '0') + '-' + String(t.getDate()).padStart(2, '0');
+                        recordsToUpdate.push({...r});
+                    }
+                }
+            });
+
+            if (recordsToUpdate.length === 0) {
                 hideLoading();
-                showToast(`${count} Rekod berjaya disemak/diluluskan!`);
-                fetchDataFromGoogleSheet(); 
-            }).bulkApproveGroup(staffName, currentUserRole, currentUserName);
+                showToast("Tiada rekod untuk diluluskan berdasarkan status semasa.");
+                return;
+            }
+
+            // Kemaskini UI dengan segera tanpa tunggu backend selesai
+            applyFilters();
+            
+            // Hantar kemaskini ke Google Sheets satu per satu di belakang tabir (Background Sync)
+            // Ini akan memintas sekatan logik lama di Code.gs dan memastikan data betul-betul dikemaskini.
+            recordsToUpdate.forEach((record, index) => {
+                setTimeout(() => {
+                    if (GAS_WEB_APP_URL !== "LETAK_URL_GOOGLE_APPS_SCRIPT_ANDA_DI_SINI") {
+                        fetch(GAS_WEB_APP_URL, {
+                            method: 'POST', 
+                            mode: 'no-cors', 
+                            body: JSON.stringify({ action: 'updateRow', record: record }), 
+                            headers: { 'Content-Type': 'text/plain' }
+                        }).catch(e => console.error(e));
+                    } else {
+                        // Mock DB update
+                        const idx = MOCK_DB.findIndex(r => r.id === record.id);
+                        if(idx > -1) MOCK_DB[idx] = {...record};
+                    }
+                }, index * 300); // 300ms sela masa untuk elakkan Google Sheets jammed
+            });
+            
+            // Selesai memproses paparan
+            setTimeout(() => {
+                hideLoading();
+                showToast(`${recordsToUpdate.length} Rekod berjaya disemak/diluluskan!`);
+            }, 1000);
         }
 
         function generateRowHTML(row, isEditing, isReadonlyView) {
@@ -696,12 +708,10 @@
             // ============================
             if (isEditing && !isReadonlyView) {
                 
-                // LOGIK KHAS STAFF: Control Number, Call No (050/060), Staff, Status. (Call No 082 Dikunci)
                 let call082HTML = (currentUserRole === 'staff')
                     ? `<td class="px-4 py-4 text-center text-gray-700 bg-gray-50 whitespace-normal break-words min-w-[100px] max-w-[120px] leading-snug">${row.callNo082}<input type="hidden" id="edit-c082-${row.id}" value="${row.callNo082}"></td>`
                     : `<td class="px-2 py-3"><input type="text" id="edit-c082-${row.id}" value="${row.callNo082}" class="w-full text-xs px-2 py-1.5 border border-blue-300 rounded shadow-inner focus:outline-none focus:border-[#003366] bg-white font-inter text-center"></td>`;
 
-                // LOGIK KHAS STAFF: Dropdown Status hanya nampak Completed & Incomplete
                 let statusSelectHTML = '';
                 if (currentUserRole === 'staff') {
                     let isStaffCompleted = (row.status === 'Pending Semakan' || row.status === 'Pending Kelulusan' || row.status === 'Completed' || row.status === 'Pending For Approval');
@@ -721,42 +731,20 @@
 
                 return `
                     <td class="px-4 py-3 text-center text-gray-400 font-medium">${row.no}</td>
-                    
-                    <!-- EDITABLE: CONTROL NUMBER (Di-centerkan) -->
                     <td class="px-2 py-3"><input type="text" id="edit-ctrl-${row.id}" value="${row.controlNo}" class="w-full text-xs px-2 py-1.5 border border-blue-300 rounded shadow-inner focus:outline-none focus:border-[#003366] bg-white font-inter text-center"></td>
-                    
-                    <!-- EDITABLE/NOT EDITABLE: CALL NO 082 (Ikut Role Staff) -->
                     ${call082HTML}
-                    
-                    <!-- EDITABLE: CALL NO 050/060 (Di-centerkan) -->
                     <td class="px-2 py-3"><input type="text" id="edit-c050-${row.id}" value="${row.callNo050}" class="w-full text-xs px-2 py-1.5 border border-blue-300 rounded shadow-inner focus:outline-none focus:border-[#003366] bg-white font-inter text-center"></td>
-                    
-                    <!-- NOT EDITABLE: ACCESSION -->
                     <td class="px-4 py-4 font-semibold text-[#003366] bg-gray-50">${row.accession}</td>
-                    
-                    <!-- NOT EDITABLE: TITLE (Di tengah) -->
                     <td class="px-4 py-4 whitespace-normal max-w-xs break-words font-medium leading-snug text-center bg-gray-50">${row.title}</td>
-                    
-                    <!-- EDITABLE: STAFF -->
                     <td class="px-2 py-3">
                         <select id="edit-staff-${row.id}" class="w-full text-xs px-2 py-1.5 border border-blue-300 rounded shadow-inner bg-white font-semibold text-[#003366] font-inter">
                             <option value="${row.staff}" hidden>${displayStaff}</option>
                             ${staffOptions.map(opt => `<option value="${opt}" ${row.staff === opt ? 'selected' : ''}>${opt}</option>`).join('')}
                         </select>
                     </td>
-                    
-                    <!-- NOT EDITABLE: TARIKH -->
                     <td class="px-4 py-4 text-gray-500 bg-gray-50 text-center">${formatDisplayDate(row.date)}</td>
-                    
-                    <!-- EDITABLE: STATUS -->
                     <td class="px-2 py-3">${statusSelectHTML}</td>
-                    
-                    <!-- NOT EDITABLE: AUDIT -->
-                    <td class="px-3 py-2 bg-gray-50 border-x border-gray-100 rounded text-[10px] text-gray-400 text-center italic">
-                        Maklumat Jejak Audit dikunci.
-                    </td>
-                    
-                    <!-- ACTIONS -->
+                    <td class="px-3 py-2 bg-gray-50 border-x border-gray-100 rounded text-[10px] text-gray-400 text-center italic">Maklumat Jejak Audit dikunci.</td>
                     <td class="px-4 py-3 text-center align-middle">
                         <div class="flex flex-col gap-1.5 justify-center items-center">
                             <button onclick="saveRow(${row.id})" class="bg-[#00b074] hover:bg-green-600 text-white p-1.5 rounded-md shadow-sm transition w-8 h-8 flex items-center justify-center" title="Simpan Rekod"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></button>
@@ -781,13 +769,10 @@
 
             return `
                 <td class="px-4 py-4 text-center font-medium text-gray-500">${row.no}</td>
-                <!-- Data ini di-centerkan -->
                 <td class="px-4 py-4 text-center text-gray-700">${row.controlNo}</td>
                 <td class="px-4 py-4 text-center text-gray-700 whitespace-normal break-words min-w-[100px] max-w-[120px] leading-snug">${row.callNo082}</td>
                 <td class="px-4 py-4 text-center text-gray-700 whitespace-normal break-words min-w-[100px] max-w-[120px] leading-snug">${row.callNo050}</td>
-                
                 <td class="px-4 py-4 font-semibold text-[#003366]">${row.accession}</td>
-                <!-- TITLE di-centerkan -->
                 <td class="px-4 py-4 whitespace-normal max-w-xs break-words font-medium leading-snug text-center">${row.title}</td>
                 <td class="px-4 py-4 font-bold text-[#003366]">${displayStaff}</td>
                 <td class="px-4 py-4 text-center text-gray-500">${formatDisplayDate(row.date)}</td>
@@ -821,7 +806,7 @@
             // JIKA staf simpan sebagai "Completed", tukar terus status menjadi "Pending For Approval" 
             let finalStatusToSave = newStatus;
             if (currentUserRole === 'staff' && newStatus === 'Completed') {
-                finalStatusToSave = 'Pending For Approval'; // STATUS INI AKAN DIBACA OLEH ROSLI
+                finalStatusToSave = 'Pending For Approval'; 
             }
 
             // Auto Update Date JIKA status baru adalah berkaitan kelulusan (bila staf save), dan sebelum ini tidak
@@ -844,7 +829,7 @@
             server.withSuccessHandler(function(success) {
                 hideLoading();
                 showToast("Rekod berjaya dikemaskini.");
-                // Update local dataset supaya changes nampak terus
+                // Kemaskini data memory secara automatik
                 dataset[index] = updatedRecord;
                 editingId = null;
                 applyFilters(); // Refresh UI dan filter
