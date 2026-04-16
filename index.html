@@ -8,6 +8,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@500;600;700;800&display=swap" rel="stylesheet">
     <!-- Pustaka Chart.js untuk menjana carta -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Pustaka SheetJS untuk export Excel -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #f4f7f9; }
         .font-montserrat { font-family: 'Montserrat', sans-serif; }
@@ -17,9 +19,12 @@
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
         
-        table { border-collapse: collapse; }
+        table { border-collapse: separate; border-spacing: 0; }
         td { border-bottom: 1px solid #f1f5f9; }
         tr:hover td { background-color: #f8fafc; }
+        
+        /* Sticky Header FIX */
+        thead th { position: sticky; top: 0; z-index: 20; background-color: #003366; }
         
         /* Mod penyuntingan aktif */
         tr.editing-row td { background-color: #eff6ff; }
@@ -155,19 +160,17 @@
             </div>
         </div>
 
-        <!-- CHARTS & INSIGHTS (Ditambah Pustaka Chart.js) -->
+        <!-- CHARTS & INSIGHTS -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
             <div class="bg-white p-5 rounded-xl shadow-sm min-h-[220px] flex flex-col">
                 <h3 class="font-bold text-[#003366] text-sm mb-4 font-montserrat">Status Distribution</h3>
                 <div class="relative w-full h-[160px] flex justify-center items-center">
-                    <!-- Ruangan Carta Pai/Doughnut -->
                     <canvas id="statusChart"></canvas>
                 </div>
             </div>
             <div class="bg-white p-5 rounded-xl shadow-sm min-h-[220px] flex flex-col">
                 <h3 class="font-bold text-[#003366] text-sm mb-4 font-montserrat">Staff Performance</h3>
                 <div class="relative w-full h-[160px]">
-                    <!-- Ruangan Carta Bar (Warna Berbeza) -->
                     <canvas id="staffChart"></canvas>
                 </div>
             </div>
@@ -179,7 +182,7 @@
                         <div>
                             <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Top Performer</p>
                             <p class="font-bold text-[#003366] text-sm font-montserrat" id="insight-top-staff">-</p>
-                            <p class="text-xs text-[#00b074] font-medium" id="insight-top-count">0 Rekod Dihantar</p>
+                            <p class="text-xs text-[#00b074] font-medium" id="insight-top-count">0 Rekod Keseluruhan</p>
                         </div>
                     </div>
                     <div class="flex items-start gap-4">
@@ -199,33 +202,47 @@
             <div class="flex-1 min-w-[200px]">
                 <label class="block text-[10px] font-bold text-gray-500 mb-1.5 uppercase tracking-widest">Carian</label>
                 <div class="relative">
-                    <input type="text" placeholder="Cari Tajuk atau Accession" class="w-full text-sm border border-gray-200 rounded-lg pl-3 pr-10 py-2 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition placeholder-gray-400 font-inter">
+                    <input type="text" id="search-input" onkeyup="applyFilters()" placeholder="Cari Tajuk atau Accession" class="w-full text-sm border border-gray-200 rounded-lg pl-3 pr-10 py-2 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition placeholder-gray-400 font-inter">
                 </div>
             </div>
             
             <div class="w-40">
                 <label class="block text-[10px] font-bold text-gray-500 mb-1.5 uppercase tracking-widest">Staff</label>
-                <select class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-gray-600 appearance-none bg-no-repeat bg-[right_0.5rem_center] bg-[length:1.5em_1.5em] font-inter" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%236b7280%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E');">
-                    <option>Semua Staff</option>
+                <select id="filter-staff" onchange="applyFilters()" class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-gray-600 appearance-none bg-no-repeat bg-[right_0.5rem_center] bg-[length:1.5em_1.5em] font-inter" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%236b7280%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E');">
+                    <option value="">Semua Staff</option>
+                    <option value="FATIHAH">FATIHAH</option>
+                    <option value="FAZILAH">FAZILAH</option>
+                    <option value="SAKINAH">SAKINAH</option>
+                    <option value="HUSNA">HUSNA</option>
+                    <option value="ADMIN">ADMIN</option>
                 </select>
             </div>
             
             <div class="w-40">
                 <label class="block text-[10px] font-bold text-gray-500 mb-1.5 uppercase tracking-widest">Status</label>
-                <select class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-gray-600 appearance-none bg-no-repeat bg-[right_0.5rem_center] bg-[length:1.5em_1.5em] font-inter" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%236b7280%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E');">
-                    <option>Semua Status</option>
+                <select id="filter-status" onchange="applyFilters()" class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-gray-600 appearance-none bg-no-repeat bg-[right_0.5rem_center] bg-[length:1.5em_1.5em] font-inter" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%236b7280%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E');">
+                    <option value="">Semua Status</option>
+                    <option value="Completed">Completed</option>
+                    <option value="Pending Semakan">Pending Semakan</option>
+                    <option value="Pending Kelulusan">Pending Kelulusan</option>
+                    <option value="Rejected">Rejected</option>
+                    <option value="incomplete">Incomplete</option>
                 </select>
             </div>
             
             <div class="w-32">
                 <label class="block text-[10px] font-bold text-gray-500 mb-1.5 uppercase tracking-widest">Tahun</label>
-                <select class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-gray-600 appearance-none bg-no-repeat bg-[right_0.5rem_center] bg-[length:1.5em_1.5em] font-inter" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%236b7280%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E');">
-                    <option>Semua Tahun</option>
+                <select id="filter-tahun" onchange="applyFilters()" class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-gray-600 appearance-none bg-no-repeat bg-[right_0.5rem_center] bg-[length:1.5em_1.5em] font-inter" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%236b7280%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E');">
+                    <option value="">Semua Tahun</option>
+                    <option value="2024">2024</option>
+                    <option value="2025">2025</option>
+                    <option value="2026">2026</option>
+                    <option value="2027">2027</option>
                 </select>
             </div>
             
             <div class="flex items-end gap-3 ml-auto">
-                <button class="bg-[#003366] hover:bg-[#002244] text-white text-sm font-medium px-4 py-2 rounded-lg flex items-center gap-2 transition shadow-sm h-[38px]">
+                <button onclick="fetchDataFromGoogleSheet()" class="bg-[#003366] hover:bg-[#002244] text-white text-sm font-medium px-4 py-2 rounded-lg flex items-center gap-2 transition shadow-sm h-[38px]">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
                     Segerak Auto
                 </button>
@@ -233,11 +250,15 @@
                 <div class="flex items-end gap-2">
                     <div>
                         <label class="block text-[10px] font-bold text-[#00b074] mb-1.5 uppercase tracking-widest">Laporan Excel</label>
-                        <select class="w-32 text-sm border border-[#00b074] text-[#00b074] rounded-lg px-3 py-2 h-[38px] focus:outline-none appearance-none bg-no-repeat bg-[right_0.5rem_center] bg-[length:1.5em_1.5em] font-inter" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%2300b074%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E');">
-                            <option>Keseluruhan</option>
+                        <select id="export-tahun" class="w-32 text-sm border border-[#00b074] text-[#00b074] rounded-lg px-3 py-2 h-[38px] focus:outline-none appearance-none bg-no-repeat bg-[right_0.5rem_center] bg-[length:1.5em_1.5em] font-inter" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%2300b074%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E');">
+                            <option value="">Keseluruhan</option>
+                            <option value="2024">2024</option>
+                            <option value="2025">2025</option>
+                            <option value="2026">2026</option>
+                            <option value="2027">2027</option>
                         </select>
                     </div>
-                    <button class="bg-[#00b074] hover:bg-green-600 text-white text-sm font-medium px-4 py-2 rounded-lg flex items-center gap-2 transition shadow-sm h-[38px]">
+                    <button onclick="exportToExcel()" class="bg-[#00b074] hover:bg-green-600 text-white text-sm font-medium px-4 py-2 rounded-lg flex items-center gap-2 transition shadow-sm h-[38px]">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
                         Muat Turun
                     </button>
@@ -246,10 +267,10 @@
         </div>
 
         <!-- TABLE SECTION -->
-        <div class="w-full overflow-x-auto custom-scrollbar bg-white shadow-sm border border-gray-100">
+        <div class="w-full max-h-[600px] overflow-y-auto overflow-x-auto custom-scrollbar bg-white shadow-sm border border-gray-100 rounded-b-xl relative">
             <table class="w-full text-left whitespace-nowrap" id="data-table">
-                <!-- Font header dibesarkan (text-xs) dan column TITLE di-centerkan -->
-                <thead class="bg-[#003366] text-white text-xs uppercase font-bold tracking-wider sticky top-0 z-10 font-montserrat">
+                <!-- Sticky Header (top-0 z-20) -->
+                <thead class="bg-[#003366] text-white text-xs uppercase font-bold tracking-wider sticky top-0 z-20 font-montserrat shadow-md border-b-2 border-blue-800">
                     <tr>
                         <th class="px-4 py-4 text-center">NO</th>
                         <th class="px-4 py-4 text-center">CONTROL NUMBER</th>
@@ -268,16 +289,17 @@
                     <!-- Data dijana oleh JavaScript -->
                 </tbody>
             </table>
-            
-            <!-- PAGINATION CONTROLS -->
-            <div id="pagination-controls" class="p-4 border-t border-gray-100 flex justify-between items-center bg-gray-50 hidden rounded-b-xl">
-                <span class="text-xs text-gray-500 font-medium" id="page-info">Memaparkan 0-0 dari 0 rekod</span>
-                <div class="flex gap-2">
-                    <button onclick="prevPage()" class="px-3 py-1.5 text-xs bg-white border border-gray-200 rounded hover:bg-gray-100 transition shadow-sm font-medium">Sebelumnya</button>
-                    <button onclick="nextPage()" class="px-3 py-1.5 text-xs bg-white border border-gray-200 rounded hover:bg-gray-100 transition shadow-sm font-medium">Seterusnya</button>
-                </div>
+        </div>
+        
+        <!-- PAGINATION CONTROLS -->
+        <div id="pagination-controls" class="p-4 border border-t-0 border-gray-100 flex justify-between items-center bg-gray-50 hidden rounded-b-xl shadow-sm">
+            <span class="text-xs text-gray-500 font-medium" id="page-info">Memaparkan 0-0 dari 0 rekod</span>
+            <div class="flex gap-2">
+                <button onclick="prevPage()" class="px-3 py-1.5 text-xs bg-white border border-gray-200 rounded hover:bg-gray-100 transition shadow-sm font-medium">Sebelumnya</button>
+                <button onclick="nextPage()" class="px-3 py-1.5 text-xs bg-white border border-gray-200 rounded hover:bg-gray-100 transition shadow-sm font-medium">Seterusnya</button>
             </div>
         </div>
+
     </div>
 
     <!-- NOTIFIKASI TOAST -->
@@ -289,20 +311,21 @@
     <!-- OVERLAY LOADING -->
     <div id="loading-overlay" class="fixed inset-0 bg-white/80 backdrop-blur-sm z-[100] flex flex-col items-center justify-center hidden">
         <div class="animate-spin rounded-full h-12 w-12 border-[4px] border-[#003366] border-t-transparent mb-3"></div>
-        <p class="text-[#003366] font-bold font-montserrat animate-pulse" id="loading-text">Sedang Memuatkan Data...</p>
+        <p class="text-[#003366] font-bold font-montserrat animate-pulse" id="loading-text">Sedang Memproses...</p>
     </div>
 
     <script>
         /* =====================================================================
            KONFIGURASI API (UNTUK HOSTING DI GITHUB/EXTERNAL)
            ===================================================================== */
-        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwF2GAb_wskgBo3ekdrPuOQi1Gkt0XLXHFru3m2YP2aI1GQP-MJySaDzSYB7f3hYglx/exec";
+        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxV7WQeha08ABvXXyNnl-8sEjD1mkF-Ii_EvWtouoocTyP7fK1BBkueIamihrm-Vv-A/exec";
         
         // Pilihan Dropdown mengikut format baru
-        const statusOptions = ["Completed", "incomplete", "Pending Semakan", "Pending Kelulusan", "Pending For Approval"];
+        const statusOptions = ["Completed", "incomplete", "Pending Semakan", "Pending Kelulusan", "Rejected", "Pending For Approval"];
         const staffOptions = ["FATIHAH", "FAZILAH", "SAKINAH", "HUSNA"];
         
-        let dataset = [];
+        let dataset = []; // Data Asal (Semua)
+        let filteredDataset = []; // Data selepas filter/carian digunakan
         let editingId = null;
         let staffChartInstance = null;
         let statusChartInstance = null;
@@ -319,6 +342,15 @@
         const getStaffDisplay = (staffName) => {
             return staffOptions.includes(staffName) ? staffName : "ADMIN";
         };
+
+        // Dapatkan tahun dari format tarikh
+        const getYearFromDate = (dateStr) => {
+            if(!dateStr || dateStr === '-') return '';
+            // Anggapan format data di belakang adalah YYYY-MM-DD
+            const parts = dateStr.split('-');
+            if(parts.length > 0) return parts[0];
+            return '';
+        }
 
         // Tukar format tarikh paparan (YYYY-MM-DD ke DD/MM/YYYY)
         const formatDisplayDate = (dateStr) => {
@@ -337,10 +369,10 @@
             getInitialData: function() { 
                 if (GAS_WEB_APP_URL === "LETAK_URL_GOOGLE_APPS_SCRIPT_ANDA_DI_SINI") {
                     setTimeout(() => this.cb([
-                        { id: 2, no: 1, controlNo: "23576", callNo082: "0005.3", callNo050: "TK5105.888 IRS 2001", accession: "BK00075774", title: "DEVELOPING WEB SITE USING MICROSOFT WORD STEP BY STEP", status: "incomplete", staff: "FAZILAH", date: "2026-04-14", checkedBy: "", dateChecked: "", approvedBy: "", approvedDate: "" },
-                        { id: 3, no: 2, controlNo: "0000025823", callNo082: "001.4 BIE", callNo050: "HA31.2.B54 2003", accession: "BK00076063", title: "INTRODUCTION TO SURVEY QUALITY", status: "Completed", staff: "SAKINAH", date: "2026-04-10", checkedBy: "ROSLI", dateChecked: "2026-04-10", approvedBy: "JAINI", approvedDate: "2026-04-12" },
+                        { id: 2, no: 1, controlNo: "23576", callNo082: "0005.3", callNo050: "TK5105.888 IRS 2001", accession: "BK00075774", title: "DEVELOPING WEB SITE USING MICROSOFT WORD STEP BY STEP", status: "incomplete", staff: "FAZILAH", date: "2024-04-14", checkedBy: "", dateChecked: "", approvedBy: "", approvedDate: "" },
+                        { id: 3, no: 2, controlNo: "0000025823", callNo082: "001.4 BIE", callNo050: "HA31.2.B54 2003", accession: "BK00076063", title: "INTRODUCTION TO SURVEY QUALITY", status: "Completed", staff: "SAKINAH", date: "2025-04-10", checkedBy: "ROSLI", dateChecked: "2025-04-10", approvedBy: "JAINI", approvedDate: "2025-04-12" },
                         { id: 4, no: 3, controlNo: "1111000011", callNo082: "005.2 TEST", callNo050: "AB12.3", accession: "BK00099999", title: "THE BOOK OF ADMIN TESTING AND OTHER STUFF", status: "Pending Semakan", staff: "FATIHAH", date: "2026-04-16", checkedBy: "", dateChecked: "", approvedBy: "", approvedDate: "" }
-                    ]), 1000);
+                    ]), 800);
                     return;
                 }
                 
@@ -355,10 +387,27 @@
                     setTimeout(() => this.cb(true), 500); 
                     return;
                 }
+                
+                console.log("[API REQUEST] Menghantar payload kemaskini:", record);
+                
                 fetch(GAS_WEB_APP_URL, {
-                    method: 'POST', body: JSON.stringify({ action: 'updateRow', record: record }), headers: { 'Content-Type': 'text/plain;charset=utf-8' }
-                }).then(response => response.json()).then(data => { if(this.cb) this.cb(data); })
-                  .catch(error => { console.error('Fetch Error:', error); hideLoading(); showToast("Ralat menyimpan data."); });
+                    method: 'POST', 
+                    body: JSON.stringify({ action: 'updateRow', record: record }), 
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+                })
+                .then(response => {
+                    if(!response.ok) throw new Error("HTTP Status " + response.status);
+                    return response.json();
+                })
+                .then(data => { 
+                    console.log("[API RESPONSE] Berjaya:", data);
+                    if(this.cb) this.cb(data); 
+                })
+                .catch(error => { 
+                    console.error('[Fetch Error - updateRow]:', error); 
+                    hideLoading(); 
+                    showToast("Gagal menyimpan ke Google Apps Script. Sila periksa Console (F12)."); 
+                });
             },
             
             bulkApproveGroup: function(staffTarget, role, actionName) { 
@@ -436,7 +485,7 @@
         }
 
         /* =====================================================================
-           PENGURUSAN DATA & JADUAL
+           PENGURUSAN DATA, CARIAN & FILTER
            ===================================================================== */
         function showLoading(msg) {
             document.getElementById('loading-text').textContent = msg;
@@ -448,9 +497,50 @@
             showLoading("Menyegerak Data dari Spreadsheet...");
             server.withSuccessHandler(function(data) {
                 dataset = data || [];
-                renderTable();
+                applyFilters(); // Filter akan reset dan render jadual baru
                 hideLoading();
             }).getInitialData();
+        }
+        
+        // FUNGSI APPLYSemua Kombinasi Filter & Carian
+        function applyFilters() {
+            const searchTerm = document.getElementById('search-input').value.toLowerCase().trim();
+            const filterStaff = document.getElementById('filter-staff').value;
+            const filterStatus = document.getElementById('filter-status').value;
+            const filterTahun = document.getElementById('filter-tahun').value;
+            
+            filteredDataset = dataset.filter(row => {
+                let match = true;
+                
+                // 1. Carian (Partial & Case Insensitive pada Title atau Accession)
+                if (searchTerm !== "") {
+                    const titleMatch = (row.title || "").toLowerCase().includes(searchTerm);
+                    const accMatch = (row.accession || "").toLowerCase().includes(searchTerm);
+                    if (!titleMatch && !accMatch) match = false;
+                }
+                
+                // 2. Filter Staff
+                if (filterStaff !== "") {
+                    const rowDisplayStaff = getStaffDisplay(row.staff);
+                    if (rowDisplayStaff !== filterStaff) match = false;
+                }
+                
+                // 3. Filter Status
+                if (filterStatus !== "") {
+                    if (row.status !== filterStatus) match = false;
+                }
+                
+                // 4. Filter Tahun
+                if (filterTahun !== "") {
+                    const rowTahun = getYearFromDate(row.date);
+                    if (rowTahun !== filterTahun) match = false;
+                }
+                
+                return match;
+            });
+            
+            currentPage = 1; // Reset ke page 1 selepas filter
+            renderTable();
         }
 
         // FUNGSI PAGINATION
@@ -458,7 +548,7 @@
             if (currentPage > 1) { currentPage--; renderTable(); }
         }
         function nextPage() {
-            if (currentPage * rowsPerPage < dataset.length) { currentPage++; renderTable(); }
+            if (currentPage * rowsPerPage < filteredDataset.length) { currentPage++; renderTable(); }
         }
 
         function renderTable() {
@@ -475,7 +565,7 @@
                 const actionLabel = currentUserRole === 'rosli' ? 'Tandakan Semua Sebagai Disemak' : 'Luluskan Semua Rekod';
                 
                 let groupedData = {};
-                dataset.forEach(row => {
+                filteredDataset.forEach(row => {
                     // Juga ambil 'Pending For Approval' incase digunakan dalam Spreadsheet
                     if (row.status === targetStatus || row.status === 'Pending For Approval') {
                         if (!groupedData[row.staff]) groupedData[row.staff] = [];
@@ -484,13 +574,13 @@
                 });
 
                 if(Object.keys(groupedData).length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="11" class="px-4 py-8 text-center text-gray-500 font-medium bg-gray-50 italic">Tiada rekod memerlukan tindakan anda pada masa ini.</td></tr>`;
+                    tbody.innerHTML = `<tr><td colspan="11" class="px-4 py-8 text-center text-gray-500 font-medium bg-gray-50 italic">Tiada rekod memerlukan tindakan anda pada masa ini berdasarkan tapisan.</td></tr>`;
                 }
 
                 for (let staffName in groupedData) {
                     const staffRows = groupedData[staffName];
                     const groupHeader = document.createElement('tr');
-                    groupHeader.className = "bg-indigo-50 border-y-2 border-indigo-100";
+                    groupHeader.className = "bg-indigo-50 border-y-2 border-indigo-100 sticky top-[48px] z-10 shadow-sm"; // Jadikan group header juga sedikit sticky di bawah thead
                     groupHeader.innerHTML = `
                         <td colspan="11" class="px-4 py-3">
                             <div class="flex justify-between items-center">
@@ -516,16 +606,16 @@
                     });
                 }
             } 
-            // JIKA STAFF / ADMIN (Dengan Pagination 100 max)
+            // JIKA STAFF / ADMIN (Dengan Pagination max 100)
             else {
                 paginationDiv.classList.remove('hidden');
                 
                 const startIndex = (currentPage - 1) * rowsPerPage;
                 const endIndex = startIndex + rowsPerPage;
-                const paginatedData = dataset.slice(startIndex, endIndex);
+                const paginatedData = filteredDataset.slice(startIndex, endIndex);
                 
                 if (paginatedData.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="11" class="px-4 py-8 text-center text-gray-500 font-medium bg-gray-50 italic">Tiada rekod dijumpai.</td></tr>`;
+                    tbody.innerHTML = `<tr><td colspan="11" class="px-4 py-8 text-center text-gray-500 font-medium bg-gray-50 italic">Tiada rekod dijumpai berdasarkan carian/tapisan anda.</td></tr>`;
                 }
 
                 paginatedData.forEach(row => {
@@ -537,8 +627,8 @@
                 });
                 
                 // Update Pagination Info
-                const infoEnd = Math.min(startIndex + rowsPerPage, dataset.length);
-                document.getElementById('page-info').textContent = `Memaparkan ${dataset.length > 0 ? startIndex + 1 : 0}-${infoEnd} dari ${dataset.length} rekod`;
+                const infoEnd = Math.min(startIndex + rowsPerPage, filteredDataset.length);
+                document.getElementById('page-info').textContent = `Memaparkan ${filteredDataset.length > 0 ? startIndex + 1 : 0}-${infoEnd} dari ${filteredDataset.length} rekod`;
             }
 
             updateDashboardStats();
@@ -571,7 +661,6 @@
                 // LOGIK KHAS STAFF: Dropdown Status hanya nampak Completed & Incomplete
                 let statusSelectHTML = '';
                 if (currentUserRole === 'staff') {
-                    // Jika data sebelum ini Pending/Completed, kita tunjuk "Completed" dalam mata Staff (kerana mereka pernah siapkan)
                     let isStaffCompleted = (row.status === 'Pending Semakan' || row.status === 'Pending Kelulusan' || row.status === 'Completed' || row.status === 'Pending For Approval');
                     statusSelectHTML = `
                         <select id="edit-status-${row.id}" class="w-full text-xs px-2 py-1.5 border border-blue-300 rounded shadow-inner bg-white font-inter font-bold text-gray-700">
@@ -614,14 +703,14 @@
                     </td>
                     
                     <!-- NOT EDITABLE: TARIKH -->
-                    <td class="px-4 py-4 text-gray-500 bg-gray-50">${formatDisplayDate(row.date)}</td>
+                    <td class="px-4 py-4 text-gray-500 bg-gray-50 text-center">${formatDisplayDate(row.date)}</td>
                     
                     <!-- EDITABLE: STATUS -->
                     <td class="px-2 py-3">${statusSelectHTML}</td>
                     
                     <!-- NOT EDITABLE: AUDIT -->
                     <td class="px-3 py-2 bg-gray-50 border-x border-gray-100 rounded text-[10px] text-gray-400 text-center italic">
-                        Maklumat Jejak Audit dikunci automatik.
+                        Maklumat Jejak Audit dikunci.
                     </td>
                     
                     <!-- ACTIONS -->
@@ -640,7 +729,8 @@
             let statusBadge = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold bg-gray-100 text-gray-600 uppercase tracking-wider">${row.status || '-'}</span>`;
             if (row.status === 'Completed') statusBadge = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold bg-green-100 text-[#00b074] uppercase tracking-wider"><svg class="mr-1.5 h-2 w-2 text-[#00b074]" fill="currentColor" viewBox="0 0 8 8"><circle cx="4" cy="4" r="3" /></svg>Completed</span>`;
             else if (row.status === 'incomplete') statusBadge = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold bg-red-100 text-red-700 uppercase tracking-wider"><svg class="mr-1.5 h-2 w-2 text-red-600" fill="currentColor" viewBox="0 0 8 8"><circle cx="4" cy="4" r="3" /></svg>Incomplete</span>`;
-            else if (row.status === 'Pending For Approval' || row.status === 'Pending Semakan' || row.status === 'Pending Kelulusan') statusBadge = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold bg-blue-100 text-blue-700 uppercase tracking-wider"><svg class="mr-1.5 h-2 w-2 text-blue-600" fill="currentColor" viewBox="0 0 8 8"><circle cx="4" cy="4" r="3" /></svg>Pending For Approval</span>`;
+            else if (row.status === 'Rejected') statusBadge = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold bg-red-100 text-red-700 uppercase tracking-wider"><svg class="mr-1.5 h-2 w-2 text-red-600" fill="currentColor" viewBox="0 0 8 8"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>Rejected</span>`;
+            else if (row.status === 'Pending For Approval' || row.status === 'Pending Semakan' || row.status === 'Pending Kelulusan') statusBadge = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold bg-blue-100 text-blue-700 uppercase tracking-wider"><svg class="mr-1.5 h-2 w-2 text-blue-600" fill="currentColor" viewBox="0 0 8 8"><circle cx="4" cy="4" r="3" /></svg>Pending</span>`;
 
             let actionHtml = isReadonlyView 
                 ? `<span class="text-gray-300 italic text-[10px]">Tiada Aksi</span>` 
@@ -657,7 +747,7 @@
                 <!-- TITLE di-centerkan -->
                 <td class="px-4 py-4 whitespace-normal max-w-xs break-words font-medium leading-snug text-center">${row.title}</td>
                 <td class="px-4 py-4 font-bold text-[#003366]">${displayStaff}</td>
-                <td class="px-4 py-4 text-gray-500">${formatDisplayDate(row.date)}</td>
+                <td class="px-4 py-4 text-center text-gray-500">${formatDisplayDate(row.date)}</td>
                 <td class="px-4 py-4">${statusBadge}</td>
                 <td class="px-4 py-3">
                     <div class="flex flex-col gap-1.5 text-[10px] bg-gray-50 p-2 rounded-lg border border-gray-100">
@@ -685,9 +775,7 @@
             let newStatus = document.getElementById(`edit-status-${id}`).value;
             let newDate = dataset[index].date;
             
-            // PENYELESAIAN MASALAH ANDA: 
-            // Jika staf simpan sebagai "Completed", kita tukar terus status itu menjadi "Pending Semakan" 
-            // di belakang tabir supaya ia masuk ke dalam senarai kelulusan Rosli.
+            // JIKA staf simpan sebagai "Completed", tukar terus status menjadi "Pending Semakan" 
             let finalStatusToSave = newStatus;
             if (currentUserRole === 'staff' && newStatus === 'Completed') {
                 finalStatusToSave = 'Pending Semakan';
@@ -702,10 +790,10 @@
             const updatedRecord = {
                 ...dataset[index],
                 controlNo: document.getElementById(`edit-ctrl-${id}`).value,
-                callNo082: document.getElementById(`edit-c082-${id}`).value, // Bagi staff ini dipanggil dari input=hidden
+                callNo082: document.getElementById(`edit-c082-${id}`).value, 
                 callNo050: document.getElementById(`edit-c050-${id}`).value,
                 staff: document.getElementById(`edit-staff-${id}`).value,
-                status: finalStatusToSave, // Gunakan status yang telah ditukar (override)
+                status: finalStatusToSave, 
                 date: newDate
             };
 
@@ -713,12 +801,16 @@
             server.withSuccessHandler(function(success) {
                 hideLoading();
                 showToast("Rekod berjaya dikemaskini.");
-                fetchDataFromGoogleSheet(); // Sentiasa tarik data terkini selepas save
+                // Jika fail API luar tidak berjaya hantar data terkini, kita update memory sementara
+                dataset[index] = updatedRecord;
+                editingId = null;
+                applyFilters(); // Refresh UI dan filter
+                
             }).updateRow(updatedRecord);
         }
 
         /* =====================================================================
-           CARTA DAN UTILITI 
+           CARTA, UTILITI & EXCEL EXPORT
            ===================================================================== */
         function updateClock() {
             const now = new Date();
@@ -735,28 +827,85 @@
             setTimeout(() => { toast.classList.add('translate-y-20', 'opacity-0'); }, 3000);
         }
 
+        // FUNGSI MUAT TURUN EXCEL
+        function exportToExcel() {
+            showLoading("Menjana Fail Excel...");
+            
+            setTimeout(() => {
+                const exportTahun = document.getElementById('export-tahun').value;
+                let dataToExport = dataset; // Gunakan keseluruhan data sebagai base
+                
+                // Filter jika user pilih tahun tertentu untuk export
+                if (exportTahun !== "") {
+                    dataToExport = dataset.filter(row => getYearFromDate(row.date) === exportTahun);
+                }
+                
+                if (dataToExport.length === 0) {
+                    hideLoading();
+                    alert("Tiada rekod dijumpai untuk tahun yang dipilih.");
+                    return;
+                }
+
+                // Format data array of object untuk SheetJS
+                const cleanData = dataToExport.map(row => ({
+                    "No": row.no,
+                    "Control Number": row.controlNo,
+                    "Call No (082)": row.callNo082,
+                    "Call No (050/060)": row.callNo050,
+                    "Accession": row.accession,
+                    "Title": row.title,
+                    "Staff": getStaffDisplay(row.staff),
+                    "Tarikh": formatDisplayDate(row.date),
+                    "Status": row.status,
+                    "Disemak Oleh": row.checkedBy,
+                    "Tarikh Disemak": formatDisplayDate(row.dateChecked),
+                    "Diluluskan Oleh": row.approvedBy,
+                    "Tarikh Diluluskan": formatDisplayDate(row.approvedDate)
+                }));
+
+                // Bina Workbook
+                const worksheet = XLSX.utils.json_to_sheet(cleanData);
+                const workbook = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(workbook, worksheet, "Laporan IKU");
+
+                // Laraskan kelebaran kolum Excel secara automatik (anggaran)
+                const colWidths = [
+                    { wch: 5 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, 
+                    { wch: 40 }, { wch: 15 }, { wch: 12 }, { wch: 20 }, { wch: 15 }, 
+                    { wch: 15 }, { wch: 15 }, { wch: 15 }
+                ];
+                worksheet['!cols'] = colWidths;
+
+                // Muat turun
+                const fileName = exportTahun === "" ? "Laporan_IKU_Keseluruhan.xlsx" : `Laporan_IKU_${exportTahun}.xlsx`;
+                XLSX.writeFile(workbook, fileName);
+                
+                hideLoading();
+                showToast("Berjaya memuat turun fail Excel.");
+            }, 500);
+        }
+
         function updateDashboardStats() {
-            const total = dataset.length;
-            const completed = dataset.filter(r => r.status === 'Completed').length;
-            const pending = dataset.filter(r => r.status.includes('Pending')).length;
+            // Stats dikira berdasarkan FILTERED DATASET (Paparan real-time berdasarkan filter)
+            const total = filteredDataset.length;
+            const completed = filteredDataset.filter(r => r.status === 'Completed').length;
+            const pending = filteredDataset.filter(r => r.status.includes('Pending')).length;
             
             const staffCounts = {};
             const statusCounts = { 'Completed': 0, 'Pending Checking': 0, 'Pending Approval': 0, 'Incomplete': 0 };
 
-            dataset.forEach(r => { 
+            filteredDataset.forEach(r => { 
                 const displayStaff = getStaffDisplay(r.staff);
                 
-                // Asingkan ADMIN dari masuk carta staff performance dan aktif staff (hanya 4 staff terpilih dikira)
                 if(displayStaff !== 'ADMIN') {
                     staffCounts[displayStaff] = (staffCounts[displayStaff] || 0) + 1; 
                 }
                 
-                // MAPPING STATUS UNTUK CARTA PAI BAHASA INGGERIS
                 let chartStatus = 'Incomplete';
                 if (r.status === 'Completed') chartStatus = 'Completed';
-                else if (r.status === 'Pending Semakan' || r.status === 'Pending For Approval') chartStatus = 'Pending Checking'; // Kelulusan Rosli
-                else if (r.status === 'Pending Kelulusan') chartStatus = 'Pending Approval'; // Kelulusan Jaini
-                else if (r.status === 'incomplete' || r.status === 'Draft') chartStatus = 'Incomplete';
+                else if (r.status === 'Pending Semakan' || r.status === 'Pending For Approval') chartStatus = 'Pending Checking'; 
+                else if (r.status === 'Pending Kelulusan') chartStatus = 'Pending Approval'; 
+                else if (r.status === 'incomplete' || r.status === 'Draft' || r.status === 'Rejected') chartStatus = 'Incomplete';
                 
                 statusCounts[chartStatus] = (statusCounts[chartStatus] || 0) + 1;
             });
@@ -764,13 +913,13 @@
             document.getElementById('stat-total').textContent = total;
             document.getElementById('stat-completed').textContent = completed;
             document.getElementById('stat-pending').textContent = pending;
-            document.getElementById('stat-staff').textContent = Object.keys(staffCounts).length; // Aktif staff 4
+            document.getElementById('stat-staff').textContent = Object.keys(staffCounts).length; // Aktif staff
             document.getElementById('insight-pending-count').textContent = pending + ' Rekod';
 
             let topStaff = "-", maxCount = 0;
             for(let s in staffCounts) { if(staffCounts[s] > maxCount) { maxCount = staffCounts[s]; topStaff = s; } }
             document.getElementById('insight-top-staff').textContent = topStaff;
-            document.getElementById('insight-top-count').textContent = maxCount + ' Rekod Keseluruhan';
+            document.getElementById('insight-top-count').textContent = maxCount + ' Rekod Di Jumpai';
 
             updateCharts(staffCounts, statusCounts);
         }
@@ -779,14 +928,12 @@
             const statusCtx = document.getElementById('statusChart').getContext('2d');
             if (statusChartInstance) statusChartInstance.destroy();
             
-            // CARTA PAI (BAHASA INGGERIS, WARNA BERBEZA IKUT KATEGORI)
             statusChartInstance = new Chart(statusCtx, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Completed', 'Pending Checking', 'Pending Approval', 'Incomplete'],
+                    labels: ['Completed', 'Pending Checking', 'Pending Approval', 'Incomplete/Rejected'],
                     datasets: [{
                         data: [statusCounts['Completed'], statusCounts['Pending Checking'], statusCounts['Pending Approval'], statusCounts['Incomplete']],
-                        // Completed=Hijau, Pending Checking=Kuning/Oren, Pending Approval=Biru, Incomplete=Merah
                         backgroundColor: ['#00b074', '#f59e0b', '#3b82f6', '#ef4444'],
                         borderWidth: 0, hoverOffset: 4
                     }]
