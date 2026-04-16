@@ -238,7 +238,7 @@
             </div>
         </div>
 
-        <div class="w-full max-h-[600px] overflow-y-auto overflow-x-auto custom-scrollbar bg-white shadow-sm border border-gray-100 rounded-b-xl relative">
+        <div id="table-container" class="w-full max-h-[600px] overflow-y-auto overflow-x-auto custom-scrollbar bg-white shadow-sm border border-gray-100 rounded-b-xl relative">
             <table class="w-full text-left whitespace-nowrap" id="data-table">
                 <thead class="bg-[#003366] text-white text-[13px] uppercase font-bold tracking-wider sticky top-0 z-20 font-montserrat shadow-md border-b-2 border-blue-800">
                     <tr>
@@ -249,10 +249,10 @@
                         <th class="px-3 py-4 text-left">ACCESSION</th>
                         <th class="px-4 py-4 min-w-[200px] text-center">TITLE</th>
                         <th class="px-3 py-4 text-left">STAFF</th>
-                        <th class="px-3 py-4 text-center">TARIKH</th>
+                        <th class="px-3 py-4 text-center">DATE</th>
                         <th class="px-3 py-4 text-left">STATUS</th>
-                        <th class="px-4 py-4 min-w-[180px] text-left">JEJAK AUDIT</th>
-                        <th class="px-4 py-4 text-center min-w-[90px]">TINDAKAN</th>
+                        <th class="px-4 py-4 min-w-[180px] text-left">AUDIT TRAIL</th>
+                        <th class="px-4 py-4 text-center min-w-[90px]">ACTION</th>
                     </tr>
                 </thead>
                 <tbody id="table-body" class="text-xs text-gray-700 divide-y divide-gray-100 bg-white" style="font-family: 'Inter', sans-serif;">
@@ -554,6 +554,12 @@
         function renderTable() {
             const tbody = document.getElementById('table-body');
             const paginationDiv = document.getElementById('pagination-controls');
+            
+            // Simpan kedudukan scroll (Table dan Window) supaya page tak melompat
+            const tableContainer = document.getElementById('table-container');
+            const currentTableScroll = tableContainer ? tableContainer.scrollTop : 0;
+            const currentWindowScroll = window.scrollY;
+
             tbody.innerHTML = '';
             
             // JIKA ROSLI LOG MASUK (Kumpulan Khas)
@@ -625,6 +631,12 @@
             }
 
             updateDashboardStats();
+
+            // Kembalikan kedudukan scroll selepas jadual siap di-render supaya page tak melompat
+            if (tableContainer) {
+                tableContainer.scrollTop = currentTableScroll;
+            }
+            window.scrollTo(0, currentWindowScroll);
         }
 
         // =====================================================================
@@ -705,11 +717,11 @@
                     </td>
                     <td class="px-3 py-4 text-gray-500 bg-gray-50 text-center">${formatDisplayDate(row.date)}</td>
                     <td class="px-2 py-3">${statusSelectHTML}</td>
-                    <td class="px-3 py-2 bg-gray-50 border-x border-gray-100 rounded text-[10px] text-gray-400 text-center italic">Maklumat Jejak Audit dikunci.</td>
+                    <td class="px-3 py-2 bg-gray-50 border-x border-gray-100 rounded text-[10px] text-gray-400 text-center italic">Audit Trail locked.</td>
                     <td class="px-4 py-3 text-center align-middle">
                         <div class="flex flex-col gap-1.5 justify-center items-center">
-                            <button onclick="saveRow(${row.id})" class="bg-[#00b074] hover:bg-green-600 text-white p-1.5 rounded-md shadow-sm transition w-8 h-8 flex items-center justify-center" title="Simpan Rekod"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></button>
-                            <button onclick="cancelEdit()" class="bg-gray-400 hover:bg-gray-500 text-white p-1.5 rounded-md shadow-sm transition w-8 h-8 flex items-center justify-center" title="Batal"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+                            <button type="button" onclick="saveRow(${row.id})" class="bg-[#00b074] hover:bg-green-600 text-white p-1.5 rounded-md shadow-sm transition w-8 h-8 flex items-center justify-center" title="Simpan Rekod"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></button>
+                            <button type="button" onclick="cancelEdit()" class="bg-gray-400 hover:bg-gray-500 text-white p-1.5 rounded-md shadow-sm transition w-8 h-8 flex items-center justify-center" title="Batal"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
                         </div>
                     </td>
                 `;
@@ -723,18 +735,19 @@
             
             if (currentStatusLower === 'completed') statusBadge = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold bg-green-100 text-[#00b074] uppercase tracking-wider"><svg class="mr-1.5 h-2 w-2 text-[#00b074]" fill="currentColor" viewBox="0 0 8 8"><circle cx="4" cy="4" r="3" /></svg>Completed</span>`;
             else if (currentStatusLower === 'incomplete') statusBadge = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold bg-red-100 text-red-700 uppercase tracking-wider"><svg class="mr-1.5 h-2 w-2 text-red-600" fill="currentColor" viewBox="0 0 8 8"><circle cx="4" cy="4" r="3" /></svg>Incomplete</span>`;
+            else if (currentStatusLower === 'rejected') statusBadge = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold bg-red-100 text-red-700 uppercase tracking-wider"><svg class="mr-1.5 h-2 w-2 text-red-600" fill="currentColor" viewBox="0 0 8 8"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>Rejected</span>`;
             else if (currentStatusLower === 'pending for approval') statusBadge = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold bg-blue-100 text-blue-700 uppercase tracking-wider"><svg class="mr-1.5 h-2 w-2 text-blue-600" fill="currentColor" viewBox="0 0 8 8"><circle cx="4" cy="4" r="3" /></svg>Pending</span>`;
 
             let actionHtml = '';
             if (isReadonlyView) {
                 if (currentUserRole === 'rosli') {
                     // Butang kelulusan satu persatu
-                    actionHtml = `<button onclick="approveSingleRow(${row.id})" class="text-[#00b074] hover:text-white bg-green-50 hover:bg-[#00b074] p-2 rounded-lg transition-colors outline-none" title="Luluskan Rekod"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></button>`;
+                    actionHtml = `<button type="button" onclick="approveSingleRow(${row.id})" class="text-[#00b074] hover:text-white bg-green-50 hover:bg-[#00b074] p-2 rounded-lg transition-colors outline-none" title="Luluskan Rekod"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></button>`;
                 } else {
                     actionHtml = `<span class="text-gray-300 italic text-[10px]">Tiada Aksi</span>`;
                 }
             } else {
-                actionHtml = `<button onclick="editRow(${row.id})" class="text-blue-500 hover:text-white bg-blue-50 hover:bg-[#003366] p-2 rounded-lg transition-colors outline-none" title="Kemaskini Rekod"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg></button>`;
+                actionHtml = `<button type="button" onclick="editRow(${row.id})" class="text-blue-500 hover:text-white bg-blue-50 hover:bg-[#003366] p-2 rounded-lg transition-colors outline-none" title="Kemaskini Rekod"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg></button>`;
             }
 
             return `
@@ -850,10 +863,10 @@
                     "Accession": row.accession,
                     "Title": row.title,
                     "Staff": getStaffDisplay(row.staff),
-                    "Tarikh": formatDisplayDate(row.date),
+                    "Date": formatDisplayDate(row.date),
                     "Status": row.status,
-                    "Diluluskan Oleh": row.approvedBy,
-                    "Tarikh Diluluskan": formatDisplayDate(row.approvedDate)
+                    "Approved By": row.approvedBy,
+                    "Approved Date": formatDisplayDate(row.approvedDate)
                 }));
 
                 const worksheet = XLSX.utils.json_to_sheet(cleanData);
