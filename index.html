@@ -55,8 +55,7 @@
                     <select id="login-role" class="w-full border border-gray-300 rounded-lg px-4 py-3 text-[15px] text-[#003366] focus:outline-none focus:border-[#003366] focus:ring-1 focus:ring-[#003366] appearance-none bg-no-repeat bg-[right_1rem_center] bg-[length:1.2em_1.2em] transition-colors" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%23003366%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E');">
                         <option value="">Sila Pilih</option>
                         <option value="staff">Staff (Kemasukan Data)</option>
-                        <option value="rosli">Rosli (Pegawai Penyemak)</option>
-                        <option value="jaini">Jaini (Pegawai Pelulus)</option>
+                        <option value="rosli">Rosli</option>
                         <option value="admin">Admin</option>
                     </select>
                 </div>
@@ -223,9 +222,7 @@
                 <select id="filter-status" onchange="applyFilters()" class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-gray-600 appearance-none bg-no-repeat bg-[right_0.5rem_center] bg-[length:1.5em_1.5em] font-inter" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%236b7280%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E');">
                     <option value="">Semua Status</option>
                     <option value="Completed">Completed</option>
-                    <option value="Pending Semakan">Pending Semakan</option>
-                    <option value="Pending Kelulusan">Pending Kelulusan</option>
-                    <option value="Rejected">Rejected</option>
+                    <option value="Pending For Approval">Pending For Approval</option>
                     <option value="incomplete">Incomplete</option>
                 </select>
             </div>
@@ -279,7 +276,7 @@
                         <th class="px-4 py-4">ACCESSION</th>
                         <th class="px-4 py-4 min-w-[200px] text-center">TITLE</th>
                         <th class="px-4 py-4">STAFF</th>
-                        <th class="px-4 py-4">TARIKH</th>
+                        <th class="px-4 py-4 text-center">TARIKH</th>
                         <th class="px-4 py-4">STATUS</th>
                         <th class="px-4 py-4 min-w-[200px]">JEJAK AUDIT</th>
                         <th class="px-4 py-4 text-center">TINDAKAN</th>
@@ -318,10 +315,10 @@
         /* =====================================================================
            KONFIGURASI API (UNTUK HOSTING DI GITHUB/EXTERNAL)
            ===================================================================== */
-        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxV7WQeha08ABvXXyNnl-8sEjD1mkF-Ii_EvWtouoocTyP7fK1BBkueIamihrm-Vv-A/exec";
+        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxuDRA1GkJVt9HM9ElwuQgfY3dPajo5xzgmxwwEfidyPW_3mS90-fH1aBOE7oTkWwAS/exec";
         
         // Pilihan Dropdown mengikut format baru
-        const statusOptions = ["Completed", "incomplete", "Pending Semakan", "Pending Kelulusan", "Rejected", "Pending For Approval"];
+        const statusOptions = ["Completed", "incomplete", "Pending For Approval"];
         const staffOptions = ["FATIHAH", "FAZILAH", "SAKINAH", "HUSNA"];
         
         let dataset = []; // Data Asal (Semua)
@@ -342,9 +339,9 @@
         // MEMORI SEMENTARA (UNTUK UJIAN LOKAL TANPA GOOGLE SCRIPT URL)
         // =====================================================================
         let MOCK_DB = [
-            { id: 2, no: 1, controlNo: "23576", callNo082: "0005.3", callNo050: "TK5105.888 IRS 2001", accession: "BK00075774", title: "DEVELOPING WEB SITE USING MICROSOFT WORD STEP BY STEP", status: "incomplete", staff: "FAZILAH", date: "2024-04-14", checkedBy: "", dateChecked: "", approvedBy: "", approvedDate: "" },
-            { id: 3, no: 2, controlNo: "0000025823", callNo082: "001.4 BIE", callNo050: "HA31.2.B54 2003", accession: "BK00076063", title: "INTRODUCTION TO SURVEY QUALITY", status: "Completed", staff: "SAKINAH", date: "2025-04-10", checkedBy: "ROSLI", dateChecked: "2025-04-10", approvedBy: "JAINI", approvedDate: "2025-04-12" },
-            { id: 4, no: 3, controlNo: "1111000011", callNo082: "005.2 TEST", callNo050: "AB12.3", accession: "BK00099999", title: "THE BOOK OF ADMIN TESTING AND OTHER STUFF", status: "Pending Semakan", staff: "FATIHAH", date: "2026-04-16", checkedBy: "", dateChecked: "", approvedBy: "", approvedDate: "" }
+            { id: 2, no: 1, controlNo: "23576", callNo082: "0005.3", callNo050: "TK5105.888 IRS 2001", accession: "BK00075774", title: "DEVELOPING WEB SITE USING MICROSOFT WORD STEP BY STEP", status: "incomplete", staff: "FAZILAH", date: "2024-04-14", approvedBy: "", approvedDate: "" },
+            { id: 3, no: 2, controlNo: "0000025823", callNo082: "001.4 BIE", callNo050: "HA31.2.B54 2003", accession: "BK00076063", title: "INTRODUCTION TO SURVEY QUALITY", status: "Completed", staff: "SAKINAH", date: "2025-04-10", approvedBy: "ROSLI", approvedDate: "2025-04-12" },
+            { id: 4, no: 3, controlNo: "1111000011", callNo082: "005.2 TEST", callNo050: "AB12.3", accession: "BK00099999", title: "THE BOOK OF ADMIN TESTING AND OTHER STUFF", status: "Pending For Approval", staff: "FATIHAH", date: "2026-04-16", approvedBy: "", approvedDate: "" }
         ];
 
         // Dapatkan paparan nama staf (selain dari list 4 di atas akan dilabel ADMIN)
@@ -445,7 +442,6 @@
 
             if (role === 'staff' && encodedInput === 'c3RhZmYxMjM=') { isValid = true; currentUserName = "STAFF"; } 
             else if (role === 'rosli' && encodedInput === 'cm9zbGkxMjM=') { isValid = true; currentUserName = "ROSLI"; } 
-            else if (role === 'jaini' && encodedInput === 'amFpbmkxMjM=') { isValid = true; currentUserName = "JAINI"; } 
             else if (role === 'admin' && encodedInput === 'YWRtaW4xMjM=') { isValid = true; currentUserName = "ADMIN"; }
 
             if (isValid) {
@@ -552,19 +548,17 @@
             const paginationDiv = document.getElementById('pagination-controls');
             tbody.innerHTML = '';
             
-            // JIKA ROSLI ATAU JAINI LOG MASUK (Kumpulan Khas)
-            if (currentUserRole === 'rosli' || currentUserRole === 'jaini') {
+            // JIKA ROSLI LOG MASUK (Kumpulan Khas)
+            if (currentUserRole === 'rosli') {
                 paginationDiv.classList.add('hidden'); // Tiada pagination untuk kumpulan khas
                 
-                // Rosli akan nampak "Pending For Approval" (atau "Pending Semakan")
-                const targetStatus = currentUserRole === 'rosli' ? 'Pending For Approval' : 'Pending Kelulusan';
-                const actionLabel = currentUserRole === 'rosli' ? 'Tandakan Semua Sebagai Disemak' : 'Luluskan Semua Rekod';
+                const targetStatus = 'Pending For Approval';
+                const actionLabel = 'Tandakan Semua Sebagai Disemak';
                 
                 let groupedData = {};
                 filteredDataset.forEach(row => {
-                    // Rangkuman khas buat Rosli (jika sebelum ini statusnya Pending Semakan atau Pending For Approval)
-                    if ((currentUserRole === 'rosli' && (row.status === 'Pending Semakan' || row.status === 'Pending For Approval')) || 
-                        (currentUserRole === 'jaini' && row.status === 'Pending Kelulusan')) {
+                    // Rosli hanya memaparkan Pending For Approval
+                    if (row.status === targetStatus) {
                         if (!groupedData[row.staff]) groupedData[row.staff] = [];
                         groupedData[row.staff].push(row);
                     }
@@ -644,19 +638,13 @@
             // 1. OPTIMISTIC UPDATE: Kita kemaskini data di paparan (frontend) serta-merta
             dataset.forEach(r => {
                 if (r.staff === staffName) {
-                    if (currentUserRole === 'rosli' && (r.status === 'Pending Semakan' || r.status === 'Pending For Approval')) {
-                        r.status = 'Pending Kelulusan';
-                        r.checkedBy = currentUserName;
-                        const t = new Date();
-                        r.dateChecked = t.getFullYear() + '-' + String(t.getMonth() + 1).padStart(2, '0') + '-' + String(t.getDate()).padStart(2, '0');
-                        recordsToUpdate.push({...r});
-                    } else if (currentUserRole === 'jaini' && r.status === 'Pending Kelulusan') {
+                    if (currentUserRole === 'rosli' && r.status === 'Pending For Approval') {
                         r.status = 'Completed';
                         r.approvedBy = currentUserName;
                         const t = new Date();
                         r.approvedDate = t.getFullYear() + '-' + String(t.getMonth() + 1).padStart(2, '0') + '-' + String(t.getDate()).padStart(2, '0');
                         recordsToUpdate.push({...r});
-                    }
+                    } 
                 }
             });
 
@@ -701,7 +689,7 @@
 
                 let statusSelectHTML = '';
                 if (currentUserRole === 'staff') {
-                    let isStaffCompleted = (row.status === 'Pending Semakan' || row.status === 'Pending Kelulusan' || row.status === 'Completed' || row.status === 'Pending For Approval');
+                    let isStaffCompleted = (row.status === 'Completed' || row.status === 'Pending For Approval');
                     statusSelectHTML = `
                         <select id="edit-status-${row.id}" class="w-full text-xs px-2 py-1.5 border border-blue-300 rounded shadow-inner bg-white font-inter font-bold text-gray-700">
                             <option value="Completed" ${isStaffCompleted ? 'selected' : ''}>Completed</option>
@@ -747,8 +735,7 @@
             let statusBadge = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold bg-gray-100 text-gray-600 uppercase tracking-wider">${row.status || '-'}</span>`;
             if (row.status === 'Completed') statusBadge = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold bg-green-100 text-[#00b074] uppercase tracking-wider"><svg class="mr-1.5 h-2 w-2 text-[#00b074]" fill="currentColor" viewBox="0 0 8 8"><circle cx="4" cy="4" r="3" /></svg>Completed</span>`;
             else if (row.status === 'incomplete') statusBadge = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold bg-red-100 text-red-700 uppercase tracking-wider"><svg class="mr-1.5 h-2 w-2 text-red-600" fill="currentColor" viewBox="0 0 8 8"><circle cx="4" cy="4" r="3" /></svg>Incomplete</span>`;
-            else if (row.status === 'Rejected') statusBadge = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold bg-red-100 text-red-700 uppercase tracking-wider"><svg class="mr-1.5 h-2 w-2 text-red-600" fill="currentColor" viewBox="0 0 8 8"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>Rejected</span>`;
-            else if (row.status === 'Pending For Approval' || row.status === 'Pending Semakan' || row.status === 'Pending Kelulusan') statusBadge = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold bg-blue-100 text-blue-700 uppercase tracking-wider"><svg class="mr-1.5 h-2 w-2 text-blue-600" fill="currentColor" viewBox="0 0 8 8"><circle cx="4" cy="4" r="3" /></svg>Pending</span>`;
+            else if (row.status === 'Pending For Approval') statusBadge = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold bg-blue-100 text-blue-700 uppercase tracking-wider"><svg class="mr-1.5 h-2 w-2 text-blue-600" fill="currentColor" viewBox="0 0 8 8"><circle cx="4" cy="4" r="3" /></svg>Pending</span>`;
 
             let actionHtml = isReadonlyView 
                 ? `<span class="text-gray-300 italic text-[10px]">Tiada Aksi</span>` 
@@ -766,10 +753,6 @@
                 <td class="px-4 py-4">${statusBadge}</td>
                 <td class="px-4 py-3">
                     <div class="flex flex-col gap-1.5 text-[10px] bg-gray-50 p-2 rounded-lg border border-gray-100">
-                        <div class="flex items-start">
-                            <span class="text-gray-400 mr-2"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg></span>
-                            <span class="leading-tight"><span class="font-bold text-gray-600 uppercase">Checked:</span> ${row.checkedBy ? `<span class="text-[#003366] font-bold ml-1">${row.checkedBy}</span>` : '<span class="text-gray-400 italic ml-1">N/A</span>'} ${row.dateChecked ? `<span class="text-gray-400 ml-1">(${formatDisplayDate(row.dateChecked)})</span>` : ''}</span>
-                        </div>
                         <div class="flex items-start">
                             <span class="text-[#00b074] mr-2"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></span>
                             <span class="leading-tight"><span class="font-bold text-gray-600 uppercase">Approved:</span> ${row.approvedBy ? `<span class="text-[#00b074] font-bold ml-1">${row.approvedBy}</span>` : '<span class="text-gray-400 italic ml-1">N/A</span>'} ${row.approvedDate ? `<span class="text-gray-400 ml-1">(${formatDisplayDate(row.approvedDate)})</span>` : ''}</span>
@@ -797,7 +780,7 @@
             }
 
             // Auto Update Date JIKA status baru adalah berkaitan kelulusan (bila staf save), dan sebelum ini tidak
-            if ((newStatus === 'Completed' || finalStatusToSave === 'Pending For Approval' || finalStatusToSave === 'Pending Semakan') && dataset[index].status !== 'Completed' && dataset[index].status !== 'Pending Semakan' && dataset[index].status !== 'Pending Kelulus' && dataset[index].status !== 'Pending For Approval') {
+            if ((newStatus === 'Completed' || finalStatusToSave === 'Pending For Approval') && dataset[index].status !== 'Completed' && dataset[index].status !== 'Pending For Approval') {
                 const t = new Date();
                 newDate = t.getFullYear() + '-' + String(t.getMonth() + 1).padStart(2, '0') + '-' + String(t.getDate()).padStart(2, '0');
             }
@@ -872,8 +855,6 @@
                     "Staff": getStaffDisplay(row.staff),
                     "Tarikh": formatDisplayDate(row.date),
                     "Status": row.status,
-                    "Disemak Oleh": row.checkedBy,
-                    "Tarikh Disemak": formatDisplayDate(row.dateChecked),
                     "Diluluskan Oleh": row.approvedBy,
                     "Tarikh Diluluskan": formatDisplayDate(row.approvedDate)
                 }));
@@ -887,7 +868,7 @@
                 const colWidths = [
                     { wch: 5 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, 
                     { wch: 40 }, { wch: 15 }, { wch: 12 }, { wch: 20 }, { wch: 15 }, 
-                    { wch: 15 }, { wch: 15 }, { wch: 15 }
+                    { wch: 15 }
                 ];
                 worksheet['!cols'] = colWidths;
 
@@ -907,7 +888,7 @@
             const pending = filteredDataset.filter(r => r.status.includes('Pending')).length;
             
             const staffCounts = {};
-            const statusCounts = { 'Completed': 0, 'Pending Checking': 0, 'Pending Approval': 0, 'Incomplete': 0 };
+            const statusCounts = { 'Completed': 0, 'Pending Approval': 0, 'Incomplete': 0 };
 
             filteredDataset.forEach(r => { 
                 const displayStaff = getStaffDisplay(r.staff);
@@ -918,8 +899,7 @@
                 
                 let chartStatus = 'Incomplete';
                 if (r.status === 'Completed') chartStatus = 'Completed';
-                else if (r.status === 'Pending Semakan' || r.status === 'Pending For Approval') chartStatus = 'Pending Checking'; 
-                else if (r.status === 'Pending Kelulusan') chartStatus = 'Pending Approval'; 
+                else if (r.status === 'Pending For Approval') chartStatus = 'Pending Approval'; 
                 else if (r.status === 'incomplete' || r.status === 'Draft' || r.status === 'Rejected') chartStatus = 'Incomplete';
                 
                 statusCounts[chartStatus] = (statusCounts[chartStatus] || 0) + 1;
@@ -946,10 +926,10 @@
             statusChartInstance = new Chart(statusCtx, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Completed', 'Pending Checking', 'Pending Approval', 'Incomplete/Rejected'],
+                    labels: ['Completed', 'Pending Approval', 'Incomplete/Rejected'],
                     datasets: [{
-                        data: [statusCounts['Completed'], statusCounts['Pending Checking'], statusCounts['Pending Approval'], statusCounts['Incomplete']],
-                        backgroundColor: ['#00b074', '#f59e0b', '#3b82f6', '#ef4444'],
+                        data: [statusCounts['Completed'], statusCounts['Pending Approval'], statusCounts['Incomplete']],
+                        backgroundColor: ['#00b074', '#3b82f6', '#ef4444'],
                         borderWidth: 0, hoverOffset: 4
                     }]
                 },
