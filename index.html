@@ -34,7 +34,7 @@
         <div class="bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-8 md:p-12 w-full max-w-md">
             
             <div class="text-center mb-8 font-montserrat">
-                <h1 class="text-[28px] font-bold text-[#003366] mb-3 tracking-tight">Senarai Buku IKU</h1>
+                <h1 class="text-[28px] font-bold text-[#003366] mb-3 tracking-tight">IKU LIBRARY SYSTEM</h1>
                 <p class="text-[15px] text-[#0055a4] leading-relaxed">
                     Sistem Pengurusan Koleksi Buku<br>
                     Tukar DDC kepada NLM/LC
@@ -386,7 +386,7 @@
         };
 
         /* =====================================================================
-           FUNGSI LOG MASUK (LOGIN LOGIC)
+           FUNGSI LOG MASUK (LOGIN LOGIC) & AUTO LOGIN
            ===================================================================== */
         document.getElementById('login-role').addEventListener('change', function(e) {
             const pwdContainer = document.getElementById('password-container');
@@ -422,6 +422,11 @@
                 currentUserRole = role;
                 currentPage = 1; // Reset pagination
                 errorMsg.classList.add('hidden');
+                
+                // Simpan maklumat login dalam Local Storage
+                localStorage.setItem('iku_role', currentUserRole);
+                localStorage.setItem('iku_name', currentUserName);
+
                 document.getElementById('profile-name').textContent = currentUserName;
                 document.getElementById('profile-initial').textContent = currentUserName.charAt(0);
                 
@@ -436,10 +441,34 @@
             }
         }
 
+        function checkAutoLogin() {
+            const savedRole = localStorage.getItem('iku_role');
+            const savedName = localStorage.getItem('iku_name');
+
+            if (savedRole && savedName) {
+                currentUserRole = savedRole;
+                currentUserName = savedName;
+                currentPage = 1;
+
+                document.getElementById('profile-name').textContent = currentUserName;
+                document.getElementById('profile-initial').textContent = currentUserName.charAt(0);
+
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('dashboard-screen').classList.remove('hidden');
+                setTimeout(() => document.getElementById('dashboard-screen').classList.remove('opacity-0'), 50);
+
+                fetchDataFromGoogleSheet();
+            }
+        }
+
         function logout() {
             document.getElementById('login-password').value = '';
             document.getElementById('login-role').value = '';
             document.getElementById('password-container').classList.add('hidden');
+            
+            // Padam maklumat dalam Local Storage
+            localStorage.removeItem('iku_role');
+            localStorage.removeItem('iku_name');
             
             editingId = null; 
             currentUserRole = ""; 
@@ -462,13 +491,13 @@
         }
         function hideLoading() { document.getElementById('loading-overlay').classList.add('hidden'); }
 
-        function fetchDataFromGoogleSheet() {
-            showLoading("Menyegerak Data dari Spreadsheet...");
+        function fetchDataFromGoogleSheet(isSilent = false) {
+            if (!isSilent) showLoading("Menyegerak Data dari Spreadsheet...");
             server.withSuccessHandler(function(data) {
                 dataset = data || [];
                 // Bila tarik data di background, kekalkan muka surat (preservePage = true)
                 applyFilters(true); 
-                hideLoading();
+                if (!isSilent) hideLoading();
             }).getInitialData();
         }
         
@@ -920,6 +949,22 @@
                 }
             });
         }
+
+        // =====================================================================
+        // INISIALISASI & AUTO SYNC BACKGROUND
+        // =====================================================================
+        
+        // Semak Auto-Login bila page dibuka
+        checkAutoLogin();
+
+        // Auto Sync setiap 30 saat secara senyap
+        setInterval(() => {
+            // Hanya sync jika dah login DAN tidak ada orang tengah edit table (untuk elak ganggu staf menaip)
+            if (currentUserRole !== "" && editingId === null) {
+                fetchDataFromGoogleSheet(true); // true bermaksud isSilent = tidak paparkan Loading Overlay
+            }
+        }, 30000);
+        
     </script>
 </body>
 </html>
