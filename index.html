@@ -52,7 +52,7 @@
                 <!-- Pilihan Pengguna -->
                 <div>
                     <label class="block text-[11px] font-bold text-gray-500 mb-2 uppercase tracking-widest">PILIH LOG MASUK PENGGUNA</label>
-                    <select id="login-role" class="w-full border border-gray-300 rounded-lg px-4 py-3 text-[15px] text-[#003366] focus:outline-none focus:border-[#003366] focus:ring-1 focus:ring-[#003366] appearance-none bg-no-repeat bg-[right_1rem_center] bg-[length:1.2em_1.2em] transition-colors" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%236b7280%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E');">
+                    <select id="login-role" class="w-full border border-gray-300 rounded-lg px-4 py-3 text-[15px] text-[#003366] focus:outline-none focus:border-[#003366] focus:ring-1 focus:ring-[#003366] appearance-none bg-no-repeat bg-[right_1rem_center] bg-[length:1.2em_1.2em] transition-colors" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%23003366%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E');">
                         <option value="">Sila Pilih</option>
                         <option value="staff">Staff (Kemasukan Data)</option>
                         <option value="rosli">Rosli</option>
@@ -159,21 +159,24 @@
             </div>
         </div>
 
-        <!-- CHARTS & INSIGHTS -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-            <div class="bg-white p-5 rounded-xl shadow-sm min-h-[220px] flex flex-col">
+        <!-- CHARTS & INSIGHTS (Perubahan Grid untuk Bar Chart lebih besar) -->
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-6">
+            <!-- Pie Chart (Lebih kecil = 1 column) -->
+            <div class="bg-white p-5 rounded-xl shadow-sm min-h-[220px] flex flex-col lg:col-span-1">
                 <h3 class="font-bold text-[#003366] text-sm mb-4 font-montserrat">Status Distribution</h3>
                 <div class="relative w-full h-[160px] flex justify-center items-center">
                     <canvas id="statusChart"></canvas>
                 </div>
             </div>
-            <div class="bg-white p-5 rounded-xl shadow-sm min-h-[220px] flex flex-col">
+            <!-- Bar Chart (Lebih besar = 2 column) -->
+            <div class="bg-white p-5 rounded-xl shadow-sm min-h-[220px] flex flex-col lg:col-span-2">
                 <h3 class="font-bold text-[#003366] text-sm mb-4 font-montserrat">Staff Performance</h3>
                 <div class="relative w-full h-[160px]">
                     <canvas id="staffChart"></canvas>
                 </div>
             </div>
-            <div class="bg-white p-5 rounded-xl shadow-sm min-h-[220px] flex flex-col">
+            <!-- Quick Insights (Lebih kecil = 1 column) -->
+            <div class="bg-white p-5 rounded-xl shadow-sm min-h-[220px] flex flex-col lg:col-span-1">
                 <h3 class="font-bold text-[#003366] text-sm mb-4 font-montserrat">Quick Insights</h3>
                 <div class="space-y-4 flex-1 flex flex-col justify-center">
                     <div class="flex items-start gap-4">
@@ -196,7 +199,7 @@
             </div>
         </div>
 
-        <!-- FILTERS & ACTIONS -->
+        <!-- FILTERS & ACTIONS (Perubahan Lebar Input) -->
         <div class="bg-white p-5 rounded-t-xl shadow-sm flex flex-wrap gap-4 items-end border-b border-gray-100 font-montserrat">
             <div class="flex-1 min-w-[200px]">
                 <label class="block text-[10px] font-bold text-gray-500 mb-1.5 uppercase tracking-widest">Carian</label>
@@ -205,19 +208,19 @@
                 </div>
             </div>
             
-            <div class="w-40">
+            <div class="w-32">
                 <label class="block text-[10px] font-bold text-gray-500 mb-1.5 uppercase tracking-widest">Staff</label>
                 <select id="filter-staff" onchange="applyFilters()" class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-gray-600 appearance-none bg-no-repeat bg-[right_0.5rem_center] bg-[length:1.5em_1.5em] font-inter" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%236b7280%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E');">
                     <option value="">Semua Staff</option>
+                    <option value="-">-</option>
                     <option value="FATIHAH">FATIHAH</option>
                     <option value="FAZILAH">FAZILAH</option>
                     <option value="SAKINAH">SAKINAH</option>
                     <option value="HUSNA">HUSNA</option>
-                    <option value="ADMIN">ADMIN</option>
                 </select>
             </div>
             
-            <div class="w-40">
+            <div class="w-36">
                 <label class="block text-[10px] font-bold text-gray-500 mb-1.5 uppercase tracking-widest">Status</label>
                 <select id="filter-status" onchange="applyFilters()" class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-gray-600 appearance-none bg-no-repeat bg-[right_0.5rem_center] bg-[length:1.5em_1.5em] font-inter" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%236b7280%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E');">
                     <option value="">Semua Status</option>
@@ -227,9 +230,9 @@
                 </select>
             </div>
             
-            <div class="w-32">
+            <div class="w-40">
                 <label class="block text-[10px] font-bold text-gray-500 mb-1.5 uppercase tracking-widest">Tahun</label>
-                <select id="filter-tahun" onchange="applyFilters()" class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-gray-600 appearance-none bg-no-repeat bg-[right_0.5rem_center] bg-[length:1.5em_1.5em] font-inter" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%236b7280%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E');">
+                <select id="filter-tahun" onchange="applyFilters()" class="w-full text-[13px] font-semibold border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-gray-700 appearance-none bg-no-repeat bg-[right_0.5rem_center] bg-[length:1.5em_1.5em] font-inter" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%236b7280%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E');">
                     <option value="">Semua Tahun</option>
                     <option value="2024">2024</option>
                     <option value="2025">2025</option>
@@ -266,16 +269,14 @@
         <!-- TABLE SECTION -->
         <div class="w-full max-h-[600px] overflow-y-auto overflow-x-auto custom-scrollbar bg-white shadow-sm border border-gray-100 rounded-b-xl relative">
             <table class="w-full text-left whitespace-nowrap" id="data-table">
-                <!-- Sticky Header (top-0 z-20) Font Dibesarkan sedikit -->
-                <thead class="bg-[#003366] text-white text-[13px] uppercase font-bold tracking-wider sticky top-0 z-20 font-montserrat shadow-md border-b-2 border-blue-800">
+                <!-- Sticky Header -->
+                <thead class="bg-[#003366] text-white text-xs uppercase font-bold tracking-wider sticky top-0 z-20 font-montserrat shadow-md border-b-2 border-blue-800">
                     <tr>
                         <th class="px-4 py-4 text-center">NO</th>
                         <th class="px-3 py-4 text-center">CONTROL NUMBER</th>
-                        <!-- Lajur CALL NO dikecilkan dan dibenarkan wrap -->
                         <th class="px-3 py-4 text-center w-[100px] max-w-[100px] whitespace-normal leading-tight">CALL NO (082)</th>
                         <th class="px-3 py-4 text-center w-[100px] max-w-[100px] whitespace-normal leading-tight">CALL NO (050/060)</th>
                         <th class="px-3 py-4 text-left">ACCESSION</th>
-                        <!-- Header TITLE di tengah (center) -->
                         <th class="px-4 py-4 min-w-[200px] text-center">TITLE</th>
                         <th class="px-3 py-4 text-left">STAFF</th>
                         <th class="px-3 py-4 text-center">TARIKH</th>
@@ -317,9 +318,8 @@
         /* =====================================================================
            KONFIGURASI API (UNTUK HOSTING DI GITHUB/EXTERNAL)
            ===================================================================== */
-        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbx9a8JKLsK24THLoxLMNoz8r8LYCoxmH-RF9e5dBX0vL4jlvYK5KjbYBe1ZD1u2yME/exec";
+        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwIEv9oCQDmn2pMmBI2RWBDY2YrEjz1RuBTxOhXjNsQqz_z8CdQT0CrvDxYg6Nj9OQr/exec";
         
-        // Pilihan Dropdown mengikut format baru
         const statusOptions = ["Completed", "incomplete", "Pending For Approval"];
         const staffOptions = ["FATIHAH", "FAZILAH", "SAKINAH", "HUSNA"];
         
@@ -341,27 +341,29 @@
         // MEMORI SEMENTARA (UNTUK UJIAN LOKAL TANPA GOOGLE SCRIPT URL)
         // =====================================================================
         let MOCK_DB = [
-            { id: 2, no: 1, controlNo: "23576", callNo082: "0005.3", callNo050: "TK5105.888 IRS 2001", accession: "BK00075774", title: "DEVELOPING WEB SITE USING MICROSOFT WORD STEP BY STEP", status: "incomplete", staff: "FAZILAH", date: "2024-04-14", approvedBy: "", approvedDate: "" },
-            { id: 3, no: 2, controlNo: "0000025823", callNo082: "001.4 BIE", callNo050: "HA31.2.B54 2003", accession: "BK00076063", title: "INTRODUCTION TO SURVEY QUALITY", status: "Completed", staff: "SAKINAH", date: "2025-04-10", approvedBy: "ROSLI", approvedDate: "2025-04-12" },
-            { id: 4, no: 3, controlNo: "1111000011", callNo082: "005.2 TEST", callNo050: "AB12.3", accession: "BK00099999", title: "THE BOOK OF ADMIN TESTING AND OTHER STUFF", status: "Pending For Approval", staff: "FATIHAH", date: "2026-04-16", approvedBy: "", approvedDate: "" }
+            { id: 2, no: 1, controlNo: "23576", callNo082: "0005.3", callNo050: "TK5105.888 IRS 2001", accession: "BK00075774", title: "DEVELOPING WEB SITE USING MICROSOFT WORD STEP BY STEP", status: "incomplete", staff: "FAZILAH", date: "14/04/2024", approvedBy: "", approvedDate: "" },
+            { id: 3, no: 2, controlNo: "0000025823", callNo082: "001.4 BIE", callNo050: "HA31.2.B54 2003", accession: "BK00076063", title: "INTRODUCTION TO SURVEY QUALITY", status: "Completed", staff: "SAKINAH", date: "10/04/2025", approvedBy: "ROSLI", approvedDate: "12/04/2025" },
+            { id: 4, no: 3, controlNo: "1111000011", callNo082: "005.2 TEST", callNo050: "AB12.3", accession: "BK00099999", title: "THE BOOK OF TESTING", status: "Pending For Approval", staff: "", date: "16/04/2026", approvedBy: "", approvedDate: "" }
         ];
 
-        // Dapatkan paparan nama staf (selain dari list 4 di atas akan dilabel ADMIN)
+        // Dapatkan paparan nama staf - Jika kosong/bukan list 4 orang, jadi "-"
         const getStaffDisplay = (staffName) => {
-            return staffOptions.includes(staffName) ? staffName : "ADMIN";
+            if (!staffName || staffName.trim() === '') return '-';
+            return staffOptions.includes(staffName) ? staffName : '-';
         };
 
-        // Dapatkan tahun dari format tarikh
+        // Dapatkan tahun dari format tarikh (Telah disokong untuk DD/MM/YYYY)
         const getYearFromDate = (dateStr) => {
             if(!dateStr || dateStr === '-') return '';
-            const parts = dateStr.split('-');
-            if(parts.length > 0) return parts[0];
+            if(dateStr.includes('/')) return dateStr.split('/')[2];
+            if(dateStr.includes('-')) return dateStr.split('-')[0];
             return '';
         }
 
-        // Tukar format tarikh paparan (YYYY-MM-DD ke DD/MM/YYYY)
+        // Tukar format tarikh paparan (YYYY-MM-DD ke DD/MM/YYYY) jika perlu
         const formatDisplayDate = (dateStr) => {
             if (!dateStr || dateStr === '-') return '-';
+            if (dateStr.includes('/')) return dateStr; // Jika sudah format DD/MM/YYYY
             const parts = dateStr.split('-');
             if (parts.length === 3) return `${parts[2]}/${parts[1]}/${parts[0]}`;
             return dateStr;
@@ -395,16 +397,15 @@
                 
                 console.log("[API REQUEST] Menghantar payload kemaskini:", record);
                 
-                // PENTING: Dibuang mode: 'no-cors' supaya ralat TypeError tidak berlaku lagi
                 fetch(GAS_WEB_APP_URL, {
                     method: 'POST', 
+                    mode: 'no-cors',
                     body: JSON.stringify({ action: 'updateRow', record: record }), 
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+                    headers: { 'Content-Type': 'text/plain' }
                 })
-                .then(response => response.json())
-                .then(data => { 
-                    console.log("[API RESPONSE] Permintaan kemaskini berjaya dihantar.", data);
-                    if(this.cb) this.cb(true); 
+                .then(() => { 
+                    console.log("[API RESPONSE] Permintaan kemaskini berjaya dihantar.");
+                    setTimeout(() => { if(this.cb) this.cb(true); }, 1000); 
                 })
                 .catch(error => { 
                     console.error('[Fetch Error - updateRow]:', error); 
@@ -470,7 +471,6 @@
             document.getElementById('login-role').value = '';
             document.getElementById('password-container').classList.add('hidden');
             
-            // PENTING: Padamkan id suntingan supaya input box tidak terbawa-bawa ke akaun Rosli
             editingId = null; 
             currentUserRole = ""; 
             currentUserName = "";
@@ -501,7 +501,6 @@
             }).getInitialData();
         }
         
-        // FUNGSI APPLYSemua Kombinasi Filter & Carian
         function applyFilters() {
             const searchTerm = document.getElementById('search-input').value.toLowerCase().trim();
             const filterStaff = document.getElementById('filter-staff').value;
@@ -511,25 +510,21 @@
             filteredDataset = dataset.filter(row => {
                 let match = true;
                 
-                // 1. Carian (Partial & Case Insensitive pada Title atau Accession)
                 if (searchTerm !== "") {
                     const titleMatch = (row.title || "").toLowerCase().includes(searchTerm);
                     const accMatch = (row.accession || "").toLowerCase().includes(searchTerm);
                     if (!titleMatch && !accMatch) match = false;
                 }
                 
-                // 2. Filter Staff
                 if (filterStaff !== "") {
                     const rowDisplayStaff = getStaffDisplay(row.staff);
                     if (rowDisplayStaff !== filterStaff) match = false;
                 }
                 
-                // 3. Filter Status
                 if (filterStatus !== "") {
                     if ((row.status || "").toLowerCase().trim() !== filterStatus.toLowerCase().trim()) match = false;
                 }
                 
-                // 4. Filter Tahun
                 if (filterTahun !== "") {
                     const rowTahun = getYearFromDate(row.date);
                     if (rowTahun !== filterTahun) match = false;
@@ -542,7 +537,6 @@
             renderTable();
         }
 
-        // FUNGSI PAGINATION
         function prevPage() {
             if (currentPage > 1) { currentPage--; renderTable(); }
         }
@@ -557,17 +551,17 @@
             
             // JIKA ROSLI LOG MASUK (Kumpulan Khas)
             if (currentUserRole === 'rosli') {
-                paginationDiv.classList.add('hidden'); // Tiada pagination untuk kumpulan khas
+                paginationDiv.classList.add('hidden'); 
                 
                 const targetStatus = 'pending for approval';
                 const actionLabel = 'Tandakan Semua Sebagai Disemak';
                 
                 let groupedData = {};
                 filteredDataset.forEach(row => {
-                    // Rosli hanya memaparkan Pending For Approval (Case insensitive)
                     if ((row.status || '').toLowerCase().trim() === targetStatus) {
-                        if (!groupedData[row.staff]) groupedData[row.staff] = [];
-                        groupedData[row.staff].push(row);
+                        const sName = getStaffDisplay(row.staff);
+                        if (!groupedData[sName]) groupedData[sName] = [];
+                        groupedData[sName].push(row);
                     }
                 });
 
@@ -577,13 +571,13 @@
                     for (let staffName in groupedData) {
                         const staffRows = groupedData[staffName];
                         const groupHeader = document.createElement('tr');
-                        groupHeader.className = "bg-indigo-50 border-y-2 border-indigo-100 sticky top-[48px] z-10 shadow-sm"; // Jadikan group header juga sedikit sticky di bawah thead
+                        groupHeader.className = "bg-indigo-50 border-y-2 border-indigo-100 sticky top-[48px] z-10 shadow-sm"; 
                         groupHeader.innerHTML = `
                             <td colspan="11" class="px-4 py-3">
                                 <div class="flex justify-between items-center">
                                     <div>
                                         <span class="text-[10px] font-bold text-indigo-400 uppercase tracking-widest block">Koleksi Staf</span>
-                                        <span class="text-indigo-800 font-bold text-sm tracking-wide font-montserrat">${getStaffDisplay(staffName)}</span>
+                                        <span class="text-indigo-800 font-bold text-sm tracking-wide font-montserrat">${staffName}</span>
                                         <span class="ml-2 bg-indigo-200 text-indigo-700 text-xs px-2 py-0.5 rounded-full font-bold">${staffRows.length} Rekod</span>
                                     </div>
                                     <button onclick="processBulkApproval('${staffName}')" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-4 py-2 rounded shadow transition flex items-center gap-2">
@@ -604,7 +598,7 @@
                     }
                 }
             } 
-            // JIKA STAFF / ADMIN (Dengan Pagination max 100)
+            // JIKA STAFF / ADMIN 
             else if (currentUserRole === 'staff' || currentUserRole === 'admin') {
                 paginationDiv.classList.remove('hidden');
                 
@@ -624,7 +618,6 @@
                     tbody.appendChild(tr);
                 });
                 
-                // Update Pagination Info
                 const infoEnd = Math.min(startIndex + rowsPerPage, filteredDataset.length);
                 document.getElementById('page-info').textContent = `Memaparkan ${filteredDataset.length > 0 ? startIndex + 1 : 0}-${infoEnd} dari ${filteredDataset.length} rekod`;
             }
@@ -644,13 +637,15 @@
             
             // 1. OPTIMISTIC UPDATE: Kita kemaskini data di paparan (frontend) serta-merta
             dataset.forEach(r => {
-                if (r.staff === staffName) {
+                const sName = getStaffDisplay(r.staff);
+                if (sName === staffName) {
                     const currentStatus = (r.status || "").toLowerCase().trim();
                     if (currentUserRole === 'rosli' && currentStatus === 'pending for approval') {
                         r.status = 'Completed';
                         r.approvedBy = currentUserName;
                         const t = new Date();
-                        r.approvedDate = t.getFullYear() + '-' + String(t.getMonth() + 1).padStart(2, '0') + '-' + String(t.getDate()).padStart(2, '0');
+                        // Format tarikh ke DD/MM/YYYY
+                        r.approvedDate = String(t.getDate()).padStart(2, '0') + '/' + String(t.getMonth() + 1).padStart(2, '0') + '/' + t.getFullYear();
                         recordsToUpdate.push({...r});
                     } 
                 }
@@ -665,21 +660,21 @@
             // Kemaskini UI dengan segera untuk hilangkan rekod dari paparan
             applyFilters();
             
-            // 2. HANTAR KE GOOGLE SHEETS SATU-PERSATU SECARA BERSELA-MASA (Sama macam butang Save supaya tidak gagal)
+            // 2. HANTAR KE GOOGLE SHEETS SATU-PERSATU SECARA BERSELA-MASA
             recordsToUpdate.forEach((record, index) => {
                 setTimeout(() => {
                     server.withSuccessHandler(function() {
                         console.log("Berjaya hantar rekod ID:", record.id);
                     }).updateRow(record);
-                }, index * 800); // Tunggu 800ms antara setiap satu rekod supaya Google Sheets tak jammed
+                }, index * 800); 
             });
             
-            // 3. Selesai memproses paparan, tarik data segar dari Google Sheets untuk pengesahan terakhir
+            // 3. Selesai memproses paparan, tarik data segar dari Google Sheets
             const waitTime = (recordsToUpdate.length * 800) + 1500;
             setTimeout(() => {
                 hideLoading();
                 showToast(`${recordsToUpdate.length} Rekod berjaya disemak/diluluskan!`);
-                fetchDataFromGoogleSheet(); // Auto-refresh data
+                fetchDataFromGoogleSheet(); 
             }, waitTime);
         }
 
@@ -691,7 +686,6 @@
             // ============================
             if (isEditing && !isReadonlyView) {
                 
-                // Lajur CALL NO (082) dikunci untuk Staff
                 let call082HTML = (currentUserRole === 'staff')
                     ? `<td class="px-3 py-4 text-center text-gray-700 bg-gray-50 whitespace-normal break-words w-[100px] max-w-[100px] leading-tight">${row.callNo082}<input type="hidden" id="edit-c082-${row.id}" value="${row.callNo082}"></td>`
                     : `<td class="px-2 py-3"><input type="text" id="edit-c082-${row.id}" value="${row.callNo082}" class="w-full text-xs px-2 py-1.5 border border-blue-300 rounded shadow-inner focus:outline-none focus:border-[#003366] bg-white font-inter text-center"></td>`;
@@ -719,7 +713,6 @@
                     ${call082HTML}
                     <td class="px-2 py-3"><input type="text" id="edit-c050-${row.id}" value="${row.callNo050}" class="w-full text-xs px-2 py-1.5 border border-blue-300 rounded shadow-inner focus:outline-none focus:border-[#003366] bg-white font-inter text-center"></td>
                     <td class="px-3 py-4 font-semibold text-[#003366] bg-gray-50">${row.accession}</td>
-                    <!-- Teks data TITLE dirapatkan ke kiri (buang text-center) supaya sejajar dan kemas -->
                     <td class="px-4 py-4 whitespace-normal max-w-[250px] break-words font-medium leading-snug text-left bg-gray-50">${row.title}</td>
                     <td class="px-2 py-3">
                         <select id="edit-staff-${row.id}" class="w-full text-xs px-2 py-1.5 border border-blue-300 rounded shadow-inner bg-white font-semibold text-[#003366] font-inter">
@@ -757,11 +750,9 @@
             return `
                 <td class="px-4 py-4 text-center font-medium text-gray-500">${row.no}</td>
                 <td class="px-3 py-4 text-center text-gray-700">${row.controlNo}</td>
-                <!-- Lebar dihadkan w-[100px] dengan wrap -->
                 <td class="px-3 py-4 text-center text-gray-700 whitespace-normal break-words w-[100px] max-w-[100px] leading-tight">${row.callNo082}</td>
                 <td class="px-3 py-4 text-center text-gray-700 whitespace-normal break-words w-[100px] max-w-[100px] leading-tight">${row.callNo050}</td>
                 <td class="px-3 py-4 font-semibold text-[#003366]">${row.accession}</td>
-                <!-- Teks data TITLE dirapatkan ke kiri supaya tak nampak berlubang dengan lajur Accession -->
                 <td class="px-4 py-4 whitespace-normal max-w-[250px] break-words font-medium leading-snug text-left">${row.title}</td>
                 <td class="px-3 py-4 font-bold text-[#003366]">${displayStaff}</td>
                 <td class="px-3 py-4 text-center text-gray-500">${formatDisplayDate(row.date)}</td>
@@ -795,10 +786,10 @@
             }
 
             const currentStatusLower = (dataset[index].status || "").toLowerCase().trim();
-            // Auto Update Date JIKA status baru adalah berkaitan kelulusan (bila staf save), dan sebelum ini tidak
+            // Auto Update Date (DD/MM/YYYY)
             if ((newStatus === 'Completed' || finalStatusToSave === 'Pending For Approval') && currentStatusLower !== 'completed' && currentStatusLower !== 'pending for approval') {
                 const t = new Date();
-                newDate = t.getFullYear() + '-' + String(t.getMonth() + 1).padStart(2, '0') + '-' + String(t.getDate()).padStart(2, '0');
+                newDate = String(t.getDate()).padStart(2, '0') + '/' + String(t.getMonth() + 1).padStart(2, '0') + '/' + t.getFullYear();
             }
 
             const updatedRecord = {
@@ -815,10 +806,11 @@
             server.withSuccessHandler(function(success) {
                 hideLoading();
                 showToast("Rekod berjaya dikemaskini.");
-                // Kemaskini data memory secara automatik
+                
                 dataset[index] = updatedRecord;
                 editingId = null;
-                applyFilters(); // Refresh UI dan filter
+                currentPage = 1; // Kembali ke muka surat 1 bila berjaya save
+                applyFilters(); 
                 
             }).updateRow(updatedRecord);
         }
@@ -847,9 +839,8 @@
             
             setTimeout(() => {
                 const exportTahun = document.getElementById('export-tahun').value;
-                let dataToExport = dataset; // Gunakan keseluruhan data sebagai base
+                let dataToExport = dataset; 
                 
-                // Filter jika user pilih tahun tertentu untuk export
                 if (exportTahun !== "") {
                     dataToExport = dataset.filter(row => getYearFromDate(row.date) === exportTahun);
                 }
@@ -860,7 +851,6 @@
                     return;
                 }
 
-                // Format data array of object untuk SheetJS
                 const cleanData = dataToExport.map(row => ({
                     "No": row.no,
                     "Control Number": row.controlNo,
@@ -875,12 +865,10 @@
                     "Tarikh Diluluskan": formatDisplayDate(row.approvedDate)
                 }));
 
-                // Bina Workbook
                 const worksheet = XLSX.utils.json_to_sheet(cleanData);
                 const workbook = XLSX.utils.book_new();
                 XLSX.utils.book_append_sheet(workbook, worksheet, "Laporan IKU");
 
-                // Laraskan kelebaran kolum Excel secara automatik (anggaran)
                 const colWidths = [
                     { wch: 5 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, 
                     { wch: 40 }, { wch: 15 }, { wch: 12 }, { wch: 20 }, { wch: 15 }, 
@@ -888,7 +876,6 @@
                 ];
                 worksheet['!cols'] = colWidths;
 
-                // Muat turun
                 const fileName = exportTahun === "" ? "Laporan_IKU_Keseluruhan.xlsx" : `Laporan_IKU_${exportTahun}.xlsx`;
                 XLSX.writeFile(workbook, fileName);
                 
@@ -898,7 +885,6 @@
         }
 
         function updateDashboardStats() {
-            // Stats dikira berdasarkan FILTERED DATASET (Paparan real-time berdasarkan filter)
             const total = filteredDataset.length;
             const completed = filteredDataset.filter(r => (r.status||"").toLowerCase().trim() === 'completed').length;
             const pending = filteredDataset.filter(r => (r.status||"").toLowerCase().trim().includes('pending')).length;
@@ -909,7 +895,7 @@
             filteredDataset.forEach(r => { 
                 const displayStaff = getStaffDisplay(r.staff);
                 
-                if(displayStaff !== 'ADMIN') {
+                if(displayStaff !== '-') {
                     staffCounts[displayStaff] = (staffCounts[displayStaff] || 0) + 1; 
                 }
                 
@@ -944,7 +930,7 @@
             statusChartInstance = new Chart(statusCtx, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Completed', 'Pending Approval', 'Incomplete/Rejected'],
+                    labels: ['Completed', 'Pending Approval', 'Incomplete'],
                     datasets: [{
                         data: [statusCounts['Completed'], statusCounts['Pending Approval'], statusCounts['Incomplete']],
                         backgroundColor: ['#00b074', '#3b82f6', '#ef4444'],
@@ -963,7 +949,7 @@
                 type: 'bar',
                 data: {
                     labels: staffNames,
-                    datasets: [{ label: 'Jumlah Rekod', data: staffData, backgroundColor: barColors.slice(0, staffNames.length), borderRadius: 4, barThickness: 25 }]
+                    datasets: [{ label: 'Jumlah Rekod', data: staffData, backgroundColor: barColors.slice(0, staffNames.length), borderRadius: 4, barThickness: 45 }]
                 },
                 options: {
                     responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
