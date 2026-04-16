@@ -180,7 +180,6 @@
                 </div>
             </div>
             
-            <!-- Seragam w-32 dan text-sm untuk ketiga-tiga filter -->
             <div class="w-32">
                 <label class="block text-[10px] font-bold text-gray-500 mb-1.5 uppercase tracking-widest">Staff</label>
                 <select id="filter-staff" onchange="applyFilters()" class="w-full text-sm border border-gray-200 rounded-lg pl-3 pr-7 py-2 h-[38px] focus:outline-none focus:border-blue-500 text-gray-600 appearance-none bg-no-repeat bg-[right_0.5rem_center] bg-[length:1.2em_1.2em] font-inter text-ellipsis overflow-hidden whitespace-nowrap" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%236b7280%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E');">
@@ -467,12 +466,13 @@
             showLoading("Menyegerak Data dari Spreadsheet...");
             server.withSuccessHandler(function(data) {
                 dataset = data || [];
-                applyFilters(); // Filter akan reset dan render jadual baru
+                // Bila tarik data di background, kekalkan muka surat (preservePage = true)
+                applyFilters(true); 
                 hideLoading();
             }).getInitialData();
         }
         
-        function applyFilters() {
+        function applyFilters(preservePage = false) {
             const searchTerm = document.getElementById('search-input').value.toLowerCase().trim();
             const filterStaff = document.getElementById('filter-staff').value;
             const filterStatus = document.getElementById('filter-status').value;
@@ -504,7 +504,14 @@
                 return match;
             });
             
-            currentPage = 1; // Reset ke page 1 selepas filter
+            if (!preservePage) {
+                currentPage = 1; // Reset ke page 1 hanya jika pengguna ubah dropdown / search manually
+            } else {
+                // Pastikan muka surat tak lebih daripada jumlah rekod lepas kemaskini
+                const maxPages = Math.ceil(filteredDataset.length / rowsPerPage) || 1;
+                if (currentPage > maxPages) currentPage = maxPages;
+            }
+            
             renderTable();
         }
 
@@ -613,13 +620,15 @@
 
             // Kemaskini UI dengan segera
             dataset[index] = record;
-            applyFilters();
+            
+            // PENTING: Luluskan dan kekalkan page!
+            applyFilters(true);
             
             // Hantar ke Google Sheets
             server.withSuccessHandler(function() {
                 hideLoading();
                 showToast("Rekod berjaya diluluskan!");
-                fetchDataFromGoogleSheet(); // Auto-refresh data dari server
+                fetchDataFromGoogleSheet(); // Auto-refresh data dari server (memelihara page)
             }).updateRow(record);
         }
 
@@ -690,7 +699,7 @@
             let actionHtml = '';
             if (isReadonlyView) {
                 if (currentUserRole === 'rosli') {
-                    // Butang kelulusan satu persatu menggantikan pukal
+                    // Butang kelulusan satu persatu
                     actionHtml = `<button onclick="approveSingleRow(${row.id})" class="text-[#00b074] hover:text-white bg-green-50 hover:bg-[#00b074] p-2 rounded-lg transition-colors outline-none" title="Luluskan Rekod"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></button>`;
                 } else {
                     actionHtml = `<span class="text-gray-300 italic text-[10px]">Tiada Aksi</span>`;
@@ -761,8 +770,9 @@
                 
                 dataset[index] = updatedRecord;
                 editingId = null;
-                currentPage = 1; // Kembali ke muka surat 1 bila berjaya save
-                applyFilters(); 
+                
+                // PENTING: applyFilters(true) bermakna kita MENGKEKALKAN muka surat semasa
+                applyFilters(true); 
                 
             }).updateRow(updatedRecord);
         }
