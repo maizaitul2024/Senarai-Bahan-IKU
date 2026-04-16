@@ -246,15 +246,15 @@
         </div>
 
         <!-- TABLE SECTION -->
-        <div class="w-full overflow-x-auto custom-scrollbar bg-white rounded-b-xl shadow-sm border border-gray-100">
+        <div class="w-full overflow-x-auto custom-scrollbar bg-white shadow-sm border border-gray-100">
             <table class="w-full text-left whitespace-nowrap" id="data-table">
                 <!-- Font header dibesarkan (text-xs) dan column TITLE di-centerkan -->
                 <thead class="bg-[#003366] text-white text-xs uppercase font-bold tracking-wider sticky top-0 z-10 font-montserrat">
                     <tr>
                         <th class="px-4 py-4 text-center">NO</th>
-                        <th class="px-4 py-4">CONTROL NUMBER</th>
-                        <th class="px-4 py-4 w-[120px] whitespace-normal leading-tight">CALL NO (082)</th>
-                        <th class="px-4 py-4 w-[120px] whitespace-normal leading-tight">CALL NO (050/060)</th>
+                        <th class="px-4 py-4 text-center">CONTROL NUMBER</th>
+                        <th class="px-4 py-4 text-center w-[120px] whitespace-normal leading-tight">CALL NO (082)</th>
+                        <th class="px-4 py-4 text-center w-[120px] whitespace-normal leading-tight">CALL NO (050/060)</th>
                         <th class="px-4 py-4">ACCESSION</th>
                         <th class="px-4 py-4 min-w-[200px] text-center">TITLE</th>
                         <th class="px-4 py-4">STAFF</th>
@@ -268,6 +268,15 @@
                     <!-- Data dijana oleh JavaScript -->
                 </tbody>
             </table>
+            
+            <!-- PAGINATION CONTROLS -->
+            <div id="pagination-controls" class="p-4 border-t border-gray-100 flex justify-between items-center bg-gray-50 hidden rounded-b-xl">
+                <span class="text-xs text-gray-500 font-medium" id="page-info">Memaparkan 0-0 dari 0 rekod</span>
+                <div class="flex gap-2">
+                    <button onclick="prevPage()" class="px-3 py-1.5 text-xs bg-white border border-gray-200 rounded hover:bg-gray-100 transition shadow-sm font-medium">Sebelumnya</button>
+                    <button onclick="nextPage()" class="px-3 py-1.5 text-xs bg-white border border-gray-200 rounded hover:bg-gray-100 transition shadow-sm font-medium">Seterusnya</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -287,16 +296,20 @@
         /* =====================================================================
            KONFIGURASI API (UNTUK HOSTING DI GITHUB/EXTERNAL)
            ===================================================================== */
-        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwgMxTS5yYYCXr-RRTfQ-vh4k5XdU0aD7xF9Zdg_nsrZDQkyrjYLwO7fL2n9qX8vxoU/exec";
+        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwF2GAb_wskgBo3ekdrPuOQi1Gkt0XLXHFru3m2YP2aI1GQP-MJySaDzSYB7f3hYglx/exec";
         
         // Pilihan Dropdown mengikut format baru
-        const statusOptions = ["Completed", "incomplete", "Pending For Approval"];
+        const statusOptions = ["Completed", "incomplete", "Pending Semakan", "Pending Kelulusan", "Pending For Approval"];
         const staffOptions = ["FATIHAH", "FAZILAH", "SAKINAH", "HUSNA"];
         
         let dataset = [];
         let editingId = null;
         let staffChartInstance = null;
         let statusChartInstance = null;
+        
+        // Pagination Variables
+        let currentPage = 1;
+        const rowsPerPage = 100;
         
         // Simpan sesi log masuk semasa
         let currentUserRole = ""; 
@@ -307,6 +320,14 @@
             return staffOptions.includes(staffName) ? staffName : "ADMIN";
         };
 
+        // Tukar format tarikh paparan (YYYY-MM-DD ke DD/MM/YYYY)
+        const formatDisplayDate = (dateStr) => {
+            if (!dateStr || dateStr === '-') return '-';
+            const parts = dateStr.split('-');
+            if (parts.length === 3) return `${parts[2]}/${parts[1]}/${parts[0]}`;
+            return dateStr;
+        };
+
         /* =====================================================================
            BACKEND FETCHER 
            ===================================================================== */
@@ -315,11 +336,10 @@
             
             getInitialData: function() { 
                 if (GAS_WEB_APP_URL === "LETAK_URL_GOOGLE_APPS_SCRIPT_ANDA_DI_SINI") {
-                    // MOCK DATA JIKA URL BELUM DIISI (Untuk tunjuk di preview)
                     setTimeout(() => this.cb([
                         { id: 2, no: 1, controlNo: "23576", callNo082: "0005.3", callNo050: "TK5105.888 IRS 2001", accession: "BK00075774", title: "DEVELOPING WEB SITE USING MICROSOFT WORD STEP BY STEP", status: "incomplete", staff: "FAZILAH", date: "2026-04-14", checkedBy: "", dateChecked: "", approvedBy: "", approvedDate: "" },
                         { id: 3, no: 2, controlNo: "0000025823", callNo082: "001.4 BIE", callNo050: "HA31.2.B54 2003", accession: "BK00076063", title: "INTRODUCTION TO SURVEY QUALITY", status: "Completed", staff: "SAKINAH", date: "2026-04-10", checkedBy: "ROSLI", dateChecked: "2026-04-10", approvedBy: "JAINI", approvedDate: "2026-04-12" },
-                        { id: 4, no: 3, controlNo: "1111000011", callNo082: "005.2 TEST", callNo050: "AB12.3", accession: "BK00099999", title: "THE BOOK OF ADMIN TESTING AND OTHER STUFF", status: "Pending For Approval", staff: "ALI-INTERN", date: "2026-04-16", checkedBy: "", dateChecked: "", approvedBy: "", approvedDate: "" }
+                        { id: 4, no: 3, controlNo: "1111000011", callNo082: "005.2 TEST", callNo050: "AB12.3", accession: "BK00099999", title: "THE BOOK OF ADMIN TESTING AND OTHER STUFF", status: "Pending Semakan", staff: "FATIHAH", date: "2026-04-16", checkedBy: "", dateChecked: "", approvedBy: "", approvedDate: "" }
                     ]), 1000);
                     return;
                 }
@@ -332,7 +352,7 @@
             
             updateRow: function(record) { 
                 if (GAS_WEB_APP_URL === "LETAK_URL_GOOGLE_APPS_SCRIPT_ANDA_DI_SINI") {
-                    setTimeout(() => this.cb(true), 500); // Simulasi berjaya
+                    setTimeout(() => this.cb(true), 500); 
                     return;
                 }
                 fetch(GAS_WEB_APP_URL, {
@@ -385,6 +405,7 @@
 
             if (isValid) {
                 currentUserRole = role;
+                currentPage = 1; // Reset pagination
                 errorMsg.classList.add('hidden');
                 document.getElementById('profile-name').textContent = currentUserName;
                 document.getElementById('profile-initial').textContent = currentUserName.charAt(0);
@@ -432,17 +453,30 @@
             }).getInitialData();
         }
 
+        // FUNGSI PAGINATION
+        function prevPage() {
+            if (currentPage > 1) { currentPage--; renderTable(); }
+        }
+        function nextPage() {
+            if (currentPage * rowsPerPage < dataset.length) { currentPage++; renderTable(); }
+        }
+
         function renderTable() {
             const tbody = document.getElementById('table-body');
+            const paginationDiv = document.getElementById('pagination-controls');
             tbody.innerHTML = '';
             
-            // JIKA ROSLI ATAU JAINI LOG MASUK
+            // JIKA ROSLI ATAU JAINI LOG MASUK (Kumpulan Khas)
             if (currentUserRole === 'rosli' || currentUserRole === 'jaini') {
+                paginationDiv.classList.add('hidden'); // Tiada pagination untuk kumpulan khas
+                
+                // Rosli tengok Pending Semakan, Jaini tengok Pending Kelulusan
                 const targetStatus = currentUserRole === 'rosli' ? 'Pending Semakan' : 'Pending Kelulusan';
                 const actionLabel = currentUserRole === 'rosli' ? 'Tandakan Semua Sebagai Disemak' : 'Luluskan Semua Rekod';
                 
                 let groupedData = {};
                 dataset.forEach(row => {
+                    // Juga ambil 'Pending For Approval' incase digunakan dalam Spreadsheet
                     if (row.status === targetStatus || row.status === 'Pending For Approval') {
                         if (!groupedData[row.staff]) groupedData[row.staff] = [];
                         groupedData[row.staff].push(row);
@@ -482,15 +516,29 @@
                     });
                 }
             } 
-            // JIKA STAFF / ADMIN
+            // JIKA STAFF / ADMIN (Dengan Pagination 100 max)
             else {
-                dataset.forEach(row => {
+                paginationDiv.classList.remove('hidden');
+                
+                const startIndex = (currentPage - 1) * rowsPerPage;
+                const endIndex = startIndex + rowsPerPage;
+                const paginatedData = dataset.slice(startIndex, endIndex);
+                
+                if (paginatedData.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="11" class="px-4 py-8 text-center text-gray-500 font-medium bg-gray-50 italic">Tiada rekod dijumpai.</td></tr>`;
+                }
+
+                paginatedData.forEach(row => {
                     const tr = document.createElement('tr');
                     tr.id = `row-${row.id}`;
                     tr.className = editingId === row.id ? 'editing-row transition-colors' : 'transition-colors group';
                     tr.innerHTML = generateRowHTML(row, editingId === row.id, false);
                     tbody.appendChild(tr);
                 });
+                
+                // Update Pagination Info
+                const infoEnd = Math.min(startIndex + rowsPerPage, dataset.length);
+                document.getElementById('page-info').textContent = `Memaparkan ${dataset.length > 0 ? startIndex + 1 : 0}-${infoEnd} dari ${dataset.length} rekod`;
             }
 
             updateDashboardStats();
@@ -514,17 +562,42 @@
             // MODE SUNTINGAN (EDIT MODE)
             // ============================
             if (isEditing && !isReadonlyView) {
+                
+                // LOGIK KHAS STAFF: Control Number, Call No (050/060), Staff, Status. (Call No 082 Dikunci)
+                let call082HTML = (currentUserRole === 'staff')
+                    ? `<td class="px-4 py-4 text-center text-gray-700 bg-gray-50 whitespace-normal break-words min-w-[100px] max-w-[120px] leading-snug">${row.callNo082}<input type="hidden" id="edit-c082-${row.id}" value="${row.callNo082}"></td>`
+                    : `<td class="px-2 py-3"><input type="text" id="edit-c082-${row.id}" value="${row.callNo082}" class="w-full text-xs px-2 py-1.5 border border-blue-300 rounded shadow-inner focus:outline-none focus:border-[#003366] bg-white font-inter text-center"></td>`;
+
+                // LOGIK KHAS STAFF: Dropdown Status hanya nampak Completed & Incomplete
+                let statusSelectHTML = '';
+                if (currentUserRole === 'staff') {
+                    // Jika data sebelum ini Pending/Completed, kita tunjuk "Completed" dalam mata Staff (kerana mereka pernah siapkan)
+                    let isStaffCompleted = (row.status === 'Pending Semakan' || row.status === 'Pending Kelulusan' || row.status === 'Completed' || row.status === 'Pending For Approval');
+                    statusSelectHTML = `
+                        <select id="edit-status-${row.id}" class="w-full text-xs px-2 py-1.5 border border-blue-300 rounded shadow-inner bg-white font-inter font-bold text-gray-700">
+                            <option value="Completed" ${isStaffCompleted ? 'selected' : ''}>Completed</option>
+                            <option value="incomplete" ${!isStaffCompleted ? 'selected' : ''}>incomplete</option>
+                        </select>
+                    `;
+                } else {
+                    statusSelectHTML = `
+                        <select id="edit-status-${row.id}" class="w-full text-xs px-2 py-1.5 border border-blue-300 rounded shadow-inner bg-white font-inter font-bold text-gray-700">
+                            ${statusOptions.map(opt => `<option value="${opt}" ${row.status === opt ? 'selected' : ''}>${opt}</option>`).join('')}
+                        </select>
+                    `;
+                }
+
                 return `
                     <td class="px-4 py-3 text-center text-gray-400 font-medium">${row.no}</td>
                     
-                    <!-- EDITABLE: CONTROL NUMBER -->
-                    <td class="px-2 py-3"><input type="text" id="edit-ctrl-${row.id}" value="${row.controlNo}" class="w-full text-xs px-2 py-1.5 border border-blue-300 rounded shadow-inner focus:outline-none focus:border-[#003366] bg-white font-inter"></td>
+                    <!-- EDITABLE: CONTROL NUMBER (Di-centerkan) -->
+                    <td class="px-2 py-3"><input type="text" id="edit-ctrl-${row.id}" value="${row.controlNo}" class="w-full text-xs px-2 py-1.5 border border-blue-300 rounded shadow-inner focus:outline-none focus:border-[#003366] bg-white font-inter text-center"></td>
                     
-                    <!-- NOT EDITABLE: CALL NO 082 -->
-                    <td class="px-4 py-4 text-gray-700 bg-gray-50 whitespace-normal break-words min-w-[100px] max-w-[120px] leading-snug">${row.callNo082}</td>
+                    <!-- EDITABLE/NOT EDITABLE: CALL NO 082 (Ikut Role Staff) -->
+                    ${call082HTML}
                     
-                    <!-- EDITABLE: CALL NO 050/060 -->
-                    <td class="px-2 py-3"><input type="text" id="edit-c050-${row.id}" value="${row.callNo050}" class="w-full text-xs px-2 py-1.5 border border-blue-300 rounded shadow-inner focus:outline-none focus:border-[#003366] bg-white font-inter"></td>
+                    <!-- EDITABLE: CALL NO 050/060 (Di-centerkan) -->
+                    <td class="px-2 py-3"><input type="text" id="edit-c050-${row.id}" value="${row.callNo050}" class="w-full text-xs px-2 py-1.5 border border-blue-300 rounded shadow-inner focus:outline-none focus:border-[#003366] bg-white font-inter text-center"></td>
                     
                     <!-- NOT EDITABLE: ACCESSION -->
                     <td class="px-4 py-4 font-semibold text-[#003366] bg-gray-50">${row.accession}</td>
@@ -540,15 +613,11 @@
                         </select>
                     </td>
                     
-                    <!-- NOT EDITABLE: TARIKH (Auto update semasa save jika Completed) -->
-                    <td class="px-4 py-4 text-gray-500 bg-gray-50">${row.date || '-'}</td>
+                    <!-- NOT EDITABLE: TARIKH -->
+                    <td class="px-4 py-4 text-gray-500 bg-gray-50">${formatDisplayDate(row.date)}</td>
                     
                     <!-- EDITABLE: STATUS -->
-                    <td class="px-2 py-3">
-                        <select id="edit-status-${row.id}" class="w-full text-xs px-2 py-1.5 border border-blue-300 rounded shadow-inner bg-white font-inter font-bold text-gray-700">
-                            ${statusOptions.map(opt => `<option value="${opt}" ${row.status === opt ? 'selected' : ''}>${opt}</option>`).join('')}
-                        </select>
-                    </td>
+                    <td class="px-2 py-3">${statusSelectHTML}</td>
                     
                     <!-- NOT EDITABLE: AUDIT -->
                     <td class="px-3 py-2 bg-gray-50 border-x border-gray-100 rounded text-[10px] text-gray-400 text-center italic">
@@ -571,7 +640,7 @@
             let statusBadge = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold bg-gray-100 text-gray-600 uppercase tracking-wider">${row.status || '-'}</span>`;
             if (row.status === 'Completed') statusBadge = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold bg-green-100 text-[#00b074] uppercase tracking-wider"><svg class="mr-1.5 h-2 w-2 text-[#00b074]" fill="currentColor" viewBox="0 0 8 8"><circle cx="4" cy="4" r="3" /></svg>Completed</span>`;
             else if (row.status === 'incomplete') statusBadge = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold bg-red-100 text-red-700 uppercase tracking-wider"><svg class="mr-1.5 h-2 w-2 text-red-600" fill="currentColor" viewBox="0 0 8 8"><circle cx="4" cy="4" r="3" /></svg>Incomplete</span>`;
-            else if (row.status === 'Pending For Approval' || row.status === 'Pending Semakan' || row.status === 'Pending Kelulusan') statusBadge = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold bg-blue-100 text-blue-700 uppercase tracking-wider"><svg class="mr-1.5 h-2 w-2 text-blue-600" fill="currentColor" viewBox="0 0 8 8"><circle cx="4" cy="4" r="3" /></svg>Pending</span>`;
+            else if (row.status === 'Pending For Approval' || row.status === 'Pending Semakan' || row.status === 'Pending Kelulusan') statusBadge = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold bg-blue-100 text-blue-700 uppercase tracking-wider"><svg class="mr-1.5 h-2 w-2 text-blue-600" fill="currentColor" viewBox="0 0 8 8"><circle cx="4" cy="4" r="3" /></svg>Pending For Approval</span>`;
 
             let actionHtml = isReadonlyView 
                 ? `<span class="text-gray-300 italic text-[10px]">Tiada Aksi</span>` 
@@ -579,24 +648,26 @@
 
             return `
                 <td class="px-4 py-4 text-center font-medium text-gray-500">${row.no}</td>
-                <td class="px-4 py-4 text-gray-700">${row.controlNo}</td>
-                <td class="px-4 py-4 text-gray-700 whitespace-normal break-words min-w-[100px] max-w-[120px] leading-snug">${row.callNo082}</td>
-                <td class="px-4 py-4 text-gray-700 whitespace-normal break-words min-w-[100px] max-w-[120px] leading-snug">${row.callNo050}</td>
+                <!-- Data ini di-centerkan -->
+                <td class="px-4 py-4 text-center text-gray-700">${row.controlNo}</td>
+                <td class="px-4 py-4 text-center text-gray-700 whitespace-normal break-words min-w-[100px] max-w-[120px] leading-snug">${row.callNo082}</td>
+                <td class="px-4 py-4 text-center text-gray-700 whitespace-normal break-words min-w-[100px] max-w-[120px] leading-snug">${row.callNo050}</td>
+                
                 <td class="px-4 py-4 font-semibold text-[#003366]">${row.accession}</td>
                 <!-- TITLE di-centerkan -->
                 <td class="px-4 py-4 whitespace-normal max-w-xs break-words font-medium leading-snug text-center">${row.title}</td>
                 <td class="px-4 py-4 font-bold text-[#003366]">${displayStaff}</td>
-                <td class="px-4 py-4 text-gray-500">${row.date || '-'}</td>
+                <td class="px-4 py-4 text-gray-500">${formatDisplayDate(row.date)}</td>
                 <td class="px-4 py-4">${statusBadge}</td>
                 <td class="px-4 py-3">
                     <div class="flex flex-col gap-1.5 text-[10px] bg-gray-50 p-2 rounded-lg border border-gray-100">
                         <div class="flex items-start">
                             <span class="text-gray-400 mr-2"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg></span>
-                            <span class="leading-tight"><span class="font-bold text-gray-600 uppercase">Checked:</span> ${row.checkedBy ? `<span class="text-[#003366] font-bold ml-1">${row.checkedBy}</span>` : '<span class="text-gray-400 italic ml-1">N/A</span>'} ${row.dateChecked ? `<span class="text-gray-400 ml-1">(${row.dateChecked})</span>` : ''}</span>
+                            <span class="leading-tight"><span class="font-bold text-gray-600 uppercase">Checked:</span> ${row.checkedBy ? `<span class="text-[#003366] font-bold ml-1">${row.checkedBy}</span>` : '<span class="text-gray-400 italic ml-1">N/A</span>'} ${row.dateChecked ? `<span class="text-gray-400 ml-1">(${formatDisplayDate(row.dateChecked)})</span>` : ''}</span>
                         </div>
                         <div class="flex items-start">
                             <span class="text-[#00b074] mr-2"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></span>
-                            <span class="leading-tight"><span class="font-bold text-gray-600 uppercase">Approved:</span> ${row.approvedBy ? `<span class="text-[#00b074] font-bold ml-1">${row.approvedBy}</span>` : '<span class="text-gray-400 italic ml-1">N/A</span>'} ${row.approvedDate ? `<span class="text-gray-400 ml-1">(${row.approvedDate})</span>` : ''}</span>
+                            <span class="leading-tight"><span class="font-bold text-gray-600 uppercase">Approved:</span> ${row.approvedBy ? `<span class="text-[#00b074] font-bold ml-1">${row.approvedBy}</span>` : '<span class="text-gray-400 italic ml-1">N/A</span>'} ${row.approvedDate ? `<span class="text-gray-400 ml-1">(${formatDisplayDate(row.approvedDate)})</span>` : ''}</span>
                         </div>
                     </div>
                 </td>
@@ -611,11 +682,19 @@
             const index = dataset.findIndex(r => r.id === id);
             if (index === -1) return;
 
-            const newStatus = document.getElementById(`edit-status-${id}`).value;
+            let newStatus = document.getElementById(`edit-status-${id}`).value;
             let newDate = dataset[index].date;
             
-            // Auto Update Date JIKA status baru adalah 'Completed' dan sebelumnya bukan 'Completed'
-            if (newStatus === 'Completed' && dataset[index].status !== 'Completed') {
+            // PENYELESAIAN MASALAH ANDA: 
+            // Jika staf simpan sebagai "Completed", kita tukar terus status itu menjadi "Pending Semakan" 
+            // di belakang tabir supaya ia masuk ke dalam senarai kelulusan Rosli.
+            let finalStatusToSave = newStatus;
+            if (currentUserRole === 'staff' && newStatus === 'Completed') {
+                finalStatusToSave = 'Pending Semakan';
+            }
+
+            // Auto Update Date JIKA status baru adalah 'Completed' atau 'Pending Semakan' (bila staf save), dan sebelum ini tidak
+            if ((newStatus === 'Completed' || finalStatusToSave === 'Pending Semakan') && dataset[index].status !== 'Completed' && dataset[index].status !== 'Pending Semakan' && dataset[index].status !== 'Pending Kelulusan') {
                 const t = new Date();
                 newDate = t.getFullYear() + '-' + String(t.getMonth() + 1).padStart(2, '0') + '-' + String(t.getDate()).padStart(2, '0');
             }
@@ -623,23 +702,18 @@
             const updatedRecord = {
                 ...dataset[index],
                 controlNo: document.getElementById(`edit-ctrl-${id}`).value,
+                callNo082: document.getElementById(`edit-c082-${id}`).value, // Bagi staff ini dipanggil dari input=hidden
                 callNo050: document.getElementById(`edit-c050-${id}`).value,
                 staff: document.getElementById(`edit-staff-${id}`).value,
-                status: newStatus,
+                status: finalStatusToSave, // Gunakan status yang telah ditukar (override)
                 date: newDate
-                // column lain tidak disentuh untuk elak overwrite
             };
 
             showLoading("Menyimpan ke Spreadsheet...");
             server.withSuccessHandler(function(success) {
                 hideLoading();
                 showToast("Rekod berjaya dikemaskini.");
-                // Update local array sekiranya tiada fetch baru dilakukan
-                dataset[index] = updatedRecord;
-                editingId = null;
-                renderTable(); // Kemaskini jadual
-                
-                // Pilihan: Jika nak refresh sepenuhnya dari DB, boleh panggil fetchDataFromGoogleSheet();
+                fetchDataFromGoogleSheet(); // Sentiasa tarik data terkini selepas save
             }).updateRow(updatedRecord);
         }
 
@@ -672,7 +746,7 @@
             dataset.forEach(r => { 
                 const displayStaff = getStaffDisplay(r.staff);
                 
-                // Asingkan ADMIN dari masuk carta staff performance dan aktif staff
+                // Asingkan ADMIN dari masuk carta staff performance dan aktif staff (hanya 4 staff terpilih dikira)
                 if(displayStaff !== 'ADMIN') {
                     staffCounts[displayStaff] = (staffCounts[displayStaff] || 0) + 1; 
                 }
@@ -680,8 +754,8 @@
                 // MAPPING STATUS UNTUK CARTA PAI BAHASA INGGERIS
                 let chartStatus = 'Incomplete';
                 if (r.status === 'Completed') chartStatus = 'Completed';
-                else if (r.status === 'Pending Semakan' || r.status === 'Pending For Approval') chartStatus = 'Pending Checking';
-                else if (r.status === 'Pending Kelulusan') chartStatus = 'Pending Approval';
+                else if (r.status === 'Pending Semakan' || r.status === 'Pending For Approval') chartStatus = 'Pending Checking'; // Kelulusan Rosli
+                else if (r.status === 'Pending Kelulusan') chartStatus = 'Pending Approval'; // Kelulusan Jaini
                 else if (r.status === 'incomplete' || r.status === 'Draft') chartStatus = 'Incomplete';
                 
                 statusCounts[chartStatus] = (statusCounts[chartStatus] || 0) + 1;
@@ -705,15 +779,15 @@
             const statusCtx = document.getElementById('statusChart').getContext('2d');
             if (statusChartInstance) statusChartInstance.destroy();
             
-            // CARTA PAI (BAHASA INGGERIS, WARNA BERBEZA)
+            // CARTA PAI (BAHASA INGGERIS, WARNA BERBEZA IKUT KATEGORI)
             statusChartInstance = new Chart(statusCtx, {
                 type: 'doughnut',
                 data: {
                     labels: ['Completed', 'Pending Checking', 'Pending Approval', 'Incomplete'],
                     datasets: [{
                         data: [statusCounts['Completed'], statusCounts['Pending Checking'], statusCounts['Pending Approval'], statusCounts['Incomplete']],
-                        // Completed=Hijau, Checking=Kuning, Approval=Biru, Incomplete=Merah
-                        backgroundColor: ['#00b074', '#eab308', '#3b82f6', '#ef4444'],
+                        // Completed=Hijau, Pending Checking=Kuning/Oren, Pending Approval=Biru, Incomplete=Merah
+                        backgroundColor: ['#00b074', '#f59e0b', '#3b82f6', '#ef4444'],
                         borderWidth: 0, hoverOffset: 4
                     }]
                 },
