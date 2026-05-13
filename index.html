@@ -1,286 +1,682 @@
 <!DOCTYPE html>
-<html lang="ms">
+<html lang="en" class="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IKU Library System - Login & Dashboard</title>
+    <title>IKU Library System - Premium Enterprise</title>
+    
+    <!-- Tailwind CSS with Custom Config for Dark Mode & Premium Colors -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        glass: 'rgba(255, 255, 255, 0.7)',
+                        glassDark: 'rgba(30, 41, 59, 0.7)',
+                        premiumDark: '#0f172a',
+                    },
+                    boxShadow: {
+                        'glow-blue': '0 0 15px rgba(59, 130, 246, 0.5)',
+                        'glow-purple': '0 0 15px rgba(168, 85, 247, 0.5)',
+                        'glow-emerald': '0 0 15px rgba(16, 185, 129, 0.5)',
+                        'glow-orange': '0 0 15px rgba(249, 115, 22, 0.5)',
+                        'soft': '0 4px 20px -2px rgba(0, 0, 0, 0.05)',
+                    }
+                }
+            }
+        }
+    </script>
+
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    
+    <!-- SaaS Premium UI Styles -->
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f4f7f9; }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            -webkit-font-smoothing: antialiased;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
         .font-montserrat { font-family: 'Montserrat', sans-serif; }
         
-        .custom-scrollbar::-webkit-scrollbar { height: 8px; width: 8px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        /* Modern Scrollbar */
+        .custom-scrollbar::-webkit-scrollbar { height: 6px; width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: #475569; }
+
+        /* Glassmorphism Classes */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .dark .glass-panel {
+            background: rgba(15, 23, 42, 0.75);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* Micro-interactions & Hover Effects */
+        .hover-lift { transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease; }
+        .hover-lift:hover { transform: translateY(-3px); box-shadow: 0 10px 20px -8px rgba(0, 0, 0, 0.15); }
+        .dark .hover-lift:hover { box-shadow: 0 10px 20px -8px rgba(0, 0, 0, 0.5); }
+
+        /* Table Styling Overrides (Compacted for no horizontal scroll) */
+        table { border-collapse: separate; border-spacing: 0 3px; width: 100%; table-layout: auto; }
+        th { font-weight: 600; font-size: 0.6rem; letter-spacing: 0.05em; text-transform: uppercase; }
+        #table-body tr { transition: all 0.2s ease; box-shadow: 0 1px 2px rgba(0,0,0,0.02); }
+        #table-body td { 
+            background-color: var(--row-bg, #ffffff); 
+            border-top: 1px solid transparent; border-bottom: 1px solid transparent;
+            font-size: 0.65rem; transition: all 0.2s ease;
+        }
+        #table-body td:first-child { border-top-left-radius: 6px; border-bottom-left-radius: 6px; border-left: 1px solid transparent; }
+        #table-body td:last-child { border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-right: 1px solid transparent; }
         
-        table { border-collapse: separate; border-spacing: 0; table-layout: auto; }
-        td { border-bottom: 1px solid #f1f5f9; }
-        tr:hover td { background-color: #f8fafc; }
+        .dark #table-body td { --row-bg: #1e293b; color: #e2e8f0; }
+        .dark #table-body tr:hover td { --row-bg: #334155; }
         
-        /* Sticky Header FIX */
-        thead th { position: sticky; top: 0; z-index: 20; background-color: #003366; }
+        #table-body tr:hover { transform: scale(1.002); box-shadow: 0 3px 10px rgba(0,0,0,0.05); z-index: 10; position: relative; }
+        #table-body tr:hover td { background-color: var(--row-hover, #f8fafc) !important; }
         
-        /* Mod penyuntingan aktif */
-        tr.editing-row td { background-color: #eff6ff; }
+        thead th { 
+            position: sticky; top: 0; z-index: 20; 
+            background: rgba(248, 250, 252, 0.95) !important;
+            backdrop-filter: blur(8px);
+        }
+        .dark thead th { background: rgba(15, 23, 42, 0.95) !important; color: #94a3b8 !important; }
+
+        /* Sidebar Styling & Collapsible Logic */
+        aside#sidebar { 
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
+            width: 240px;
+            background: linear-gradient(180deg, #1e1b4b 0%, #312e81 100%); 
+        }
+        
+        /* Overriding JS injected classes for Sidebar dynamically */
+        .nav-link { transition: all 0.3s ease !important; position: relative; border-radius: 10px !important; margin-bottom: 3px; }
+        .nav-link:hover { transform: translateX(3px); background-color: rgba(255,255,255,0.1) !important; }
+        .nav-link.bg-blue-600 { 
+            background: linear-gradient(90deg, rgba(99, 102, 241, 0.2) 0%, transparent 100%) !important; 
+            border-left: 3px solid #818cf8 !important; 
+            box-shadow: inset 1px 0 0 rgba(255,255,255,0.1) !important;
+            border-radius: 0 10px 10px 0 !important;
+        }
+
+        /* Collapsible Sidebar Logic */
+        .sidebar-desktop-closed { width: 72px !important; margin-left: 0 !important; }
+        .sidebar-desktop-closed .nav-text, .sidebar-desktop-closed .brand-text, .sidebar-desktop-closed .promo-box { 
+            opacity: 0; width: 0; display: none; 
+        }
+        .sidebar-desktop-closed .nav-link { 
+            padding-left: 0 !important; padding-right: 0 !important; justify-content: center !important; 
+        }
+        .sidebar-desktop-closed .nav-link svg { margin: 0 auto !important; width: 20px; height: 20px; }
+        .sidebar-desktop-closed .profile-details { display: none; }
+
+        /* Sparkline SVGs */
+        .sparkline { position: absolute; bottom: -4px; left: 0; width: 100%; height: 40px; pointer-events: none; opacity: 0.4; transition: opacity 0.3s; }
+        .hover-lift:hover .sparkline { opacity: 0.8; }
+
+        /* Inputs */
+        input:focus, select:focus { outline: none; border-color: #6366f1 !important; box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.15) !important; }
+        .dark input, .dark select { background-color: #1e293b; color: #f8fafc; border-color: #334155; }
     </style>
 </head>
-<body class="min-h-screen text-gray-800 bg-[#f4f7f9]">
+<body class="min-h-screen flex overflow-hidden bg-gray-50 dark:bg-premiumDark text-gray-800 dark:text-gray-200">
 
-    <div id="login-screen" class="min-h-screen flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-8 md:p-12 w-full max-w-md">
-            
-            <div class="text-center mb-8 font-montserrat">
-                <h1 class="text-[28px] font-bold text-[#003366] mb-3 tracking-tight">IKU LIBRARY SYSTEM</h1>
-                <p class="text-[15px] text-[#0055a4] leading-relaxed">
-                    Sistem Pengurusan Koleksi Buku<br>
-                    Tukar DDC kepada NLM/LC
-                </p>
+    <!-- ================== LOGIN SCREEN ================== -->
+    <div id="login-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-gray-50 dark:bg-premiumDark transition-colors duration-300">
+        <!-- Abstract glowing orbs in background -->
+        <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-[100px] pointer-events-none"></div>
+        <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-[100px] pointer-events-none"></div>
+
+        <div class="glass-panel shadow-2xl rounded-3xl p-8 w-full max-w-[400px] relative z-10 animate-[fadeIn_0.6s_ease-out]">
+            <div class="text-center mb-6">
+                <div class="w-14 h-14 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-glow-purple">
+                    <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                </div>
+                <h1 class="text-2xl font-extrabold text-gray-900 dark:text-white tracking-tight font-montserrat">IKU Library</h1>
+                <p class="text-[11px] text-gray-500 dark:text-gray-400 font-medium mt-1">Enterprise Management System</p>
             </div>
 
             <div class="space-y-5">
                 <div>
-                    <label class="block text-[11px] font-bold text-gray-500 mb-2 uppercase tracking-widest">PILIH LOG MASUK PENGGUNA</label>
-                    <select id="login-role" class="w-full border border-gray-300 rounded-lg px-4 py-3 text-[15px] text-[#003366] focus:outline-none focus:border-[#003366] focus:ring-1 focus:ring-[#003366] appearance-none bg-no-repeat bg-[right_1rem_center] bg-[length:1.2em_1.2em] transition-colors" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%23003366%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E');">
-                        <option value="">Sila Pilih</option>
-                        <option value="staff">Staff (Kemasukan Data)</option>
-                        <option value="rosli">Rosli</option>
-                        <option value="admin">Admin</option>
+                    <label class="block text-[10px] font-bold text-gray-500 dark:text-gray-400 mb-1.5 uppercase tracking-widest">Select Role</label>
+                    <select id="login-role" class="w-full border border-gray-200 dark:border-gray-700 bg-white/50 dark:bg-gray-800/50 rounded-lg px-3 py-2.5 text-xs text-gray-700 dark:text-gray-200 cursor-pointer appearance-none backdrop-blur-sm transition-all shadow-sm" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%239ca3af%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E'); background-position: right 1rem center; background-repeat: no-repeat; background-size: 1.2em;">
+                        <option value="">Choose an account...</option>
+                        <option value="staff">Staff (Data Entry)</option>
+                        <option value="rosli">Rosli (Approver)</option>
+                        <option value="admin">Administrator</option>
                     </select>
                 </div>
 
-                <div id="password-container" class="hidden transition-all duration-300">
-                    <label class="block text-[11px] font-bold text-gray-500 mb-2 uppercase tracking-widest">KATA LALUAN</label>
-                    <input type="password" id="login-password" placeholder="Masukkan kata laluan" class="w-full border border-gray-300 rounded-lg px-4 py-3 text-[15px] focus:outline-none focus:border-[#003366] focus:ring-1 focus:ring-[#003366] transition-colors">
+                <div id="password-container" class="hidden animate-[fadeIn_0.3s_ease-out]">
+                    <label class="block text-[10px] font-bold text-gray-500 dark:text-gray-400 mb-1.5 uppercase tracking-widest">Password</label>
+                    <input type="password" id="login-password" placeholder="••••••••" class="w-full border border-gray-200 dark:border-gray-700 bg-white/50 dark:bg-gray-800/50 rounded-lg px-3 py-2.5 text-xs dark:text-white backdrop-blur-sm transition-all shadow-sm">
                 </div>
 
-                <p id="login-error" class="text-red-500 text-xs font-medium text-center hidden bg-red-50 py-2 rounded">Kombinasi log masuk salah.</p>
+                <p id="login-error" class="text-red-500 text-[10px] font-semibold text-center hidden bg-red-50 dark:bg-red-900/30 py-2 rounded-lg border border-red-100 dark:border-red-800/50">Invalid credentials.</p>
 
-                <button onclick="handleLogin()" class="w-full bg-[#003366] hover:bg-[#002244] text-white font-semibold text-[15px] py-3.5 px-4 rounded-lg transition-colors shadow-sm mt-2">
-                    Log Masuk
+                <button onclick="handleLogin()" class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold text-xs py-3 px-4 rounded-lg transition-all shadow-glow-purple hover:-translate-y-0.5 mt-3">
+                    Authenticate
                 </button>
-            </div>
-
-            <div class="text-center mt-10">
-                <p class="text-[11px] text-gray-400 font-medium">© 2026 IKU Library System</p>
             </div>
         </div>
     </div>
 
 
-    <div id="dashboard-screen" class="hidden p-4 md:p-6 max-w-[1600px] mx-auto transition-opacity duration-500 opacity-0">
+    <!-- ================== DASHBOARD SCREEN ================== -->
+    <div id="dashboard-screen" class="hidden flex w-full h-screen relative">
         
-        <header class="flex justify-between items-center mb-6 bg-white p-4 rounded-xl shadow-sm font-montserrat">
-            <div>
-                <h1 class="text-2xl font-bold text-[#003366] tracking-tight">IKU LIBRARY SYSTEM</h1>
-                <p class="text-sm text-gray-500 font-medium mt-0.5">Executive Collection Management</p>
-            </div>
-            <div class="flex items-center gap-6">
-                <div class="text-right hidden md:block">
-                    <div id="clock-time" class="text-lg font-bold text-[#003366] tracking-wider">00:00:00 PM</div>
-                    <div id="clock-date" class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-0.5">WEDNESDAY, 15 APRIL 2026</div>
-                </div>
-                
-                <div class="flex items-center gap-3 border-l border-gray-200 pl-6 cursor-pointer group" onclick="logout()">
-                    <div id="profile-initial" class="w-9 h-9 bg-blue-100 text-[#003366] rounded-full flex items-center justify-center font-bold text-sm group-hover:bg-blue-200 transition">
-                        S
-                    </div>
-                    <span id="profile-name" class="font-bold text-sm text-[#003366] uppercase">STAFF</span>
-                    <svg class="w-5 h-5 text-red-400 hover:text-red-600 transition ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" title="Log Keluar"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
-                </div>
-            </div>
-        </header>
+        <!-- Sidebar Overlay for Mobile -->
+        <div id="sidebar-overlay" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-30 hidden transition-opacity lg:hidden" onclick="toggleSidebar()"></div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
-            <div class="bg-white p-5 rounded-xl shadow-sm border-l-[5px] border-blue-500 flex justify-between items-center">
-                <div>
-                    <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 font-montserrat">Jumlah Rekod</p>
-                    <h2 class="text-3xl font-extrabold text-[#003366] font-montserrat" id="stat-total">0</h2>
-                </div>
-                <div class="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center text-blue-500">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg>
-                </div>
+        <!-- SIDEBAR (Premium Glass & Gradient) -->
+        <aside id="sidebar" class="text-white flex flex-col justify-between shrink-0 z-40 overflow-y-auto custom-scrollbar fixed inset-y-0 left-0 transform -translate-x-full lg:relative lg:translate-x-0 shadow-2xl">
+            <!-- decorative background shapes inside sidebar -->
+            <div class="absolute inset-0 overflow-hidden pointer-events-none opacity-20">
+                <div class="absolute -top-10 -left-10 w-32 h-32 bg-purple-500 rounded-full blur-[40px]"></div>
+                <div class="absolute bottom-1/3 -right-10 w-32 h-32 bg-blue-500 rounded-full blur-[40px]"></div>
             </div>
-            
-            <div class="bg-white p-5 rounded-xl shadow-sm border-l-[5px] border-[#00b074] flex justify-between items-center">
-                <div>
-                    <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 font-montserrat">Completed</p>
-                    <h2 class="text-3xl font-extrabold text-[#00b074] font-montserrat" id="stat-completed">0</h2>
-                </div>
-                <div class="w-12 h-12 rounded-full bg-green-50 flex items-center justify-center text-[#00b074]">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                </div>
-            </div>
-            
-            <div class="bg-white p-5 rounded-xl shadow-sm border-l-[5px] border-[#ff9f43] flex justify-between items-center">
-                <div>
-                    <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 font-montserrat">Pending Approval</p>
-                    <h2 class="text-3xl font-extrabold text-[#ff9f43] font-montserrat" id="stat-pending">0</h2>
-                </div>
-                <div class="w-12 h-12 rounded-full bg-orange-50 flex items-center justify-center text-[#ff9f43]">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                </div>
-            </div>
-            
-            <div class="bg-white p-5 rounded-xl shadow-sm border-l-[5px] border-[#7367f0] flex justify-between items-center">
-                <div>
-                    <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 font-montserrat">Staff Active</p>
-                    <h2 class="text-3xl font-extrabold text-[#003366] font-montserrat" id="stat-staff">0</h2>
-                </div>
-                <div class="w-12 h-12 rounded-full bg-indigo-50 flex items-center justify-center text-[#7367f0]">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
-                </div>
-            </div>
-        </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-6">
-            <div class="bg-white p-5 rounded-xl shadow-sm min-h-[220px] flex flex-col lg:col-span-1">
-                <h3 class="font-bold text-[#003366] text-sm mb-4 font-montserrat">Status Distribution</h3>
-                <div class="relative w-full h-[160px] flex justify-center items-center">
-                    <canvas id="statusChart"></canvas>
-                </div>
-            </div>
-            <div class="bg-white p-5 rounded-xl shadow-sm min-h-[220px] flex flex-col lg:col-span-2">
-                <h3 class="font-bold text-[#003366] text-sm mb-4 font-montserrat">Staff Performance</h3>
-                <div class="relative w-full h-[160px]">
-                    <canvas id="staffChart"></canvas>
-                </div>
-            </div>
-            <div class="bg-white p-5 rounded-xl shadow-sm min-h-[220px] flex flex-col lg:col-span-1">
-                <h3 class="font-bold text-[#003366] text-sm mb-4 font-montserrat">Quick Insights</h3>
-                <div class="space-y-4 flex-1 flex flex-col justify-center">
-                    <div class="flex items-start gap-4">
-                        <div class="p-2 bg-orange-50 rounded-full text-orange-400 mt-1"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg></div>
-                        <div>
-                            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Top Performer</p>
-                            <p class="font-bold text-[#003366] text-sm font-montserrat" id="insight-top-staff">-</p>
-                            <p class="text-xs text-[#00b074] font-medium" id="insight-top-count">0 Rekod Keseluruhan</p>
+            <div class="relative z-10">
+                <!-- Brand -->
+                <div class="h-20 flex items-center px-5 mb-2 border-b border-white/10">
+                    <div class="flex items-center gap-3 w-full">
+                        <div class="w-9 h-9 bg-white/10 backdrop-blur-md rounded-lg flex items-center justify-center shrink-0 border border-white/20 shadow-glow-blue">
+                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
                         </div>
-                    </div>
-                    <div class="flex items-start gap-4">
-                        <div class="p-2 bg-blue-50 rounded-full text-blue-500 mt-1"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>
-                        <div>
-                            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Pending Tasks</p>
-                            <p class="font-bold text-[#003366] text-sm font-montserrat" id="insight-pending-count">0 Rekod</p>
-                            <p class="text-xs text-red-500 font-medium">Belum Selesai Lulus</p>
+                        <div class="brand-text overflow-hidden whitespace-nowrap">
+                            <h2 class="text-[13px] font-bold font-montserrat tracking-wide leading-tight text-transparent bg-clip-text bg-gradient-to-r from-white to-blue-200">IKU SYSTEM</h2>
+                            <p class="text-[9px] text-indigo-300 uppercase tracking-widest mt-0.5">Enterprise</p>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
 
-        <div class="bg-white p-5 rounded-t-xl shadow-sm flex flex-wrap gap-4 items-end border-b border-gray-100 font-montserrat">
-            <div class="flex-1 min-w-[200px]">
-                <label class="block text-[10px] font-bold text-gray-500 mb-1.5 uppercase tracking-widest">Carian</label>
-                <div class="relative">
-                    <input type="text" id="search-input" onkeyup="applyFilters()" placeholder="Cari Tajuk atau Accession" class="w-full text-sm border border-gray-200 rounded-lg pl-3 pr-10 py-2 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition placeholder-gray-400 font-inter">
-                </div>
+                <!-- Navigation (Links injected by JS, styled by our CSS) -->
+                <nav class="px-3 py-3 space-y-1" id="main-nav">
+                    <a href="#" onclick="switchTab('dashboard', this)" class="nav-link flex items-center gap-3 px-3 py-2.5 bg-blue-600 text-white shadow-sm rounded-lg font-medium text-[11px] transition-colors">
+                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+                        <span class="nav-text whitespace-nowrap">Dashboard</span>
+                    </a>
+                    <a href="#" onclick="switchTab('collection', this)" class="nav-link flex items-center gap-3 px-3 py-2.5 text-indigo-100 hover:bg-[#1e40af] rounded-lg font-medium text-[11px] transition-colors">
+                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                        <span class="nav-text whitespace-nowrap">Records</span>
+                    </a>
+                    <a href="#" onclick="switchTab('approvals', this)" class="nav-link flex items-center gap-3 px-3 py-2.5 text-indigo-100 hover:bg-[#1e40af] rounded-lg font-medium text-[11px] transition-colors">
+                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <span class="nav-text whitespace-nowrap">Approvals</span>
+                    </a>
+                    <a href="#" onclick="switchTab('staff', this)" class="nav-link flex items-center gap-3 px-3 py-2.5 text-indigo-100 hover:bg-[#1e40af] rounded-lg font-medium text-[11px] transition-colors">
+                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                        <span class="nav-text whitespace-nowrap">Staff</span>
+                    </a>
+                    <a href="#" onclick="switchTab('reports', this)" class="nav-link flex items-center gap-3 px-3 py-2.5 text-indigo-100 hover:bg-[#1e40af] rounded-lg font-medium text-[11px] transition-colors">
+                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002-2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                        <span class="nav-text whitespace-nowrap">Analytics</span>
+                    </a>
+                </nav>
             </div>
-            
-            <div class="w-32">
-                <label class="block text-[10px] font-bold text-gray-500 mb-1.5 uppercase tracking-widest">Staff</label>
-                <select id="filter-staff" onchange="applyFilters()" class="w-full text-sm border border-gray-200 rounded-lg pl-3 pr-7 py-2 h-[38px] focus:outline-none focus:border-blue-500 text-gray-600 appearance-none bg-no-repeat bg-[right_0.5rem_center] bg-[length:1.2em_1.2em] font-inter text-ellipsis overflow-hidden whitespace-nowrap" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%236b7280%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E');">
-                    <option value="">Semua Staff</option>
-                    <option value="-">-</option>
-                    <option value="FATIHAH">FATIHAH</option>
-                    <option value="FAZILAH">FAZILAH</option>
-                    <option value="SAKINAH">SAKINAH</option>
-                    <option value="HUSNA">HUSNA</option>
-                </select>
-            </div>
-            
-            <div class="w-32">
-                <label class="block text-[10px] font-bold text-gray-500 mb-1.5 uppercase tracking-widest">Status</label>
-                <select id="filter-status" onchange="applyFilters()" class="w-full text-sm border border-gray-200 rounded-lg pl-3 pr-7 py-2 h-[38px] focus:outline-none focus:border-blue-500 text-gray-600 appearance-none bg-no-repeat bg-[right_0.5rem_center] bg-[length:1.2em_1.2em] font-inter text-ellipsis overflow-hidden whitespace-nowrap" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%236b7280%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E');">
-                    <option value="">Semua Status</option>
-                    <option value="Completed">Completed</option>
-                    <option value="Pending For Approval">Pending For Approval</option>
-                    <option value="incomplete">Incomplete</option>
-                </select>
-            </div>
-            
-            <div class="w-32">
-                <label class="block text-[10px] font-bold text-gray-500 mb-1.5 uppercase tracking-widest">Tahun</label>
-                <select id="filter-tahun" onchange="applyFilters()" class="w-full text-sm border border-gray-200 rounded-lg pl-3 pr-7 py-2 h-[38px] focus:outline-none focus:border-blue-500 text-gray-600 appearance-none bg-no-repeat bg-[right_0.5rem_center] bg-[length:1.2em_1.2em] font-inter text-ellipsis overflow-hidden whitespace-nowrap" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%236b7280%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E');">
-                    <option value="">Semua Tahun</option>
-                    <option value="2024">2024</option>
-                    <option value="2025">2025</option>
-                    <option value="2026">2026</option>
-                    <option value="2027">2027</option>
-                </select>
-            </div>
-            
-            <div class="flex items-end gap-3 ml-auto">
-                <button onclick="fetchDataFromGoogleSheet()" class="bg-[#003366] hover:bg-[#002244] text-white text-sm font-medium px-4 py-2 rounded-lg flex items-center gap-2 transition shadow-sm h-[38px]">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-                    Segerak Auto
-                </button>
-                
-                <div class="flex items-end gap-2">
-                    <div>
-                        <label class="block text-[10px] font-bold text-[#00b074] mb-1.5 uppercase tracking-widest">Laporan Excel</label>
-                        <select id="export-tahun" class="w-32 text-sm border border-[#00b074] text-[#00b074] rounded-lg px-3 py-2 h-[38px] focus:outline-none appearance-none bg-no-repeat bg-[right_0.5rem_center] bg-[length:1.5em_1.5em] font-inter text-ellipsis overflow-hidden whitespace-nowrap" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%2300b074%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E');">
-                            <option value="">Keseluruhan</option>
-                            <option value="2024">2024</option>
-                            <option value="2025">2025</option>
-                            <option value="2026">2026</option>
-                            <option value="2027">2027</option>
-                        </select>
+
+            <div class="p-3 mt-auto relative z-10">
+                <!-- Promo Box -->
+                <div class="promo-box bg-white/10 backdrop-blur-md rounded-xl p-4 mb-4 text-center border border-white/20 shadow-glow-purple">
+                    <div class="w-10 h-10 bg-gradient-to-br from-indigo-400 to-purple-500 rounded-lg flex items-center justify-center mx-auto mb-3 shadow-md">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
                     </div>
-                    <button onclick="exportToExcel()" class="bg-[#00b074] hover:bg-green-600 text-white text-sm font-medium px-4 py-2 rounded-lg flex items-center gap-2 transition shadow-sm h-[38px]">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-                        Muat Turun
-                    </button>
+                    <h4 class="text-[11px] font-bold text-white mb-1 font-montserrat">Smart Insights</h4>
+                    <p class="text-[9px] text-indigo-200 leading-relaxed">AI analytics for making decisions.</p>
+                </div>
+
+                <!-- Simple Sidebar Profile & Logout -->
+                <div class="flex items-center justify-between cursor-pointer group hover:bg-white/10 p-2.5 rounded-xl transition-all border border-transparent hover:border-white/20" onclick="logout()">
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 bg-gradient-to-tr from-blue-500 to-indigo-500 text-white rounded-lg flex items-center justify-center font-bold text-xs shadow-sm shrink-0">
+                            S
+                        </div>
+                        <div class="profile-details">
+                            <span class="font-bold text-[10px] text-white uppercase leading-none block tracking-wider">SYSTEM</span>
+                            <span class="text-[9px] text-indigo-300 mt-1 block">Logout</span>
+                        </div>
+                    </div>
+                    <svg class="w-4 h-4 text-indigo-300 group-hover:text-white transition-colors profile-details" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
                 </div>
             </div>
-        </div>
+        </aside>
 
-        <div id="table-container" class="w-full max-h-[600px] overflow-y-auto overflow-x-auto custom-scrollbar bg-white shadow-sm border border-gray-100 rounded-b-xl relative">
-            <table class="w-full text-left whitespace-nowrap" id="data-table">
-                <thead class="bg-[#003366] text-white text-[13px] uppercase font-bold tracking-wider sticky top-0 z-20 font-montserrat shadow-md border-b-2 border-blue-800">
-                    <tr>
-                        <th class="px-4 py-4 text-center">NO</th>
-                        <th class="px-3 py-4 text-center">CONTROL NUMBER</th>
-                        <th class="px-3 py-4 text-center w-[100px] max-w-[100px] whitespace-normal leading-tight">CALL NO (082)</th>
-                        <th class="px-3 py-4 text-center w-[100px] max-w-[100px] whitespace-normal leading-tight">CALL NO (050/060)</th>
-                        <th class="px-3 py-4 text-left">ACCESSION</th>
-                        <th class="px-4 py-4 min-w-[200px] text-center">TITLE</th>
-                        <th class="px-3 py-4 text-left">STAFF</th>
-                        <th class="px-3 py-4 text-center">DATE</th>
-                        <th class="px-3 py-4 text-left">STATUS</th>
-                        <th class="px-4 py-4 min-w-[180px] text-left">AUDIT TRAIL</th>
-                        <th class="px-4 py-4 text-center min-w-[90px]">ACTION</th>
-                    </tr>
-                </thead>
-                <tbody id="table-body" class="text-xs text-gray-700 divide-y divide-gray-100 bg-white" style="font-family: 'Inter', sans-serif;">
-                    </tbody>
-            </table>
-        </div>
-        
-        <div id="pagination-controls" class="p-4 border border-t-0 border-gray-100 flex justify-between items-center bg-gray-50 hidden rounded-b-xl shadow-sm">
-            <span class="text-xs text-gray-500 font-medium" id="page-info">Memaparkan 0-0 dari 0 rekod</span>
-            <div class="flex gap-2">
-                <button onclick="prevPage()" class="px-3 py-1.5 text-xs bg-white border border-gray-200 rounded hover:bg-gray-100 transition shadow-sm font-medium">Sebelumnya</button>
-                <button onclick="nextPage()" class="px-3 py-1.5 text-xs bg-white border border-gray-200 rounded hover:bg-gray-100 transition shadow-sm font-medium">Seterusnya</button>
+        <!-- MAIN CONTENT AREA -->
+        <main class="flex-1 flex flex-col h-screen overflow-y-auto custom-scrollbar p-4 lg:p-6 relative w-full transition-colors duration-300">
+            
+            <div class="max-w-[1500px] w-full mx-auto flex flex-col h-full">
+                
+                <!-- TOP HEADER BAR -->
+                <header class="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-6">
+                    <div class="flex items-center gap-3">
+                        <button onclick="toggleSidebar()" class="p-2 bg-white dark:bg-gray-800 rounded-lg shadow-soft border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:text-indigo-600 transition-colors z-10 hover-lift" title="Toggle Menu">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"></path></svg>
+                        </button>
+                        <div>
+                            <h1 class="text-xl font-extrabold text-gray-900 dark:text-white tracking-tight font-montserrat flex items-center gap-2" id="page-title">
+                                Welcome back, <span id="profile-name" class="uppercase text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400">STAFF</span>!
+                            </h1>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5 font-medium" id="page-subtitle">Here is the summary of executive collection management today.</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-4 self-end md:self-auto">
+                        <!-- Dark Mode Toggle Button -->
+                        <button onclick="document.documentElement.classList.toggle('dark')" class="p-2 bg-white dark:bg-gray-800 rounded-full shadow-soft border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-yellow-400 hover:bg-gray-50 transition-all hover-lift" title="Toggle Dark Mode">
+                            <!-- Sun / Moon icon combination logic -->
+                            <svg class="w-4 h-4 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+                            <svg class="w-4 h-4 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                        </button>
+
+                        <div class="text-right hidden sm:block">
+                            <div id="clock-time" class="text-[13px] font-extrabold text-gray-800 dark:text-gray-100 tracking-tight">00:00:00 PM</div>
+                            <div id="clock-date" class="text-[9px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mt-0.5">Wed, 6 May 2026</div>
+                        </div>
+                        
+                        <div id="profile-initial" class="w-9 h-9 bg-gradient-to-br from-indigo-500 to-purple-600 text-white rounded-full flex items-center justify-center font-bold text-sm shadow-glow-purple ring-2 ring-white dark:ring-gray-800">
+                            S
+                        </div>
+                    </div>
+                </header>
+
+                <!-- TAB: DASHBOARD -->
+                <div id="view-dashboard" class="tab-pane block flex flex-col flex-1 min-h-0">
+                    
+                    <!-- KPI CARDS (Premium Gradient & Sparklines) -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 mb-5 shrink-0">
+                        <!-- Card 1: Total -->
+                        <div class="glass-panel p-4 rounded-2xl shadow-soft hover-lift relative overflow-hidden flex flex-col h-[120px] group">
+                            <div class="absolute top-0 right-0 w-24 h-24 bg-blue-500/10 rounded-full blur-xl -mr-8 -mt-8 transition-transform group-hover:scale-150"></div>
+                            <div class="flex items-center gap-3 relative z-10">
+                                <div class="w-10 h-10 rounded-xl bg-blue-500 flex items-center justify-center text-white shadow-glow-blue">
+                                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg>
+                                </div>
+                                <div>
+                                    <p class="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-0.5">Total Records</p>
+                                    <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white font-montserrat leading-none" id="stat-total">0</h2>
+                                </div>
+                            </div>
+                            <div class="mt-auto relative z-10 text-[10px] font-bold text-emerald-500 mb-2 flex items-center gap-1">
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+                                12.5% vs last month
+                            </div>
+                            <!-- Mini Sparkline Background -->
+                            <svg class="sparkline" viewBox="0 0 100 30" preserveAspectRatio="none">
+                                <path d="M0,25 C20,20 40,30 60,10 C80,20 100,5 100,5 L100,30 L0,30 Z" fill="rgba(59, 130, 246, 0.1)" />
+                                <path d="M0,25 C20,20 40,30 60,10 C80,20 100,5 100,5" fill="none" stroke="#3b82f6" stroke-width="1.5" />
+                            </svg>
+                        </div>
+                        
+                        <!-- Card 2: Completed -->
+                        <div class="glass-panel p-4 rounded-2xl shadow-soft hover-lift relative overflow-hidden flex flex-col h-[120px] group">
+                            <div class="absolute top-0 right-0 w-24 h-24 bg-emerald-500/10 rounded-full blur-xl -mr-8 -mt-8 transition-transform group-hover:scale-150"></div>
+                            <div class="flex items-center gap-3 relative z-10">
+                                <div class="w-10 h-10 rounded-xl bg-emerald-500 flex items-center justify-center text-white shadow-glow-emerald">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                </div>
+                                <div>
+                                    <p class="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-0.5">Completed</p>
+                                    <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white font-montserrat leading-none" id="stat-completed">0</h2>
+                                </div>
+                            </div>
+                            <div class="mt-auto relative z-10 text-[10px] font-bold text-emerald-500 mb-2 flex items-center gap-1">
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+                                15.3% vs last month
+                            </div>
+                            <svg class="sparkline" viewBox="0 0 100 30" preserveAspectRatio="none">
+                                <path d="M0,30 C20,10 40,25 60,5 C80,15 100,0 100,0 L100,30 L0,30 Z" fill="rgba(16, 185, 129, 0.1)" />
+                                <path d="M0,30 C20,10 40,25 60,5 C80,15 100,0 100,0" fill="none" stroke="#10b981" stroke-width="1.5" />
+                            </svg>
+                        </div>
+                        
+                        <!-- Card 3: Pending -->
+                        <div class="glass-panel p-4 rounded-2xl shadow-soft hover-lift relative overflow-hidden flex flex-col h-[120px] group">
+                            <div class="absolute top-0 right-0 w-24 h-24 bg-orange-500/10 rounded-full blur-xl -mr-8 -mt-8 transition-transform group-hover:scale-150"></div>
+                            <div class="flex items-center gap-3 relative z-10">
+                                <div class="w-10 h-10 rounded-xl bg-orange-500 flex items-center justify-center text-white shadow-glow-orange">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                </div>
+                                <div>
+                                    <p class="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-0.5">Pending Approval</p>
+                                    <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white font-montserrat leading-none" id="stat-pending">0</h2>
+                                </div>
+                            </div>
+                            <div class="mt-auto relative z-10 text-[10px] font-bold text-orange-500 mb-2 flex items-center gap-1">
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 17h8m0 0v-8m0 8l-8-8-4 4-6-6"></path></svg>
+                                8.1% vs last month
+                            </div>
+                            <svg class="sparkline" viewBox="0 0 100 30" preserveAspectRatio="none">
+                                <path d="M0,5 C20,20 40,5 60,25 C80,10 100,20 100,20 L100,30 L0,30 Z" fill="rgba(249, 115, 22, 0.1)" />
+                                <path d="M0,5 C20,20 40,5 60,25 C80,10 100,20 100,20" fill="none" stroke="#f97316" stroke-width="1.5" />
+                            </svg>
+                        </div>
+                        
+                        <!-- Card 4: Staff Active -->
+                        <div class="glass-panel p-4 rounded-2xl shadow-soft hover-lift relative overflow-hidden flex flex-col h-[120px] group">
+                            <div class="absolute top-0 right-0 w-24 h-24 bg-purple-500/10 rounded-full blur-xl -mr-8 -mt-8 transition-transform group-hover:scale-150"></div>
+                            <div class="flex items-center gap-3 relative z-10">
+                                <div class="w-10 h-10 rounded-xl bg-purple-600 flex items-center justify-center text-white shadow-glow-purple">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                                </div>
+                                <div>
+                                    <p class="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-0.5">Staff Active</p>
+                                    <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white font-montserrat leading-none" id="stat-staff">0</h2>
+                                </div>
+                            </div>
+                            <div class="mt-auto relative z-10 text-[10px] font-bold text-emerald-500 mb-2 flex items-center gap-1">
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+                                3.2% vs last month
+                            </div>
+                            <svg class="sparkline" viewBox="0 0 100 30" preserveAspectRatio="none">
+                                <path d="M0,15 C20,5 40,25 60,10 C80,20 100,5 100,5 L100,30 L0,30 Z" fill="rgba(168, 85, 247, 0.1)" />
+                                <path d="M0,15 C20,5 40,25 60,10 C80,20 100,5 100,5" fill="none" stroke="#a855f7" stroke-width="1.5" />
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- CHARTS & INSIGHTS ROW (Interactive Feel) -->
+                    <div class="grid grid-cols-1 lg:grid-cols-4 gap-5 mb-5 shrink-0">
+                        <!-- Doughnut Chart -->
+                        <div class="glass-panel p-4 rounded-2xl shadow-soft flex flex-col lg:col-span-1 h-[220px] hover-lift group">
+                            <h3 class="font-bold text-gray-900 dark:text-white text-xs mb-2 flex items-center justify-between shrink-0">
+                                Distribution
+                                <div class="w-5 h-5 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path></svg></div>
+                            </h3>
+                            <div class="relative w-full flex-1 min-h-0 pb-1 cursor-pointer transition-transform group-hover:scale-[1.02]">
+                                <canvas id="statusChart"></canvas>
+                            </div>
+                        </div>
+                        
+                        <!-- Bar Chart -->
+                        <div class="glass-panel p-4 rounded-2xl shadow-soft flex flex-col lg:col-span-2 h-[220px] hover-lift group">
+                            <div class="flex justify-between items-center mb-3">
+                                <h3 class="font-bold text-gray-900 dark:text-white text-xs">Staff Performance Trends</h3>
+                                <div class="text-[10px] bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 px-2 py-1 rounded-md font-bold border border-indigo-100 dark:border-indigo-800 cursor-pointer hover:bg-indigo-100 transition-colors">This Year ▾</div>
+                            </div>
+                            <div class="relative w-full flex-1 pb-1 cursor-pointer transition-transform group-hover:scale-[1.01]">
+                                <canvas id="staffChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Quick Insights (Visual Icons & Glow) -->
+                        <div class="bg-gradient-to-br from-[#1e1b4b] to-[#312e81] dark:from-gray-900 dark:to-black p-4 rounded-2xl shadow-glow-purple flex flex-col lg:col-span-1 h-[220px] hover-lift border border-indigo-500/30 relative overflow-hidden">
+                            <div class="absolute -top-10 -right-10 w-24 h-24 bg-purple-500 rounded-full blur-[30px] opacity-30"></div>
+                            
+                            <h3 class="font-bold text-white text-xs mb-3 relative z-10 flex items-center gap-1.5">
+                                <svg class="w-3.5 h-3.5 text-purple-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                                Quick Insights
+                            </h3>
+                            <div class="space-y-3 flex-1 flex flex-col justify-center relative z-10">
+                                
+                                <div class="flex items-center gap-3 bg-white/10 backdrop-blur-md rounded-xl p-3 border border-white/10 hover:bg-white/20 transition-colors cursor-default">
+                                    <div class="text-2xl drop-shadow-[0_0_8px_rgba(251,191,36,0.8)]">🏆</div>
+                                    <div>
+                                        <p class="text-[9px] font-bold text-indigo-200 uppercase tracking-widest mb-0.5">Top Performer</p>
+                                        <p class="font-extrabold text-white text-sm font-montserrat tracking-tight leading-none" id="insight-top-staff">-</p>
+                                        <p class="text-[9px] text-emerald-300 mt-1 font-medium flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span><span id="insight-top-count">0 Records</span></p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-center gap-3 bg-white/10 backdrop-blur-md rounded-xl p-3 border border-white/10 hover:bg-white/20 transition-colors cursor-default">
+                                    <div class="text-2xl drop-shadow-[0_0_8px_rgba(249,115,22,0.8)]">⏳</div>
+                                    <div>
+                                        <p class="text-[9px] font-bold text-indigo-200 uppercase tracking-widest mb-0.5">Action Needed</p>
+                                        <p class="font-extrabold text-white text-sm font-montserrat tracking-tight leading-none" id="insight-pending-count">0 Records</p>
+                                        <p class="text-[9px] text-orange-300 mt-1 font-medium flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-orange-400"></span>Pending Approval</p>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TABLE SECTION WITH FILTERS (Premium Spacing) -->
+                    <div class="glass-panel rounded-2xl shadow-soft flex flex-col flex-1 overflow-hidden min-h-[400px]">
+                        
+                        <!-- Filters Area -->
+                        <div class="p-3 flex flex-wrap items-center gap-2 border-b border-gray-200 dark:border-gray-700 bg-white/50 dark:bg-gray-800/50">
+                            
+                            <div class="flex-1 min-w-[200px] relative">
+                                <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                                <input type="text" id="search-input" onkeyup="applyFilters()" placeholder="Search Title or Accession..." class="w-full text-xs border border-gray-200 dark:border-gray-600 rounded-lg pl-8 pr-3 py-1.5 h-[36px] bg-gray-50/50 dark:bg-gray-900/50 focus:bg-white dark:focus:bg-gray-800 transition-all font-medium">
+                            </div>
+                            
+                            <div class="flex flex-wrap items-center gap-2">
+                                <!-- Filter Dropdowns unified to w-32 -->
+                                <div class="w-32">
+                                    <select id="filter-staff" onchange="applyFilters()" class="w-full text-[11px] border border-gray-200 dark:border-gray-600 rounded-lg pl-3 pr-7 py-2 h-[36px] bg-white dark:bg-gray-800 cursor-pointer appearance-none text-gray-700 dark:text-gray-200 font-semibold shadow-sm transition-all hover:border-indigo-300 text-ellipsis overflow-hidden whitespace-nowrap" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%239ca3af%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E'); background-position: right 0.5rem center; background-repeat: no-repeat; background-size: 1.2em;">
+                                        <option value="">Staff: All</option>
+                                        <option value="-">-</option>
+                                        <option value="FATIHAH">FATIHAH</option>
+                                        <option value="FAZILAH">FAZILAH</option>
+                                        <option value="SAKINAH">SAKINAH</option>
+                                        <option value="HUSNA">HUSNA</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="w-32">
+                                    <select id="filter-status" onchange="applyFilters()" class="w-full text-[11px] border border-gray-200 dark:border-gray-600 rounded-lg pl-3 pr-7 py-2 h-[36px] bg-white dark:bg-gray-800 cursor-pointer appearance-none text-gray-700 dark:text-gray-200 font-semibold shadow-sm transition-all hover:border-indigo-300 text-ellipsis overflow-hidden whitespace-nowrap" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%239ca3af%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E'); background-position: right 0.5rem center; background-repeat: no-repeat; background-size: 1.2em;">
+                                        <option value="">Status: All</option>
+                                        <option value="Completed">Completed</option>
+                                        <option value="Pending For Approval">Pending</option>
+                                        <option value="incomplete">Incomplete</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="w-32">
+                                    <select id="filter-tahun" onchange="applyFilters()" class="w-full text-[11px] border border-gray-200 dark:border-gray-600 rounded-lg pl-3 pr-7 py-2 h-[36px] bg-white dark:bg-gray-800 cursor-pointer appearance-none text-gray-700 dark:text-gray-200 font-semibold shadow-sm transition-all hover:border-indigo-300 text-ellipsis overflow-hidden whitespace-nowrap" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%239ca3af%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E'); background-position: right 0.5rem center; background-repeat: no-repeat; background-size: 1.2em;">
+                                        <option value="">Year: All</option>
+                                        <option value="2024">2024</option>
+                                        <option value="2025">2025</option>
+                                        <option value="2026">2026</option>
+                                        <option value="2027">2027</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center gap-2 ml-auto w-full lg:w-auto mt-2 lg:mt-0">
+                                <button onclick="fetchDataFromGoogleSheet()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-[11px] font-bold px-4 py-0 rounded-lg flex items-center justify-center gap-1.5 transition-all shadow-glow-blue hover:-translate-y-0.5 h-[36px] flex-1 lg:flex-none">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                                    Auto Sync
+                                </button>
+                                
+                                <div class="flex items-center bg-emerald-50 dark:bg-emerald-900/20 rounded-lg border border-emerald-100 dark:border-emerald-800/50 p-1 shadow-sm h-[36px]">
+                                    <select id="export-tahun" class="w-20 text-[10px] bg-transparent text-emerald-700 dark:text-emerald-400 font-bold border-none px-1 focus:outline-none cursor-pointer appearance-none text-center h-full">
+                                        <option value="">All Data</option>
+                                        <option value="2024">2024</option>
+                                        <option value="2025">2025</option>
+                                        <option value="2026">2026</option>
+                                        <option value="2027">2027</option>
+                                    </select>
+                                    <button onclick="exportToExcel()" class="bg-emerald-500 hover:bg-emerald-600 text-white text-[11px] font-bold px-3 rounded-md flex items-center gap-1 transition-all shadow-glow-emerald hover:-translate-y-0.5 h-full">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                                        Export
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Table Inner Container -->
+                        <div id="table-container" class="flex-1 overflow-y-auto overflow-x-auto custom-scrollbar bg-white/50 dark:bg-gray-900/50 px-1 pb-1">
+                            <table class="w-full text-left whitespace-nowrap" id="data-table">
+                                <thead>
+                                    <tr>
+                                        <th class="px-2 py-2.5 text-center text-[9px]">NO</th>
+                                        <th class="px-2 py-2.5 text-center text-[9px]">CONTROL NUMBER</th>
+                                        <th class="px-2 py-2.5 text-center w-[80px] max-w-[80px] whitespace-normal leading-tight text-[9px]">CALL NO<br>(082)</th>
+                                        <th class="px-2 py-2.5 text-center w-[80px] max-w-[80px] whitespace-normal leading-tight text-[9px]">CALL NO<br>(050/060)</th>
+                                        <th class="px-2 py-2.5 text-left text-[9px]">ACCESSION</th>
+                                        <th class="px-2 py-2.5 text-left min-w-[200px] text-[9px]">TITLE</th>
+                                        <th class="px-2 py-2.5 text-left text-[9px]">STAFF</th>
+                                        <th class="px-2 py-2.5 text-center text-[9px]">DATE</th>
+                                        <th class="px-2 py-2.5 text-left text-[9px]">STATUS</th>
+                                        <th class="px-2 py-2.5 text-left min-w-[120px] text-[9px]">AUDIT TRAIL</th>
+                                        <th class="px-2 py-2.5 text-center text-[9px]">ACTION</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="table-body" class="space-y-1">
+                                    <!-- Data Injected via JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <!-- Pagination -->
+                        <div id="pagination-controls" class="px-4 py-3 border-t border-gray-200 dark:border-gray-700 flex justify-between items-center bg-white/80 dark:bg-gray-800/80 backdrop-blur-md hidden">
+                            <span class="text-[10px] text-gray-500 dark:text-gray-400 font-semibold" id="page-info">Showing 0-0 of 0 records</span>
+                            <div class="flex gap-1.5">
+                                <button onclick="prevPage()" class="px-3 py-1.5 text-[10px] bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition-all shadow-sm font-bold hover-lift">Previous</button>
+                                <button onclick="nextPage()" class="px-3 py-1.5 text-[10px] bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition-all shadow-sm font-bold hover-lift">Next</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB: EXECUTIVE COLLECTION (Placeholder) -->
+                <div id="view-collection" class="tab-pane hidden flex-1 flex flex-col items-center justify-center">
+                    <div class="glass-panel p-8 rounded-3xl shadow-soft max-w-sm w-full text-center">
+                        <div class="w-16 h-16 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-glow-blue">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                        </div>
+                        <h3 class="text-lg font-extrabold text-gray-900 dark:text-white mb-2 font-montserrat">Executive Collection</h3>
+                        <p class="text-[11px] text-gray-500 dark:text-gray-400 leading-relaxed">This full collection list module is currently under development and will be released in the next update.</p>
+                    </div>
+                </div>
+
+                <!-- TAB: APPROVALS (Placeholder) -->
+                <div id="view-approvals" class="tab-pane hidden flex-1 flex flex-col items-center justify-center">
+                    <div class="glass-panel p-8 rounded-3xl shadow-soft max-w-sm w-full text-center">
+                        <div class="w-16 h-16 bg-orange-50 dark:bg-orange-900/30 text-orange-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-glow-orange">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        </div>
+                        <h3 class="text-lg font-extrabold text-gray-900 dark:text-white mb-2 font-montserrat">Approvals Queue</h3>
+                        <p class="text-[11px] text-gray-500 dark:text-gray-400 leading-relaxed">The dedicated staff approval and verification module is currently under development.</p>
+                    </div>
+                </div>
+
+                <!-- TAB: STAFF MANAGEMENT (Placeholder) -->
+                <div id="view-staff" class="tab-pane hidden flex-1 flex flex-col items-center justify-center">
+                    <div class="glass-panel p-8 rounded-3xl shadow-soft max-w-sm w-full text-center">
+                        <div class="w-16 h-16 bg-purple-50 dark:bg-purple-900/30 text-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-glow-purple">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                        </div>
+                        <h3 class="text-lg font-extrabold text-gray-900 dark:text-white mb-2 font-montserrat">Staff Management</h3>
+                        <p class="text-[11px] text-gray-500 dark:text-gray-400 leading-relaxed">The administrative staff management module is scheduled for the next release phase.</p>
+                    </div>
+                </div>
+
+                <!-- TAB: REPORTS & ANALYTICS (Placeholder) -->
+                <div id="view-reports" class="tab-pane hidden flex-1 flex flex-col items-center justify-center">
+                    <div class="glass-panel p-8 rounded-3xl shadow-soft max-w-sm w-full text-center">
+                        <div class="w-16 h-16 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-glow-emerald">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002-2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                        </div>
+                        <h3 class="text-lg font-extrabold text-gray-900 dark:text-white mb-2 font-montserrat">Advanced Analytics</h3>
+                        <p class="text-[11px] text-gray-500 dark:text-gray-400 leading-relaxed">Deep-dive analytical tools and custom report generation will be integrated here.</p>
+                    </div>
+                </div>
+
             </div>
+        </main>
+    </div>
+
+    <!-- ================== TOAST & LOADING ================== -->
+    <div id="toast" class="fixed bottom-6 right-6 transform translate-y-20 opacity-0 transition-all duration-300 bg-gray-900 text-white px-5 py-3.5 rounded-xl shadow-2xl z-50 flex items-center gap-3">
+        <div class="w-6 h-6 rounded-full bg-emerald-500/20 flex items-center justify-center shadow-glow-emerald">
+            <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
         </div>
-
+        <span id="toast-message" class="font-bold text-[11px]">Action completed successfully.</span>
     </div>
 
-    <div id="toast" class="fixed bottom-5 right-5 transform translate-y-20 opacity-0 transition-all duration-300 bg-gray-800 text-white px-4 py-3 rounded-lg shadow-xl z-50 flex items-center gap-3 font-medium">
-        <svg class="w-5 h-5 text-[#00b074]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-        <span id="toast-message">Data berjaya dikemaskini.</span>
+    <div id="loading-overlay" class="fixed inset-0 bg-white/60 dark:bg-black/60 backdrop-blur-md z-[100] flex flex-col items-center justify-center hidden transition-all">
+        <div class="glass-panel p-6 rounded-2xl shadow-2xl flex flex-col items-center">
+            <svg class="animate-spin h-8 w-8 text-indigo-600 dark:text-indigo-400 mb-4 drop-shadow-lg" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <p class="text-gray-900 dark:text-white font-extrabold text-[10px] font-montserrat animate-pulse uppercase tracking-widest" id="loading-text">Processing...</p>
+        </div>
     </div>
 
-    <div id="loading-overlay" class="fixed inset-0 bg-white/80 backdrop-blur-sm z-[100] flex flex-col items-center justify-center hidden">
-        <div class="animate-spin rounded-full h-12 w-12 border-[4px] border-[#003366] border-t-transparent mb-3"></div>
-        <p class="text-[#003366] font-bold font-montserrat animate-pulse" id="loading-text">Sedang Memproses...</p>
-    </div>
-
+    <!-- ================== EXACT PRESERVED JAVASCRIPT ================== -->
     <script>
+        /* =====================================================================
+           FUNGSI TOGGLE SIDEBAR (Animasi Teks Sahaja, Sesuai Syarat)
+           ===================================================================== */
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            
+            if (window.innerWidth < 1024) {
+                // Mod Mobile
+                sidebar.classList.toggle('-translate-x-full');
+                overlay.classList.toggle('hidden');
+            } else {
+                // Mod Desktop
+                sidebar.classList.toggle('sidebar-desktop-closed');
+            }
+        }
+
+        /* =====================================================================
+           FUNGSI PERTUKARAN TAB (TAB SWITCHING)
+           ===================================================================== */
+        function switchTab(tabId, clickedElement) {
+            // 1. Sembunyikan semua tab (panel paparan)
+            document.querySelectorAll('.tab-pane').forEach(pane => {
+                pane.classList.add('hidden');
+                pane.classList.remove('block');
+            });
+
+            // 2. Tunjukkan tab yang sedang dipilih
+            const activeTab = document.getElementById('view-' + tabId);
+            if (activeTab) {
+                activeTab.classList.remove('hidden');
+                if(tabId === 'dashboard') {
+                    activeTab.classList.add('block'); // Dashboard menggunakan paparan standard block/flex
+                }
+            }
+
+            // 3. Set semula (reset) rekaan warna untuk semua pautan (link) sidebar
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.className = 'nav-link flex items-center gap-4 px-4 py-3.5 text-indigo-100 hover:bg-[#1e40af] rounded-xl font-medium text-[13px] transition-colors';
+            });
+
+            // 4. Tambah rekaan warna aktif (biru terang) kepada pautan yang diklik
+            if (clickedElement) {
+                clickedElement.className = 'nav-link flex items-center gap-4 px-4 py-3.5 bg-blue-600 text-white shadow-sm rounded-xl font-medium text-[13px] transition-colors';
+            }
+
+            // 5. Kemaskini Tajuk Halaman (Header) berdasarkan tab
+            const pageTitle = document.getElementById('page-title');
+            const pageSubtitle = document.getElementById('page-subtitle');
+            
+            if (tabId === 'dashboard') {
+                pageTitle.innerHTML = `Welcome back, <span id="profile-name" class="uppercase text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400">${currentUserName || 'STAFF'}</span>!`;
+                pageSubtitle.textContent = "Here is the summary of executive collection management today.";
+            } else if (tabId === 'collection') {
+                pageTitle.innerHTML = "Executive Collection";
+                pageSubtitle.textContent = "Manage and view the full list of collection records.";
+            } else if (tabId === 'approvals') {
+                pageTitle.innerHTML = "Approvals Queue";
+                pageSubtitle.textContent = "Check status and approve pending files.";
+            } else if (tabId === 'staff') {
+                pageTitle.innerHTML = "Team Management";
+                pageSubtitle.textContent = "Supervise staff and update job roles.";
+            } else if (tabId === 'reports') {
+                pageTitle.innerHTML = "Reports & Analytics";
+                pageSubtitle.textContent = "Get detailed information about system metrics.";
+            }
+        }
+
+
         /* =====================================================================
            KONFIGURASI API (UNTUK HOSTING DI GITHUB/EXTERNAL)
            ===================================================================== */
@@ -354,7 +750,7 @@
                 fetch(GAS_WEB_APP_URL + "?action=getInitialData")
                     .then(response => response.json())
                     .then(data => { if(this.cb) this.cb(data); })
-                    .catch(error => { console.error('Fetch Error:', error); hideLoading(); showToast("Ralat mengambil data dari server."); });
+                    .catch(error => { console.error('Fetch Error:', error); hideLoading(); showToast("Error fetching data from server."); });
             },
             
             updateRow: function(record) { 
@@ -380,7 +776,7 @@
                 .catch(error => { 
                     console.error('[Fetch Error - updateRow]:', error); 
                     hideLoading(); 
-                    showToast("Gagal menyimpan ke Google Apps Script."); 
+                    showToast("Failed to save to Google Apps Script."); 
                 });
             }
         };
@@ -407,7 +803,7 @@
             const errorMsg = document.getElementById('login-error');
 
             if (!role || !password) {
-                errorMsg.textContent = "Sila lengkapkan pilihan dan kata laluan.";
+                errorMsg.textContent = "Please complete the selection and password.";
                 errorMsg.classList.remove('hidden'); return;
             }
 
@@ -427,16 +823,21 @@
                 localStorage.setItem('iku_role', currentUserRole);
                 localStorage.setItem('iku_name', currentUserName);
 
-                document.getElementById('profile-name').textContent = currentUserName;
+                // Kemaskini nama di dashboard overview text (dan dalam JS)
+                const nameSpan = document.getElementById('profile-name');
+                if(nameSpan) nameSpan.textContent = currentUserName;
+                
                 document.getElementById('profile-initial').textContent = currentUserName.charAt(0);
                 
                 document.getElementById('login-screen').classList.add('hidden');
                 document.getElementById('dashboard-screen').classList.remove('hidden');
-                setTimeout(() => document.getElementById('dashboard-screen').classList.remove('opacity-0'), 50);
+
+                // Return ke tab pertama (Dashboard) selepas log masuk
+                switchTab('dashboard', document.querySelector('.nav-link'));
 
                 fetchDataFromGoogleSheet();
             } else {
-                errorMsg.textContent = "Kata laluan tidak sah.";
+                errorMsg.textContent = "Invalid password.";
                 errorMsg.classList.remove('hidden');
             }
         }
@@ -450,12 +851,16 @@
                 currentUserName = savedName;
                 currentPage = 1;
 
-                document.getElementById('profile-name').textContent = currentUserName;
+                const nameSpan = document.getElementById('profile-name');
+                if(nameSpan) nameSpan.textContent = currentUserName;
+
                 document.getElementById('profile-initial').textContent = currentUserName.charAt(0);
 
                 document.getElementById('login-screen').classList.add('hidden');
                 document.getElementById('dashboard-screen').classList.remove('hidden');
-                setTimeout(() => document.getElementById('dashboard-screen').classList.remove('opacity-0'), 50);
+                
+                // Return ke tab pertama (Dashboard) jika auto-login
+                switchTab('dashboard', document.querySelector('.nav-link'));
 
                 fetchDataFromGoogleSheet();
             }
@@ -474,12 +879,8 @@
             currentUserRole = ""; 
             currentUserName = "";
 
-            const dashboard = document.getElementById('dashboard-screen');
-            dashboard.classList.add('opacity-0');
-            setTimeout(() => {
-                dashboard.classList.add('hidden');
-                document.getElementById('login-screen').classList.remove('hidden');
-            }, 500);
+            document.getElementById('dashboard-screen').classList.add('hidden');
+            document.getElementById('login-screen').classList.remove('hidden');
         }
 
         /* =====================================================================
@@ -492,7 +893,7 @@
         function hideLoading() { document.getElementById('loading-overlay').classList.add('hidden'); }
 
         function fetchDataFromGoogleSheet(isSilent = false) {
-            if (!isSilent) showLoading("Menyegerak Data dari Spreadsheet...");
+            if (!isSilent) showLoading("Syncing Data from Spreadsheet...");
             server.withSuccessHandler(function(data) {
                 dataset = data || [];
                 // Bila tarik data di background, kekalkan muka surat (preservePage = true)
@@ -578,20 +979,18 @@
                 });
 
                 if(Object.keys(groupedData).length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="11" class="px-4 py-8 text-center text-gray-500 font-medium bg-gray-50 italic">Tiada rekod memerlukan tindakan anda pada masa ini.</td></tr>`;
+                    tbody.innerHTML = `<tr><td colspan="11" class="px-5 py-10 text-center text-gray-500 font-medium italic">No records require your action at this time.</td></tr>`;
                 } else {
                     for (let staffName in groupedData) {
                         const staffRows = groupedData[staffName];
                         const groupHeader = document.createElement('tr');
-                        groupHeader.className = "bg-indigo-50 border-y-2 border-indigo-100 sticky top-[48px] z-10 shadow-sm"; 
+                        groupHeader.className = "bg-indigo-50 dark:bg-indigo-900/30 sticky top-[36px] z-10 hover:!bg-indigo-50 hover:scale-100 hover:shadow-none"; 
                         groupHeader.innerHTML = `
-                            <td colspan="11" class="px-4 py-3">
-                                <div class="flex justify-between items-center">
-                                    <div>
-                                        <span class="text-[10px] font-bold text-indigo-400 uppercase tracking-widest block">Koleksi Staf</span>
-                                        <span class="text-indigo-800 font-bold text-sm tracking-wide font-montserrat">${staffName}</span>
-                                        <span class="ml-2 bg-indigo-200 text-indigo-700 text-xs px-2 py-0.5 rounded-full font-bold">${staffRows.length} Rekod</span>
-                                    </div>
+                            <td colspan="11" class="px-4 py-2 !bg-indigo-50 dark:!bg-indigo-900/40">
+                                <div class="flex items-center gap-3">
+                                    <span class="text-[9px] font-bold text-indigo-500 uppercase tracking-widest">Staff Collection</span>
+                                    <span class="text-indigo-900 dark:text-indigo-200 font-extrabold text-[11px] tracking-wide">${staffName}</span>
+                                    <span class="bg-indigo-200 dark:bg-indigo-700 text-indigo-800 dark:text-indigo-100 text-[9px] px-2 py-0.5 rounded-full font-bold shadow-sm">${staffRows.length} Records</span>
                                 </div>
                             </td>
                         `;
@@ -599,7 +998,6 @@
 
                         staffRows.forEach(row => {
                             const tr = document.createElement('tr');
-                            tr.className = 'transition-colors hover:bg-gray-50';
                             tr.innerHTML = generateRowHTML(row, false, true); 
                             tbody.appendChild(tr);
                         });
@@ -615,19 +1013,19 @@
                 const paginatedData = filteredDataset.slice(startIndex, endIndex);
                 
                 if (paginatedData.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="11" class="px-4 py-8 text-center text-gray-500 font-medium bg-gray-50 italic">Tiada rekod dijumpai berdasarkan carian/tapisan anda.</td></tr>`;
+                    tbody.innerHTML = `<tr><td colspan="11" class="px-5 py-10 text-center text-gray-500 font-medium italic">No records found based on your search/filter.</td></tr>`;
                 }
 
                 paginatedData.forEach(row => {
                     const tr = document.createElement('tr');
                     tr.id = `row-${row.id}`;
-                    tr.className = editingId === row.id ? 'editing-row transition-colors' : 'transition-colors group';
+                    tr.className = editingId === row.id ? 'editing-row' : '';
                     tr.innerHTML = generateRowHTML(row, editingId === row.id, false);
                     tbody.appendChild(tr);
                 });
                 
                 const infoEnd = Math.min(startIndex + rowsPerPage, filteredDataset.length);
-                document.getElementById('page-info').textContent = `Memaparkan ${filteredDataset.length > 0 ? startIndex + 1 : 0}-${infoEnd} dari ${filteredDataset.length} rekod`;
+                document.getElementById('page-info').textContent = `Showing ${filteredDataset.length > 0 ? startIndex + 1 : 0} to ${infoEnd} of ${filteredDataset.length} records`;
             }
 
             updateDashboardStats();
@@ -643,9 +1041,9 @@
         // FUNGSI BARU UNTUK KELULUSAN SATU PERSATU (ROSLI)
         // =====================================================================
         function approveSingleRow(id) {
-            if(!confirm(`Adakah anda pasti untuk meluluskan rekod ini?`)) return;
+            if(!confirm(`Are you sure you want to approve this record?`)) return;
             
-            showLoading("Memproses Kelulusan...");
+            showLoading("Approving...");
             
             const index = dataset.findIndex(r => r.id === id);
             if (index === -1) {
@@ -668,7 +1066,7 @@
             // Hantar ke Google Sheets
             server.withSuccessHandler(function() {
                 hideLoading();
-                showToast("Rekod berjaya diluluskan!");
+                showToast("Record successfully approved!");
                 fetchDataFromGoogleSheet(); // Auto-refresh data dari server (memelihara page)
             }).updateRow(record);
         }
@@ -682,46 +1080,46 @@
             if (isEditing && !isReadonlyView) {
                 
                 let call082HTML = (currentUserRole === 'staff')
-                    ? `<td class="px-3 py-4 text-center text-gray-700 bg-gray-50 whitespace-normal break-words w-[100px] max-w-[100px] leading-tight">${row.callNo082}<input type="hidden" id="edit-c082-${row.id}" value="${row.callNo082}"></td>`
-                    : `<td class="px-2 py-3"><input type="text" id="edit-c082-${row.id}" value="${row.callNo082}" class="w-full text-xs px-2 py-1.5 border border-blue-300 rounded shadow-inner focus:outline-none focus:border-[#003366] bg-white font-inter text-center"></td>`;
+                    ? `<td class="px-2 py-2 text-center whitespace-normal break-words w-[80px] max-w-[80px] leading-tight font-medium text-gray-900 text-[10px]">${row.callNo082}<input type="hidden" id="edit-c082-${row.id}" value="${row.callNo082}"></td>`
+                    : `<td class="px-2 py-2"><input type="text" id="edit-c082-${row.id}" value="${row.callNo082}" class="w-full text-[10px] px-2 py-1.5 border border-blue-300 rounded focus:border-indigo-500 focus:ring-1 focus:ring-indigo-200 text-center transition-all bg-white text-gray-900 shadow-sm"></td>`;
 
                 let statusSelectHTML = '';
                 if (currentUserRole === 'staff') {
                     let isStaffCompleted = (row.status === 'Completed' || row.status === 'Pending For Approval');
                     statusSelectHTML = `
-                        <select id="edit-status-${row.id}" class="w-full text-xs px-2 py-1.5 border border-blue-300 rounded shadow-inner bg-white font-inter font-bold text-gray-700">
+                        <select id="edit-status-${row.id}" class="w-full text-[10px] px-1 py-1.5 border border-blue-300 rounded focus:border-indigo-500 font-bold bg-white text-gray-900 shadow-sm transition-all">
                             <option value="Completed" ${isStaffCompleted ? 'selected' : ''}>Completed</option>
-                            <option value="incomplete" ${!isStaffCompleted ? 'selected' : ''}>incomplete</option>
+                            <option value="incomplete" ${!isStaffCompleted ? 'selected' : ''}>Incomplete</option>
                         </select>
                     `;
                 } else {
                     statusSelectHTML = `
-                        <select id="edit-status-${row.id}" class="w-full text-xs px-2 py-1.5 border border-blue-300 rounded shadow-inner bg-white font-inter font-bold text-gray-700">
+                        <select id="edit-status-${row.id}" class="w-full text-[10px] px-1 py-1.5 border border-blue-300 rounded focus:border-indigo-500 font-bold bg-white text-gray-900 shadow-sm transition-all">
                             ${statusOptions.map(opt => `<option value="${opt}" ${row.status === opt ? 'selected' : ''}>${opt}</option>`).join('')}
                         </select>
                     `;
                 }
 
                 return `
-                    <td class="px-4 py-3 text-center text-gray-400 font-medium">${row.no}</td>
-                    <td class="px-2 py-3"><input type="text" id="edit-ctrl-${row.id}" value="${row.controlNo}" class="w-full text-xs px-2 py-1.5 border border-blue-300 rounded shadow-inner focus:outline-none focus:border-[#003366] bg-white font-inter text-center"></td>
+                    <td class="px-2 py-2 text-center text-gray-500 font-bold text-[10px]">${row.no}</td>
+                    <td class="px-2 py-2"><input type="text" id="edit-ctrl-${row.id}" value="${row.controlNo}" class="w-full text-[10px] px-2 py-1.5 border border-blue-300 rounded focus:border-indigo-500 text-center transition-all bg-white text-gray-900 shadow-sm"></td>
                     ${call082HTML}
-                    <td class="px-2 py-3"><input type="text" id="edit-c050-${row.id}" value="${row.callNo050}" class="w-full text-xs px-2 py-1.5 border border-blue-300 rounded shadow-inner focus:outline-none focus:border-[#003366] bg-white font-inter text-center"></td>
-                    <td class="px-3 py-4 font-semibold text-[#003366] bg-gray-50">${row.accession}</td>
-                    <td class="px-4 py-4 whitespace-normal max-w-[250px] break-words font-medium leading-snug text-left bg-gray-50">${row.title}</td>
-                    <td class="px-2 py-3">
-                        <select id="edit-staff-${row.id}" class="w-full text-xs px-2 py-1.5 border border-blue-300 rounded shadow-inner bg-white font-semibold text-[#003366] font-inter">
+                    <td class="px-2 py-2"><input type="text" id="edit-c050-${row.id}" value="${row.callNo050}" class="w-full text-[10px] px-2 py-1.5 border border-blue-300 rounded focus:border-indigo-500 text-center transition-all bg-white text-gray-900 shadow-sm"></td>
+                    <td class="px-2 py-2 font-extrabold text-indigo-700 text-[10px]">${row.accession}</td>
+                    <td class="px-2 py-2 whitespace-normal min-w-[200px] break-words font-semibold leading-snug text-left text-gray-900 text-[11px]">${row.title}</td>
+                    <td class="px-2 py-2">
+                        <select id="edit-staff-${row.id}" class="w-full text-[10px] px-1 py-1.5 border border-blue-300 rounded focus:border-indigo-500 font-bold text-indigo-700 shadow-sm transition-all bg-white">
                             <option value="${row.staff}" hidden>${displayStaff}</option>
                             ${staffOptions.map(opt => `<option value="${opt}" ${row.staff === opt ? 'selected' : ''}>${opt}</option>`).join('')}
                         </select>
                     </td>
-                    <td class="px-3 py-4 text-gray-500 bg-gray-50 text-center">${formatDisplayDate(row.date)}</td>
-                    <td class="px-2 py-3">${statusSelectHTML}</td>
-                    <td class="px-3 py-2 bg-gray-50 border-x border-gray-100 rounded text-[10px] text-gray-400 text-center italic">Audit Trail locked.</td>
-                    <td class="px-4 py-3 text-center align-middle">
-                        <div class="flex flex-col gap-1.5 justify-center items-center">
-                            <button type="button" onclick="saveRow(${row.id})" class="bg-[#00b074] hover:bg-green-600 text-white p-1.5 rounded-md shadow-sm transition w-8 h-8 flex items-center justify-center" title="Simpan Rekod"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></button>
-                            <button type="button" onclick="cancelEdit()" class="bg-gray-400 hover:bg-gray-500 text-white p-1.5 rounded-md shadow-sm transition w-8 h-8 flex items-center justify-center" title="Batal"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+                    <td class="px-2 py-2 text-center font-medium text-gray-600 text-[10px]">${formatDisplayDate(row.date)}</td>
+                    <td class="px-2 py-2">${statusSelectHTML}</td>
+                    <td class="px-2 py-2 rounded text-[9px] text-gray-400 text-left italic font-medium">Audit Trail locked.</td>
+                    <td class="px-2 py-2 text-center align-middle">
+                        <div class="flex gap-1.5 justify-center">
+                            <button type="button" onclick="saveRow(${row.id})" class="bg-emerald-500 hover:bg-emerald-600 text-white p-1.5 rounded-lg shadow-glow-emerald hover:-translate-y-0.5 transition-all" title="Save Record"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></button>
+                            <button type="button" onclick="cancelEdit()" class="bg-gray-400 hover:bg-gray-500 text-white p-1.5 rounded-lg shadow-sm hover:-translate-y-0.5 transition-all" title="Cancel"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
                         </div>
                     </td>
                 `;
@@ -731,44 +1129,45 @@
             // MODE BACA (READ MODE)
             // ============================
             const currentStatusLower = (row.status || "").toLowerCase().trim();
-            let statusBadge = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold bg-gray-100 text-gray-600 uppercase tracking-wider">${row.status || '-'}</span>`;
+            let statusBadge = `<span class="inline-flex items-center px-2 py-1 rounded-md text-[9px] font-bold bg-gray-100 text-gray-600 uppercase tracking-wider shadow-sm"><span class="w-1.5 h-1.5 rounded-full bg-gray-400 mr-1.5"></span>${row.status || '-'}</span>`;
             
-            if (currentStatusLower === 'completed') statusBadge = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold bg-green-100 text-[#00b074] uppercase tracking-wider"><svg class="mr-1.5 h-2 w-2 text-[#00b074]" fill="currentColor" viewBox="0 0 8 8"><circle cx="4" cy="4" r="3" /></svg>Completed</span>`;
-            else if (currentStatusLower === 'incomplete') statusBadge = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold bg-red-100 text-red-700 uppercase tracking-wider"><svg class="mr-1.5 h-2 w-2 text-red-600" fill="currentColor" viewBox="0 0 8 8"><circle cx="4" cy="4" r="3" /></svg>Incomplete</span>`;
-            else if (currentStatusLower === 'rejected') statusBadge = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold bg-red-100 text-red-700 uppercase tracking-wider"><svg class="mr-1.5 h-2 w-2 text-red-600" fill="currentColor" viewBox="0 0 8 8"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>Rejected</span>`;
-            else if (currentStatusLower === 'pending for approval') statusBadge = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold bg-blue-100 text-blue-700 uppercase tracking-wider"><svg class="mr-1.5 h-2 w-2 text-blue-600" fill="currentColor" viewBox="0 0 8 8"><circle cx="4" cy="4" r="3" /></svg>Pending</span>`;
+            if (currentStatusLower === 'completed') statusBadge = `<span class="inline-flex items-center px-2 py-1 rounded-md text-[9px] font-bold bg-emerald-50 text-emerald-600 border border-emerald-100 uppercase tracking-wider shadow-sm"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5 shadow-[0_0_5px_rgba(16,185,129,0.8)]"></span>Completed</span>`;
+            else if (currentStatusLower === 'incomplete') statusBadge = `<span class="inline-flex items-center px-2 py-1 rounded-md text-[9px] font-bold bg-red-50 text-red-600 border border-red-100 uppercase tracking-wider shadow-sm"><span class="w-1.5 h-1.5 rounded-full bg-red-500 mr-1.5 shadow-[0_0_5px_rgba(239,68,68,0.8)]"></span>Incomplete</span>`;
+            else if (currentStatusLower === 'rejected') statusBadge = `<span class="inline-flex items-center px-2 py-1 rounded-md text-[9px] font-bold bg-red-50 text-red-600 border border-red-100 uppercase tracking-wider shadow-sm"><span class="w-1.5 h-1.5 rounded-full bg-red-500 mr-1.5"></span>Rejected</span>`;
+            else if (currentStatusLower === 'pending for approval') statusBadge = `<span class="inline-flex items-center px-2 py-1 rounded-md text-[9px] font-bold bg-orange-50 text-orange-600 border border-orange-100 uppercase tracking-wider shadow-sm"><span class="w-1.5 h-1.5 rounded-full bg-orange-500 mr-1.5 shadow-[0_0_5px_rgba(249,115,22,0.8)]"></span>Pending</span>`;
 
             let actionHtml = '';
             if (isReadonlyView) {
                 if (currentUserRole === 'rosli') {
                     // Butang kelulusan satu persatu
-                    actionHtml = `<button type="button" onclick="approveSingleRow(${row.id})" class="text-[#00b074] hover:text-white bg-green-50 hover:bg-[#00b074] p-2 rounded-lg transition-colors outline-none" title="Luluskan Rekod"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></button>`;
+                    actionHtml = `<button type="button" onclick="approveSingleRow(${row.id})" class="text-emerald-500 hover:text-white bg-emerald-50 hover:bg-emerald-500 p-1.5 rounded-lg transition-all shadow-sm hover:shadow-glow-emerald" title="Approve Record"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></button>`;
                 } else {
-                    actionHtml = `<span class="text-gray-300 italic text-[10px]">Tiada Aksi</span>`;
+                    actionHtml = `<span class="text-gray-300 italic text-[9px] font-medium">—</span>`;
                 }
             } else {
-                actionHtml = `<button type="button" onclick="editRow(${row.id})" class="text-blue-500 hover:text-white bg-blue-50 hover:bg-[#003366] p-2 rounded-lg transition-colors outline-none" title="Kemaskini Rekod"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg></button>`;
+                actionHtml = `<button type="button" onclick="editRow(${row.id})" class="text-indigo-500 hover:text-white bg-indigo-50 hover:bg-indigo-500 p-1.5 rounded-lg transition-all shadow-sm hover:shadow-glow-blue" title="Edit Record"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg></button>`;
             }
 
             return `
-                <td class="px-4 py-4 text-center font-medium text-gray-500">${row.no}</td>
-                <td class="px-3 py-4 text-center text-gray-700">${row.controlNo}</td>
-                <td class="px-3 py-4 text-center text-gray-700 whitespace-normal break-words w-[100px] max-w-[100px] leading-tight">${row.callNo082}</td>
-                <td class="px-3 py-4 text-center text-gray-700 whitespace-normal break-words w-[100px] max-w-[100px] leading-tight">${row.callNo050}</td>
-                <td class="px-3 py-4 font-semibold text-[#003366]">${row.accession}</td>
-                <td class="px-4 py-4 whitespace-normal max-w-[250px] break-words font-medium leading-snug text-left">${row.title}</td>
-                <td class="px-3 py-4 font-bold text-[#003366]">${displayStaff}</td>
-                <td class="px-3 py-4 text-center text-gray-500">${formatDisplayDate(row.date)}</td>
-                <td class="px-3 py-4">${statusBadge}</td>
-                <td class="px-4 py-3 min-w-[180px]">
-                    <div class="flex flex-col gap-1.5 text-[10px] bg-gray-50 p-2 rounded-lg border border-gray-100">
-                        <div class="flex items-start">
-                            <span class="text-[#00b074] mr-2"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></span>
-                            <span class="leading-tight"><span class="font-bold text-gray-600 uppercase">Approved:</span> ${row.approvedBy ? `<span class="text-[#00b074] font-bold ml-1">${row.approvedBy}</span>` : '<span class="text-gray-400 italic ml-1">N/A</span>'} ${row.approvedDate ? `<span class="text-gray-400 ml-1">(${formatDisplayDate(row.approvedDate)})</span>` : ''}</span>
-                        </div>
+                <td class="px-2 py-2 text-center font-bold text-gray-500 text-[10px]">${row.no}</td>
+                <td class="px-2 py-2 text-center font-medium text-[10px]">${row.controlNo}</td>
+                <td class="px-2 py-2 text-center font-medium whitespace-normal break-words w-[80px] max-w-[80px] leading-tight text-[10px]">${row.callNo082}</td>
+                <td class="px-2 py-2 text-center font-medium whitespace-normal break-words w-[80px] max-w-[80px] leading-tight text-[10px]">${row.callNo050}</td>
+                <td class="px-2 py-2 font-extrabold text-indigo-600 dark:text-indigo-400 text-[10px]">${row.accession}</td>
+                <td class="px-2 py-2 whitespace-normal break-words font-semibold leading-relaxed text-left text-[11px] min-w-[200px]">${row.title}</td>
+                <td class="px-2 py-2 font-bold text-gray-800 dark:text-gray-200 text-[10px]">${displayStaff}</td>
+                <td class="px-2 py-2 text-center font-medium text-[10px]">${formatDisplayDate(row.date)}</td>
+                <td class="px-2 py-2">${statusBadge}</td>
+                <td class="px-2 py-2 text-left min-w-[120px]">
+                    <div class="text-[9px] flex items-center gap-1.5 whitespace-normal leading-tight">
+                        ${row.approvedBy 
+                            ? `<span class="w-4 h-4 rounded-full bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center shrink-0"><svg class="w-2.5 h-2.5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></span>
+                               <span class="text-gray-500 dark:text-gray-400 font-medium">By <span class="text-gray-800 dark:text-gray-200 font-bold">${row.approvedBy}</span></span>` 
+                            : `<span class="w-4 h-4 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center shrink-0"><span class="w-1 h-1 rounded-full bg-gray-400"></span></span>
+                               <span class="text-gray-400 italic">Pending</span>`} 
                     </div>
                 </td>
-                <td class="px-4 py-4 text-center min-w-[90px]">${actionHtml}</td>
+                <td class="px-2 py-2 text-center">${actionHtml}</td>
             `;
         }
 
@@ -805,10 +1204,10 @@
                 date: newDate
             };
 
-            showLoading("Menyimpan ke Spreadsheet...");
+            showLoading("Saving to Spreadsheet...");
             server.withSuccessHandler(function(success) {
                 hideLoading();
-                showToast("Rekod berjaya dikemaskini.");
+                showToast("Record successfully updated.");
                 
                 dataset[index] = updatedRecord;
                 editingId = null;
@@ -825,21 +1224,21 @@
         function updateClock() {
             const now = new Date();
             document.getElementById('clock-time').textContent = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            document.getElementById('clock-date').textContent = now.toLocaleDateString('en-GB', options).toUpperCase();
+            const options = { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' };
+            document.getElementById('clock-date').textContent = now.toLocaleDateString('en-GB', options);
         }
         setInterval(updateClock, 1000); updateClock();
 
         function showToast(msg) {
             const toast = document.getElementById('toast');
-            document.getElementById('toast-message').textContent = msg || "Data berjaya dikemaskini.";
+            document.getElementById('toast-message').textContent = msg || "Successfully updated.";
             toast.classList.remove('translate-y-20', 'opacity-0');
             setTimeout(() => { toast.classList.add('translate-y-20', 'opacity-0'); }, 3000);
         }
 
         // FUNGSI MUAT TURUN EXCEL
         function exportToExcel() {
-            showLoading("Menjana Fail Excel...");
+            showLoading("Generating Excel File...");
             
             setTimeout(() => {
                 const exportTahun = document.getElementById('export-tahun').value;
@@ -851,7 +1250,7 @@
                 
                 if (dataToExport.length === 0) {
                     hideLoading();
-                    alert("Tiada rekod dijumpai untuk tahun yang dipilih.");
+                    alert("No records found for the selected year.");
                     return;
                 }
 
@@ -871,7 +1270,7 @@
 
                 const worksheet = XLSX.utils.json_to_sheet(cleanData);
                 const workbook = XLSX.utils.book_new();
-                XLSX.utils.book_append_sheet(workbook, worksheet, "Laporan IKU");
+                XLSX.utils.book_append_sheet(workbook, worksheet, "IKU Report");
 
                 const colWidths = [
                     { wch: 5 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, 
@@ -880,11 +1279,11 @@
                 ];
                 worksheet['!cols'] = colWidths;
 
-                const fileName = exportTahun === "" ? "Laporan_IKU_Keseluruhan.xlsx" : `Laporan_IKU_${exportTahun}.xlsx`;
+                const fileName = exportTahun === "" ? "IKU_Report_Overall.xlsx" : `IKU_Report_${exportTahun}.xlsx`;
                 XLSX.writeFile(workbook, fileName);
                 
                 hideLoading();
-                showToast("Berjaya memuat turun fail Excel.");
+                showToast("Excel file successfully downloaded.");
             }, 500);
         }
 
@@ -913,35 +1312,62 @@
                 statusCounts[chartStatus] = (statusCounts[chartStatus] || 0) + 1;
             });
 
-            document.getElementById('stat-total').textContent = total;
-            document.getElementById('stat-completed').textContent = completed;
+            document.getElementById('stat-total').textContent = total.toLocaleString();
+            document.getElementById('stat-completed').textContent = completed.toLocaleString();
             document.getElementById('stat-pending').textContent = pending;
             document.getElementById('stat-staff').textContent = Object.keys(staffCounts).length; // Aktif staff
-            document.getElementById('insight-pending-count').textContent = pending + ' Rekod';
+            document.getElementById('insight-pending-count').textContent = pending + ' Records';
 
             let topStaff = "-", maxCount = 0;
             for(let s in staffCounts) { if(staffCounts[s] > maxCount) { maxCount = staffCounts[s]; topStaff = s; } }
             document.getElementById('insight-top-staff').textContent = topStaff;
-            document.getElementById('insight-top-count').textContent = maxCount + ' Rekod Di Jumpai';
+            document.getElementById('insight-top-count').textContent = maxCount + ' Records';
 
             updateCharts(staffCounts, statusCounts);
         }
+
+        // Global check for dark mode to style charts properly
+        const isDarkMode = () => document.documentElement.classList.contains('dark');
 
         function updateCharts(staffCounts, statusCounts) {
             const statusCtx = document.getElementById('statusChart').getContext('2d');
             if (statusChartInstance) statusChartInstance.destroy();
             
+            const textColor = isDarkMode() ? '#94a3b8' : '#64748b';
+            const gridColor = isDarkMode() ? '#334155' : '#f1f5f9';
+
             statusChartInstance = new Chart(statusCtx, {
                 type: 'doughnut',
                 data: {
                     labels: ['Completed', 'Pending Approval', 'Incomplete'],
                     datasets: [{
                         data: [statusCounts['Completed'], statusCounts['Pending Approval'], statusCounts['Incomplete']],
-                        backgroundColor: ['#00b074', '#3b82f6', '#ef4444'],
-                        borderWidth: 0, hoverOffset: 4
+                        backgroundColor: ['#10b981', '#f59e0b', '#ef4444'],
+                        borderWidth: 0, 
+                        hoverOffset: 8
                     }]
                 },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { usePointStyle: true, boxWidth: 8, font: { family: "'Inter', sans-serif", size: 10 } } } }, cutout: '65%' }
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: false, 
+                    layout: { padding: { top: 10, bottom: 10 } },
+                    animation: { animateScale: true, animateRotate: true },
+                    plugins: { 
+                        legend: { 
+                            position: 'bottom', 
+                            labels: { usePointStyle: true, boxWidth: 8, font: { family: "'Inter', sans-serif", size: 10 }, color: textColor } 
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                            titleFont: { family: "'Inter', sans-serif", size: 13 },
+                            bodyFont: { family: "'Inter', sans-serif", size: 12 },
+                            padding: 10,
+                            cornerRadius: 8,
+                            displayColors: true
+                        }
+                    }, 
+                    cutout: '70%' 
+                }
             });
 
             const fixedOrder = ["FATIHAH", "FAZILAH", "SAKINAH", "HUSNA", "ADMIN"];
@@ -954,14 +1380,57 @@
                 type: 'bar',
                 data: {
                     labels: fixedOrder,
-                    datasets: [{ label: 'Jumlah Rekod', data: staffData, backgroundColor: fixedColors, borderRadius: 6, barThickness: 50 }]
+                    datasets: [{ 
+                        label: 'Total Records', 
+                        data: staffData, 
+                        backgroundColor: fixedColors, 
+                        borderRadius: 6, 
+                        barThickness: 45,
+                        hoverBackgroundColor: '#818cf8'
+                    }]
                 },
                 options: {
-                    responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
-                    scales: { y: { beginAtZero: true, ticks: { stepSize: 100, font: { family: "'Inter', sans-serif", size: 10 } }, grid: { borderDash: [4, 4] } }, x: { grid: { display: false }, ticks: { font: { family: "'Inter', sans-serif", size: 11, weight: '600' }, color: '#6b7280' } } }
+                    responsive: true, 
+                    maintainAspectRatio: false, 
+                    animation: {
+                        y: { duration: 1000, easing: 'easeOutQuart' }
+                    },
+                    plugins: { 
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                            titleFont: { family: "'Inter', sans-serif", size: 12 },
+                            bodyFont: { family: "'Inter', sans-serif", size: 13, weight: 'bold' },
+                            padding: 10,
+                            cornerRadius: 8
+                        }
+                    },
+                    scales: { 
+                        y: { 
+                            beginAtZero: true, 
+                            border: {display: false}, 
+                            ticks: { stepSize: 100, font: { family: "'Inter', sans-serif", size: 10 }, color: textColor }, 
+                            grid: { color: gridColor, drawBorder: false } 
+                        }, 
+                        x: { 
+                            grid: { display: false }, 
+                            border: {display: false}, 
+                            ticks: { font: { family: "'Inter', sans-serif", size: 11, weight: '600' }, color: textColor } 
+                        } 
+                    } 
                 }
             });
         }
+
+        // MutationObserver to listen for Dark Mode changes and re-render charts
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.attributeName === 'class' && currentUserRole !== "") {
+                    updateDashboardStats(); // Re-trigger chart rendering with new colors
+                }
+            });
+        });
+        observer.observe(document.documentElement, { attributes: true });
 
         // =====================================================================
         // INISIALISASI & AUTO SYNC BACKGROUND
