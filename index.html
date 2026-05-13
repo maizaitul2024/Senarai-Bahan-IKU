@@ -66,11 +66,11 @@
         .hover-lift:hover { transform: translateY(-3px); box-shadow: 0 10px 20px -8px rgba(0, 0, 0, 0.15); }
         .dark .hover-lift:hover { box-shadow: 0 10px 20px -8px rgba(0, 0, 0, 0.5); }
 
-        /* Table Styling */
+        /* Table Styling Overrides: DIPERBESARKAN TULISAN & DIBENARKAN WRAP */
         table { border-collapse: separate; border-spacing: 0 3px; width: 100%; table-layout: auto; }
         th { font-weight: 700; font-size: 0.75rem; letter-spacing: 0.05em; text-transform: uppercase; } /* 12px */
-        .table-row { transition: all 0.2s ease; box-shadow: 0 1px 2px rgba(0,0,0,0.02); }
-        .table-cell { 
+        #table-body tr { transition: all 0.2s ease; box-shadow: 0 1px 2px rgba(0,0,0,0.02); }
+        #table-body td { 
             background-color: var(--row-bg, #ffffff); 
             border-top: 1px solid transparent; border-bottom: 1px solid transparent;
             font-size: 0.875rem; /* 14px */
@@ -78,14 +78,14 @@
             padding-top: 0.75rem;
             padding-bottom: 0.75rem;
         }
-        .table-cell:first-child { border-top-left-radius: 6px; border-bottom-left-radius: 6px; border-left: 1px solid transparent; }
-        .table-cell:last-child { border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-right: 1px solid transparent; }
+        #table-body td:first-child { border-top-left-radius: 6px; border-bottom-left-radius: 6px; border-left: 1px solid transparent; }
+        #table-body td:last-child { border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-right: 1px solid transparent; }
         
-        .dark .table-cell { --row-bg: #1e293b; color: #e2e8f0; }
-        .dark .table-row:hover .table-cell { --row-bg: #334155; }
+        .dark #table-body td { --row-bg: #1e293b; color: #e2e8f0; }
+        .dark #table-body tr:hover td { --row-bg: #334155; }
         
-        .table-row:hover { transform: scale(1.002); box-shadow: 0 3px 10px rgba(0,0,0,0.05); z-index: 10; position: relative; }
-        .table-row:hover .table-cell { background-color: var(--row-hover, #f8fafc) !important; }
+        #table-body tr:hover { transform: scale(1.002); box-shadow: 0 3px 10px rgba(0,0,0,0.05); z-index: 10; position: relative; }
+        #table-body tr:hover td { background-color: var(--row-hover, #f8fafc) !important; }
         
         /* Table Header warna disamakan dengan Sidebar */
         thead th { 
@@ -94,8 +94,12 @@
             color: #ffffff !important;
             backdrop-filter: blur(8px);
         }
+        .dark thead th { 
+            background: linear-gradient(180deg, #1e1b4b 0%, #312e81 100%) !important; 
+            color: #ffffff !important; 
+        }
 
-        /* Sidebar Styling */
+        /* Sidebar Styling & Collapsible Logic */
         aside#sidebar { 
             transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
             width: 240px;
@@ -104,12 +108,11 @@
         
         .nav-link { transition: all 0.3s ease !important; position: relative; border-radius: 10px !important; margin-bottom: 3px; cursor: pointer; }
         .nav-link:hover { transform: translateX(3px); background-color: rgba(255,255,255,0.1) !important; }
-        .nav-link.active-link { 
+        .nav-link.bg-blue-600 { 
             background: linear-gradient(90deg, rgba(99, 102, 241, 0.2) 0%, transparent 100%) !important; 
             border-left: 3px solid #818cf8 !important; 
             box-shadow: inset 1px 0 0 rgba(255,255,255,0.1) !important;
             border-radius: 0 10px 10px 0 !important;
-            color: white !important;
         }
 
         .sidebar-desktop-closed { width: 72px !important; margin-left: 0 !important; }
@@ -123,6 +126,8 @@
         .sidebar-desktop-closed .profile-details { display: none; }
 
         .sparkline { position: absolute; bottom: -4px; left: 0; width: 100%; height: 40px; pointer-events: none; opacity: 0.4; transition: opacity 0.3s; }
+        .hover-lift:hover .sparkline { opacity: 0.8; }
+
         input:focus, select:focus { outline: none; border-color: #6366f1 !important; box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.15) !important; }
         .dark input, .dark select { background-color: #1e293b; color: #f8fafc; border-color: #334155; }
     </style>
@@ -154,7 +159,7 @@
                     </select>
                 </div>
 
-                <div id="password-container" class="hidden animate-[fadeIn_0.3s_ease-out]">
+                <div id="password-container" class="animate-[fadeIn_0.3s_ease-out]">
                     <label class="block text-[10px] font-bold text-gray-500 dark:text-gray-400 mb-1.5 uppercase tracking-widest">Password</label>
                     <input type="password" id="login-password" placeholder="••••••••" class="w-full border border-gray-200 dark:border-gray-700 bg-white/50 dark:bg-gray-800/50 rounded-lg px-3 py-2.5 text-xs dark:text-white backdrop-blur-sm transition-all shadow-sm">
                 </div>
@@ -194,23 +199,23 @@
                 </div>
 
                 <nav class="px-3 py-3 space-y-1" id="main-nav">
-                    <a onclick="switchTab('dashboard', this)" class="nav-link text-indigo-100 flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-[11px]">
+                    <a onclick="switchTab('dashboard', this)" class="nav-link flex items-center gap-3 px-3 py-2.5 bg-blue-600 text-white shadow-sm rounded-lg font-medium text-[11px] transition-colors">
                         <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
                         <span class="nav-text whitespace-nowrap">Dashboard</span>
                     </a>
-                    <a onclick="switchTab('collection', this)" class="nav-link text-indigo-100 flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-[11px]">
+                    <a onclick="switchTab('collection', this)" class="nav-link flex items-center gap-3 px-3 py-2.5 text-indigo-100 hover:bg-[#1e40af] rounded-lg font-medium text-[11px] transition-colors">
                         <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
                         <span class="nav-text whitespace-nowrap">Records</span>
                     </a>
-                    <a onclick="switchTab('approvals', this)" class="nav-link text-indigo-100 flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-[11px]">
+                    <a onclick="switchTab('approvals', this)" class="nav-link flex items-center gap-3 px-3 py-2.5 text-indigo-100 hover:bg-[#1e40af] rounded-lg font-medium text-[11px] transition-colors">
                         <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                         <span class="nav-text whitespace-nowrap">Approvals</span>
                     </a>
-                    <a onclick="switchTab('staff', this)" class="nav-link text-indigo-100 flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-[11px]">
+                    <a onclick="switchTab('staff', this)" class="nav-link flex items-center gap-3 px-3 py-2.5 text-indigo-100 hover:bg-[#1e40af] rounded-lg font-medium text-[11px] transition-colors">
                         <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
                         <span class="nav-text whitespace-nowrap">Staff</span>
                     </a>
-                    <a onclick="switchTab('reports', this)" class="nav-link text-indigo-100 flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-[11px]">
+                    <a onclick="switchTab('reports', this)" class="nav-link flex items-center gap-3 px-3 py-2.5 text-indigo-100 hover:bg-[#1e40af] rounded-lg font-medium text-[11px] transition-colors">
                         <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002-2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
                         <span class="nav-text whitespace-nowrap">Analytics</span>
                     </a>
@@ -275,97 +280,209 @@
                     
                     <!-- TAB: DASHBOARD -->
                     <div id="view-dashboard" class="tab-pane block w-full space-y-5">
-                        <div id="filter-container-dashboard"></div>
-                        <div id="kpi-container-dashboard" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4"></div>
-                        <div id="charts-container-dashboard" class="grid grid-cols-1 lg:grid-cols-4 gap-5"></div>
-                    </div>
+                        <!-- Filters Area -->
+                        <div class="glass-panel p-3 flex flex-wrap items-center gap-2 border-b border-gray-200 dark:border-gray-700 bg-white/50 dark:bg-gray-800/50 shrink-0 rounded-2xl shadow-soft">
+                            <div class="flex-1 min-w-[200px] relative">
+                                <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                                <input type="text" id="search-input" onkeyup="applyFilters()" placeholder="Search Title or Accession..." class="w-full text-xs border border-gray-200 dark:border-gray-600 rounded-lg pl-8 pr-3 py-1.5 h-[36px] bg-gray-50/50 dark:bg-gray-900/50 focus:bg-white dark:focus:bg-gray-800 transition-all font-medium">
+                            </div>
+                            <div class="flex flex-wrap items-center gap-2">
+                                <div class="w-32">
+                                    <select id="filter-staff" onchange="applyFilters()" class="w-full text-[11px] border border-gray-200 dark:border-gray-600 rounded-lg pl-3 pr-7 py-2 h-[36px] bg-white dark:bg-gray-800 cursor-pointer appearance-none text-gray-700 dark:text-gray-200 font-semibold shadow-sm text-ellipsis overflow-hidden whitespace-nowrap" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%239ca3af%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E'); background-position: right 0.5rem center; background-repeat: no-repeat; background-size: 1.2em;">
+                                        <option value="">Staff: All</option>
+                                        <option value="-">-</option>
+                                        <option value="FATIHAH">FATIHAH</option>
+                                        <option value="FAZILAH">FAZILAH</option>
+                                        <option value="SAKINAH">SAKINAH</option>
+                                        <option value="HUSNA">HUSNA</option>
+                                    </select>
+                                </div>
+                                <div class="w-32">
+                                    <select id="filter-status" onchange="applyFilters()" class="w-full text-[11px] border border-gray-200 dark:border-gray-600 rounded-lg pl-3 pr-7 py-2 h-[36px] bg-white dark:bg-gray-800 cursor-pointer appearance-none text-gray-700 dark:text-gray-200 font-semibold shadow-sm text-ellipsis overflow-hidden whitespace-nowrap" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%239ca3af%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E'); background-position: right 0.5rem center; background-repeat: no-repeat; background-size: 1.2em;">
+                                        <option value="">Status: All</option>
+                                        <option value="Completed">Completed</option>
+                                        <option value="Pending For Approval">Pending</option>
+                                        <option value="incomplete">Incomplete</option>
+                                    </select>
+                                </div>
+                                <div class="w-32">
+                                    <select id="filter-tahun" onchange="applyFilters()" class="w-full text-[11px] border border-gray-200 dark:border-gray-600 rounded-lg pl-3 pr-7 py-2 h-[36px] bg-white dark:bg-gray-800 cursor-pointer appearance-none text-gray-700 dark:text-gray-200 font-semibold shadow-sm text-ellipsis overflow-hidden whitespace-nowrap" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%239ca3af%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E'); background-position: right 0.5rem center; background-repeat: no-repeat; background-size: 1.2em;">
+                                        <option value="">Year: All</option>
+                                        <option value="2024">2024</option>
+                                        <option value="2025">2025</option>
+                                        <option value="2026">2026</option>
+                                        <option value="2027">2027</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2 ml-auto w-full lg:w-auto mt-2 lg:mt-0">
+                                <button onclick="fetchDataFromGoogleSheet()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-[11px] font-bold px-4 py-0 rounded-lg flex items-center justify-center gap-1.5 transition-all shadow-glow-blue hover:-translate-y-0.5 h-[36px] flex-1 lg:flex-none">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg> Auto Sync
+                                </button>
+                                <div class="flex items-center bg-emerald-50 dark:bg-emerald-900/20 rounded-lg border border-emerald-100 dark:border-emerald-800/50 p-1 shadow-sm h-[36px]">
+                                    <select id="export-tahun" class="w-20 text-[10px] bg-transparent text-emerald-700 dark:text-emerald-400 font-bold border-none px-1 focus:outline-none cursor-pointer appearance-none text-center h-full">
+                                        <option value="">All Data</option>
+                                        <option value="2024">2024</option>
+                                        <option value="2025">2025</option>
+                                        <option value="2026">2026</option>
+                                        <option value="2027">2027</option>
+                                    </select>
+                                    <button onclick="exportToExcel()" class="bg-emerald-500 hover:bg-emerald-600 text-white text-[11px] font-bold px-3 rounded-md flex items-center gap-1 transition-all shadow-glow-emerald hover:-translate-y-0.5 h-full">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg> Export
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
 
-                    <!-- TAB: RECORDS -->
-                    <div id="view-collection" class="tab-pane hidden w-full space-y-4">
-                        <div id="filter-container-collection"></div>
-                        <div class="glass-panel rounded-2xl shadow-soft flex flex-col w-full overflow-hidden">
-                            <div class="w-full h-[75vh] overflow-y-auto overflow-x-auto custom-scrollbar relative">
-                                <table class="w-full text-left" id="table-collection">
-                                    <thead><tr><th class="px-3 py-4 text-center">NO</th><th class="px-3 py-4 text-center">CONTROL NUMBER</th><th class="px-3 py-4 text-center w-[120px] leading-tight">CALL NO<br>(082)</th><th class="px-3 py-4 text-center w-[120px] leading-tight">CALL NO<br>(050/060)</th><th class="px-3 py-4 text-left">ACCESSION</th><th class="px-3 py-4 text-left min-w-[200px]">TITLE</th><th class="px-3 py-4 text-left">STAFF</th><th class="px-3 py-4 text-center">DATE</th><th class="px-3 py-4 text-left">STATUS</th><th class="px-3 py-4 text-left min-w-[150px]">AUDIT TRAIL</th><th class="px-3 py-4 text-center">ACTION</th></tr></thead>
-                                    <tbody id="tbody-collection" class="table-body space-y-1"></tbody>
+                        <!-- KPI Cards -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+                            <div class="glass-panel p-4 rounded-2xl shadow-soft hover-lift relative overflow-hidden flex flex-col h-[120px] group"><div class="absolute top-0 right-0 w-24 h-24 bg-blue-500/10 rounded-full blur-xl -mr-8 -mt-8 transition-transform group-hover:scale-150"></div><div class="flex items-center gap-3 relative z-10"><div class="w-10 h-10 rounded-xl bg-blue-500 flex items-center justify-center text-white shadow-glow-blue"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg></div><div><p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-0.5">Total Records</p><h2 class="text-3xl font-extrabold text-gray-900 dark:text-white font-montserrat leading-none" id="stat-total">0</h2></div></div></div>
+                            <div class="glass-panel p-4 rounded-2xl shadow-soft hover-lift relative overflow-hidden flex flex-col h-[120px] group"><div class="absolute top-0 right-0 w-24 h-24 bg-emerald-500/10 rounded-full blur-xl -mr-8 -mt-8 transition-transform group-hover:scale-150"></div><div class="flex items-center gap-3 relative z-10"><div class="w-10 h-10 rounded-xl bg-emerald-500 flex items-center justify-center text-white shadow-glow-emerald"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div><div><p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-0.5">Completed</p><h2 class="text-3xl font-extrabold text-gray-900 dark:text-white font-montserrat leading-none" id="stat-completed">0</h2></div></div></div>
+                            <div class="glass-panel p-4 rounded-2xl shadow-soft hover-lift relative overflow-hidden flex flex-col h-[120px] group"><div class="absolute top-0 right-0 w-24 h-24 bg-orange-500/10 rounded-full blur-xl -mr-8 -mt-8 transition-transform group-hover:scale-150"></div><div class="flex items-center gap-3 relative z-10"><div class="w-10 h-10 rounded-xl bg-orange-500 flex items-center justify-center text-white shadow-glow-orange"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div><div><p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-0.5">Pending Approval</p><h2 class="text-3xl font-extrabold text-gray-900 dark:text-white font-montserrat leading-none" id="stat-pending">0</h2></div></div></div>
+                            <div class="glass-panel p-4 rounded-2xl shadow-soft hover-lift relative overflow-hidden flex flex-col h-[120px] group"><div class="absolute top-0 right-0 w-24 h-24 bg-purple-500/10 rounded-full blur-xl -mr-8 -mt-8 transition-transform group-hover:scale-150"></div><div class="flex items-center gap-3 relative z-10"><div class="w-10 h-10 rounded-xl bg-purple-600 flex items-center justify-center text-white shadow-glow-purple"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg></div><div><p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-0.5">Staff Active</p><h2 class="text-3xl font-extrabold text-gray-900 dark:text-white font-montserrat leading-none" id="stat-staff">0</h2></div></div></div>
+                        </div>
+
+                        <!-- Charts -->
+                        <div class="grid grid-cols-1 lg:grid-cols-4 gap-5">
+                            <div class="glass-panel p-4 rounded-2xl shadow-soft flex flex-col lg:col-span-1 h-[250px] hover-lift group">
+                                <h3 class="font-bold text-gray-900 dark:text-white text-xs mb-2">Distribution</h3>
+                                <div class="relative w-full flex-1"><canvas id="statusChart"></canvas></div>
+                            </div>
+                            <div class="glass-panel p-4 rounded-2xl shadow-soft flex flex-col lg:col-span-2 h-[250px] hover-lift group">
+                                <h3 class="font-bold text-gray-900 dark:text-white text-xs mb-2">Performance Trends</h3>
+                                <div class="relative w-full flex-1"><canvas id="staffChart"></canvas></div>
+                            </div>
+                            <div class="bg-gradient-to-br from-[#1e1b4b] to-[#312e81] p-4 rounded-2xl shadow-glow-purple flex flex-col lg:col-span-1 h-[250px] hover-lift relative overflow-hidden border border-indigo-500/30">
+                                <div class="absolute -top-10 -right-10 w-24 h-24 bg-purple-500 rounded-full blur-[30px] opacity-30"></div>
+                                <h3 class="font-bold text-white text-xs mb-3 flex items-center gap-1.5"><svg class="w-3.5 h-3.5 text-purple-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>Insights</h3>
+                                <div class="space-y-3 flex-1 flex flex-col justify-center relative z-10">
+                                    <div class="flex items-center gap-3 bg-white/10 backdrop-blur-md rounded-xl p-3 border border-white/10"><div class="text-2xl drop-shadow-[0_0_8px_rgba(251,191,36,0.8)]">🏆</div><div><p class="text-[9px] font-bold text-indigo-200 uppercase tracking-widest mb-0.5">Top Performer</p><p class="font-extrabold text-white text-sm" id="insight-top-staff">-</p></div></div>
+                                    <div class="flex items-center gap-3 bg-white/10 backdrop-blur-md rounded-xl p-3 border border-white/10"><div class="text-2xl drop-shadow-[0_0_8px_rgba(249,115,22,0.8)]">⏳</div><div><p class="text-[9px] font-bold text-indigo-200 uppercase tracking-widest mb-0.5">Action Needed</p><p class="font-extrabold text-white text-sm" id="insight-pending-count">0 Pending</p></div></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Table -->
+                        <div class="glass-panel rounded-2xl shadow-soft flex flex-col w-full h-[75vh] overflow-hidden relative">
+                            <div id="table-scroll-container" class="flex-1 overflow-y-auto overflow-x-auto custom-scrollbar relative">
+                                <table class="w-full text-left" id="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th class="px-3 py-4 text-center">NO</th>
+                                            <th class="px-3 py-4 text-center">CONTROL NUMBER</th>
+                                            <th class="px-3 py-4 text-center w-[120px] max-w-[120px] leading-tight">CALL NO<br>(082)</th>
+                                            <th class="px-3 py-4 text-center w-[120px] max-w-[120px] leading-tight">CALL NO<br>(050/060)</th>
+                                            <th class="px-3 py-4 text-left">ACCESSION</th>
+                                            <th class="px-3 py-4 text-left min-w-[200px]">TITLE</th>
+                                            <th class="px-3 py-4 text-left">STAFF</th>
+                                            <th class="px-3 py-4 text-center">DATE</th>
+                                            <th class="px-3 py-4 text-left">STATUS</th>
+                                            <th class="px-3 py-4 text-left min-w-[150px]">AUDIT TRAIL</th>
+                                            <th class="px-3 py-4 text-center">ACTION</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="table-body" class="table-body space-y-1"></tbody>
                                 </table>
                             </div>
-                            <div class="px-4 py-3 border-t border-gray-200 dark:border-gray-700 flex justify-between items-center bg-white/80 dark:bg-gray-800/80 backdrop-blur-md" id="pagination-collection"></div>
-                        </div>
-                    </div>
-
-                    <!-- TAB: APPROVALS -->
-                    <div id="view-approvals" class="tab-pane hidden w-full space-y-4">
-                        <div id="filter-container-approvals"></div>
-                        <div class="glass-panel rounded-2xl shadow-soft flex flex-col w-full overflow-hidden">
-                            <div class="w-full h-[75vh] overflow-y-auto overflow-x-auto custom-scrollbar relative">
-                                <table class="w-full text-left" id="table-approvals">
-                                    <thead><tr><th class="px-3 py-4 text-center">NO</th><th class="px-3 py-4 text-center">CONTROL NUMBER</th><th class="px-3 py-4 text-center w-[120px] leading-tight">CALL NO<br>(082)</th><th class="px-3 py-4 text-center w-[120px] leading-tight">CALL NO<br>(050/060)</th><th class="px-3 py-4 text-left">ACCESSION</th><th class="px-3 py-4 text-left min-w-[200px]">TITLE</th><th class="px-3 py-4 text-left">STAFF</th><th class="px-3 py-4 text-center">DATE</th><th class="px-3 py-4 text-left">STATUS</th><th class="px-3 py-4 text-left min-w-[150px]">AUDIT TRAIL</th><th class="px-3 py-4 text-center">ACTION</th></tr></thead>
-                                    <tbody id="tbody-approvals" class="table-body space-y-1"></tbody>
-                                </table>
+                            <!-- Pagination -->
+                            <div class="px-4 py-3 border-t border-gray-200 dark:border-gray-700 flex justify-between items-center bg-white/80 dark:bg-gray-800/80 backdrop-blur-md shrink-0">
+                                <span class="text-[10px] text-gray-500 dark:text-gray-400 font-semibold" id="page-info">Showing 0-0 of 0 records</span>
+                                <div class="flex gap-1.5">
+                                    <button onclick="changePage(-1)" class="px-3 py-1.5 text-[10px] bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-50 shadow-sm font-bold hover-lift">Previous</button>
+                                    <button onclick="changePage(1)" class="px-3 py-1.5 text-[10px] bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-50 shadow-sm font-bold hover-lift">Next</button>
+                                </div>
                             </div>
-                            <div class="px-4 py-3 border-t border-gray-200 dark:border-gray-700 flex justify-between items-center bg-white/80 dark:bg-gray-800/80 backdrop-blur-md" id="pagination-approvals"></div>
                         </div>
-                    </div>
 
-                    <!-- TAB: STAFF -->
-                    <div id="view-staff" class="tab-pane hidden w-full space-y-4">
-                        <div id="filter-container-staff"></div>
-                        <div class="glass-panel p-6 rounded-2xl shadow-soft flex flex-col w-full min-h-[400px]">
-                            <h3 class="font-bold text-gray-900 dark:text-white text-sm mb-4">Detailed Staff Performance</h3>
-                            <div class="relative w-full flex-1"><canvas id="canvas-staff"></canvas></div>
-                        </div>
                     </div>
-
-                    <!-- TAB: REPORTS -->
-                    <div id="view-reports" class="tab-pane hidden w-full space-y-4">
-                        <div id="filter-container-reports"></div>
-                        <div id="charts-container-reports" class="grid grid-cols-1 lg:grid-cols-4 gap-5"></div>
-                    </div>
-
                 </div>
+
+                <!-- TAB: EXECUTIVE COLLECTION (Placeholder) -->
+                <div id="view-collection" class="tab-pane hidden flex-1 flex flex-col items-center justify-center">
+                    <div class="glass-panel p-8 rounded-3xl shadow-soft max-w-sm w-full text-center">
+                        <div class="w-16 h-16 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-glow-blue">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                        </div>
+                        <h3 class="text-lg font-extrabold text-gray-900 dark:text-white mb-2 font-montserrat">Executive Collection</h3>
+                        <p class="text-[11px] text-gray-500 dark:text-gray-400 leading-relaxed">This module focuses strictly on full record navigation based on specific search filters.</p>
+                    </div>
+                </div>
+
+                <!-- TAB: APPROVALS (Placeholder) -->
+                <div id="view-approvals" class="tab-pane hidden flex-1 flex flex-col items-center justify-center">
+                    <div class="glass-panel p-8 rounded-3xl shadow-soft max-w-sm w-full text-center">
+                        <div class="w-16 h-16 bg-orange-50 dark:bg-orange-900/30 text-orange-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-glow-orange">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        </div>
+                        <h3 class="text-lg font-extrabold text-gray-900 dark:text-white mb-2 font-montserrat">Approvals Queue</h3>
+                        <p class="text-[11px] text-gray-500 dark:text-gray-400 leading-relaxed">Approvals should be managed directly from the main Dashboard table.</p>
+                    </div>
+                </div>
+
+                <!-- TAB: STAFF MANAGEMENT (Placeholder) -->
+                <div id="view-staff" class="tab-pane hidden flex-1 flex flex-col items-center justify-center">
+                    <div class="glass-panel p-8 rounded-3xl shadow-soft max-w-sm w-full text-center">
+                        <div class="w-16 h-16 bg-purple-50 dark:bg-purple-900/30 text-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-glow-purple">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                        </div>
+                        <h3 class="text-lg font-extrabold text-gray-900 dark:text-white mb-2 font-montserrat">Staff Management</h3>
+                        <p class="text-[11px] text-gray-500 dark:text-gray-400 leading-relaxed">Refer to the Dashboard's chart section for performance reviews.</p>
+                    </div>
+                </div>
+
+                <!-- TAB: REPORTS & ANALYTICS (Placeholder) -->
+                <div id="view-reports" class="tab-pane hidden flex-1 flex flex-col items-center justify-center">
+                    <div class="glass-panel p-8 rounded-3xl shadow-soft max-w-sm w-full text-center">
+                        <div class="w-16 h-16 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-glow-emerald">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002-2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                        </div>
+                        <h3 class="text-lg font-extrabold text-gray-900 dark:text-white mb-2 font-montserrat">Advanced Analytics</h3>
+                        <p class="text-[11px] text-gray-500 dark:text-gray-400 leading-relaxed">Visualizations are actively displayed in the main Dashboard overview.</p>
+                    </div>
+                </div>
+
             </div>
         </main>
     </div>
 
-    <!-- TOAST & LOADING -->
+    <!-- ================== TOAST & LOADING ================== -->
     <div id="toast" class="fixed bottom-6 right-6 transform translate-y-20 opacity-0 transition-all duration-300 bg-gray-900 text-white px-5 py-3.5 rounded-xl shadow-2xl z-50 flex items-center gap-3">
-        <div class="w-6 h-6 rounded-full bg-emerald-500/20 flex items-center justify-center shadow-glow-emerald"><svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></div>
+        <div class="w-6 h-6 rounded-full bg-emerald-500/20 flex items-center justify-center shadow-glow-emerald">
+            <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+        </div>
         <span id="toast-message" class="font-bold text-[11px]">Action completed successfully.</span>
     </div>
 
     <div id="loading-overlay" class="fixed inset-0 bg-white/60 dark:bg-black/60 backdrop-blur-md z-[100] flex flex-col items-center justify-center hidden transition-all">
         <div class="glass-panel p-6 rounded-2xl shadow-2xl flex flex-col items-center">
-            <svg class="animate-spin h-8 w-8 text-indigo-600 dark:text-indigo-400 mb-4 drop-shadow-lg" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+            <svg class="animate-spin h-8 w-8 text-indigo-600 dark:text-indigo-400 mb-4 drop-shadow-lg" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
             <p class="text-gray-900 dark:text-white font-extrabold text-[10px] font-montserrat animate-pulse uppercase tracking-widest" id="loading-text">Processing...</p>
         </div>
     </div>
 
-    <!-- JAVASCRIPT -->
+    <!-- ================== JAVASCRIPT LOGIC ================== -->
     <script>
+        /* =====================================================================
+           KONFIGURASI API & DATA
+           ===================================================================== */
         const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwIEv9oCQDmn2pMmBI2RWBDY2YrEjz1RuBTxOhXjNsQqz_z8CdQT0CrvDxYg6Nj9OQr/exec";
         const statusOptions = ["Completed", "incomplete", "Pending For Approval"];
         const staffOptions = ["FATIHAH", "FAZILAH", "SAKINAH", "HUSNA"];
         
         let dataset = []; 
-        let filteredDataset = [];
+        let filteredDataset = []; 
         let editingId = null;
-        let currentUserRole = ""; 
-        let currentUserName = "";
-        let currentView = 'dashboard';
+        let staffChartInstance = null;
+        let statusChartInstance = null;
+        
         let currentPage = 1;
         const rowsPerPage = 100;
-
-        let activeCharts = {};
-
-        // Independent state for each tab
-        const tabStates = {
-            'dashboard': { search: '', staff: '', status: '', year: '' },
-            'collection': { search: '', staff: '', status: '', year: '' },
-            'approvals': { search: '', staff: '', status: 'Pending For Approval', year: '' },
-            'staff': { search: '', staff: '', status: '', year: '' },
-            'reports': { search: '', staff: '', status: '', year: '' }
-        };
+        
+        let currentUserRole = ""; 
+        let currentUserName = "";
 
         let MOCK_DB = [
             { id: 2, no: 1, controlNo: "23576", callNo082: "0005.3", callNo050: "TK5105.888 IRS 2001", accession: "BK00075774", title: "DEVELOPING WEB SITE USING MICROSOFT WORD STEP BY STEP", status: "incomplete", staff: "FAZILAH", date: "14/04/2024", approvedBy: "", approvedDate: "" },
@@ -374,110 +491,50 @@
         ];
 
         /* =====================================================================
-           UI HELPERS
+           FUNCTIONS (UTILS & DISPLAY)
            ===================================================================== */
+        const getStaffDisplay = (staffName) => {
+            if (!staffName || staffName.trim() === '') return '-';
+            return staffOptions.includes(staffName) ? staffName : 'ADMIN';
+        };
+
+        const getYearFromDate = (dateStr) => {
+            if(!dateStr || dateStr === '-') return '';
+            const match = String(dateStr).match(/\b(20\d{2})\b/);
+            return match ? match[1] : '';
+        }
+
+        const formatDisplayDate = (dateStr) => {
+            if (!dateStr || dateStr === '-') return '-';
+            const str = String(dateStr).trim();
+            if (/^\d{4}-\d{2}-\d{2}$/.test(str)) {
+                const parts = str.split('-');
+                return `${parts[2]}/${parts[1]}/${parts[0]}`;
+            }
+            return str;
+        };
+
         function showLoading(msg) {
             document.getElementById('loading-text').textContent = msg;
             document.getElementById('loading-overlay').classList.remove('hidden');
         }
-        function hideLoading() { 
-            document.getElementById('loading-overlay').classList.add('hidden'); 
-        }
+        function hideLoading() { document.getElementById('loading-overlay').classList.add('hidden'); }
+        
         function showToast(msg) {
-            const toast = document.getElementById('toast'); 
+            const toast = document.getElementById('toast');
             document.getElementById('toast-message').textContent = msg || "Successfully updated.";
-            toast.classList.remove('translate-y-20', 'opacity-0'); 
+            toast.classList.remove('translate-y-20', 'opacity-0');
             setTimeout(() => { toast.classList.add('translate-y-20', 'opacity-0'); }, 3000);
-        }
-        function formatDisplayDate(d) { 
-            if (!d || d === '-') return '-'; 
-            const s = String(d).trim(); 
-            if (/^\d{4}-\d{2}-\d{2}$/.test(s)) { 
-                const p = s.split('-'); return `${p[2]}/${p[1]}/${p[0]}`; 
-            } 
-            return s; 
-        }
-        function getYearFromDate(d) { 
-            if(!d || d === '-') return ''; 
-            const m = String(d).match(/\b(20\d{2})\b/); 
-            return m ? m[1] : ''; 
-        }
-        function getStaffDisplay(name) { 
-            if (!name || name.trim() === '') return '-'; 
-            return staffOptions.includes(name) ? name : 'ADMIN'; 
-        }
-
-        // UI Builder for Filter Bars
-        function injectFilters() {
-            const views = ['dashboard', 'collection', 'approvals', 'staff', 'reports'];
-            views.forEach(v => {
-                const container = document.getElementById(`filter-container-${v}`);
-                if (!container) return;
-                
-                const sState = tabStates[v];
-                const isApprovals = v === 'approvals';
-                
-                container.innerHTML = `
-                    <div class="glass-panel p-3 flex flex-wrap items-center gap-2 rounded-2xl shadow-soft bg-white/50 dark:bg-gray-800/50 shrink-0 border-b border-gray-200 dark:border-gray-700">
-                        <div class="flex-1 min-w-[200px] relative">
-                            <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                            <input type="text" id="search-${v}" onkeyup="onFilterChange('${v}')" value="${sState.search}" placeholder="Search Title or Accession..." class="w-full text-xs border border-gray-200 dark:border-gray-600 rounded-lg pl-8 pr-3 py-1.5 h-[36px] bg-gray-50/50 dark:bg-gray-900/50 focus:bg-white dark:focus:bg-gray-800 transition-all font-medium">
-                        </div>
-                        <div class="flex flex-wrap items-center gap-2">
-                            <div class="w-32">
-                                <select id="staff-${v}" onchange="onFilterChange('${v}')" class="w-full text-[11px] border border-gray-200 dark:border-gray-600 rounded-lg pl-3 pr-7 py-2 h-[36px] bg-white dark:bg-gray-800 cursor-pointer appearance-none text-gray-700 dark:text-gray-200 font-semibold shadow-sm text-ellipsis overflow-hidden whitespace-nowrap bg-no-repeat" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%239ca3af%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E'); background-position: right 0.5rem center; background-size: 1.2em;">
-                                    <option value="">Staff: All</option><option value="-" ${sState.staff==='-'?'selected':''}>-</option>
-                                    ${staffOptions.map(opt => `<option value="${opt}" ${sState.staff===opt?'selected':''}>${opt}</option>`).join('')}
-                                </select>
-                            </div>
-                            <div class="w-32">
-                                <select id="status-${v}" onchange="onFilterChange('${v}')" ${isApprovals ? 'disabled' : ''} class="w-full text-[11px] border border-gray-200 dark:border-gray-600 rounded-lg pl-3 pr-7 py-2 h-[36px] bg-white dark:bg-gray-800 cursor-pointer appearance-none text-gray-700 dark:text-gray-200 font-semibold shadow-sm text-ellipsis overflow-hidden whitespace-nowrap bg-no-repeat" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%239ca3af%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E'); background-position: right 0.5rem center; background-size: 1.2em;">
-                                    <option value="">Status: All</option>
-                                    <option value="Completed" ${sState.status==='Completed'?'selected':''}>Completed</option>
-                                    <option value="Pending For Approval" ${sState.status==='Pending For Approval'?'selected':''}>Pending</option>
-                                    <option value="incomplete" ${sState.status==='incomplete'?'selected':''}>Incomplete</option>
-                                </select>
-                            </div>
-                            <div class="w-32">
-                                <select id="year-${v}" onchange="onFilterChange('${v}')" class="w-full text-[11px] border border-gray-200 dark:border-gray-600 rounded-lg pl-3 pr-7 py-2 h-[36px] bg-white dark:bg-gray-800 cursor-pointer appearance-none text-gray-700 dark:text-gray-200 font-semibold shadow-sm text-ellipsis overflow-hidden whitespace-nowrap bg-no-repeat" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%239ca3af%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E'); background-position: right 0.5rem center; background-size: 1.2em;">
-                                    <option value="">Year: All</option>
-                                    ${[2024,2025,2026,2027].map(y => `<option value="${y}" ${sState.year==y?'selected':''}>${y}</option>`).join('')}
-                                </select>
-                            </div>
-                        </div>
-                        
-                        <div class="flex items-center gap-2 ml-auto w-full lg:w-auto mt-2 lg:mt-0">
-                            <button onclick="fetchDataFromGoogleSheet()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-[11px] font-bold px-4 py-0 rounded-lg flex items-center justify-center gap-1.5 transition-all shadow-glow-blue hover:-translate-y-0.5 h-[36px] flex-1 lg:flex-none">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg> Auto Sync
-                            </button>
-                            
-                            <div class="flex items-center bg-emerald-50 dark:bg-emerald-900/20 rounded-lg border border-emerald-100 dark:border-emerald-800/50 p-1 shadow-sm h-[36px]">
-                                <select id="export-tahun" class="w-20 text-[10px] bg-transparent text-emerald-700 dark:text-emerald-400 font-bold border-none px-1 focus:outline-none cursor-pointer appearance-none text-center h-full">
-                                    <option value="">All Data</option>
-                                    <option value="2024">2024</option>
-                                    <option value="2025">2025</option>
-                                    <option value="2026">2026</option>
-                                    <option value="2027">2027</option>
-                                </select>
-                                <button onclick="exportToExcel()" class="bg-emerald-500 hover:bg-emerald-600 text-white text-[11px] font-bold px-3 rounded-md flex items-center gap-1 transition-all shadow-glow-emerald hover:-translate-y-0.5 h-full">
-                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg> Export
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            });
         }
 
         /* =====================================================================
-           SERVER COMMS
+           BACKEND CALLS
            ===================================================================== */
         const server = {
             withSuccessHandler: function(cb) { this.cb = cb; return this; },
             getInitialData: function() { 
                 if (GAS_WEB_APP_URL === "LETAK_URL_GOOGLE_APPS_SCRIPT_ANDA_DI_SINI") {
-                    setTimeout(() => this.cb([...MOCK_DB]), 800);
-                    return;
+                    setTimeout(() => this.cb([...MOCK_DB]), 800); return;
                 }
                 fetch(GAS_WEB_APP_URL + "?action=getInitialData")
                     .then(response => response.json())
@@ -488,279 +545,186 @@
                 if (GAS_WEB_APP_URL === "LETAK_URL_GOOGLE_APPS_SCRIPT_ANDA_DI_SINI") {
                     const idx = MOCK_DB.findIndex(r => r.id === record.id);
                     if(idx > -1) MOCK_DB[idx] = {...record};
-                    setTimeout(() => { if(this.cb) this.cb(true); }, 500); 
-                    return;
+                    setTimeout(() => { if(this.cb) this.cb(true); }, 500); return;
                 }
                 fetch(GAS_WEB_APP_URL, {
-                    method: 'POST', 
-                    mode: 'no-cors',
+                    method: 'POST', mode: 'no-cors',
                     body: JSON.stringify({ action: 'updateRow', record: record }), 
                     headers: { 'Content-Type': 'text/plain' }
                 })
                 .then(() => { setTimeout(() => { if(this.cb) this.cb(true); }, 1000); })
-                .catch(error => { console.error('Error:', error); hideLoading(); showToast("Failed to save."); });
+                .catch(error => { console.error('Fetch Error:', error); hideLoading(); showToast("Failed to save."); });
             }
         };
 
-        function fetchDataFromGoogleSheet(isSilent = false) { 
-            if (!isSilent) showLoading("Syncing Data..."); 
+        function fetchDataFromGoogleSheet(isSilent = false) {
+            if (!isSilent) showLoading("Syncing Data...");
             server.withSuccessHandler(function(data) {
                 dataset = data || [];
-                renderCurrentView(true);
+                applyFilters(true); 
                 if (!isSilent) hideLoading();
             }).getInitialData();
         }
 
         /* =====================================================================
-           LOGIN & AUTHENTICATION
+           LOGIN & AUTO LOGIN
            ===================================================================== */
         document.getElementById('login-role').addEventListener('change', function(e) {
             const pwdContainer = document.getElementById('password-container');
             document.getElementById('login-error').classList.add('hidden');
-            if (e.target.value !== '') {
-                pwdContainer.classList.remove('hidden');
-                document.getElementById('login-password').focus();
-            } else { pwdContainer.classList.add('hidden'); }
+            if (e.target.value !== '') { pwdContainer.classList.remove('hidden'); document.getElementById('login-password').focus(); }
         });
+        document.getElementById('login-password').addEventListener('keypress', function(e) { if (e.key === 'Enter') handleLogin(); });
 
-        document.getElementById('login-password').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') handleLogin();
-        });
-
-        function handleLogin() { 
+        function handleLogin() {
             const role = document.getElementById('login-role').value;
-            const encodedInput = btoa(document.getElementById('login-password').value);
-            let valid = false;
-            
-            if (role === 'staff' && encodedInput === 'c3RhZmYxMjM=') { valid = true; currentUserName = "STAFF"; }
-            else if (role === 'rosli' && encodedInput === 'cm9zbGkxMjM=') { valid = true; currentUserName = "ROSLI"; }
-            else if (role === 'admin' && encodedInput === 'YWRtaW4xMjM=') { valid = true; currentUserName = "ADMIN"; }
-            
-            if (valid) {
-                currentUserRole = role;
-                localStorage.setItem('iku_role', role); 
-                localStorage.setItem('iku_name', currentUserName); 
+            const password = document.getElementById('login-password').value;
+            const errorMsg = document.getElementById('login-error');
+
+            if (!role || !password) { errorMsg.textContent = "Please complete the form."; errorMsg.classList.remove('hidden'); return; }
+
+            const encodedInput = btoa(password);
+            let isValid = false;
+
+            if (role === 'staff' && encodedInput === 'c3RhZmYxMjM=') { isValid = true; currentUserName = "STAFF"; } 
+            else if (role === 'rosli' && encodedInput === 'cm9zbGkxMjM=') { isValid = true; currentUserName = "ROSLI"; } 
+            else if (role === 'admin' && encodedInput === 'YWRtaW4xMjM=') { isValid = true; currentUserName = "ADMIN"; }
+
+            if (isValid) {
+                currentUserRole = role; currentPage = 1;
+                errorMsg.classList.add('hidden');
+                
+                localStorage.setItem('iku_role', currentUserRole);
+                localStorage.setItem('iku_name', currentUserName);
                 localStorage.setItem('iku_last_active', Date.now());
-                
-                document.getElementById('login-error').classList.add('hidden');
-                document.getElementById('login-screen').classList.add('hidden'); 
-                document.getElementById('dashboard-screen').classList.remove('hidden');
-                
+
                 document.getElementById('profile-name').textContent = currentUserName;
                 document.getElementById('profile-initial').textContent = currentUserName.charAt(0);
                 
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('dashboard-screen').classList.remove('hidden');
+                
                 if (window.innerWidth >= 1024) document.getElementById('sidebar').classList.add('sidebar-desktop-closed');
                 
-                switchTab('dashboard', document.querySelector('.nav-link'));
                 fetchDataFromGoogleSheet();
-            } else { 
-                document.getElementById('login-error').textContent = "Invalid password.";
-                document.getElementById('login-error').classList.remove('hidden'); 
-            }
+            } else { errorMsg.textContent = "Invalid password."; errorMsg.classList.remove('hidden'); }
         }
 
         function checkAutoLogin() {
-            const r = localStorage.getItem('iku_role'), n = localStorage.getItem('iku_name'), la = localStorage.getItem('iku_last_active');
-            if (r && n && la && (Date.now() - parseInt(la) < 1800000)) {
-                currentUserRole = r; 
-                currentUserName = n;
-                localStorage.setItem('iku_last_active', Date.now());
-                
-                document.getElementById('profile-name').textContent = currentUserName;
-                document.getElementById('profile-initial').textContent = currentUserName.charAt(0);
+            const savedRole = localStorage.getItem('iku_role');
+            const savedName = localStorage.getItem('iku_name');
+            const lastActive = localStorage.getItem('iku_last_active');
 
-                document.getElementById('login-screen').classList.add('hidden'); 
-                document.getElementById('dashboard-screen').classList.remove('hidden');
-                
-                if (window.innerWidth >= 1024) document.getElementById('sidebar').classList.add('sidebar-desktop-closed');
-                
-                switchTab('dashboard', document.querySelector('.nav-link'));
-                fetchDataFromGoogleSheet();
-            } else {
-                localStorage.clear();
+            if (savedRole && savedName && lastActive) {
+                const now = Date.now();
+                if (now - parseInt(lastActive) < 1800000) {
+                    currentUserRole = savedRole; currentUserName = savedName; currentPage = 1;
+                    localStorage.setItem('iku_last_active', now);
+
+                    document.getElementById('profile-name').textContent = currentUserName;
+                    document.getElementById('profile-initial').textContent = currentUserName.charAt(0);
+
+                    document.getElementById('login-screen').classList.add('hidden');
+                    document.getElementById('dashboard-screen').classList.remove('hidden');
+                    
+                    if (window.innerWidth >= 1024) document.getElementById('sidebar').classList.add('sidebar-desktop-closed');
+                    fetchDataFromGoogleSheet();
+                } else {
+                    localStorage.clear();
+                }
             }
         }
 
-        function logout() { 
-            localStorage.clear(); 
-            location.reload(); 
-        }
+        function logout() { localStorage.clear(); location.reload(); }
 
         /* =====================================================================
-           VIEWS & NAVIGATION
+           SIDEBAR & TABS (Hanya Paparan Sahaja)
            ===================================================================== */
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('sidebar-overlay');
-            if (window.innerWidth < 1024) {
-                sidebar.classList.toggle('-translate-x-full');
-                overlay.classList.toggle('hidden');
-            } else {
-                sidebar.classList.toggle('sidebar-desktop-closed');
-            }
+            if (window.innerWidth < 1024) { sidebar.classList.toggle('-translate-x-full'); overlay.classList.toggle('hidden'); } 
+            else { sidebar.classList.toggle('sidebar-desktop-closed'); }
         }
 
-        function switchTab(viewId, el) {
-            currentView = viewId;
-            document.querySelectorAll('.tab-pane').forEach(p => p.classList.add('hidden'));
-            const activePane = document.getElementById('view-' + viewId);
+        function switchTab(tabId, clickedElement) {
+            document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.add('hidden'));
+            
+            const activePane = document.getElementById('view-' + tabId);
             if (activePane) activePane.classList.remove('hidden');
 
             document.querySelectorAll('.nav-link').forEach(link => {
                 link.className = 'nav-link flex items-center gap-3 px-3 py-2.5 text-indigo-100 hover:bg-[#1e40af] rounded-lg font-medium text-[11px] transition-colors cursor-pointer';
             });
-            if (el) el.className = 'nav-link flex items-center gap-3 px-3 py-2.5 bg-blue-600 text-white shadow-sm rounded-lg font-medium text-[11px] transition-colors cursor-pointer';
+            if (clickedElement) clickedElement.className = 'nav-link flex items-center gap-3 px-3 py-2.5 bg-blue-600 text-white shadow-sm rounded-lg font-medium text-[11px] transition-colors cursor-pointer';
 
-            const titleMap = {
-                'dashboard': ['Welcome back', 'Here is the summary of executive collection management today.'],
-                'collection': ['Executive Collection', 'Viewing all collection records.'],
-                'approvals': ['Approvals Queue', 'Viewing records pending for approval.'],
-                'staff': ['Staff Performance', 'Supervise staff performance and updates.'],
-                'reports': ['Reports & Analytics', 'Viewing detailed dashboard analytics.']
+            const titles = {
+                'dashboard': [`Welcome back, <span class="uppercase text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">${currentUserName}</span>!`, "Here is the summary of executive collection management today."],
+                'collection': ["Executive Collection", "Viewing full collection limits and details."],
+                'approvals': ["Approvals Queue", "Process pending documents."],
+                'staff': ["Team Management", "Monitor staff contributions."],
+                'reports': ["Advanced Analytics", "Data visualization and history."]
             };
             
-            document.getElementById('page-title').innerHTML = viewId === 'dashboard' ? `Welcome back, <span class="uppercase text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">${currentUserName}</span>!` : titleMap[viewId][0];
-            document.getElementById('page-subtitle').textContent = titleMap[viewId][1];
-
-            if (window.innerWidth < 1024) {
-                document.getElementById('sidebar').classList.add('-translate-x-full');
-                document.getElementById('sidebar-overlay').classList.add('hidden');
+            if(titles[tabId]) {
+                document.getElementById('page-title').innerHTML = titles[tabId][0];
+                document.getElementById('page-subtitle').textContent = titles[tabId][1];
             }
+
+            if (window.innerWidth < 1024) toggleSidebar();
             
-            renderCurrentView();
+            if(tabId === 'dashboard') {
+                applyFilters();
+            }
         }
 
-        function onFilterChange(viewId) {
-            tabStates[viewId].search = document.getElementById(`search-${viewId}`).value.toLowerCase().trim();
-            tabStates[viewId].staff = document.getElementById(`staff-${viewId}`).value;
-            tabStates[viewId].status = document.getElementById(`status-${viewId}`).value;
-            tabStates[viewId].year = document.getElementById(`year-${viewId}`).value;
-            currentPage = 1; 
-            renderCurrentView();
-        }
-
-        function renderCurrentView(preserveScroll = false) {
-            const state = tabStates[currentView];
+        /* =====================================================================
+           FILTER & RENDER TABLE (Hanya dipaparkan di Dashboard)
+           ===================================================================== */
+        function applyFilters(preservePage = false) {
+            const searchTerm = document.getElementById('search-input').value.toLowerCase().trim();
+            const filterStaff = document.getElementById('filter-staff').value;
+            const filterStatus = document.getElementById('filter-status').value;
+            const filterTahun = document.getElementById('filter-tahun').value;
+            
             filteredDataset = dataset.filter(row => {
-                if (state.search && !((row.title||"").toLowerCase().includes(state.search) || (row.accession||"").toLowerCase().includes(state.search))) return false;
-                if (state.staff && getStaffDisplay(row.staff) !== state.staff) return false;
-                if (state.status && (row.status||"").toLowerCase().trim() !== state.status.toLowerCase().trim()) return false;
-                if (state.year && getYearFromDate(row.date) != state.year) return false;
+                if (searchTerm && !((row.title||"").toLowerCase().includes(searchTerm) || (row.accession||"").toLowerCase().includes(searchTerm))) return false;
+                if (filterStaff && getStaffDisplay(row.staff) !== filterStaff) return false;
+                if (filterStatus && (row.status||"").toLowerCase().trim() !== filterStatus.toLowerCase().trim()) return false;
+                if (filterTahun && getYearFromDate(row.date) != filterTahun) return false;
                 return true;
             });
-
-            if (currentView === 'dashboard') drawDashboard();
-            else if (currentView === 'collection' || currentView === 'approvals') drawTable(currentView, preserveScroll);
-            else if (currentView === 'staff') drawStaffView();
-            else if (currentView === 'reports') drawAnalyticsView();
-        }
-
-        /* =====================================================================
-           RENDER DASHBOARD & CHARTS
-           ===================================================================== */
-        function drawDashboard() {
-            const total = filteredDataset.length;
-            const completed = filteredDataset.filter(r => (r.status||"").toLowerCase().trim() === 'completed').length;
-            const pending = filteredDataset.filter(r => (r.status||"").toLowerCase().trim().includes('pending')).length;
-            const staffActive = new Set(filteredDataset.filter(r => getStaffDisplay(r.staff) !== '-').map(r => getStaffDisplay(r.staff))).size;
-
-            document.getElementById('kpi-container-dashboard').innerHTML = `
-                <div class="glass-panel p-4 rounded-2xl shadow-soft hover-lift relative overflow-hidden flex flex-col h-[120px] group"><div class="absolute top-0 right-0 w-24 h-24 bg-blue-500/10 rounded-full blur-xl -mr-8 -mt-8 transition-transform group-hover:scale-150"></div><div class="flex items-center gap-3 relative z-10"><div class="w-10 h-10 rounded-xl bg-blue-500 flex items-center justify-center text-white shadow-glow-blue"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg></div><div><p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-0.5">Total Records</p><h2 class="text-3xl font-extrabold text-gray-900 dark:text-white font-montserrat leading-none">${total.toLocaleString()}</h2></div></div></div>
-                <div class="glass-panel p-4 rounded-2xl shadow-soft hover-lift relative overflow-hidden flex flex-col h-[120px] group"><div class="absolute top-0 right-0 w-24 h-24 bg-emerald-500/10 rounded-full blur-xl -mr-8 -mt-8 transition-transform group-hover:scale-150"></div><div class="flex items-center gap-3 relative z-10"><div class="w-10 h-10 rounded-xl bg-emerald-500 flex items-center justify-center text-white shadow-glow-emerald"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div><div><p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-0.5">Completed</p><h2 class="text-3xl font-extrabold text-gray-900 dark:text-white font-montserrat leading-none">${completed.toLocaleString()}</h2></div></div></div>
-                <div class="glass-panel p-4 rounded-2xl shadow-soft hover-lift relative overflow-hidden flex flex-col h-[120px] group"><div class="absolute top-0 right-0 w-24 h-24 bg-orange-500/10 rounded-full blur-xl -mr-8 -mt-8 transition-transform group-hover:scale-150"></div><div class="flex items-center gap-3 relative z-10"><div class="w-10 h-10 rounded-xl bg-orange-500 flex items-center justify-center text-white shadow-glow-orange"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div><div><p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-0.5">Pending</p><h2 class="text-3xl font-extrabold text-gray-900 dark:text-white font-montserrat leading-none">${pending.toLocaleString()}</h2></div></div></div>
-                <div class="glass-panel p-4 rounded-2xl shadow-soft hover-lift relative overflow-hidden flex flex-col h-[120px] group"><div class="absolute top-0 right-0 w-24 h-24 bg-purple-500/10 rounded-full blur-xl -mr-8 -mt-8 transition-transform group-hover:scale-150"></div><div class="flex items-center gap-3 relative z-10"><div class="w-10 h-10 rounded-xl bg-purple-600 flex items-center justify-center text-white shadow-glow-purple"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg></div><div><p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-0.5">Staff Active</p><h2 class="text-3xl font-extrabold text-gray-900 dark:text-white font-montserrat leading-none">${staffActive}</h2></div></div></div>
-            `;
             
-            document.getElementById('charts-container-dashboard').innerHTML = `
-                <div class="glass-panel p-4 rounded-2xl shadow-soft flex flex-col lg:col-span-1 h-[220px] hover-lift group"><h3 class="font-bold text-gray-900 dark:text-white text-xs mb-2">Status Distribution</h3><div class="relative w-full flex-1"><canvas id="canvas-db-status"></canvas></div></div>
-                <div class="glass-panel p-4 rounded-2xl shadow-soft flex flex-col lg:col-span-2 h-[220px] hover-lift group"><h3 class="font-bold text-gray-900 dark:text-white text-xs mb-2">Performance Trends</h3><div class="relative w-full flex-1"><canvas id="canvas-db-staff"></canvas></div></div>
-                <div class="bg-gradient-to-br from-[#1e1b4b] to-[#312e81] p-4 rounded-2xl shadow-glow-purple flex flex-col lg:col-span-1 h-[220px] hover-lift relative overflow-hidden"><div class="absolute -top-10 -right-10 w-24 h-24 bg-purple-500 rounded-full blur-[30px] opacity-30"></div><h3 class="font-bold text-white text-xs mb-3 relative z-10 flex items-center gap-1.5"><svg class="w-3.5 h-3.5 text-purple-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>Quick Insights</h3><div class="space-y-3 flex-1 flex flex-col justify-center relative z-10"><div class="flex items-center gap-3 bg-white/10 backdrop-blur-md rounded-xl p-3 border border-white/10"><div class="text-2xl drop-shadow-[0_0_8px_rgba(251,191,36,0.8)]">🏆</div><div><p class="text-[9px] font-bold text-indigo-200 uppercase tracking-widest mb-0.5">Top Performer</p><p class="font-extrabold text-white text-sm font-montserrat" id="db-top-staff">-</p></div></div><div class="flex items-center gap-3 bg-white/10 backdrop-blur-md rounded-xl p-3 border border-white/10"><div class="text-2xl drop-shadow-[0_0_8px_rgba(249,115,22,0.8)]">⏳</div><div><p class="text-[9px] font-bold text-indigo-200 uppercase tracking-widest mb-0.5">Action Needed</p><p class="font-extrabold text-white text-sm font-montserrat">${pending} Pending</p></div></div></div></div>
-            `;
-            initCharts('db-', 'canvas-db-status', 'canvas-db-staff');
-        }
-
-        function drawStaffView() {
-            document.getElementById('content-staff').innerHTML = `
-                <div class="glass-panel p-6 rounded-2xl shadow-soft hover-lift group">
-                    <h3 class="font-bold text-gray-900 dark:text-white mb-4">Detailed Staff Performance</h3>
-                    <div class="h-[400px] w-full"><canvas id="canvas-staff"></canvas></div>
-                </div>
-            `;
-            initCharts('stf-', null, 'canvas-staff');
-        }
-
-        function drawAnalyticsView() {
-            const pending = filteredDataset.filter(r => (r.status||"").toLowerCase().trim().includes('pending')).length;
-            document.getElementById('charts-container-reports').innerHTML = `
-                <div class="glass-panel p-4 rounded-2xl shadow-soft flex flex-col lg:col-span-1 h-[280px] hover-lift group"><h3 class="font-bold text-gray-900 dark:text-white text-xs mb-2">Distribution</h3><div class="relative w-full flex-1"><canvas id="canvas-anl-status"></canvas></div></div>
-                <div class="glass-panel p-4 rounded-2xl shadow-soft flex flex-col lg:col-span-2 h-[280px] hover-lift group"><h3 class="font-bold text-gray-900 dark:text-white text-xs mb-2">Performance Trends</h3><div class="relative w-full flex-1"><canvas id="canvas-anl-staff"></canvas></div></div>
-                <div class="bg-gradient-to-br from-[#1e1b4b] to-[#312e81] p-4 rounded-2xl shadow-glow-purple flex flex-col lg:col-span-1 h-[280px] hover-lift relative overflow-hidden"><div class="absolute -top-10 -right-10 w-40 h-40 bg-purple-500 rounded-full blur-[50px] opacity-30"></div><h3 class="font-bold text-white mb-4 flex items-center gap-2 relative z-10"><svg class="w-5 h-5 text-purple-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>System Insights</h3><div class="space-y-4 relative z-10"><div class="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/10"><p class="text-xs font-bold text-indigo-200 uppercase tracking-widest mb-1">Top Performer</p><div class="text-2xl font-black text-white font-montserrat" id="anl-top-staff">-</div></div><div class="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/10"><p class="text-xs font-bold text-indigo-200 uppercase tracking-widest mb-1">Data Health</p><div class="text-2xl font-black text-emerald-400 font-montserrat">OPTIMAL</div></div></div></div>
-            `;
-            initCharts('anl-', 'canvas-anl-status', 'canvas-anl-staff');
-        }
-
-        function initCharts(prefix, statusCanvasId, staffCanvasId) {
-            const staffCounts = {};
-            const statusCounts = { 'Completed': 0, 'Pending Approval': 0, 'Incomplete': 0 };
-
-            filteredDataset.forEach(r => {
-                const sName = getStaffDisplay(r.staff);
-                if (sName !== '-') staffCounts[sName] = (staffCounts[sName] || 0) + 1;
-                const sLower = (r.status || "").toLowerCase().trim();
-                if (sLower === 'completed') statusCounts['Completed']++;
-                else if (sLower === 'pending for approval') statusCounts['Pending Approval']++;
-                else statusCounts['Incomplete']++;
-            });
-
-            let topStaff = "-", max = 0;
-            for(let s in staffCounts) { if(staffCounts[s] > max) { max = staffCounts[s]; topStaff = s; } }
-            const topStaffEl = document.getElementById(prefix + 'top-staff');
-            if(topStaffEl) topStaffEl.textContent = topStaff;
-
-            const isDark = document.documentElement.classList.contains('dark');
-            const textColor = isDark ? '#94a3b8' : '#64748b';
-            const gridColor = isDark ? '#334155' : '#f1f5f9';
-
-            if (statusCanvasId && document.getElementById(statusCanvasId)) {
-                if(activeCharts[statusCanvasId]) activeCharts[statusCanvasId].destroy();
-                activeCharts[statusCanvasId] = new Chart(document.getElementById(statusCanvasId).getContext('2d'), {
-                    type: 'doughnut',
-                    data: { labels: ['Completed', 'Pending', 'Incomplete'], datasets: [{ data: [statusCounts.Completed, statusCounts['Pending Approval'], statusCounts.Incomplete], backgroundColor: ['#10b981', '#f59e0b', '#ef4444'], borderWidth: 0 }] },
-                    options: { responsive: true, maintainAspectRatio: false, cutout: '75%', plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 6, font: { size: 9 }, color: textColor } } } }
-                });
+            if (!preservePage) currentPage = 1; 
+            else {
+                const maxPages = Math.ceil(filteredDataset.length / rowsPerPage) || 1;
+                if (currentPage > maxPages) currentPage = maxPages;
             }
-
-            if (staffCanvasId && document.getElementById(staffCanvasId)) {
-                if(activeCharts[staffCanvasId]) activeCharts[staffCanvasId].destroy();
-                const fixedOrder = ["FATIHAH", "FAZILAH", "SAKINAH", "HUSNA", "ADMIN"];
-                const fixedColors = ["#002855", "#0056b3", "#3b82f6", "#10b981", "#7367f0"];
-                activeCharts[staffCanvasId] = new Chart(document.getElementById(staffCanvasId).getContext('2d'), {
-                    type: 'bar',
-                    data: { labels: fixedOrder, datasets: [{ label: 'Total', data: fixedOrder.map(s => staffCounts[s]||0), backgroundColor: fixedColors, borderRadius: 6, barThickness: currentView === 'staff' ? 60 : 35 }] },
-                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, grid: { color: gridColor }, ticks: { color: textColor, font: { size: 10 } } }, x: { grid: { display: false }, ticks: { color: textColor, font: { weight: '600', size: 10 } } } } }
-                });
-            }
+            
+            renderTable();
         }
 
-        /* =====================================================================
-           RENDER TABLE & ROW ACTIONS
-           ===================================================================== */
-        function drawTable(viewId, preserveScroll = false) {
-            const tbody = document.getElementById(`tbody-${viewId}`);
-            if (!tbody) return;
-            
-            const tableScrollContainer = document.getElementById(`table-${viewId}`)?.parentElement;
-            const mainScrollContainer = document.querySelector('main');
-            
-            const currentTableScroll = tableScrollContainer ? tableScrollContainer.scrollTop : 0;
-            const currentMainScroll = mainScrollContainer ? mainScrollContainer.scrollTop : 0;
+        function prevPage() { if (currentPage > 1) { currentPage--; renderTable(); } }
+        function nextPage() { if (currentPage * rowsPerPage < filteredDataset.length) { currentPage++; renderTable(); } }
+        function changePage(delta) { 
+            const max = Math.ceil(filteredDataset.length / rowsPerPage); 
+            if (currentPage + delta >= 1 && currentPage + delta <= max) { currentPage += delta; renderTable(); } 
+        }
 
-            const maxPages = Math.ceil(filteredDataset.length / rowsPerPage) || 1;
-            if (currentPage > maxPages) currentPage = maxPages;
+        function renderTable() {
+            const tbody = document.getElementById('table-body');
+            const scrollContainer = document.getElementById('table-scroll-container');
+            const mainContainer = document.querySelector('main');
+            
+            const currentScroll = scrollContainer ? scrollContainer.scrollTop : 0;
+            const mainScroll = mainContainer ? mainContainer.scrollTop : 0;
 
+            if(tbody) tbody.style.minHeight = tbody.offsetHeight > 0 ? tbody.offsetHeight + 'px' : '';
+            tbody.innerHTML = '';
+            
             const startIndex = (currentPage - 1) * rowsPerPage;
             const paginatedData = filteredDataset.slice(startIndex, startIndex + rowsPerPage);
-
+            
             if (paginatedData.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="11" class="px-5 py-10 text-center text-gray-500 font-medium italic">No records found.</td></tr>`;
             } else {
@@ -769,33 +733,17 @@
                     return `<tr class="table-row ${isEditing ? 'bg-indigo-50 dark:bg-indigo-900/30' : ''}" id="row-${row.id}">${generateRowHTML(row, isEditing)}</tr>`;
                 }).join('');
             }
+            
+            const infoEnd = Math.min(startIndex + rowsPerPage, filteredDataset.length);
+            document.getElementById('page-info').textContent = `Showing ${filteredDataset.length > 0 ? startIndex + 1 : 0}-${infoEnd} of ${filteredDataset.length}`;
+            
+            updateDashboardStats();
 
-            const infoEl = document.getElementById(`pagination-${viewId}`);
-            if (infoEl) {
-                const infoEnd = Math.min(startIndex + rowsPerPage, filteredDataset.length);
-                infoEl.innerHTML = `
-                    <span class="text-[10px] text-gray-500 dark:text-gray-400 font-semibold">Showing ${filteredDataset.length > 0 ? startIndex + 1 : 0}-${infoEnd} of ${filteredDataset.length}</span>
-                    <div class="flex gap-1.5">
-                        <button onclick="changePage(-1)" class="px-3 py-1.5 text-[10px] bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-200 rounded-lg shadow-sm font-bold hover-lift">Previous</button>
-                        <button onclick="changePage(1)" class="px-3 py-1.5 text-[10px] bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-200 rounded-lg shadow-sm font-bold hover-lift">Next</button>
-                    </div>
-                `;
-            }
-
-            if (preserveScroll) {
-                requestAnimationFrame(() => {
-                    if (tableScrollContainer) tableScrollContainer.scrollTop = currentTableScroll;
-                    if (mainScrollContainer) mainScrollContainer.scrollTop = currentMainScroll;
-                });
-            }
-        }
-
-        function changePage(delta) { 
-            const max = Math.ceil(filteredDataset.length / rowsPerPage); 
-            if (currentPage + delta >= 1 && currentPage + delta <= max) { 
-                currentPage += delta; 
-                renderCurrentView(); 
-            } 
+            requestAnimationFrame(() => {
+                if(tbody) tbody.style.minHeight = '';
+                if(scrollContainer) scrollContainer.scrollTop = currentScroll;
+                if(mainContainer) mainContainer.scrollTop = mainScroll;
+            });
         }
 
         function generateRowHTML(row, isEditing) {
@@ -807,11 +755,9 @@
                     ? `<td class="table-cell px-3 text-center whitespace-normal break-words w-[120px] max-w-[120px] leading-relaxed font-medium text-gray-900 text-[14px]">${row.callNo082}<input type="hidden" id="edit-c082-${row.id}" value="${row.callNo082}"></td>`
                     : `<td class="table-cell px-3"><input type="text" id="edit-c082-${row.id}" value="${row.callNo082}" class="w-full text-sm px-3 py-2 border border-blue-300 rounded focus:border-indigo-500 text-center bg-white text-gray-900 shadow-sm"></td>`;
 
-                let statusSelectHTML = `
-                    <select id="edit-status-${row.id}" class="w-full text-sm px-2 py-2 border border-blue-300 rounded focus:border-indigo-500 font-bold bg-white text-gray-900 shadow-sm">
-                        ${currentUserRole === 'staff' ? `<option value="Completed" ${currentStatusLower === 'completed' || currentStatusLower === 'pending for approval' ? 'selected' : ''}>Completed</option><option value="incomplete" ${currentStatusLower === 'incomplete' ? 'selected' : ''}>Incomplete</option>` : statusOptions.map(opt => `<option value="${opt}" ${row.status === opt ? 'selected' : ''}>${opt}</option>`).join('')}
-                    </select>
-                `;
+                let statusSelectHTML = `<select id="edit-status-${row.id}" class="w-full text-sm px-2 py-2 border border-blue-300 rounded focus:border-indigo-500 font-bold bg-white text-gray-900 shadow-sm">
+                    ${currentUserRole === 'staff' ? `<option value="Completed" ${currentStatusLower === 'completed' || currentStatusLower === 'pending for approval' ? 'selected' : ''}>Completed</option><option value="incomplete" ${currentStatusLower === 'incomplete' ? 'selected' : ''}>Incomplete</option>` : statusOptions.map(opt => `<option value="${opt}" ${row.status === opt ? 'selected' : ''}>${opt}</option>`).join('')}
+                </select>`;
 
                 return `
                     <td class="table-cell px-3 text-center font-bold text-gray-500 text-sm">${row.no}</td>
@@ -819,7 +765,7 @@
                     ${call082HTML}
                     <td class="table-cell px-3 text-center"><input type="text" id="edit-c050-${row.id}" value="${row.callNo050}" class="w-full text-sm px-3 py-2 border border-blue-300 rounded focus:border-indigo-500 text-center bg-white text-gray-900 shadow-sm"></td>
                     <td class="table-cell px-3 font-extrabold text-indigo-700 text-[14px]">${row.accession}</td>
-                    <td class="table-cell px-3 whitespace-normal min-w-[250px] break-words font-semibold leading-snug text-[14px]">${row.title}</td>
+                    <td class="table-cell px-3 whitespace-normal min-w-[250px] break-words font-semibold leading-snug text-left text-[14px]">${row.title}</td>
                     <td class="table-cell px-3"><select id="edit-staff-${row.id}" class="w-full text-sm px-2 py-2 border border-blue-300 rounded font-bold text-indigo-700 bg-white shadow-sm"><option value="${row.staff}" hidden>${displayStaff}</option>${staffOptions.map(opt => `<option value="${opt}" ${row.staff === opt ? 'selected' : ''}>${opt}</option>`).join('')}</select></td>
                     <td class="table-cell px-3 text-center font-medium text-gray-600 text-[14px]">${formatDisplayDate(row.date)}</td>
                     <td class="table-cell px-3">${statusSelectHTML}</td>
@@ -872,8 +818,8 @@
             `;
         }
 
-        function editRow(id) { editingId = id; renderCurrentView(true); }
-        function cancelEdit() { editingId = null; renderCurrentView(true); }
+        function editRow(id) { editingId = id; applyFilters(true); }
+        function cancelEdit() { editingId = null; applyFilters(true); }
 
         function saveRow(id) {
             const index = dataset.findIndex(r => r.id === id);
@@ -881,8 +827,8 @@
 
             let newStatus = document.getElementById(`edit-status-${id}`).value;
             let newDate = dataset[index].date;
-            let finalStatusToSave = newStatus;
             
+            let finalStatusToSave = newStatus;
             if (currentUserRole === 'staff' && newStatus === 'Completed') {
                 finalStatusToSave = 'Pending For Approval'; 
             }
@@ -906,7 +852,7 @@
             showLoading("Saving...");
             server.withSuccessHandler(function() {
                 hideLoading(); showToast("Record successfully updated.");
-                dataset[index] = updatedRecord; editingId = null; renderCurrentView(true);
+                dataset[index] = updatedRecord; editingId = null; applyFilters(true);
             }).updateRow(updatedRecord);
         }
 
@@ -923,26 +869,26 @@
             record.approvedDate = String(t.getDate()).padStart(2, '0') + '/' + String(t.getMonth() + 1).padStart(2, '0') + '/' + t.getFullYear();
 
             dataset[index] = record;
-            renderCurrentView(true);
+            applyFilters(true);
             server.withSuccessHandler(function() {
                 hideLoading(); showToast("Record successfully approved!"); fetchDataFromGoogleSheet(true); 
             }).updateRow(record);
         }
 
-        /* =====================================================================
-           EXCEL EXPORT
-           ===================================================================== */
         function exportToExcel() {
             showLoading("Generating Excel File...");
             setTimeout(() => {
-                const sState = tabStates[currentView];
-                let dataToExport = dataset;
-                if (sState.year && sState.year !== "") {
-                    dataToExport = dataset.filter(row => getYearFromDate(row.date) == sState.year);
+                const exportTahun = document.getElementById('export-tahun').value;
+                let dataToExport = dataset; 
+                
+                if (exportTahun !== "") {
+                    dataToExport = dataset.filter(row => getYearFromDate(row.date) === exportTahun);
                 }
                 
                 if (dataToExport.length === 0) {
-                    hideLoading(); alert("No records found for the selected year."); return;
+                    hideLoading();
+                    alert("No records found for the selected year.");
+                    return;
                 }
 
                 const cleanData = dataToExport.map(row => ({
@@ -955,39 +901,110 @@
                 const workbook = XLSX.utils.book_new();
                 XLSX.utils.book_append_sheet(workbook, worksheet, "IKU Report");
                 worksheet['!cols'] = [{ wch: 5 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 40 }, { wch: 15 }, { wch: 12 }, { wch: 20 }, { wch: 15 }, { wch: 15 }];
-                
-                XLSX.writeFile(workbook, sState.year === "" ? "IKU_Report_Overall.xlsx" : `IKU_Report_${sState.year}.xlsx`);
+
+                XLSX.writeFile(workbook, exportTahun === "" ? "IKU_Report_Overall.xlsx" : `IKU_Report_${exportTahun}.xlsx`);
                 hideLoading(); showToast("Excel file successfully downloaded.");
             }, 500);
         }
 
+        function updateDashboardStats() {
+            const total = filteredDataset.length;
+            const completed = filteredDataset.filter(r => (r.status||"").toLowerCase().trim() === 'completed').length;
+            const pending = filteredDataset.filter(r => (r.status||"").toLowerCase().trim().includes('pending')).length;
+            
+            const staffCounts = {};
+            const statusCounts = { 'Completed': 0, 'Pending Approval': 0, 'Incomplete': 0 };
+
+            filteredDataset.forEach(r => { 
+                const displayStaff = getStaffDisplay(r.staff);
+                if(displayStaff !== '-') staffCounts[displayStaff] = (staffCounts[displayStaff] || 0) + 1; 
+                let chartStatus = 'Incomplete';
+                const sLower = (r.status || "").toLowerCase().trim();
+                if (sLower === 'completed') chartStatus = 'Completed';
+                else if (sLower === 'pending for approval') chartStatus = 'Pending Approval'; 
+                statusCounts[chartStatus] = (statusCounts[chartStatus] || 0) + 1;
+            });
+
+            document.getElementById('stat-total').textContent = total.toLocaleString();
+            document.getElementById('stat-completed').textContent = completed.toLocaleString();
+            document.getElementById('stat-pending').textContent = pending;
+            document.getElementById('stat-staff').textContent = Object.keys(staffCounts).length;
+            document.getElementById('insight-pending-count').textContent = pending + ' Records';
+
+            let topStaff = "-", maxCount = 0;
+            for(let s in staffCounts) { if(staffCounts[s] > maxCount) { maxCount = staffCounts[s]; topStaff = s; } }
+            document.getElementById('insight-top-staff').textContent = topStaff;
+
+            updateCharts(staffCounts, statusCounts);
+        }
+
+        const isDarkMode = () => document.documentElement.classList.contains('dark');
+
+        function updateCharts(staffCounts, statusCounts) {
+            const statusCtx = document.getElementById('statusChart');
+            if(!statusCtx) return;
+            
+            if (statusChartInstance) statusChartInstance.destroy();
+            
+            const textColor = isDarkMode() ? '#94a3b8' : '#64748b';
+            const gridColor = isDarkMode() ? '#334155' : '#f1f5f9';
+
+            statusChartInstance = new Chart(statusCtx.getContext('2d'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Completed', 'Pending Approval', 'Incomplete'],
+                    datasets: [{ data: [statusCounts['Completed'], statusCounts['Pending Approval'], statusCounts['Incomplete']], backgroundColor: ['#10b981', '#f59e0b', '#ef4444'], borderWidth: 0, hoverOffset: 8 }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, layout: { padding: { top: 10, bottom: 10 } }, animation: { animateScale: true, animateRotate: true }, plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 8, font: { size: 10 }, color: textColor } } }, cutout: '70%' }
+            });
+
+            const fixedOrder = ["FATIHAH", "FAZILAH", "SAKINAH", "HUSNA", "ADMIN"];
+            const fixedColors = ["#002855", "#0056b3", "#3b82f6", "#10b981", "#7367f0"];
+            const staffData = fixedOrder.map(s => staffCounts[s] || 0);
+            
+            const staffCtx = document.getElementById('staffChart');
+            if (staffChartInstance) staffChartInstance.destroy();
+            staffChartInstance = new Chart(staffCtx.getContext('2d'), {
+                type: 'bar',
+                data: { labels: fixedOrder, datasets: [{ label: 'Total Records', data: staffData, backgroundColor: fixedColors, borderRadius: 6, barThickness: 45, hoverBackgroundColor: '#818cf8' }] },
+                options: { responsive: true, maintainAspectRatio: false, animation: { y: { duration: 1000, easing: 'easeOutQuart' } }, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, border: {display: false}, ticks: { stepSize: 100, font: { size: 10 }, color: textColor }, grid: { color: gridColor, drawBorder: false } }, x: { grid: { display: false }, border: {display: false}, ticks: { font: { size: 11, weight: '600' }, color: textColor } } } }
+            });
+        }
+
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => { if (mutation.attributeName === 'class' && currentUserRole !== "") updateDashboardStats(); });
+        });
+        observer.observe(document.documentElement, { attributes: true });
+
         /* =====================================================================
-           INITIALIZATION & TIMERS
+           TIMERS & INIT
            ===================================================================== */
+        checkAutoLogin();
+
+        setInterval(() => { if (currentUserRole !== "" && editingId === null) fetchDataFromGoogleSheet(true); }, 30000);
+        
         let idleTime = 0;
         function resetIdleTimer() { idleTime = 0; if (currentUserRole !== "") localStorage.setItem('iku_last_active', Date.now()); }
-        window.addEventListener('mousemove', resetIdleTimer); 
+        window.addEventListener('mousemove', resetIdleTimer);
         window.addEventListener('keypress', resetIdleTimer);
         window.addEventListener('click', resetIdleTimer);
         window.addEventListener('scroll', resetIdleTimer, true);
         
-        injectFilters();
-        checkAutoLogin();
-        
-        setInterval(() => { if (currentUserRole !== "" && editingId === null) fetchDataFromGoogleSheet(true); }, 30000);
-        setInterval(() => { if (currentUserRole !== "" && (Date.now() - parseInt(localStorage.getItem('iku_last_active')) > 1800000)) { alert("Session expired."); logout(); } }, 60000);
+        setInterval(() => {
+            if (currentUserRole !== "") {
+                idleTime++;
+                if (idleTime >= 30) { alert("Sesi anda telah tamat kerana tidak aktif selama 30 minit. Sila log masuk semula."); logout(); resetIdleTimer(); }
+            }
+        }, 60000);
 
         function updateClock() {
             const now = new Date();
-            document.getElementById('clock-time').textContent = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
-            document.getElementById('clock-date').textContent = now.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+            const timeEl = document.getElementById('clock-time');
+            const dateEl = document.getElementById('clock-date');
+            if(timeEl) timeEl.textContent = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
+            if(dateEl) dateEl.textContent = now.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
         }
-        setInterval(updateClock, 1000);
-
-        const observer = new MutationObserver((mutations) => {
-            mutations.forEach((m) => { if (m.attributeName === 'class' && currentUserRole !== "") renderCurrentView(true); });
-        });
-        observer.observe(document.documentElement, { attributes: true });
+        setInterval(updateClock, 1000); updateClock();
 
     </script>
 </body>
