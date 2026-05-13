@@ -440,10 +440,11 @@
                     </div>
 
                     <!-- TABLE SECTION WITH FILTERS (Premium Spacing) -->
-                    <div class="glass-panel rounded-2xl shadow-soft flex flex-col flex-1 overflow-hidden min-h-[400px]">
+                    <!-- Table wrapper kini set pada h-[85vh] untuk wujudkan scroll pintar -->
+                    <div class="glass-panel rounded-2xl shadow-soft flex flex-col w-full h-[85vh] overflow-hidden mt-2">
                         
                         <!-- Filters Area -->
-                        <div class="p-3 flex flex-wrap items-center gap-2 border-b border-gray-200 dark:border-gray-700 bg-white/50 dark:bg-gray-800/50">
+                        <div class="p-3 flex flex-wrap items-center gap-2 border-b border-gray-200 dark:border-gray-700 bg-white/50 dark:bg-gray-800/50 shrink-0">
                             
                             <div class="flex-1 min-w-[200px] relative">
                                 <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
@@ -510,17 +511,18 @@
                             <table class="w-full text-left whitespace-nowrap" id="data-table">
                                 <thead>
                                     <tr>
-                                        <th class="px-2 py-2.5 text-center text-[9px]">NO</th>
-                                        <th class="px-2 py-2.5 text-center text-[9px]">CONTROL NUMBER</th>
-                                        <th class="px-2 py-2.5 text-center w-[80px] max-w-[80px] whitespace-normal leading-tight text-[9px]">CALL NO<br>(082)</th>
-                                        <th class="px-2 py-2.5 text-center w-[80px] max-w-[80px] whitespace-normal leading-tight text-[9px]">CALL NO<br>(050/060)</th>
-                                        <th class="px-2 py-2.5 text-left text-[9px]">ACCESSION</th>
-                                        <th class="px-2 py-2.5 text-left min-w-[200px] text-[9px]">TITLE</th>
-                                        <th class="px-2 py-2.5 text-left text-[9px]">STAFF</th>
-                                        <th class="px-2 py-2.5 text-center text-[9px]">DATE</th>
-                                        <th class="px-2 py-2.5 text-left text-[9px]">STATUS</th>
-                                        <th class="px-2 py-2.5 text-left min-w-[120px] text-[9px]">AUDIT TRAIL</th>
-                                        <th class="px-2 py-2.5 text-center text-[9px]">ACTION</th>
+                                        <!-- Header Text dibesarkan ke text-[11px] -->
+                                        <th class="px-3 py-3 text-center text-[11px]">NO</th>
+                                        <th class="px-3 py-3 text-center text-[11px]">CONTROL NUMBER</th>
+                                        <th class="px-3 py-3 text-center w-[120px] max-w-[120px] whitespace-normal leading-tight text-[11px]">CALL NO<br>(082)</th>
+                                        <th class="px-3 py-3 text-center w-[120px] max-w-[120px] whitespace-normal leading-tight text-[11px]">CALL NO<br>(050/060)</th>
+                                        <th class="px-3 py-3 text-left text-[11px]">ACCESSION</th>
+                                        <th class="px-3 py-3 text-left min-w-[250px] text-[11px]">TITLE</th>
+                                        <th class="px-3 py-3 text-left text-[11px]">STAFF</th>
+                                        <th class="px-3 py-3 text-center text-[11px]">DATE</th>
+                                        <th class="px-3 py-3 text-left text-[11px]">STATUS</th>
+                                        <th class="px-3 py-3 text-left min-w-[150px] text-[11px]">AUDIT TRAIL</th>
+                                        <th class="px-3 py-3 text-center text-[11px]">ACTION</th>
                                     </tr>
                                 </thead>
                                 <tbody id="table-body" class="space-y-1">
@@ -530,7 +532,7 @@
                         </div>
                         
                         <!-- Pagination -->
-                        <div id="pagination-controls" class="px-4 py-3 border-t border-gray-200 dark:border-gray-700 flex justify-between items-center bg-white/80 dark:bg-gray-800/80 backdrop-blur-md hidden">
+                        <div id="pagination-controls" class="px-4 py-3 border-t border-gray-200 dark:border-gray-700 flex justify-between items-center bg-white/80 dark:bg-gray-800/80 backdrop-blur-md hidden shrink-0">
                             <span class="text-[10px] text-gray-500 dark:text-gray-400 font-semibold" id="page-info">Showing 0-0 of 0 records</span>
                             <div class="flex gap-1.5">
                                 <button onclick="prevPage()" class="px-3 py-1.5 text-[10px] bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition-all shadow-sm font-bold hover-lift">Previous</button>
@@ -831,6 +833,12 @@
                 
                 document.getElementById('login-screen').classList.add('hidden');
                 document.getElementById('dashboard-screen').classList.remove('hidden');
+                
+                // Hide sidebar on initial load
+                const sidebar = document.getElementById('sidebar');
+                if (window.innerWidth >= 1024) {
+                    sidebar.classList.add('sidebar-desktop-closed');
+                }
 
                 // Return ke tab pertama (Dashboard) selepas log masuk
                 switchTab('dashboard', document.querySelector('.nav-link'));
@@ -858,6 +866,12 @@
 
                 document.getElementById('login-screen').classList.add('hidden');
                 document.getElementById('dashboard-screen').classList.remove('hidden');
+                
+                // Hide sidebar on initial load
+                const sidebar = document.getElementById('sidebar');
+                if (window.innerWidth >= 1024) {
+                    sidebar.classList.add('sidebar-desktop-closed');
+                }
                 
                 // Return ke tab pertama (Dashboard) jika auto-login
                 switchTab('dashboard', document.querySelector('.nav-link'));
@@ -984,7 +998,7 @@
                     for (let staffName in groupedData) {
                         const staffRows = groupedData[staffName];
                         const groupHeader = document.createElement('tr');
-                        groupHeader.className = "bg-indigo-50 dark:bg-indigo-900/30 sticky top-[36px] z-10 hover:!bg-indigo-50 hover:scale-100 hover:shadow-none"; 
+                        groupHeader.className = "bg-indigo-50 dark:bg-indigo-900/30 sticky top-[48px] z-10 hover:!bg-indigo-50 hover:scale-100 hover:shadow-none"; 
                         groupHeader.innerHTML = `
                             <td colspan="11" class="px-4 py-2 !bg-indigo-50 dark:!bg-indigo-900/40">
                                 <div class="flex items-center gap-3">
@@ -998,6 +1012,7 @@
 
                         staffRows.forEach(row => {
                             const tr = document.createElement('tr');
+                            tr.className = 'transition-colors hover:bg-gray-50';
                             tr.innerHTML = generateRowHTML(row, false, true); 
                             tbody.appendChild(tr);
                         });
@@ -1080,46 +1095,46 @@
             if (isEditing && !isReadonlyView) {
                 
                 let call082HTML = (currentUserRole === 'staff')
-                    ? `<td class="px-2 py-2 text-center whitespace-normal break-words w-[80px] max-w-[80px] leading-tight font-medium text-gray-900 text-[10px]">${row.callNo082}<input type="hidden" id="edit-c082-${row.id}" value="${row.callNo082}"></td>`
-                    : `<td class="px-2 py-2"><input type="text" id="edit-c082-${row.id}" value="${row.callNo082}" class="w-full text-[10px] px-2 py-1.5 border border-blue-300 rounded focus:border-indigo-500 focus:ring-1 focus:ring-indigo-200 text-center transition-all bg-white text-gray-900 shadow-sm"></td>`;
+                    ? `<td class="px-3 py-3 text-center whitespace-normal break-words w-[120px] max-w-[120px] leading-tight font-medium text-gray-900 text-xs">${row.callNo082}<input type="hidden" id="edit-c082-${row.id}" value="${row.callNo082}"></td>`
+                    : `<td class="px-3 py-3"><input type="text" id="edit-c082-${row.id}" value="${row.callNo082}" class="w-full text-xs px-3 py-2 border border-blue-300 rounded focus:border-indigo-500 focus:ring-1 focus:ring-indigo-200 text-center transition-all bg-white text-gray-900 shadow-sm"></td>`;
 
                 let statusSelectHTML = '';
                 if (currentUserRole === 'staff') {
                     let isStaffCompleted = (row.status === 'Completed' || row.status === 'Pending For Approval');
                     statusSelectHTML = `
-                        <select id="edit-status-${row.id}" class="w-full text-[10px] px-1 py-1.5 border border-blue-300 rounded focus:border-indigo-500 font-bold bg-white text-gray-900 shadow-sm transition-all">
+                        <select id="edit-status-${row.id}" class="w-full text-xs px-2 py-2 border border-blue-300 rounded focus:border-indigo-500 font-bold bg-white text-gray-900 shadow-sm transition-all">
                             <option value="Completed" ${isStaffCompleted ? 'selected' : ''}>Completed</option>
                             <option value="incomplete" ${!isStaffCompleted ? 'selected' : ''}>Incomplete</option>
                         </select>
                     `;
                 } else {
                     statusSelectHTML = `
-                        <select id="edit-status-${row.id}" class="w-full text-[10px] px-1 py-1.5 border border-blue-300 rounded focus:border-indigo-500 font-bold bg-white text-gray-900 shadow-sm transition-all">
+                        <select id="edit-status-${row.id}" class="w-full text-xs px-2 py-2 border border-blue-300 rounded focus:border-indigo-500 font-bold bg-white text-gray-900 shadow-sm transition-all">
                             ${statusOptions.map(opt => `<option value="${opt}" ${row.status === opt ? 'selected' : ''}>${opt}</option>`).join('')}
                         </select>
                     `;
                 }
 
                 return `
-                    <td class="px-2 py-2 text-center text-gray-500 font-bold text-[10px]">${row.no}</td>
-                    <td class="px-2 py-2"><input type="text" id="edit-ctrl-${row.id}" value="${row.controlNo}" class="w-full text-[10px] px-2 py-1.5 border border-blue-300 rounded focus:border-indigo-500 text-center transition-all bg-white text-gray-900 shadow-sm"></td>
+                    <td class="px-3 py-3 text-center text-gray-500 font-bold text-xs">${row.no}</td>
+                    <td class="px-3 py-3"><input type="text" id="edit-ctrl-${row.id}" value="${row.controlNo}" class="w-full text-xs px-3 py-2 border border-blue-300 rounded focus:border-indigo-500 text-center transition-all bg-white text-gray-900 shadow-sm"></td>
                     ${call082HTML}
-                    <td class="px-2 py-2"><input type="text" id="edit-c050-${row.id}" value="${row.callNo050}" class="w-full text-[10px] px-2 py-1.5 border border-blue-300 rounded focus:border-indigo-500 text-center transition-all bg-white text-gray-900 shadow-sm"></td>
-                    <td class="px-2 py-2 font-extrabold text-indigo-700 text-[10px]">${row.accession}</td>
-                    <td class="px-2 py-2 whitespace-normal min-w-[200px] break-words font-semibold leading-snug text-left text-gray-900 text-[11px]">${row.title}</td>
-                    <td class="px-2 py-2">
-                        <select id="edit-staff-${row.id}" class="w-full text-[10px] px-1 py-1.5 border border-blue-300 rounded focus:border-indigo-500 font-bold text-indigo-700 shadow-sm transition-all bg-white">
+                    <td class="px-3 py-3"><input type="text" id="edit-c050-${row.id}" value="${row.callNo050}" class="w-full text-xs px-3 py-2 border border-blue-300 rounded focus:border-indigo-500 text-center transition-all bg-white text-gray-900 shadow-sm"></td>
+                    <td class="px-3 py-3 font-extrabold text-indigo-700 text-xs">${row.accession}</td>
+                    <td class="px-3 py-3 whitespace-normal min-w-[250px] break-words font-semibold leading-snug text-left text-gray-900 text-sm">${row.title}</td>
+                    <td class="px-3 py-3">
+                        <select id="edit-staff-${row.id}" class="w-full text-xs px-2 py-2 border border-blue-300 rounded focus:border-indigo-500 font-bold text-indigo-700 shadow-sm transition-all bg-white">
                             <option value="${row.staff}" hidden>${displayStaff}</option>
                             ${staffOptions.map(opt => `<option value="${opt}" ${row.staff === opt ? 'selected' : ''}>${opt}</option>`).join('')}
                         </select>
                     </td>
-                    <td class="px-2 py-2 text-center font-medium text-gray-600 text-[10px]">${formatDisplayDate(row.date)}</td>
-                    <td class="px-2 py-2">${statusSelectHTML}</td>
-                    <td class="px-2 py-2 rounded text-[9px] text-gray-400 text-left italic font-medium">Audit Trail locked.</td>
-                    <td class="px-2 py-2 text-center align-middle">
+                    <td class="px-3 py-3 text-center font-medium text-gray-600 text-xs">${formatDisplayDate(row.date)}</td>
+                    <td class="px-3 py-3">${statusSelectHTML}</td>
+                    <td class="px-3 py-3 rounded text-[11px] text-gray-400 text-left italic font-medium">Audit Trail locked.</td>
+                    <td class="px-3 py-3 text-center align-middle">
                         <div class="flex gap-1.5 justify-center">
-                            <button type="button" onclick="saveRow(${row.id})" class="bg-emerald-500 hover:bg-emerald-600 text-white p-1.5 rounded-lg shadow-glow-emerald hover:-translate-y-0.5 transition-all" title="Save Record"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></button>
-                            <button type="button" onclick="cancelEdit()" class="bg-gray-400 hover:bg-gray-500 text-white p-1.5 rounded-lg shadow-sm hover:-translate-y-0.5 transition-all" title="Cancel"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+                            <button type="button" onclick="saveRow(${row.id})" class="bg-emerald-500 hover:bg-emerald-600 text-white p-2 rounded-lg shadow-glow-emerald hover:-translate-y-0.5 transition-all" title="Save Record"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></button>
+                            <button type="button" onclick="cancelEdit()" class="bg-gray-400 hover:bg-gray-500 text-white p-2 rounded-lg shadow-sm hover:-translate-y-0.5 transition-all" title="Cancel"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
                         </div>
                     </td>
                 `;
@@ -1129,45 +1144,45 @@
             // MODE BACA (READ MODE)
             // ============================
             const currentStatusLower = (row.status || "").toLowerCase().trim();
-            let statusBadge = `<span class="inline-flex items-center px-2 py-1 rounded-md text-[9px] font-bold bg-gray-100 text-gray-600 uppercase tracking-wider shadow-sm"><span class="w-1.5 h-1.5 rounded-full bg-gray-400 mr-1.5"></span>${row.status || '-'}</span>`;
+            let statusBadge = `<span class="inline-flex items-center px-2 py-1 rounded-md text-[11px] font-bold bg-gray-100 text-gray-600 uppercase tracking-wider shadow-sm"><span class="w-1.5 h-1.5 rounded-full bg-gray-400 mr-1.5"></span>${row.status || '-'}</span>`;
             
-            if (currentStatusLower === 'completed') statusBadge = `<span class="inline-flex items-center px-2 py-1 rounded-md text-[9px] font-bold bg-emerald-50 text-emerald-600 border border-emerald-100 uppercase tracking-wider shadow-sm"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5 shadow-[0_0_5px_rgba(16,185,129,0.8)]"></span>Completed</span>`;
-            else if (currentStatusLower === 'incomplete') statusBadge = `<span class="inline-flex items-center px-2 py-1 rounded-md text-[9px] font-bold bg-red-50 text-red-600 border border-red-100 uppercase tracking-wider shadow-sm"><span class="w-1.5 h-1.5 rounded-full bg-red-500 mr-1.5 shadow-[0_0_5px_rgba(239,68,68,0.8)]"></span>Incomplete</span>`;
-            else if (currentStatusLower === 'rejected') statusBadge = `<span class="inline-flex items-center px-2 py-1 rounded-md text-[9px] font-bold bg-red-50 text-red-600 border border-red-100 uppercase tracking-wider shadow-sm"><span class="w-1.5 h-1.5 rounded-full bg-red-500 mr-1.5"></span>Rejected</span>`;
-            else if (currentStatusLower === 'pending for approval') statusBadge = `<span class="inline-flex items-center px-2 py-1 rounded-md text-[9px] font-bold bg-orange-50 text-orange-600 border border-orange-100 uppercase tracking-wider shadow-sm"><span class="w-1.5 h-1.5 rounded-full bg-orange-500 mr-1.5 shadow-[0_0_5px_rgba(249,115,22,0.8)]"></span>Pending</span>`;
+            if (currentStatusLower === 'completed') statusBadge = `<span class="inline-flex items-center px-2 py-1 rounded-md text-[11px] font-bold bg-emerald-50 text-emerald-600 border border-emerald-100 uppercase tracking-wider shadow-sm"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5 shadow-[0_0_5px_rgba(16,185,129,0.8)]"></span>Completed</span>`;
+            else if (currentStatusLower === 'incomplete') statusBadge = `<span class="inline-flex items-center px-2 py-1 rounded-md text-[11px] font-bold bg-red-50 text-red-600 border border-red-100 uppercase tracking-wider shadow-sm"><span class="w-1.5 h-1.5 rounded-full bg-red-500 mr-1.5 shadow-[0_0_5px_rgba(239,68,68,0.8)]"></span>Incomplete</span>`;
+            else if (currentStatusLower === 'rejected') statusBadge = `<span class="inline-flex items-center px-2 py-1 rounded-md text-[11px] font-bold bg-red-50 text-red-600 border border-red-100 uppercase tracking-wider shadow-sm"><span class="w-1.5 h-1.5 rounded-full bg-red-500 mr-1.5"></span>Rejected</span>`;
+            else if (currentStatusLower === 'pending for approval') statusBadge = `<span class="inline-flex items-center px-2 py-1 rounded-md text-[11px] font-bold bg-orange-50 text-orange-600 border border-orange-100 uppercase tracking-wider shadow-sm"><span class="w-1.5 h-1.5 rounded-full bg-orange-500 mr-1.5 shadow-[0_0_5px_rgba(249,115,22,0.8)]"></span>Pending</span>`;
 
             let actionHtml = '';
             if (isReadonlyView) {
                 if (currentUserRole === 'rosli') {
                     // Butang kelulusan satu persatu
-                    actionHtml = `<button type="button" onclick="approveSingleRow(${row.id})" class="text-emerald-500 hover:text-white bg-emerald-50 hover:bg-emerald-500 p-1.5 rounded-lg transition-all shadow-sm hover:shadow-glow-emerald" title="Approve Record"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></button>`;
+                    actionHtml = `<button type="button" onclick="approveSingleRow(${row.id})" class="text-emerald-500 hover:text-white bg-emerald-50 hover:bg-emerald-500 p-2 rounded-lg transition-all shadow-sm hover:shadow-glow-emerald" title="Approve Record"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></button>`;
                 } else {
-                    actionHtml = `<span class="text-gray-300 italic text-[9px] font-medium">—</span>`;
+                    actionHtml = `<span class="text-gray-300 italic text-[11px] font-medium">—</span>`;
                 }
             } else {
-                actionHtml = `<button type="button" onclick="editRow(${row.id})" class="text-indigo-500 hover:text-white bg-indigo-50 hover:bg-indigo-500 p-1.5 rounded-lg transition-all shadow-sm hover:shadow-glow-blue" title="Edit Record"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg></button>`;
+                actionHtml = `<button type="button" onclick="editRow(${row.id})" class="text-indigo-500 hover:text-white bg-indigo-50 hover:bg-indigo-500 p-2 rounded-lg transition-all shadow-sm hover:shadow-glow-blue" title="Edit Record"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg></button>`;
             }
 
             return `
-                <td class="px-2 py-2 text-center font-bold text-gray-500 text-[10px]">${row.no}</td>
-                <td class="px-2 py-2 text-center font-medium text-[10px]">${row.controlNo}</td>
-                <td class="px-2 py-2 text-center font-medium whitespace-normal break-words w-[80px] max-w-[80px] leading-tight text-[10px]">${row.callNo082}</td>
-                <td class="px-2 py-2 text-center font-medium whitespace-normal break-words w-[80px] max-w-[80px] leading-tight text-[10px]">${row.callNo050}</td>
-                <td class="px-2 py-2 font-extrabold text-indigo-600 dark:text-indigo-400 text-[10px]">${row.accession}</td>
-                <td class="px-2 py-2 whitespace-normal break-words font-semibold leading-relaxed text-left text-[11px] min-w-[200px]">${row.title}</td>
-                <td class="px-2 py-2 font-bold text-gray-800 dark:text-gray-200 text-[10px]">${displayStaff}</td>
-                <td class="px-2 py-2 text-center font-medium text-[10px]">${formatDisplayDate(row.date)}</td>
-                <td class="px-2 py-2">${statusBadge}</td>
-                <td class="px-2 py-2 text-left min-w-[120px]">
-                    <div class="text-[9px] flex items-center gap-1.5 whitespace-normal leading-tight">
+                <td class="px-3 py-3 text-center font-bold text-gray-500 text-xs">${row.no}</td>
+                <td class="px-3 py-3 text-center font-medium text-xs">${row.controlNo}</td>
+                <td class="px-3 py-3 text-center font-medium whitespace-normal break-words w-[120px] max-w-[120px] leading-tight text-xs">${row.callNo082}</td>
+                <td class="px-3 py-3 text-center font-medium whitespace-normal break-words w-[120px] max-w-[120px] leading-tight text-xs">${row.callNo050}</td>
+                <td class="px-3 py-3 font-extrabold text-indigo-600 dark:text-indigo-400 text-xs">${row.accession}</td>
+                <td class="px-3 py-3 whitespace-normal min-w-[250px] break-words font-semibold leading-relaxed text-left text-sm">${row.title}</td>
+                <td class="px-3 py-3 font-bold text-gray-800 dark:text-gray-200 text-xs">${displayStaff}</td>
+                <td class="px-3 py-3 text-center font-medium text-xs">${formatDisplayDate(row.date)}</td>
+                <td class="px-3 py-3">${statusBadge}</td>
+                <td class="px-3 py-3 text-left min-w-[150px]">
+                    <div class="text-[11px] flex items-center gap-1.5 whitespace-normal leading-tight">
                         ${row.approvedBy 
                             ? `<span class="w-4 h-4 rounded-full bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center shrink-0"><svg class="w-2.5 h-2.5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></span>
                                <span class="text-gray-500 dark:text-gray-400 font-medium">By <span class="text-gray-800 dark:text-gray-200 font-bold">${row.approvedBy}</span></span>` 
-                            : `<span class="w-4 h-4 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center shrink-0"><span class="w-1 h-1 rounded-full bg-gray-400"></span></span>
+                            : `<span class="w-4 h-4 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center shrink-0"><span class="w-1.5 h-1.5 rounded-full bg-gray-400"></span></span>
                                <span class="text-gray-400 italic">Pending</span>`} 
                     </div>
                 </td>
-                <td class="px-2 py-2 text-center">${actionHtml}</td>
+                <td class="px-3 py-3 text-center">${actionHtml}</td>
             `;
         }
 
@@ -1446,6 +1461,28 @@
                 fetchDataFromGoogleSheet(true); // true bermaksud isSilent = tidak paparkan Loading Overlay
             }
         }, 30000);
+        
+        // =====================================================================
+        // AUTO LOGOUT (30 MINIT TIDAK AKTIF)
+        // =====================================================================
+        let idleTime = 0;
+        function resetIdleTimer() { idleTime = 0; }
+        
+        window.addEventListener('mousemove', resetIdleTimer);
+        window.addEventListener('keypress', resetIdleTimer);
+        window.addEventListener('click', resetIdleTimer);
+        window.addEventListener('scroll', resetIdleTimer, true);
+        
+        setInterval(() => {
+            if (currentUserRole !== "") {
+                idleTime++;
+                if (idleTime >= 30) { // 30 minit
+                    alert("Sesi anda telah tamat kerana tidak aktif selama 30 minit. Sila log masuk semula.");
+                    logout();
+                    resetIdleTimer();
+                }
+            }
+        }, 60000); // Semak setiap 1 minit
         
     </script>
 </body>
