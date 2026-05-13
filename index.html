@@ -824,6 +824,7 @@
                 // Simpan maklumat login dalam Local Storage
                 localStorage.setItem('iku_role', currentUserRole);
                 localStorage.setItem('iku_name', currentUserName);
+                localStorage.setItem('iku_last_active', Date.now()); // Simpan masa aktif
 
                 // Kemaskini nama di dashboard overview text (dan dalam JS)
                 const nameSpan = document.getElementById('profile-name');
@@ -853,30 +854,43 @@
         function checkAutoLogin() {
             const savedRole = localStorage.getItem('iku_role');
             const savedName = localStorage.getItem('iku_name');
+            const lastActive = localStorage.getItem('iku_last_active');
 
-            if (savedRole && savedName) {
-                currentUserRole = savedRole;
-                currentUserName = savedName;
-                currentPage = 1;
+            // Jika ada data login dan belum melebihi 30 minit (1800000 milisaat)
+            if (savedRole && savedName && lastActive) {
+                const now = Date.now();
+                if (now - parseInt(lastActive) < 1800000) {
+                    currentUserRole = savedRole;
+                    currentUserName = savedName;
+                    currentPage = 1;
+                    
+                    // Kemas kini masa aktif baharu kerana user baru refresh page
+                    localStorage.setItem('iku_last_active', now);
 
-                const nameSpan = document.getElementById('profile-name');
-                if(nameSpan) nameSpan.textContent = currentUserName;
+                    const nameSpan = document.getElementById('profile-name');
+                    if(nameSpan) nameSpan.textContent = currentUserName;
 
-                document.getElementById('profile-initial').textContent = currentUserName.charAt(0);
+                    document.getElementById('profile-initial').textContent = currentUserName.charAt(0);
 
-                document.getElementById('login-screen').classList.add('hidden');
-                document.getElementById('dashboard-screen').classList.remove('hidden');
-                
-                // Hide sidebar on initial load
-                const sidebar = document.getElementById('sidebar');
-                if (window.innerWidth >= 1024) {
-                    sidebar.classList.add('sidebar-desktop-closed');
+                    document.getElementById('login-screen').classList.add('hidden');
+                    document.getElementById('dashboard-screen').classList.remove('hidden');
+                    
+                    // Hide sidebar on initial load
+                    const sidebar = document.getElementById('sidebar');
+                    if (window.innerWidth >= 1024) {
+                        sidebar.classList.add('sidebar-desktop-closed');
+                    }
+                    
+                    // Return ke tab pertama (Dashboard) jika auto-login
+                    switchTab('dashboard', document.querySelector('.nav-link'));
+
+                    fetchDataFromGoogleSheet();
+                } else {
+                    // Jika lebih 30 minit, padam data lama (force logout)
+                    localStorage.removeItem('iku_role');
+                    localStorage.removeItem('iku_name');
+                    localStorage.removeItem('iku_last_active');
                 }
-                
-                // Return ke tab pertama (Dashboard) jika auto-login
-                switchTab('dashboard', document.querySelector('.nav-link'));
-
-                fetchDataFromGoogleSheet();
             }
         }
 
@@ -888,6 +902,7 @@
             // Padam maklumat dalam Local Storage
             localStorage.removeItem('iku_role');
             localStorage.removeItem('iku_name');
+            localStorage.removeItem('iku_last_active');
             
             editingId = null; 
             currentUserRole = ""; 
@@ -972,8 +987,16 @@
             
             // Simpan kedudukan scroll (Table dan Window) supaya page tak melompat
             const tableContainer = document.getElementById('table-container');
+            const mainContainer = document.querySelector('main');
+            
             const currentTableScroll = tableContainer ? tableContainer.scrollTop : 0;
-            const currentWindowScroll = window.scrollY;
+            const currentMainScroll = mainContainer ? mainContainer.scrollTop : 0;
+
+            // KUNCI KETINGGIAN TBODY UNTUK ELAK JUMPING BILA INNERHTML DIKOSONGKAN
+            const currentTbodyHeight = tbody.offsetHeight;
+            if (currentTbodyHeight > 0) {
+                tbody.style.minHeight = currentTbodyHeight + 'px';
+            }
 
             tbody.innerHTML = '';
             
@@ -1045,11 +1068,12 @@
 
             updateDashboardStats();
 
-            // Kembalikan kedudukan scroll selepas jadual siap di-render supaya page tak melompat
-            if (tableContainer) {
-                tableContainer.scrollTop = currentTableScroll;
-            }
-            window.scrollTo(0, currentWindowScroll);
+            // KEMBALIKAN SCROLL SELEPAS RENDER & BUANG KUNCI KETINGGIAN
+            requestAnimationFrame(() => {
+                tbody.style.minHeight = '';
+                if (tableContainer) tableContainer.scrollTop = currentTableScroll;
+                if (mainContainer) mainContainer.scrollTop = currentMainScroll;
+            });
         }
 
         // =====================================================================
@@ -1095,7 +1119,7 @@
             if (isEditing && !isReadonlyView) {
                 
                 let call082HTML = (currentUserRole === 'staff')
-                    ? `<td class="px-3 py-3 text-center whitespace-normal break-words w-[120px] max-w-[120px] leading-tight font-medium text-gray-900 text-xs">${row.callNo082}<input type="hidden" id="edit-c082-${row.id}" value="${row.callNo082}"></td>`
+                    ? `<td class="px-3 py-3 text-center whitespace-normal break-words w-[120px] max-w-[120px] leading-tight font-medium text-gray-900 text-[13px]">${row.callNo082}<input type="hidden" id="edit-c082-${row.id}" value="${row.callNo082}"></td>`
                     : `<td class="px-3 py-3"><input type="text" id="edit-c082-${row.id}" value="${row.callNo082}" class="w-full text-xs px-3 py-2 border border-blue-300 rounded focus:border-indigo-500 focus:ring-1 focus:ring-indigo-200 text-center transition-all bg-white text-gray-900 shadow-sm"></td>`;
 
                 let statusSelectHTML = '';
@@ -1120,7 +1144,7 @@
                     <td class="px-3 py-3"><input type="text" id="edit-ctrl-${row.id}" value="${row.controlNo}" class="w-full text-xs px-3 py-2 border border-blue-300 rounded focus:border-indigo-500 text-center transition-all bg-white text-gray-900 shadow-sm"></td>
                     ${call082HTML}
                     <td class="px-3 py-3"><input type="text" id="edit-c050-${row.id}" value="${row.callNo050}" class="w-full text-xs px-3 py-2 border border-blue-300 rounded focus:border-indigo-500 text-center transition-all bg-white text-gray-900 shadow-sm"></td>
-                    <td class="px-3 py-3 font-extrabold text-indigo-700 text-xs">${row.accession}</td>
+                    <td class="px-3 py-3 font-extrabold text-indigo-700 text-[13px]">${row.accession}</td>
                     <td class="px-3 py-3 whitespace-normal min-w-[250px] break-words font-semibold leading-snug text-left text-gray-900 text-sm">${row.title}</td>
                     <td class="px-3 py-3">
                         <select id="edit-staff-${row.id}" class="w-full text-xs px-2 py-2 border border-blue-300 rounded focus:border-indigo-500 font-bold text-indigo-700 shadow-sm transition-all bg-white">
@@ -1128,9 +1152,9 @@
                             ${staffOptions.map(opt => `<option value="${opt}" ${row.staff === opt ? 'selected' : ''}>${opt}</option>`).join('')}
                         </select>
                     </td>
-                    <td class="px-3 py-3 text-center font-medium text-gray-600 text-xs">${formatDisplayDate(row.date)}</td>
+                    <td class="px-3 py-3 text-center font-medium text-gray-600 text-[13px]">${formatDisplayDate(row.date)}</td>
                     <td class="px-3 py-3">${statusSelectHTML}</td>
-                    <td class="px-3 py-3 rounded text-[11px] text-gray-400 text-left italic font-medium">Audit Trail locked.</td>
+                    <td class="px-3 py-3 rounded text-xs text-gray-400 text-left italic font-medium">Audit Trail locked.</td>
                     <td class="px-3 py-3 text-center align-middle">
                         <div class="flex gap-1.5 justify-center">
                             <button type="button" onclick="saveRow(${row.id})" class="bg-emerald-500 hover:bg-emerald-600 text-white p-2 rounded-lg shadow-glow-emerald hover:-translate-y-0.5 transition-all" title="Save Record"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></button>
@@ -1144,12 +1168,12 @@
             // MODE BACA (READ MODE)
             // ============================
             const currentStatusLower = (row.status || "").toLowerCase().trim();
-            let statusBadge = `<span class="inline-flex items-center px-2 py-1 rounded-md text-[11px] font-bold bg-gray-100 text-gray-600 uppercase tracking-wider shadow-sm"><span class="w-1.5 h-1.5 rounded-full bg-gray-400 mr-1.5"></span>${row.status || '-'}</span>`;
+            let statusBadge = `<span class="inline-flex items-center px-2.5 py-1.5 rounded-md text-[11px] font-bold bg-gray-100 text-gray-600 uppercase tracking-wider shadow-sm"><span class="w-1.5 h-1.5 rounded-full bg-gray-400 mr-1.5"></span>${row.status || '-'}</span>`;
             
-            if (currentStatusLower === 'completed') statusBadge = `<span class="inline-flex items-center px-2 py-1 rounded-md text-[11px] font-bold bg-emerald-50 text-emerald-600 border border-emerald-100 uppercase tracking-wider shadow-sm"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5 shadow-[0_0_5px_rgba(16,185,129,0.8)]"></span>Completed</span>`;
-            else if (currentStatusLower === 'incomplete') statusBadge = `<span class="inline-flex items-center px-2 py-1 rounded-md text-[11px] font-bold bg-red-50 text-red-600 border border-red-100 uppercase tracking-wider shadow-sm"><span class="w-1.5 h-1.5 rounded-full bg-red-500 mr-1.5 shadow-[0_0_5px_rgba(239,68,68,0.8)]"></span>Incomplete</span>`;
-            else if (currentStatusLower === 'rejected') statusBadge = `<span class="inline-flex items-center px-2 py-1 rounded-md text-[11px] font-bold bg-red-50 text-red-600 border border-red-100 uppercase tracking-wider shadow-sm"><span class="w-1.5 h-1.5 rounded-full bg-red-500 mr-1.5"></span>Rejected</span>`;
-            else if (currentStatusLower === 'pending for approval') statusBadge = `<span class="inline-flex items-center px-2 py-1 rounded-md text-[11px] font-bold bg-orange-50 text-orange-600 border border-orange-100 uppercase tracking-wider shadow-sm"><span class="w-1.5 h-1.5 rounded-full bg-orange-500 mr-1.5 shadow-[0_0_5px_rgba(249,115,22,0.8)]"></span>Pending</span>`;
+            if (currentStatusLower === 'completed') statusBadge = `<span class="inline-flex items-center px-2.5 py-1.5 rounded-md text-[11px] font-bold bg-emerald-50 text-emerald-600 border border-emerald-100 uppercase tracking-wider shadow-sm"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5 shadow-[0_0_5px_rgba(16,185,129,0.8)]"></span>Completed</span>`;
+            else if (currentStatusLower === 'incomplete') statusBadge = `<span class="inline-flex items-center px-2.5 py-1.5 rounded-md text-[11px] font-bold bg-red-50 text-red-600 border border-red-100 uppercase tracking-wider shadow-sm"><span class="w-1.5 h-1.5 rounded-full bg-red-500 mr-1.5 shadow-[0_0_5px_rgba(239,68,68,0.8)]"></span>Incomplete</span>`;
+            else if (currentStatusLower === 'rejected') statusBadge = `<span class="inline-flex items-center px-2.5 py-1.5 rounded-md text-[11px] font-bold bg-red-50 text-red-600 border border-red-100 uppercase tracking-wider shadow-sm"><span class="w-1.5 h-1.5 rounded-full bg-red-500 mr-1.5"></span>Rejected</span>`;
+            else if (currentStatusLower === 'pending for approval') statusBadge = `<span class="inline-flex items-center px-2.5 py-1.5 rounded-md text-[11px] font-bold bg-orange-50 text-orange-600 border border-orange-100 uppercase tracking-wider shadow-sm"><span class="w-1.5 h-1.5 rounded-full bg-orange-500 mr-1.5 shadow-[0_0_5px_rgba(249,115,22,0.8)]"></span>Pending</span>`;
 
             let actionHtml = '';
             if (isReadonlyView) {
@@ -1165,13 +1189,13 @@
 
             return `
                 <td class="px-3 py-3 text-center font-bold text-gray-500 text-xs">${row.no}</td>
-                <td class="px-3 py-3 text-center font-medium text-xs">${row.controlNo}</td>
-                <td class="px-3 py-3 text-center font-medium whitespace-normal break-words w-[120px] max-w-[120px] leading-tight text-xs">${row.callNo082}</td>
-                <td class="px-3 py-3 text-center font-medium whitespace-normal break-words w-[120px] max-w-[120px] leading-tight text-xs">${row.callNo050}</td>
-                <td class="px-3 py-3 font-extrabold text-indigo-600 dark:text-indigo-400 text-xs">${row.accession}</td>
+                <td class="px-3 py-3 text-center font-medium text-[13px]">${row.controlNo}</td>
+                <td class="px-3 py-3 text-center font-medium whitespace-normal break-words w-[120px] max-w-[120px] leading-tight text-[13px]">${row.callNo082}</td>
+                <td class="px-3 py-3 text-center font-medium whitespace-normal break-words w-[120px] max-w-[120px] leading-tight text-[13px]">${row.callNo050}</td>
+                <td class="px-3 py-3 font-extrabold text-indigo-600 dark:text-indigo-400 text-[13px]">${row.accession}</td>
                 <td class="px-3 py-3 whitespace-normal min-w-[250px] break-words font-semibold leading-relaxed text-left text-sm">${row.title}</td>
                 <td class="px-3 py-3 font-bold text-gray-800 dark:text-gray-200 text-xs">${displayStaff}</td>
-                <td class="px-3 py-3 text-center font-medium text-xs">${formatDisplayDate(row.date)}</td>
+                <td class="px-3 py-3 text-center font-medium text-[13px]">${formatDisplayDate(row.date)}</td>
                 <td class="px-3 py-3">${statusBadge}</td>
                 <td class="px-3 py-3 text-left min-w-[150px]">
                     <div class="text-[11px] flex items-center gap-1.5 whitespace-normal leading-tight">
@@ -1179,7 +1203,7 @@
                             ? `<span class="w-4 h-4 rounded-full bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center shrink-0"><svg class="w-2.5 h-2.5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></span>
                                <span class="text-gray-500 dark:text-gray-400 font-medium">By <span class="text-gray-800 dark:text-gray-200 font-bold">${row.approvedBy}</span></span>` 
                             : `<span class="w-4 h-4 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center shrink-0"><span class="w-1.5 h-1.5 rounded-full bg-gray-400"></span></span>
-                               <span class="text-gray-400 italic">Pending</span>`} 
+                               <span class="text-gray-400 italic text-xs">Pending</span>`} 
                     </div>
                 </td>
                 <td class="px-3 py-3 text-center">${actionHtml}</td>
@@ -1466,7 +1490,14 @@
         // AUTO LOGOUT (30 MINIT TIDAK AKTIF)
         // =====================================================================
         let idleTime = 0;
-        function resetIdleTimer() { idleTime = 0; }
+        
+        function resetIdleTimer() { 
+            idleTime = 0; 
+            // Update masa aktif di Local Storage setiap kali user gerak mouse / menaip
+            if (currentUserRole !== "") {
+                localStorage.setItem('iku_last_active', Date.now());
+            }
+        }
         
         window.addEventListener('mousemove', resetIdleTimer);
         window.addEventListener('keypress', resetIdleTimer);
@@ -1476,7 +1507,7 @@
         setInterval(() => {
             if (currentUserRole !== "") {
                 idleTime++;
-                if (idleTime >= 30) { // 30 minit
+                if (idleTime >= 30) { // 30 minit (setiap tick = 1 minit)
                     alert("Sesi anda telah tamat kerana tidak aktif selama 30 minit. Sila log masuk semula.");
                     logout();
                     resetIdleTimer();
