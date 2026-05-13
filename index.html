@@ -87,12 +87,17 @@
         #table-body tr:hover { transform: scale(1.002); box-shadow: 0 3px 10px rgba(0,0,0,0.05); z-index: 10; position: relative; }
         #table-body tr:hover td { background-color: var(--row-hover, #f8fafc) !important; }
         
+        /* Table Header disamakan dengan warna Sidebar */
         thead th { 
             position: sticky; top: 0; z-index: 20; 
-            background: rgba(248, 250, 252, 0.95) !important;
-            backdrop-filter: blur(8px);
+            background: linear-gradient(180deg, #1e1b4b 0%, #312e81 100%) !important; 
+            color: #ffffff !important;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
         }
-        .dark thead th { background: rgba(15, 23, 42, 0.95) !important; color: #94a3b8 !important; }
+        .dark thead th { 
+            background: linear-gradient(180deg, #1e1b4b 0%, #312e81 100%) !important; 
+            color: #ffffff !important; 
+        }
 
         /* Sidebar Styling & Collapsible Logic */
         aside#sidebar { 
@@ -505,7 +510,7 @@
                         </div>
 
                         <!-- Table Inner Container with Independent Vertical Scroll -->
-                        <div id="table-container" class="w-full bg-white/50 dark:bg-gray-900/50 px-1 pb-1 rounded-b-2xl max-h-[75vh] overflow-y-auto overflow-x-auto custom-scrollbar relative">
+                        <div id="table-container" class="w-full bg-white/50 dark:bg-gray-900/50 px-1 pb-1 rounded-b-2xl h-[75vh] overflow-y-auto overflow-x-auto custom-scrollbar relative">
                             <table class="w-full text-left" id="data-table">
                                 <thead>
                                     <tr>
@@ -1147,7 +1152,7 @@
                     </td>
                     <td class="px-3 py-3 text-center font-medium text-gray-600 text-[14px]">${formatDisplayDate(row.date)}</td>
                     <td class="px-3 py-3">${statusSelectHTML}</td>
-                    <td class="px-3 py-3 rounded text-[11px] text-gray-400 text-left italic font-medium">Audit Trail locked.</td>
+                    <td class="px-3 py-3 rounded text-xs text-gray-400 text-left italic font-medium">Audit Trail locked.</td>
                     <td class="px-3 py-3 text-center align-middle">
                         <div class="flex gap-1.5 justify-center">
                             <button type="button" onclick="saveRow(${row.id})" class="bg-emerald-500 hover:bg-emerald-600 text-white p-2 rounded-lg shadow-glow-emerald hover:-translate-y-0.5 transition-all" title="Save Record"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></button>
