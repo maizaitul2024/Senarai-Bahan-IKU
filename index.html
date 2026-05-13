@@ -294,10 +294,10 @@
                 </header>
 
                 <!-- MAIN DASHBOARD CONTENT -->
-                <div id="view-dashboard" class="tab-pane block flex flex-col flex-1 min-h-0">
+                <div id="view-dashboard" class="flex flex-col flex-1 min-h-0">
                     
                     <!-- KPI CARDS (Premium Gradient & Sparklines) -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 mb-5 shrink-0">
+                    <div id="kpi-cards" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 mb-5 shrink-0">
                         <!-- Card 1: Total -->
                         <div class="glass-panel p-4 rounded-2xl shadow-soft hover-lift relative overflow-hidden flex flex-col h-[120px] group">
                             <div class="absolute top-0 right-0 w-24 h-24 bg-blue-500/10 rounded-full blur-xl -mr-8 -mt-8 transition-transform group-hover:scale-150"></div>
@@ -389,9 +389,9 @@
                     </div>
 
                     <!-- CHARTS & INSIGHTS ROW (Interactive Feel) -->
-                    <div class="grid grid-cols-1 lg:grid-cols-4 gap-5 mb-5 shrink-0">
+                    <div id="charts-section" class="grid grid-cols-1 lg:grid-cols-4 gap-5 mb-5 shrink-0">
                         <!-- Doughnut Chart -->
-                        <div class="glass-panel p-4 rounded-2xl shadow-soft flex flex-col lg:col-span-1 h-[220px] hover-lift group">
+                        <div id="chart-distribution" class="glass-panel p-4 rounded-2xl shadow-soft flex flex-col lg:col-span-1 h-[220px] hover-lift group">
                             <h3 class="font-bold text-gray-900 dark:text-white text-xs mb-2 flex items-center justify-between shrink-0">
                                 Distribution
                                 <div class="w-5 h-5 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path></svg></div>
@@ -402,7 +402,7 @@
                         </div>
                         
                         <!-- Bar Chart -->
-                        <div class="glass-panel p-4 rounded-2xl shadow-soft flex flex-col lg:col-span-2 h-[220px] hover-lift group">
+                        <div id="chart-staff" class="glass-panel p-4 rounded-2xl shadow-soft flex flex-col lg:col-span-2 h-[220px] hover-lift group">
                             <div class="flex justify-between items-center mb-3">
                                 <h3 class="font-bold text-gray-900 dark:text-white text-xs">Staff Performance Trends</h3>
                                 <div class="text-[10px] bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 px-2 py-1 rounded-md font-bold border border-indigo-100 dark:border-indigo-800 cursor-pointer hover:bg-indigo-100 transition-colors">This Year ▾</div>
@@ -413,7 +413,7 @@
                         </div>
 
                         <!-- Quick Insights (Visual Icons & Glow) -->
-                        <div class="bg-gradient-to-br from-[#1e1b4b] to-[#312e81] dark:from-gray-900 dark:to-black p-4 rounded-2xl shadow-glow-purple flex flex-col lg:col-span-1 h-[220px] hover-lift border border-indigo-500/30 relative overflow-hidden">
+                        <div id="chart-insights" class="bg-gradient-to-br from-[#1e1b4b] to-[#312e81] dark:from-gray-900 dark:to-black p-4 rounded-2xl shadow-glow-purple flex flex-col lg:col-span-1 h-[220px] hover-lift border border-indigo-500/30 relative overflow-hidden">
                             <div class="absolute -top-10 -right-10 w-24 h-24 bg-purple-500 rounded-full blur-[30px] opacity-30"></div>
                             
                             <h3 class="font-bold text-white text-xs mb-3 relative z-10 flex items-center gap-1.5">
@@ -445,7 +445,7 @@
                     </div>
 
                     <!-- TABLE SECTION WITH FILTERS (Premium Spacing) -->
-                    <div class="glass-panel rounded-2xl shadow-soft flex flex-col w-full mb-8">
+                    <div id="table-section" class="glass-panel rounded-2xl shadow-soft flex flex-col w-full mb-8">
                         
                         <!-- Filters Area -->
                         <div class="p-3 flex flex-wrap items-center gap-2 border-b border-gray-200 dark:border-gray-700 bg-white/50 dark:bg-gray-800/50 shrink-0 rounded-t-2xl">
@@ -601,48 +601,79 @@
             const pageTitle = document.getElementById('page-title');
             const pageSubtitle = document.getElementById('page-subtitle');
             const statusFilter = document.getElementById('filter-status');
+            
+            // Elements to toggle
+            const kpiCards = document.getElementById('kpi-cards');
+            const chartsSection = document.getElementById('charts-section');
+            const chartDist = document.getElementById('chart-distribution');
+            const chartStaff = document.getElementById('chart-staff');
+            const chartInsights = document.getElementById('chart-insights');
+            const tableSection = document.getElementById('table-section');
 
             // Handle actions based on the clicked menu
             if (action === 'dashboard') {
                 pageTitle.innerHTML = `Welcome back, <span id="profile-name" class="uppercase text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400">${currentUserName || 'STAFF'}</span>!`;
                 pageSubtitle.textContent = "Here is the summary of executive collection management today.";
                 
-                // Clear filter and scroll up
+                kpiCards.style.display = '';
+                chartsSection.style.display = ''; 
+                chartsSection.className = "grid grid-cols-1 lg:grid-cols-4 gap-5 mb-5 shrink-0";
+                chartDist.style.display = '';
+                chartStaff.style.display = '';
+                chartStaff.className = "glass-panel p-4 rounded-2xl shadow-soft flex flex-col lg:col-span-2 h-[220px] hover-lift group";
+                chartInsights.style.display = '';
+                tableSection.style.display = 'none';
+
                 if(statusFilter) statusFilter.value = "";
                 applyFilters();
-                document.querySelector('main').scrollTo({ top: 0, behavior: 'smooth' });
                 
             } else if (action === 'collection') {
                 pageTitle.innerHTML = "Executive Collection";
                 pageSubtitle.textContent = "Viewing all collection records.";
                 
-                // Clear filter and scroll to table
+                kpiCards.style.display = 'none';
+                chartsSection.style.display = 'none';
+                tableSection.style.display = '';
+
                 if(statusFilter) statusFilter.value = "";
                 applyFilters();
-                document.getElementById('table-container').scrollIntoView({ behavior: 'smooth', block: 'start' });
                 
             } else if (action === 'approvals') {
                 pageTitle.innerHTML = "Approvals Queue";
                 pageSubtitle.textContent = "Viewing records pending for approval.";
                 
-                // Set filter to "Pending For Approval" and scroll to table
+                kpiCards.style.display = 'none';
+                chartsSection.style.display = 'none';
+                tableSection.style.display = '';
+
                 if(statusFilter) statusFilter.value = "Pending For Approval";
                 applyFilters();
-                document.getElementById('table-container').scrollIntoView({ behavior: 'smooth', block: 'start' });
                 
             } else if (action === 'staff') {
-                pageTitle.innerHTML = "Staff Performance";
-                pageSubtitle.textContent = "Viewing staff performance and activity trends.";
+                pageTitle.innerHTML = "Staff Management";
+                pageSubtitle.textContent = "Supervise staff performance and updates.";
                 
-                // Scroll to chart
-                document.getElementById('staffChart').scrollIntoView({ behavior: 'smooth', block: 'center' });
-                
+                kpiCards.style.display = 'none';
+                chartsSection.style.display = '';
+                chartsSection.className = "grid grid-cols-1 gap-5 mb-5 shrink-0";
+                chartDist.style.display = 'none';
+                chartStaff.style.display = '';
+                chartStaff.className = "glass-panel p-4 rounded-2xl shadow-soft flex flex-col h-[220px] hover-lift group";
+                chartInsights.style.display = 'none';
+                tableSection.style.display = 'none';
+
             } else if (action === 'reports') {
                 pageTitle.innerHTML = "Reports & Analytics";
                 pageSubtitle.textContent = "Viewing detailed dashboard analytics.";
                 
-                // Scroll to chart
-                document.getElementById('statusChart').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                kpiCards.style.display = 'none';
+                chartsSection.style.display = '';
+                chartsSection.className = "grid grid-cols-1 lg:grid-cols-3 gap-5 mb-5 shrink-0";
+                chartDist.style.display = 'none';
+                chartStaff.style.display = '';
+                chartStaff.className = "glass-panel p-4 rounded-2xl shadow-soft flex flex-col lg:col-span-2 h-[220px] hover-lift group";
+                chartInsights.style.display = '';
+                tableSection.style.display = 'none';
             }
 
             // Close sidebar automatically on mobile
@@ -1149,6 +1180,23 @@
             else if (currentStatusLower === 'rejected') statusBadge = `<span class="inline-flex items-center px-2.5 py-1.5 rounded-md text-[11px] font-bold bg-red-50 text-red-600 border border-red-100 uppercase tracking-wider shadow-sm"><span class="w-1.5 h-1.5 rounded-full bg-red-500 mr-1.5"></span>Rejected</span>`;
             else if (currentStatusLower === 'pending for approval') statusBadge = `<span class="inline-flex items-center px-2.5 py-1.5 rounded-md text-[11px] font-bold bg-orange-50 text-orange-600 border border-orange-100 uppercase tracking-wider shadow-sm"><span class="w-1.5 h-1.5 rounded-full bg-orange-500 mr-1.5 shadow-[0_0_5px_rgba(249,115,22,0.8)]"></span>Pending</span>`;
 
+            // LOGIK AUDIT TRAIL: Hanya paparkan details bila status == Completed & diluluskan oleh seseorang
+            let auditTrailHtml = '<span class="text-gray-300 italic text-[11px] font-medium">—</span>';
+            if (currentStatusLower === 'completed' && row.approvedBy) {
+                auditTrailHtml = `
+                    <div class="text-[11px] flex flex-col gap-0.5 whitespace-normal leading-tight">
+                        <div class="flex items-center gap-1.5">
+                            <span class="w-3.5 h-3.5 rounded-full bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center shrink-0">
+                                <svg class="w-2 h-2 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            </span>
+                            <span class="text-gray-500 dark:text-gray-400 font-medium">By <span class="text-gray-800 dark:text-gray-200 font-bold">${row.approvedBy}</span></span>
+                        </div>
+                        ${row.approvedDate ? `<div class="text-gray-400 dark:text-gray-500 text-[9px] ml-5 flex items-center gap-1"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>${formatDisplayDate(row.approvedDate)}</div>` : ''}
+                    </div>
+                `;
+            }
+
+            // LOGIK ACTION: Hide butang edit untuk STAFF jika status rekod sudah Completed
             let actionHtml = '';
             if (isReadonlyView) {
                 if (currentUserRole === 'rosli') {
@@ -1158,7 +1206,13 @@
                     actionHtml = `<span class="text-gray-300 italic text-[11px] font-medium">—</span>`;
                 }
             } else {
-                actionHtml = `<button type="button" onclick="editRow(${row.id})" class="text-indigo-500 hover:text-white bg-indigo-50 hover:bg-indigo-500 p-1.5 rounded-lg transition-all shadow-sm hover:shadow-glow-blue" title="Edit Record"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg></button>`;
+                if (currentUserRole === 'staff' && currentStatusLower === 'completed') {
+                    // Staff tidak boleh edit rekod yang telah Completed (hide edit button)
+                    actionHtml = `<span class="text-gray-300 italic text-[11px] font-medium">—</span>`;
+                } else {
+                    // Semua yang selainnya (termasuk ADMIN yang boleh edit segalanya)
+                    actionHtml = `<button type="button" onclick="editRow(${row.id})" class="text-indigo-500 hover:text-white bg-indigo-50 hover:bg-indigo-500 p-1.5 rounded-lg transition-all shadow-sm hover:shadow-glow-blue" title="Edit Record"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg></button>`;
+                }
             }
 
             return `
@@ -1171,15 +1225,7 @@
                 <td class="px-3 py-3 font-bold text-gray-800 dark:text-gray-200 text-[14px]">${displayStaff}</td>
                 <td class="px-3 py-3 text-center font-medium text-[14px]">${formatDisplayDate(row.date)}</td>
                 <td class="px-3 py-3">${statusBadge}</td>
-                <td class="px-3 py-3 text-left min-w-[150px]">
-                    <div class="text-[12px] sm:text-xs flex items-center gap-1.5 whitespace-normal leading-tight">
-                        ${row.approvedBy 
-                            ? `<span class="w-4 h-4 rounded-full bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center shrink-0"><svg class="w-2.5 h-2.5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></span>
-                               <span class="text-gray-500 dark:text-gray-400 font-medium">By <span class="text-gray-800 dark:text-gray-200 font-bold">${row.approvedBy}</span></span>` 
-                            : `<span class="w-4 h-4 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center shrink-0"><span class="w-1.5 h-1.5 rounded-full bg-gray-400"></span></span>
-                               <span class="text-gray-400 italic text-xs">Pending</span>`} 
-                    </div>
-                </td>
+                <td class="px-3 py-3 text-left min-w-[150px]">${auditTrailHtml}</td>
                 <td class="px-3 py-3 text-center">${actionHtml}</td>
             `;
         }
