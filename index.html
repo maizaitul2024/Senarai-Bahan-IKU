@@ -66,14 +66,17 @@
         .hover-lift:hover { transform: translateY(-3px); box-shadow: 0 10px 20px -8px rgba(0, 0, 0, 0.15); }
         .dark .hover-lift:hover { box-shadow: 0 10px 20px -8px rgba(0, 0, 0, 0.5); }
 
-        /* Table Styling Overrides (Compacted for no horizontal scroll) */
+        /* Table Styling Overrides: DIPERBESARKAN TULISAN & DIBENARKAN WRAP */
         table { border-collapse: separate; border-spacing: 0 3px; width: 100%; table-layout: auto; }
-        th { font-weight: 600; font-size: 0.6rem; letter-spacing: 0.05em; text-transform: uppercase; }
+        th { font-weight: 700; font-size: 0.75rem; letter-spacing: 0.05em; text-transform: uppercase; } /* 12px */
         #table-body tr { transition: all 0.2s ease; box-shadow: 0 1px 2px rgba(0,0,0,0.02); }
         #table-body td { 
             background-color: var(--row-bg, #ffffff); 
             border-top: 1px solid transparent; border-bottom: 1px solid transparent;
-            font-size: 0.65rem; transition: all 0.2s ease;
+            font-size: 0.875rem; /* 14px */
+            transition: all 0.2s ease;
+            padding-top: 0.75rem;
+            padding-bottom: 0.75rem;
         }
         #table-body td:first-child { border-top-left-radius: 6px; border-bottom-left-radius: 6px; border-left: 1px solid transparent; }
         #table-body td:last-child { border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-right: 1px solid transparent; }
@@ -98,7 +101,6 @@
             background: linear-gradient(180deg, #1e1b4b 0%, #312e81 100%); 
         }
         
-        /* Overriding JS injected classes for Sidebar dynamically */
         .nav-link { transition: all 0.3s ease !important; position: relative; border-radius: 10px !important; margin-bottom: 3px; }
         .nav-link:hover { transform: translateX(3px); background-color: rgba(255,255,255,0.1) !important; }
         .nav-link.bg-blue-600 { 
@@ -108,7 +110,6 @@
             border-radius: 0 10px 10px 0 !important;
         }
 
-        /* Collapsible Sidebar Logic */
         .sidebar-desktop-closed { width: 72px !important; margin-left: 0 !important; }
         .sidebar-desktop-closed .nav-text, .sidebar-desktop-closed .brand-text, .sidebar-desktop-closed .promo-box { 
             opacity: 0; width: 0; display: none; 
@@ -119,11 +120,9 @@
         .sidebar-desktop-closed .nav-link svg { margin: 0 auto !important; width: 20px; height: 20px; }
         .sidebar-desktop-closed .profile-details { display: none; }
 
-        /* Sparkline SVGs */
         .sparkline { position: absolute; bottom: -4px; left: 0; width: 100%; height: 40px; pointer-events: none; opacity: 0.4; transition: opacity 0.3s; }
         .hover-lift:hover .sparkline { opacity: 0.8; }
 
-        /* Inputs */
         input:focus, select:focus { outline: none; border-color: #6366f1 !important; box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.15) !important; }
         .dark input, .dark select { background-color: #1e293b; color: #f8fafc; border-color: #334155; }
     </style>
@@ -148,7 +147,7 @@
             <div class="space-y-5">
                 <div>
                     <label class="block text-[10px] font-bold text-gray-500 dark:text-gray-400 mb-1.5 uppercase tracking-widest">Select Role</label>
-                    <select id="login-role" class="w-full border border-gray-200 dark:border-gray-700 bg-white/50 dark:bg-gray-800/50 rounded-lg px-3 py-2.5 text-xs text-gray-700 dark:text-gray-200 cursor-pointer appearance-none backdrop-blur-sm transition-all shadow-sm" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%239ca3af%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E'); background-position: right 1rem center; background-repeat: no-repeat; background-size: 1.2em;">
+                    <select id="login-role" class="w-full border border-gray-200 dark:border-gray-700 bg-white/50 dark:bg-gray-800/50 rounded-lg px-3 py-2.5 text-xs text-gray-700 dark:text-gray-200 cursor-pointer appearance-none backdrop-blur-sm transition-all shadow-sm">
                         <option value="">Choose an account...</option>
                         <option value="staff">Staff (Data Entry)</option>
                         <option value="rosli">Rosli (Approver)</option>
@@ -250,10 +249,11 @@
             </div>
         </aside>
 
-        <!-- MAIN CONTENT AREA -->
+        <!-- MAIN CONTENT AREA (KINI MENJADI SCROLL CONTAINER UTAMA UNTUK SELURUH PAGE) -->
         <main class="flex-1 flex flex-col h-screen overflow-y-auto custom-scrollbar p-4 lg:p-6 relative w-full transition-colors duration-300">
             
-            <div class="max-w-[1500px] w-full mx-auto flex flex-col h-full">
+            <!-- min-h-full dan pb-12 supaya page boleh kembang bersama jadual -->
+            <div class="max-w-[1500px] w-full mx-auto flex flex-col min-h-full pb-12">
                 
                 <!-- TOP HEADER BAR -->
                 <header class="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-6">
@@ -440,11 +440,11 @@
                     </div>
 
                     <!-- TABLE SECTION WITH FILTERS (Premium Spacing) -->
-                    <!-- Table wrapper kini set pada h-[85vh] untuk wujudkan scroll pintar -->
-                    <div class="glass-panel rounded-2xl shadow-soft flex flex-col w-full h-[85vh] overflow-hidden mt-2">
+                    <!-- Dibuang overflow-hidden dan fixed height supaya jadual kembang & page utama yang scroll -->
+                    <div class="glass-panel rounded-2xl shadow-soft flex flex-col w-full mb-8">
                         
                         <!-- Filters Area -->
-                        <div class="p-3 flex flex-wrap items-center gap-2 border-b border-gray-200 dark:border-gray-700 bg-white/50 dark:bg-gray-800/50 shrink-0">
+                        <div class="p-3 flex flex-wrap items-center gap-2 border-b border-gray-200 dark:border-gray-700 bg-white/50 dark:bg-gray-800/50 shrink-0 rounded-t-2xl">
                             
                             <div class="flex-1 min-w-[200px] relative">
                                 <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
@@ -452,7 +452,6 @@
                             </div>
                             
                             <div class="flex flex-wrap items-center gap-2">
-                                <!-- Filter Dropdowns unified to w-32 -->
                                 <div class="w-32">
                                     <select id="filter-staff" onchange="applyFilters()" class="w-full text-[11px] border border-gray-200 dark:border-gray-600 rounded-lg pl-3 pr-7 py-2 h-[36px] bg-white dark:bg-gray-800 cursor-pointer appearance-none text-gray-700 dark:text-gray-200 font-semibold shadow-sm transition-all hover:border-indigo-300 text-ellipsis overflow-hidden whitespace-nowrap" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%239ca3af%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E'); background-position: right 0.5rem center; background-repeat: no-repeat; background-size: 1.2em;">
                                         <option value="">Staff: All</option>
@@ -506,23 +505,23 @@
                             </div>
                         </div>
 
-                        <!-- Table Inner Container -->
-                        <div id="table-container" class="flex-1 overflow-y-auto overflow-x-auto custom-scrollbar bg-white/50 dark:bg-gray-900/50 px-1 pb-1">
-                            <table class="w-full text-left whitespace-nowrap" id="data-table">
+                        <!-- Table Inner Container (Hilang semua overflow supaya page boleh menatal) -->
+                        <div id="table-container" class="w-full bg-white/50 dark:bg-gray-900/50 px-1 pb-1 rounded-b-2xl">
+                            <table class="w-full text-left" id="data-table">
                                 <thead>
                                     <tr>
-                                        <!-- Header Text dibesarkan ke text-[11px] -->
-                                        <th class="px-3 py-3 text-center text-[11px]">NO</th>
-                                        <th class="px-3 py-3 text-center text-[11px]">CONTROL NUMBER</th>
-                                        <th class="px-3 py-3 text-center w-[120px] max-w-[120px] whitespace-normal leading-tight text-[11px]">CALL NO<br>(082)</th>
-                                        <th class="px-3 py-3 text-center w-[120px] max-w-[120px] whitespace-normal leading-tight text-[11px]">CALL NO<br>(050/060)</th>
-                                        <th class="px-3 py-3 text-left text-[11px]">ACCESSION</th>
-                                        <th class="px-3 py-3 text-left min-w-[250px] text-[11px]">TITLE</th>
-                                        <th class="px-3 py-3 text-left text-[11px]">STAFF</th>
-                                        <th class="px-3 py-3 text-center text-[11px]">DATE</th>
-                                        <th class="px-3 py-3 text-left text-[11px]">STATUS</th>
-                                        <th class="px-3 py-3 text-left min-w-[150px] text-[11px]">AUDIT TRAIL</th>
-                                        <th class="px-3 py-3 text-center text-[11px]">ACTION</th>
+                                        <!-- Header Text Dibesarkan kepada text-xs (12px) -->
+                                        <th class="px-3 py-4 text-center">NO</th>
+                                        <th class="px-3 py-4 text-center">CONTROL NUMBER</th>
+                                        <th class="px-3 py-4 text-center w-[120px] max-w-[120px] leading-tight">CALL NO<br>(082)</th>
+                                        <th class="px-3 py-4 text-center w-[120px] max-w-[120px] leading-tight">CALL NO<br>(050/060)</th>
+                                        <th class="px-3 py-4 text-left">ACCESSION</th>
+                                        <th class="px-3 py-4 text-left min-w-[200px]">TITLE</th>
+                                        <th class="px-3 py-4 text-left">STAFF</th>
+                                        <th class="px-3 py-4 text-center">DATE</th>
+                                        <th class="px-3 py-4 text-left">STATUS</th>
+                                        <th class="px-3 py-4 text-left min-w-[150px]">AUDIT TRAIL</th>
+                                        <th class="px-3 py-4 text-center">ACTION</th>
                                     </tr>
                                 </thead>
                                 <tbody id="table-body" class="space-y-1">
@@ -532,7 +531,7 @@
                         </div>
                         
                         <!-- Pagination -->
-                        <div id="pagination-controls" class="px-4 py-3 border-t border-gray-200 dark:border-gray-700 flex justify-between items-center bg-white/80 dark:bg-gray-800/80 backdrop-blur-md hidden shrink-0">
+                        <div id="pagination-controls" class="px-4 py-3 border-t border-gray-200 dark:border-gray-700 flex justify-between items-center bg-white/80 dark:bg-gray-800/80 backdrop-blur-md hidden shrink-0 rounded-b-2xl">
                             <span class="text-[10px] text-gray-500 dark:text-gray-400 font-semibold" id="page-info">Showing 0-0 of 0 records</span>
                             <div class="flex gap-1.5">
                                 <button onclick="prevPage()" class="px-3 py-1.5 text-[10px] bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition-all shadow-sm font-bold hover-lift">Previous</button>
@@ -985,14 +984,11 @@
             const tbody = document.getElementById('table-body');
             const paginationDiv = document.getElementById('pagination-controls');
             
-            // Simpan kedudukan scroll (Table dan Window) supaya page tak melompat
-            const tableContainer = document.getElementById('table-container');
+            // Simpan kedudukan scroll (hanya pada tag <main> kerana table tidak mempunyai kotak scroll lagi)
             const mainContainer = document.querySelector('main');
-            
-            const currentTableScroll = tableContainer ? tableContainer.scrollTop : 0;
             const currentMainScroll = mainContainer ? mainContainer.scrollTop : 0;
 
-            // KUNCI KETINGGIAN TBODY UNTUK ELAK JUMPING BILA INNERHTML DIKOSONGKAN
+            // Kunci ketinggian tbody untuk elak page mengecut (jumping) bila innerHTML dikosongkan
             const currentTbodyHeight = tbody.offsetHeight;
             if (currentTbodyHeight > 0) {
                 tbody.style.minHeight = currentTbodyHeight + 'px';
@@ -1068,10 +1064,9 @@
 
             updateDashboardStats();
 
-            // KEMBALIKAN SCROLL SELEPAS RENDER & BUANG KUNCI KETINGGIAN
+            // Lepaskan kunci ketinggian dan kembalikan scroll asal
             requestAnimationFrame(() => {
                 tbody.style.minHeight = '';
-                if (tableContainer) tableContainer.scrollTop = currentTableScroll;
                 if (mainContainer) mainContainer.scrollTop = currentMainScroll;
             });
         }
@@ -1119,40 +1114,40 @@
             if (isEditing && !isReadonlyView) {
                 
                 let call082HTML = (currentUserRole === 'staff')
-                    ? `<td class="px-3 py-3 text-center whitespace-normal break-words w-[120px] max-w-[120px] leading-tight font-medium text-gray-900 text-[13px]">${row.callNo082}<input type="hidden" id="edit-c082-${row.id}" value="${row.callNo082}"></td>`
-                    : `<td class="px-3 py-3"><input type="text" id="edit-c082-${row.id}" value="${row.callNo082}" class="w-full text-xs px-3 py-2 border border-blue-300 rounded focus:border-indigo-500 focus:ring-1 focus:ring-indigo-200 text-center transition-all bg-white text-gray-900 shadow-sm"></td>`;
+                    ? `<td class="px-3 py-3 text-center whitespace-normal break-words w-[120px] max-w-[120px] leading-relaxed font-medium text-gray-900 text-sm">${row.callNo082}<input type="hidden" id="edit-c082-${row.id}" value="${row.callNo082}"></td>`
+                    : `<td class="px-3 py-3"><input type="text" id="edit-c082-${row.id}" value="${row.callNo082}" class="w-full text-sm px-3 py-2 border border-blue-300 rounded focus:border-indigo-500 focus:ring-1 focus:ring-indigo-200 text-center transition-all bg-white text-gray-900 shadow-sm"></td>`;
 
                 let statusSelectHTML = '';
                 if (currentUserRole === 'staff') {
                     let isStaffCompleted = (row.status === 'Completed' || row.status === 'Pending For Approval');
                     statusSelectHTML = `
-                        <select id="edit-status-${row.id}" class="w-full text-xs px-2 py-2 border border-blue-300 rounded focus:border-indigo-500 font-bold bg-white text-gray-900 shadow-sm transition-all">
+                        <select id="edit-status-${row.id}" class="w-full text-sm px-2 py-2 border border-blue-300 rounded focus:border-indigo-500 font-bold bg-white text-gray-900 shadow-sm transition-all">
                             <option value="Completed" ${isStaffCompleted ? 'selected' : ''}>Completed</option>
                             <option value="incomplete" ${!isStaffCompleted ? 'selected' : ''}>Incomplete</option>
                         </select>
                     `;
                 } else {
                     statusSelectHTML = `
-                        <select id="edit-status-${row.id}" class="w-full text-xs px-2 py-2 border border-blue-300 rounded focus:border-indigo-500 font-bold bg-white text-gray-900 shadow-sm transition-all">
+                        <select id="edit-status-${row.id}" class="w-full text-sm px-2 py-2 border border-blue-300 rounded focus:border-indigo-500 font-bold bg-white text-gray-900 shadow-sm transition-all">
                             ${statusOptions.map(opt => `<option value="${opt}" ${row.status === opt ? 'selected' : ''}>${opt}</option>`).join('')}
                         </select>
                     `;
                 }
 
                 return `
-                    <td class="px-3 py-3 text-center text-gray-500 font-bold text-xs">${row.no}</td>
-                    <td class="px-3 py-3"><input type="text" id="edit-ctrl-${row.id}" value="${row.controlNo}" class="w-full text-xs px-3 py-2 border border-blue-300 rounded focus:border-indigo-500 text-center transition-all bg-white text-gray-900 shadow-sm"></td>
+                    <td class="px-3 py-3 text-center text-gray-500 font-bold text-sm">${row.no}</td>
+                    <td class="px-3 py-3"><input type="text" id="edit-ctrl-${row.id}" value="${row.controlNo}" class="w-full text-sm px-3 py-2 border border-blue-300 rounded focus:border-indigo-500 text-center transition-all bg-white text-gray-900 shadow-sm"></td>
                     ${call082HTML}
-                    <td class="px-3 py-3"><input type="text" id="edit-c050-${row.id}" value="${row.callNo050}" class="w-full text-xs px-3 py-2 border border-blue-300 rounded focus:border-indigo-500 text-center transition-all bg-white text-gray-900 shadow-sm"></td>
-                    <td class="px-3 py-3 font-extrabold text-indigo-700 text-[13px]">${row.accession}</td>
-                    <td class="px-3 py-3 whitespace-normal min-w-[250px] break-words font-semibold leading-snug text-left text-gray-900 text-sm">${row.title}</td>
+                    <td class="px-3 py-3"><input type="text" id="edit-c050-${row.id}" value="${row.callNo050}" class="w-full text-sm px-3 py-2 border border-blue-300 rounded focus:border-indigo-500 text-center transition-all bg-white text-gray-900 shadow-sm"></td>
+                    <td class="px-3 py-3 font-extrabold text-indigo-700 text-sm">${row.accession}</td>
+                    <td class="px-3 py-3 whitespace-normal min-w-[250px] break-words font-semibold leading-relaxed text-left text-sm">${row.title}</td>
                     <td class="px-3 py-3">
-                        <select id="edit-staff-${row.id}" class="w-full text-xs px-2 py-2 border border-blue-300 rounded focus:border-indigo-500 font-bold text-indigo-700 shadow-sm transition-all bg-white">
+                        <select id="edit-staff-${row.id}" class="w-full text-sm px-2 py-2 border border-blue-300 rounded focus:border-indigo-500 font-bold text-indigo-700 shadow-sm transition-all bg-white">
                             <option value="${row.staff}" hidden>${displayStaff}</option>
                             ${staffOptions.map(opt => `<option value="${opt}" ${row.staff === opt ? 'selected' : ''}>${opt}</option>`).join('')}
                         </select>
                     </td>
-                    <td class="px-3 py-3 text-center font-medium text-gray-600 text-[13px]">${formatDisplayDate(row.date)}</td>
+                    <td class="px-3 py-3 text-center font-medium text-gray-600 text-sm">${formatDisplayDate(row.date)}</td>
                     <td class="px-3 py-3">${statusSelectHTML}</td>
                     <td class="px-3 py-3 rounded text-xs text-gray-400 text-left italic font-medium">Audit Trail locked.</td>
                     <td class="px-3 py-3 text-center align-middle">
@@ -1168,7 +1163,7 @@
             // MODE BACA (READ MODE)
             // ============================
             const currentStatusLower = (row.status || "").toLowerCase().trim();
-            let statusBadge = `<span class="inline-flex items-center px-2.5 py-1.5 rounded-md text-[11px] font-bold bg-gray-100 text-gray-600 uppercase tracking-wider shadow-sm"><span class="w-1.5 h-1.5 rounded-full bg-gray-400 mr-1.5"></span>${row.status || '-'}</span>`;
+            let statusBadge = `<span class="inline-flex items-center px-2 py-1 rounded-md text-[11px] font-bold bg-gray-100 text-gray-600 uppercase tracking-wider shadow-sm"><span class="w-1.5 h-1.5 rounded-full bg-gray-400 mr-1.5"></span>${row.status || '-'}</span>`;
             
             if (currentStatusLower === 'completed') statusBadge = `<span class="inline-flex items-center px-2.5 py-1.5 rounded-md text-[11px] font-bold bg-emerald-50 text-emerald-600 border border-emerald-100 uppercase tracking-wider shadow-sm"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5 shadow-[0_0_5px_rgba(16,185,129,0.8)]"></span>Completed</span>`;
             else if (currentStatusLower === 'incomplete') statusBadge = `<span class="inline-flex items-center px-2.5 py-1.5 rounded-md text-[11px] font-bold bg-red-50 text-red-600 border border-red-100 uppercase tracking-wider shadow-sm"><span class="w-1.5 h-1.5 rounded-full bg-red-500 mr-1.5 shadow-[0_0_5px_rgba(239,68,68,0.8)]"></span>Incomplete</span>`;
@@ -1188,22 +1183,22 @@
             }
 
             return `
-                <td class="px-3 py-3 text-center font-bold text-gray-500 text-xs">${row.no}</td>
-                <td class="px-3 py-3 text-center font-medium text-[13px]">${row.controlNo}</td>
-                <td class="px-3 py-3 text-center font-medium whitespace-normal break-words w-[120px] max-w-[120px] leading-tight text-[13px]">${row.callNo082}</td>
-                <td class="px-3 py-3 text-center font-medium whitespace-normal break-words w-[120px] max-w-[120px] leading-tight text-[13px]">${row.callNo050}</td>
-                <td class="px-3 py-3 font-extrabold text-indigo-600 dark:text-indigo-400 text-[13px]">${row.accession}</td>
-                <td class="px-3 py-3 whitespace-normal min-w-[250px] break-words font-semibold leading-relaxed text-left text-sm">${row.title}</td>
-                <td class="px-3 py-3 font-bold text-gray-800 dark:text-gray-200 text-xs">${displayStaff}</td>
-                <td class="px-3 py-3 text-center font-medium text-[13px]">${formatDisplayDate(row.date)}</td>
+                <td class="px-3 py-3 text-center font-bold text-gray-500 text-sm">${row.no}</td>
+                <td class="px-3 py-3 text-center font-medium text-sm">${row.controlNo}</td>
+                <td class="px-3 py-3 text-center font-medium whitespace-normal break-words w-[120px] max-w-[120px] leading-relaxed text-sm">${row.callNo082}</td>
+                <td class="px-3 py-3 text-center font-medium whitespace-normal break-words w-[120px] max-w-[120px] leading-relaxed text-sm">${row.callNo050}</td>
+                <td class="px-3 py-3 font-extrabold text-indigo-600 dark:text-indigo-400 text-sm">${row.accession}</td>
+                <td class="px-3 py-3 whitespace-normal min-w-[250px] break-words font-semibold leading-relaxed text-left text-[15px]">${row.title}</td>
+                <td class="px-3 py-3 font-bold text-gray-800 dark:text-gray-200 text-sm">${displayStaff}</td>
+                <td class="px-3 py-3 text-center font-medium text-sm">${formatDisplayDate(row.date)}</td>
                 <td class="px-3 py-3">${statusBadge}</td>
                 <td class="px-3 py-3 text-left min-w-[150px]">
-                    <div class="text-[11px] flex items-center gap-1.5 whitespace-normal leading-tight">
+                    <div class="text-[11px] sm:text-xs flex items-center gap-1.5 whitespace-normal leading-tight">
                         ${row.approvedBy 
                             ? `<span class="w-4 h-4 rounded-full bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center shrink-0"><svg class="w-2.5 h-2.5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></span>
                                <span class="text-gray-500 dark:text-gray-400 font-medium">By <span class="text-gray-800 dark:text-gray-200 font-bold">${row.approvedBy}</span></span>` 
                             : `<span class="w-4 h-4 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center shrink-0"><span class="w-1.5 h-1.5 rounded-full bg-gray-400"></span></span>
-                               <span class="text-gray-400 italic text-xs">Pending</span>`} 
+                               <span class="text-gray-400 italic">Pending</span>`} 
                     </div>
                 </td>
                 <td class="px-3 py-3 text-center">${actionHtml}</td>
