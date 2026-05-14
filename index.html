@@ -111,7 +111,6 @@
         .sidebar-desktop-closed .nav-link svg { margin: 0 auto !important; width: 22px; height: 22px; }
         .sidebar-desktop-closed .profile-details { display: none; }
 
-        /* Tooltip Logic (Fixed to show purely on hover) */
         .sidebar-tooltip {
             position: absolute; left: calc(100% + 12px); top: 50%; transform: translateY(-50%);
             background: rgba(15, 23, 42, 0.95); color: #fff; padding: 6px 12px; border-radius: 6px;
@@ -202,27 +201,27 @@
                     <a href="#" onclick="switchTab('dashboard', this)" class="nav-link active-tab flex items-center gap-3 px-3 py-2.5 text-indigo-100 hover:text-white group">
                         <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
                         <span class="nav-text whitespace-nowrap font-medium text-[11px]">Dashboard</span>
-                        <div class="sidebar-tooltip">Dashboard</div>
+                        <div class="sidebar-tooltip hidden">Dashboard</div>
                     </a>
                     <a href="#" onclick="switchTab('collection', this)" class="nav-link flex items-center gap-3 px-3 py-2.5 text-indigo-100 hover:text-white group">
                         <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
                         <span class="nav-text whitespace-nowrap font-medium text-[11px]">Records</span>
-                        <div class="sidebar-tooltip">Records</div>
+                        <div class="sidebar-tooltip hidden">Records</div>
                     </a>
                     <a href="#" onclick="switchTab('approvals', this)" class="nav-link flex items-center gap-3 px-3 py-2.5 text-indigo-100 hover:text-white group">
                         <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                         <span class="nav-text whitespace-nowrap font-medium text-[11px]">Approval</span>
-                        <div class="sidebar-tooltip">Approval</div>
+                        <div class="sidebar-tooltip hidden">Approval</div>
                     </a>
                     <a href="#" onclick="switchTab('staff', this)" class="nav-link flex items-center gap-3 px-3 py-2.5 text-indigo-100 hover:text-white group">
                         <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
                         <span class="nav-text whitespace-nowrap font-medium text-[11px]">Staff</span>
-                        <div class="sidebar-tooltip">Staff Management</div>
+                        <div class="sidebar-tooltip hidden">Staff Management</div>
                     </a>
                     <a href="#" onclick="switchTab('reports', this)" class="nav-link flex items-center gap-3 px-3 py-2.5 text-indigo-100 hover:text-white group">
                         <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002-2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
                         <span class="nav-text whitespace-nowrap font-medium text-[11px]">Analytics Catalog</span>
-                        <div class="sidebar-tooltip">Analytics Catalog</div>
+                        <div class="sidebar-tooltip hidden">Analytics Catalog</div>
                     </a>
                 </nav>
 
@@ -486,7 +485,7 @@
         <div class="p-3 flex flex-wrap items-center gap-2 border-b border-gray-200 dark:border-gray-700 bg-white/50 dark:bg-gray-800/50">
             <div class="flex-1 min-w-[200px] relative">
                 <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                <input type="text" id="search-input" onkeyup="applyFilters()" placeholder="Search Title or Accession..." class="w-full text-xs border border-gray-200 dark:border-gray-600 rounded-lg pl-8 pr-3 py-1.5 h-[36px] bg-gray-50/50 dark:bg-gray-900/50 focus:bg-white dark:focus:bg-gray-800 transition-all font-medium">
+                <input type="text" id="search-input" onkeyup="debouncedSearch()" placeholder="Search Title or Accession..." class="w-full text-xs border border-gray-200 dark:border-gray-600 rounded-lg pl-8 pr-3 py-1.5 h-[36px] bg-gray-50/50 dark:bg-gray-900/50 focus:bg-white dark:focus:bg-gray-800 transition-all font-medium">
             </div>
             
             <div class="flex flex-wrap items-center gap-2">
@@ -618,6 +617,21 @@
     </div>
 
 
+    <!-- SESSION WARNING MODAL -->
+    <div id="session-warning-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[200] hidden items-center justify-center p-4 transition-all">
+        <div class="glass-panel p-8 rounded-3xl shadow-2xl max-w-sm w-full text-center animate-[fadeIn_0.2s_ease-out]">
+            <div class="w-16 h-16 bg-orange-50 dark:bg-orange-900/30 text-orange-500 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-glow-orange">
+                <svg class="w-8 h-8 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            </div>
+            <h3 class="text-xl font-extrabold text-gray-900 dark:text-white mb-2 font-montserrat">Session Timeout</h3>
+            <p class="text-xs text-gray-500 dark:text-gray-400 leading-relaxed mb-6">Your session will expire in 1 minute due to inactivity. Click below to stay logged in.</p>
+            <button onclick="activityHandler()" class="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white text-xs font-bold py-2.5 px-6 rounded-xl shadow-glow-orange transition-all hover:-translate-y-0.5 w-full">
+                Continue Session
+            </button>
+        </div>
+    </div>
+
+
     <!-- ================== TOAST & LOADING ================== -->
     <div id="toast" class="fixed bottom-6 right-6 transform translate-y-20 opacity-0 transition-all duration-300 bg-gray-900 text-white px-5 py-3.5 rounded-xl shadow-2xl z-50 flex items-center gap-3">
         <div class="w-6 h-6 rounded-full bg-emerald-500/20 flex items-center justify-center shadow-glow-emerald">
@@ -638,6 +652,39 @@
 
     <!-- ================== EXACT PRESERVED JAVASCRIPT ================== -->
     <script>
+        
+        /* =====================================================================
+           [BACKEND SCRIPT INSTRUCTION FOR GOOGLE APPS SCRIPT]
+           ===================================================================== 
+           To fully utilize backend optimizations (CacheService & LockService) as requested,
+           please update your Code.gs in Google Apps Script with this logic:
+           
+           function getInitialData() {
+             var cache = CacheService.getScriptCache();
+             var cached = cache.get("IKU_DATASET");
+             if (cached != null) return ContentService.createTextOutput(cached).setMimeType(ContentService.MimeType.JSON);
+             
+             // If not in cache, read from sheet using getValues() (Batch reading)
+             var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Data");
+             var data = sheet.getDataRange().getValues();
+             // ... your data processing ...
+             var jsonOutput = JSON.stringify(processedData);
+             cache.put("IKU_DATASET", jsonOutput, 30); // Cache for 30 secs
+             return ContentService.createTextOutput(jsonOutput).setMimeType(ContentService.MimeType.JSON);
+           }
+           
+           function updateRow(request) {
+             var lock = LockService.getScriptLock();
+             lock.waitLock(10000); // Wait up to 10 seconds to avoid concurrent edit clashes
+             try {
+                // ... your update logic ...
+                // Clear cache so next fetch gets latest
+                CacheService.getScriptCache().remove("IKU_DATASET"); 
+             } finally {
+                lock.releaseLock();
+             }
+           }
+           ===================================================================== */
         
         let analyticsChartsInitialized = false;
         
@@ -1038,6 +1085,9 @@
 
                 switchTab('dashboard', document.querySelector('.nav-link'));
 
+                // Initiates Timeout Tracker
+                activityHandler();
+
                 fetchDataFromGoogleSheet();
             } else {
                 errorMsg.textContent = "Invalid password.";
@@ -1069,6 +1119,9 @@
 
                 switchTab('dashboard', document.querySelector('.nav-link'));
 
+                // Initiates Timeout Tracker
+                activityHandler();
+
                 fetchDataFromGoogleSheet(true);
             }
         }
@@ -1084,11 +1137,67 @@
             editingId = null; 
             currentUserRole = ""; 
             currentUserName = "";
+            
+            // Clear Timeout Tracker
+            clearTimeout(sessionTimeout);
+            clearTimeout(warningTimeout);
+            hideSessionWarning();
 
             document.getElementById('dashboard-screen').classList.add('hidden');
             document.getElementById('dashboard-screen').classList.remove('flex');
             document.getElementById('login-screen').classList.remove('hidden');
         }
+
+        /* =====================================================================
+           SESSION TIMEOUT LOGIC
+           ===================================================================== */
+        let sessionTimeout;
+        let warningTimeout;
+        const TIMEOUT_DURATION = 30 * 60 * 1000; // 30 mins
+        const WARNING_DURATION = 29 * 60 * 1000; // 29 mins
+
+        function resetSessionTimer() {
+            if (!currentUserRole) return;
+            
+            clearTimeout(sessionTimeout);
+            clearTimeout(warningTimeout);
+            hideSessionWarning();
+
+            warningTimeout = setTimeout(showSessionWarning, WARNING_DURATION);
+            sessionTimeout = setTimeout(logoutDueToInactivity, TIMEOUT_DURATION);
+        }
+
+        function showSessionWarning() {
+            document.getElementById('session-warning-modal').classList.remove('hidden');
+            document.getElementById('session-warning-modal').classList.add('flex');
+        }
+
+        function hideSessionWarning() {
+            const modal = document.getElementById('session-warning-modal');
+            if(modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+        }
+
+        function logoutDueToInactivity() {
+            hideSessionWarning();
+            logout();
+            showToast("Logged out due to inactivity.");
+        }
+
+        let isThrottled = false;
+        function activityHandler() {
+            if (!isThrottled && currentUserRole) {
+                resetSessionTimer();
+                isThrottled = true;
+                setTimeout(() => { isThrottled = false; }, 2000); // Only reset timer every 2 secs
+            }
+        }
+
+        ['mousemove', 'mousedown', 'keypress', 'scroll', 'touchstart'].forEach(evt => {
+            document.addEventListener(evt, activityHandler, { passive: true });
+        });
 
         /* =====================================================================
            PENGURUSAN DATA, CARIAN & FILTER
@@ -1106,6 +1215,14 @@
                 applyFilters(true); 
                 if (!isSilent) hideLoading();
             }).getInitialData();
+        }
+        
+        let searchDebounceTimer;
+        function debouncedSearch() {
+            clearTimeout(searchDebounceTimer);
+            searchDebounceTimer = setTimeout(() => {
+                applyFilters();
+            }, 300); // 300ms delay to prevent freezing
         }
         
         function applyFilters(preservePage = false) {
@@ -1162,12 +1279,15 @@
         function renderTable() {
             const tbody = document.getElementById('table-body');
             const paginationDiv = document.getElementById('pagination-controls');
-            
             const tableContainer = document.getElementById('table-container');
+            
             const currentTableScroll = tableContainer ? tableContainer.scrollTop : 0;
 
             tbody.innerHTML = '';
             
+            // Efficient Rendering using Document Fragment
+            const fragment = document.createDocumentFragment();
+
             if (currentUserRole === 'rosli' && window.forcedStatusFilter === 'Pending For Approval') {
                 paginationDiv.classList.add('hidden'); 
                 const targetStatus = 'pending for approval';
@@ -1182,7 +1302,9 @@
                 });
 
                 if(Object.keys(groupedData).length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="11" class="px-5 py-10 text-center text-gray-500 font-medium italic text-sm">No records require your action.</td></tr>`;
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `<tr><td colspan="11" class="px-5 py-10 text-center text-gray-500 font-medium italic text-sm">No records require your action.</td></tr>`;
+                    fragment.appendChild(tr);
                 } else {
                     for (let staffName in groupedData) {
                         const staffRows = groupedData[staffName];
@@ -1197,11 +1319,11 @@
                                 </div>
                             </td>
                         `;
-                        tbody.appendChild(groupHeader);
+                        fragment.appendChild(groupHeader);
                         staffRows.forEach(row => {
                             const tr = document.createElement('tr');
                             tr.innerHTML = generateRowHTML(row, false, true); 
-                            tbody.appendChild(tr);
+                            fragment.appendChild(tr);
                         });
                     }
                 }
@@ -1212,7 +1334,9 @@
                 const paginatedData = filteredDataset.slice(startIndex, endIndex);
                 
                 if (paginatedData.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="11" class="px-5 py-10 text-center text-gray-500 font-medium italic text-sm">No records found based on your search/filter.</td></tr>`;
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `<tr><td colspan="11" class="px-5 py-10 text-center text-gray-500 font-medium italic text-sm">No records found based on your search/filter.</td></tr>`;
+                    fragment.appendChild(tr);
                 }
 
                 paginatedData.forEach(row => {
@@ -1220,12 +1344,14 @@
                     tr.id = `row-${row.id}`;
                     tr.className = editingId === row.id ? 'editing-row' : '';
                     tr.innerHTML = generateRowHTML(row, editingId === row.id, false);
-                    tbody.appendChild(tr);
+                    fragment.appendChild(tr);
                 });
                 
                 const infoEnd = Math.min(startIndex + rowsPerPage, filteredDataset.length);
                 document.getElementById('page-info').textContent = `Showing ${filteredDataset.length > 0 ? startIndex + 1 : 0} to ${infoEnd} of ${filteredDataset.length} records`;
             }
+
+            tbody.appendChild(fragment);
 
             updateDashboardStats();
 
@@ -1322,7 +1448,7 @@
             let actionHtml = '';
             if (currentUserRole === 'rosli') {
                 if (isApprovalsTab) {
-                    actionHtml = `<button type="button" onclick="approveSingleRow(${row.id})" class="text-emerald-500 hover:text-white bg-emerald-50 hover:bg-emerald-500 p-1.5 rounded-lg transition-all shadow-sm hover:shadow-glow-emerald" title="Approve Record"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></button>`;
+                    actionHtml = `<button type="button" onclick="approveSingleRow(${row.id})" class="text-emerald-500 hover:text-white bg-emerald-50 hover:bg-emerald-500 p-1.5 rounded-lg transition-all shadow-sm hover:shadow-glow-emerald" title="Approve Record"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></button>`;
                 } else {
                     actionHtml = `<span class="text-gray-300 italic text-[10px] font-medium">—</span>`;
                 }
@@ -1368,7 +1494,7 @@
                                <span class="text-gray-400 italic">Pending</span>`} 
                     </div>
                 </td>
-                <td class="px-3 py-3 text-center align-middle">${actionHtml}</td>
+                <td class="px-3 py-3 text-center">${actionHtml}</td>
             `;
         }
 
