@@ -1340,9 +1340,7 @@
                 });
 
                 if(Object.keys(groupedData).length === 0) {
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `<tr><td colspan="11" class="px-5 py-10 text-center text-gray-500 font-medium italic text-sm">No records require your action.</td></tr>`;
-                    fragment.appendChild(tr);
+                    // Teks ralat telah dibuang
                 } else {
                     for (let staffName in groupedData) {
                         const staffRows = groupedData[staffName];
@@ -1374,7 +1372,7 @@
                 const paginatedData = filteredDataset.slice(startIndex, endIndex);
                 
                 if (paginatedData.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="11" class="px-5 py-10 text-center text-gray-500 font-medium italic text-sm">No records found based on your search/filter.</td></tr>`;
+                    tbody.innerHTML = ''; // Teks ralat telah dibuang
                 } else {
                     const currentRows = Array.from(tbody.querySelectorAll('tr[id^="row-"]'));
                     const paginatedIds = paginatedData.map(r => `row-${r.id}`);
