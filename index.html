@@ -1157,41 +1157,9 @@
         }
 
         function checkAutoLogin() {
-            const savedRole = localStorage.getItem('iku_role');
-            const savedName = localStorage.getItem('iku_name');
-            const lastActivity = localStorage.getItem('iku_last_activity');
-
-            if (savedRole && savedName && lastActivity) {
-                const idleTime = Date.now() - parseInt(lastActivity, 10);
-                
-                if (idleTime < TIMEOUT_DURATION) {
-                    currentUserRole = savedRole;
-                    currentUserName = savedName;
-                    currentPage = 1;
-
-                    const nameSpan = document.getElementById('profile-name');
-                    if(nameSpan) nameSpan.textContent = currentUserName;
-
-                    document.getElementById('profile-initial').textContent = currentUserName.charAt(0);
-                    const sidebarInitial = document.getElementById('profile-initial-sidebar');
-                    if (sidebarInitial) sidebarInitial.textContent = currentUserName.charAt(0);
-
-                    document.getElementById('login-screen').classList.add('hidden');
-                    document.getElementById('dashboard-screen').classList.remove('hidden');
-                    document.getElementById('dashboard-screen').classList.add('flex');
-                    
-                    document.getElementById('sidebar').classList.add('sidebar-desktop-closed');
-
-                    switchTab('dashboard', document.querySelector('.nav-link'));
-
-                    startSessionManagement();
-                    fetchDataFromGoogleSheet(true);
-                } else {
-                    logout(); 
-                }
-            } else {
-                logout(); 
-            }
+            // Memastikan setiap kali page di-refresh atau dibuka buat pertama kali,
+            // pengguna wajib log masuk semula dan tiada data akan di-load lebih awal.
+            logout();
         }
 
         function logout() {
