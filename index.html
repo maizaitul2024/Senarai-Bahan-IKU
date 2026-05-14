@@ -1,825 +1,800 @@
 <!DOCTYPE html>
-<html lang="en" class="light">
+<html lang="ms">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IKU Library System - Premium Enterprise</title>
-    
-    <!-- Tailwind CSS with Custom Config for Dark Mode & Premium Colors -->
+    <title>IKU Library System - Login & Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        glass: 'rgba(255, 255, 255, 0.7)',
-                        glassDark: 'rgba(30, 41, 59, 0.7)',
-                        premiumDark: '#0f172a',
-                    },
-                    boxShadow: {
-                        'glow-blue': '0 0 15px rgba(59, 130, 246, 0.5)',
-                        'glow-purple': '0 0 15px rgba(168, 85, 247, 0.5)',
-                        'glow-emerald': '0 0 15px rgba(16, 185, 129, 0.5)',
-                        'glow-orange': '0 0 15px rgba(249, 115, 22, 0.5)',
-                        'soft': '0 4px 20px -2px rgba(0, 0, 0, 0.05)',
-                    }
-                }
-            }
-        }
-    </script>
-
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Pustaka Chart.js untuk menjana carta -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Pustaka SheetJS untuk export Excel -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    
-    <!-- SaaS Premium UI Styles -->
     <style>
-        body { 
-            font-family: 'Inter', sans-serif; 
-            -webkit-font-smoothing: antialiased;
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
+        body { font-family: 'Inter', sans-serif; background-color: #f4f7f9; }
         .font-montserrat { font-family: 'Montserrat', sans-serif; }
         
-        /* Modern Scrollbar */
-        .custom-scrollbar::-webkit-scrollbar { height: 6px; width: 6px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar { height: 8px; width: 8px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-        .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: #475569; }
-
-        /* Glassmorphism Classes */
-        .glass-panel {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-        .dark .glass-panel {
-            background: rgba(15, 23, 42, 0.75);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        /* Micro-interactions & Hover Effects */
-        .hover-lift { transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease; }
-        .hover-lift:hover { transform: translateY(-3px); box-shadow: 0 10px 20px -8px rgba(0, 0, 0, 0.15); }
-        .dark .hover-lift:hover { box-shadow: 0 10px 20px -8px rgba(0, 0, 0, 0.5); }
-
-        /* Table Styling Overrides: DIPERBESARKAN TULISAN & DIBENARKAN WRAP */
-        table { border-collapse: separate; border-spacing: 0 3px; width: 100%; table-layout: auto; }
-        th { font-weight: 700; font-size: 0.75rem; letter-spacing: 0.05em; text-transform: uppercase; } /* 12px */
-        #table-body tr { transition: all 0.2s ease; box-shadow: 0 1px 2px rgba(0,0,0,0.02); }
-        #table-body td { 
-            background-color: var(--row-bg, #ffffff); 
-            border-top: 1px solid transparent; border-bottom: 1px solid transparent;
-            font-size: 0.875rem; /* 14px */
-            transition: all 0.2s ease;
-            padding-top: 0.75rem;
-            padding-bottom: 0.75rem;
-        }
-        #table-body td:first-child { border-top-left-radius: 6px; border-bottom-left-radius: 6px; border-left: 1px solid transparent; }
-        #table-body td:last-child { border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-right: 1px solid transparent; }
         
-        .dark #table-body td { --row-bg: #1e293b; color: #e2e8f0; }
-        .dark #table-body tr:hover td { --row-bg: #334155; }
+        table { border-collapse: separate; border-spacing: 0; }
+        td { border-bottom: 1px solid #f1f5f9; }
+        tr:hover td { background-color: #f8fafc; }
         
-        #table-body tr:hover { transform: scale(1.002); box-shadow: 0 3px 10px rgba(0,0,0,0.05); z-index: 10; position: relative; }
-        #table-body tr:hover td { background-color: var(--row-hover, #f8fafc) !important; }
+        /* Sticky Header FIX */
+        thead th { position: sticky; top: 0; z-index: 20; background-color: #003366; }
         
-        /* Table Header warna disamakan dengan Sidebar */
-        thead th { 
-            position: sticky; top: 0; z-index: 20; 
-            background: linear-gradient(180deg, #1e1b4b 0%, #312e81 100%) !important; 
-            color: #ffffff !important;
-            backdrop-filter: blur(8px);
-        }
-        .dark thead th { 
-            background: linear-gradient(180deg, #1e1b4b 0%, #312e81 100%) !important; 
-            color: #ffffff !important; 
-        }
-
-        /* Sidebar Styling & Collapsible Logic */
-        aside#sidebar { 
-            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
-            width: 240px;
-            background: linear-gradient(180deg, #1e1b4b 0%, #312e81 100%); 
-        }
-        
-        .nav-link { transition: all 0.3s ease !important; position: relative; border-radius: 10px !important; margin-bottom: 3px; cursor: pointer; }
-        .nav-link:hover { transform: translateX(3px); background-color: rgba(255,255,255,0.1) !important; }
-        .nav-link.bg-blue-600 { 
-            background: linear-gradient(90deg, rgba(99, 102, 241, 0.2) 0%, transparent 100%) !important; 
-            border-left: 3px solid #818cf8 !important; 
-            box-shadow: inset 1px 0 0 rgba(255,255,255,0.1) !important;
-            border-radius: 0 10px 10px 0 !important;
-        }
-
-        .sidebar-desktop-closed { width: 72px !important; margin-left: 0 !important; }
-        .sidebar-desktop-closed .nav-text, .sidebar-desktop-closed .brand-text, .sidebar-desktop-closed .promo-box { 
-            opacity: 0; width: 0; display: none; 
-        }
-        .sidebar-desktop-closed .nav-link { 
-            padding-left: 0 !important; padding-right: 0 !important; justify-content: center !important; 
-        }
-        .sidebar-desktop-closed .nav-link svg { margin: 0 auto !important; width: 20px; height: 20px; }
-        .sidebar-desktop-closed .profile-details { display: none; }
-
-        .sparkline { position: absolute; bottom: -4px; left: 0; width: 100%; height: 40px; pointer-events: none; opacity: 0.4; transition: opacity 0.3s; }
-        .hover-lift:hover .sparkline { opacity: 0.8; }
-
-        input:focus, select:focus { outline: none; border-color: #6366f1 !important; box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.15) !important; }
-        .dark input, .dark select { background-color: #1e293b; color: #f8fafc; border-color: #334155; }
+        /* Mod penyuntingan aktif */
+        tr.editing-row td { background-color: #eff6ff; }
     </style>
 </head>
-<body class="min-h-screen flex overflow-hidden bg-gray-50 dark:bg-premiumDark text-gray-800 dark:text-gray-200">
+<body class="min-h-screen text-gray-800 bg-[#f4f7f9]">
 
-    <!-- ================== LOGIN SCREEN ================== -->
-    <div id="login-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-gray-50 dark:bg-premiumDark transition-colors duration-300">
-        <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-[100px] pointer-events-none"></div>
-        <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-[100px] pointer-events-none"></div>
-
-        <div class="glass-panel shadow-2xl rounded-3xl p-8 w-full max-w-[400px] relative z-10 animate-[fadeIn_0.6s_ease-out]">
-            <div class="text-center mb-6">
-                <div class="w-14 h-14 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-glow-purple">
-                    <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
-                </div>
-                <h1 class="text-2xl font-extrabold text-gray-900 dark:text-white tracking-tight font-montserrat">IKU Library</h1>
-                <p class="text-[11px] text-gray-500 dark:text-gray-400 font-medium mt-1">Enterprise Management System</p>
+    <!-- ========================================== -->
+    <!-- SKRIN LOG MASUK -->
+    <!-- ========================================== -->
+    <div id="login-screen" class="min-h-screen flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-8 md:p-12 w-full max-w-md">
+            
+            <!-- Tajuk -->
+            <div class="text-center mb-8 font-montserrat">
+                <h1 class="text-[28px] font-bold text-[#003366] mb-3 tracking-tight">Senarai Buku IKU</h1>
+                <p class="text-[15px] text-[#0055a4] leading-relaxed">
+                    Sistem Pengurusan Koleksi Buku<br>
+                    Tukar DDC kepada NLM/LC
+                </p>
             </div>
 
+            <!-- Borang Log Masuk -->
             <div class="space-y-5">
+                <!-- Pilihan Pengguna -->
                 <div>
-                    <label class="block text-[10px] font-bold text-gray-500 dark:text-gray-400 mb-1.5 uppercase tracking-widest">Select Role</label>
-                    <select id="login-role" class="w-full border border-gray-200 dark:border-gray-700 bg-white/50 dark:bg-gray-800/50 rounded-lg px-3 py-2.5 text-xs text-gray-700 dark:text-gray-200 cursor-pointer appearance-none backdrop-blur-sm transition-all shadow-sm">
-                        <option value="">Choose an account...</option>
-                        <option value="staff">Staff (Data Entry)</option>
-                        <option value="rosli">Rosli (Approver)</option>
-                        <option value="admin">Administrator</option>
+                    <label class="block text-[11px] font-bold text-gray-500 mb-2 uppercase tracking-widest">PILIH LOG MASUK PENGGUNA</label>
+                    <select id="login-role" class="w-full border border-gray-300 rounded-lg px-4 py-3 text-[15px] text-[#003366] focus:outline-none focus:border-[#003366] focus:ring-1 focus:ring-[#003366] appearance-none bg-no-repeat bg-[right_1rem_center] bg-[length:1.2em_1.2em] transition-colors" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%23003366%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E');">
+                        <option value="">Sila Pilih</option>
+                        <option value="staff">Staff (Kemasukan Data)</option>
+                        <option value="rosli">Rosli (Pegawai Penyemak)</option>
+                        <option value="jaini">Jaini (Pegawai Pelulus)</option>
+                        <option value="admin">Admin</option>
                     </select>
                 </div>
 
-                <div id="password-container" class="animate-[fadeIn_0.3s_ease-out]">
-                    <label class="block text-[10px] font-bold text-gray-500 dark:text-gray-400 mb-1.5 uppercase tracking-widest">Password</label>
-                    <input type="password" id="login-password" placeholder="••••••••" class="w-full border border-gray-200 dark:border-gray-700 bg-white/50 dark:bg-gray-800/50 rounded-lg px-3 py-2.5 text-xs dark:text-white backdrop-blur-sm transition-all shadow-sm">
+                <!-- Kata Laluan -->
+                <div id="password-container" class="hidden transition-all duration-300">
+                    <label class="block text-[11px] font-bold text-gray-500 mb-2 uppercase tracking-widest">KATA LALUAN</label>
+                    <input type="password" id="login-password" placeholder="Masukkan kata laluan" class="w-full border border-gray-300 rounded-lg px-4 py-3 text-[15px] focus:outline-none focus:border-[#003366] focus:ring-1 focus:ring-[#003366] transition-colors">
                 </div>
 
-                <p id="login-error" class="text-red-500 text-[10px] font-semibold text-center hidden bg-red-50 dark:bg-red-900/30 py-2 rounded-lg border border-red-100 dark:border-red-800/50">Invalid credentials.</p>
+                <!-- Mesej Ralat -->
+                <p id="login-error" class="text-red-500 text-xs font-medium text-center hidden bg-red-50 py-2 rounded">Kombinasi log masuk salah.</p>
 
-                <button onclick="handleLogin()" class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold text-xs py-3 px-4 rounded-lg transition-all shadow-glow-purple hover:-translate-y-0.5 mt-3">
-                    Authenticate
+                <!-- Butang -->
+                <button onclick="handleLogin()" class="w-full bg-[#003366] hover:bg-[#002244] text-white font-semibold text-[15px] py-3.5 px-4 rounded-lg transition-colors shadow-sm mt-2">
+                    Log Masuk
                 </button>
             </div>
+
+            <!-- Footer -->
+            <div class="text-center mt-10">
+                <p class="text-[11px] text-gray-400 font-medium">© 2026 IKU Library System</p>
+            </div>
         </div>
     </div>
 
 
-    <!-- ================== DASHBOARD SCREEN ================== -->
-    <div id="dashboard-screen" class="hidden flex w-full h-screen relative">
-        <div id="sidebar-overlay" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-30 hidden transition-opacity lg:hidden" onclick="toggleSidebar()"></div>
-
-        <!-- SIDEBAR -->
-        <aside id="sidebar" class="text-white flex flex-col justify-between shrink-0 z-40 overflow-y-auto custom-scrollbar fixed inset-y-0 left-0 transform -translate-x-full lg:relative lg:translate-x-0 shadow-2xl">
-            <div class="absolute inset-0 overflow-hidden pointer-events-none opacity-20">
-                <div class="absolute -top-10 -left-10 w-32 h-32 bg-purple-500 rounded-full blur-[40px]"></div>
-                <div class="absolute bottom-1/3 -right-10 w-32 h-32 bg-blue-500 rounded-full blur-[40px]"></div>
+    <!-- ========================================== -->
+    <!-- SKRIN DASHBOARD (Diseksikan pada awalnya) -->
+    <!-- ========================================== -->
+    <div id="dashboard-screen" class="hidden p-4 md:p-6 max-w-[1600px] mx-auto transition-opacity duration-500 opacity-0">
+        
+        <!-- HEADER / TOP NAV -->
+        <header class="flex justify-between items-center mb-6 bg-white p-4 rounded-xl shadow-sm font-montserrat">
+            <div>
+                <h1 class="text-2xl font-bold text-[#003366] tracking-tight">IKU LIBRARY SYSTEM</h1>
+                <p class="text-sm text-gray-500 font-medium mt-0.5">Executive Collection Management</p>
             </div>
-
-            <div class="relative z-10">
-                <div class="h-20 flex items-center px-5 mb-2 border-b border-white/10">
-                    <div class="flex items-center gap-3 w-full">
-                        <div class="w-9 h-9 bg-white/10 backdrop-blur-md rounded-lg flex items-center justify-center shrink-0 border border-white/20 shadow-glow-blue">
-                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
-                        </div>
-                        <div class="brand-text overflow-hidden whitespace-nowrap">
-                            <h2 class="text-[13px] font-bold font-montserrat tracking-wide leading-tight text-transparent bg-clip-text bg-gradient-to-r from-white to-blue-200">IKU SYSTEM</h2>
-                            <p class="text-[9px] text-indigo-300 uppercase tracking-widest mt-0.5">Enterprise</p>
-                        </div>
-                    </div>
+            <div class="flex items-center gap-6">
+                <!-- Time & Date -->
+                <div class="text-right hidden md:block">
+                    <div id="clock-time" class="text-lg font-bold text-[#003366] tracking-wider">00:00:00 PM</div>
+                    <div id="clock-date" class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-0.5">WEDNESDAY, 15 APRIL 2026</div>
                 </div>
-
-                <nav class="px-3 py-3 space-y-1" id="main-nav">
-                    <a onclick="switchTab('dashboard', this)" class="nav-link flex items-center gap-3 px-3 py-2.5 bg-blue-600 text-white shadow-sm rounded-lg font-medium text-[11px] transition-colors">
-                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
-                        <span class="nav-text whitespace-nowrap">Dashboard</span>
-                    </a>
-                    <a onclick="switchTab('collection', this)" class="nav-link flex items-center gap-3 px-3 py-2.5 text-indigo-100 hover:bg-[#1e40af] rounded-lg font-medium text-[11px] transition-colors">
-                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
-                        <span class="nav-text whitespace-nowrap">Records</span>
-                    </a>
-                    <a onclick="switchTab('approvals', this)" class="nav-link flex items-center gap-3 px-3 py-2.5 text-indigo-100 hover:bg-[#1e40af] rounded-lg font-medium text-[11px] transition-colors">
-                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        <span class="nav-text whitespace-nowrap">Approvals</span>
-                    </a>
-                    <a onclick="switchTab('staff', this)" class="nav-link flex items-center gap-3 px-3 py-2.5 text-indigo-100 hover:bg-[#1e40af] rounded-lg font-medium text-[11px] transition-colors">
-                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
-                        <span class="nav-text whitespace-nowrap">Staff</span>
-                    </a>
-                    <a onclick="switchTab('reports', this)" class="nav-link flex items-center gap-3 px-3 py-2.5 text-indigo-100 hover:bg-[#1e40af] rounded-lg font-medium text-[11px] transition-colors">
-                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002-2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
-                        <span class="nav-text whitespace-nowrap">Analytics</span>
-                    </a>
-                </nav>
-            </div>
-
-            <div class="p-3 mt-auto relative z-10">
-                <div class="promo-box bg-white/10 backdrop-blur-md rounded-xl p-4 mb-4 text-center border border-white/20 shadow-glow-purple">
-                    <div class="w-10 h-10 bg-gradient-to-br from-indigo-400 to-purple-500 rounded-lg flex items-center justify-center mx-auto mb-3 shadow-md">
-                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-                    </div>
-                    <h4 class="text-[11px] font-bold text-white mb-1 font-montserrat">Smart Insights</h4>
-                    <p class="text-[9px] text-indigo-200 leading-relaxed">AI analytics for making decisions.</p>
-                </div>
-
-                <div class="flex items-center justify-between cursor-pointer group hover:bg-white/10 p-2.5 rounded-xl transition-all border border-transparent hover:border-white/20" onclick="logout()">
-                    <div class="flex items-center gap-2">
-                        <div class="w-8 h-8 bg-gradient-to-tr from-blue-500 to-indigo-500 text-white rounded-lg flex items-center justify-center font-bold text-xs shadow-sm shrink-0">S</div>
-                        <div class="profile-details">
-                            <span class="font-bold text-[10px] text-white uppercase leading-none block tracking-wider">SYSTEM</span>
-                            <span class="text-[9px] text-indigo-300 mt-1 block">Logout</span>
-                        </div>
-                    </div>
-                    <svg class="w-4 h-4 text-indigo-300 group-hover:text-white transition-colors profile-details" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
-                </div>
-            </div>
-        </aside>
-
-        <!-- MAIN SCROLLABLE AREA -->
-        <main class="flex-1 flex flex-col h-screen overflow-y-auto custom-scrollbar p-4 lg:p-6 relative w-full transition-colors duration-300">
-            <div class="max-w-[1500px] w-full mx-auto flex flex-col min-h-full pb-12">
                 
-                <!-- HEADER -->
-                <header class="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-6 shrink-0">
-                    <div class="flex items-center gap-3">
-                        <button onclick="toggleSidebar()" class="p-2 bg-white dark:bg-gray-800 rounded-lg shadow-soft border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:text-indigo-600 transition-colors z-10 hover-lift">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"></path></svg>
-                        </button>
-                        <div>
-                            <h1 class="text-xl font-extrabold text-gray-900 dark:text-white tracking-tight font-montserrat flex items-center gap-2" id="page-title">
-                                Welcome back, <span id="profile-name" class="uppercase text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400">STAFF</span>!
-                            </h1>
-                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5 font-medium" id="page-subtitle">Here is the summary of executive collection management today.</p>
-                        </div>
+                <!-- Profile -->
+                <div class="flex items-center gap-3 border-l border-gray-200 pl-6 cursor-pointer group" onclick="logout()">
+                    <div id="profile-initial" class="w-9 h-9 bg-blue-100 text-[#003366] rounded-full flex items-center justify-center font-bold text-sm group-hover:bg-blue-200 transition">
+                        S
                     </div>
-
-                    <div class="flex items-center gap-4 self-end md:self-auto">
-                        <button onclick="document.documentElement.classList.toggle('dark')" class="p-2 bg-white dark:bg-gray-800 rounded-full shadow-soft border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-yellow-400 hover:bg-gray-50 transition-all hover-lift">
-                            <svg class="w-4 h-4 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
-                            <svg class="w-4 h-4 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
-                        </button>
-                        <div class="text-right hidden sm:block">
-                            <div id="clock-time" class="text-[13px] font-extrabold text-gray-800 dark:text-gray-100 tracking-tight">00:00:00 PM</div>
-                            <div id="clock-date" class="text-[9px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mt-0.5">Wed, 6 May 2026</div>
-                        </div>
-                        <div id="profile-initial" class="w-9 h-9 bg-gradient-to-br from-indigo-500 to-purple-600 text-white rounded-full flex items-center justify-center font-bold text-sm shadow-glow-purple ring-2 ring-white dark:ring-gray-800">S</div>
-                    </div>
-                </header>
-
-                <!-- DYNAMIC VIEWS CONTAINER -->
-                <div class="flex-1 flex flex-col relative w-full">
-                    
-                    <!-- TAB: DASHBOARD -->
-                    <div id="view-dashboard" class="tab-pane block w-full space-y-5">
-                        <!-- Filters Area -->
-                        <div class="glass-panel p-3 flex flex-wrap items-center gap-2 border-b border-gray-200 dark:border-gray-700 bg-white/50 dark:bg-gray-800/50 shrink-0 rounded-2xl shadow-soft">
-                            <div class="flex-1 min-w-[200px] relative">
-                                <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                                <input type="text" id="search-input" onkeyup="applyFilters()" placeholder="Search Title or Accession..." class="w-full text-xs border border-gray-200 dark:border-gray-600 rounded-lg pl-8 pr-3 py-1.5 h-[36px] bg-gray-50/50 dark:bg-gray-900/50 focus:bg-white dark:focus:bg-gray-800 transition-all font-medium">
-                            </div>
-                            <div class="flex flex-wrap items-center gap-2">
-                                <div class="w-32">
-                                    <select id="filter-staff" onchange="applyFilters()" class="w-full text-[11px] border border-gray-200 dark:border-gray-600 rounded-lg pl-3 pr-7 py-2 h-[36px] bg-white dark:bg-gray-800 cursor-pointer appearance-none text-gray-700 dark:text-gray-200 font-semibold shadow-sm text-ellipsis overflow-hidden whitespace-nowrap" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%239ca3af%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E'); background-position: right 0.5rem center; background-repeat: no-repeat; background-size: 1.2em;">
-                                        <option value="">Staff: All</option>
-                                        <option value="-">-</option>
-                                        <option value="FATIHAH">FATIHAH</option>
-                                        <option value="FAZILAH">FAZILAH</option>
-                                        <option value="SAKINAH">SAKINAH</option>
-                                        <option value="HUSNA">HUSNA</option>
-                                    </select>
-                                </div>
-                                <div class="w-32">
-                                    <select id="filter-status" onchange="applyFilters()" class="w-full text-[11px] border border-gray-200 dark:border-gray-600 rounded-lg pl-3 pr-7 py-2 h-[36px] bg-white dark:bg-gray-800 cursor-pointer appearance-none text-gray-700 dark:text-gray-200 font-semibold shadow-sm text-ellipsis overflow-hidden whitespace-nowrap" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%239ca3af%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E'); background-position: right 0.5rem center; background-repeat: no-repeat; background-size: 1.2em;">
-                                        <option value="">Status: All</option>
-                                        <option value="Completed">Completed</option>
-                                        <option value="Pending For Approval">Pending</option>
-                                        <option value="incomplete">Incomplete</option>
-                                    </select>
-                                </div>
-                                <div class="w-32">
-                                    <select id="filter-tahun" onchange="applyFilters()" class="w-full text-[11px] border border-gray-200 dark:border-gray-600 rounded-lg pl-3 pr-7 py-2 h-[36px] bg-white dark:bg-gray-800 cursor-pointer appearance-none text-gray-700 dark:text-gray-200 font-semibold shadow-sm text-ellipsis overflow-hidden whitespace-nowrap" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%239ca3af%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E'); background-position: right 0.5rem center; background-repeat: no-repeat; background-size: 1.2em;">
-                                        <option value="">Year: All</option>
-                                        <option value="2024">2024</option>
-                                        <option value="2025">2025</option>
-                                        <option value="2026">2026</option>
-                                        <option value="2027">2027</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-2 ml-auto w-full lg:w-auto mt-2 lg:mt-0">
-                                <button onclick="fetchDataFromGoogleSheet()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-[11px] font-bold px-4 py-0 rounded-lg flex items-center justify-center gap-1.5 transition-all shadow-glow-blue hover:-translate-y-0.5 h-[36px] flex-1 lg:flex-none">
-                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg> Auto Sync
-                                </button>
-                                <div class="flex items-center bg-emerald-50 dark:bg-emerald-900/20 rounded-lg border border-emerald-100 dark:border-emerald-800/50 p-1 shadow-sm h-[36px]">
-                                    <select id="export-tahun" class="w-20 text-[10px] bg-transparent text-emerald-700 dark:text-emerald-400 font-bold border-none px-1 focus:outline-none cursor-pointer appearance-none text-center h-full">
-                                        <option value="">All Data</option>
-                                        <option value="2024">2024</option>
-                                        <option value="2025">2025</option>
-                                        <option value="2026">2026</option>
-                                        <option value="2027">2027</option>
-                                    </select>
-                                    <button onclick="exportToExcel()" class="bg-emerald-500 hover:bg-emerald-600 text-white text-[11px] font-bold px-3 rounded-md flex items-center gap-1 transition-all shadow-glow-emerald hover:-translate-y-0.5 h-full">
-                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg> Export
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- KPI Cards -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
-                            <div class="glass-panel p-4 rounded-2xl shadow-soft hover-lift relative overflow-hidden flex flex-col h-[120px] group"><div class="absolute top-0 right-0 w-24 h-24 bg-blue-500/10 rounded-full blur-xl -mr-8 -mt-8 transition-transform group-hover:scale-150"></div><div class="flex items-center gap-3 relative z-10"><div class="w-10 h-10 rounded-xl bg-blue-500 flex items-center justify-center text-white shadow-glow-blue"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg></div><div><p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-0.5">Total Records</p><h2 class="text-3xl font-extrabold text-gray-900 dark:text-white font-montserrat leading-none" id="stat-total">0</h2></div></div></div>
-                            <div class="glass-panel p-4 rounded-2xl shadow-soft hover-lift relative overflow-hidden flex flex-col h-[120px] group"><div class="absolute top-0 right-0 w-24 h-24 bg-emerald-500/10 rounded-full blur-xl -mr-8 -mt-8 transition-transform group-hover:scale-150"></div><div class="flex items-center gap-3 relative z-10"><div class="w-10 h-10 rounded-xl bg-emerald-500 flex items-center justify-center text-white shadow-glow-emerald"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div><div><p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-0.5">Completed</p><h2 class="text-3xl font-extrabold text-gray-900 dark:text-white font-montserrat leading-none" id="stat-completed">0</h2></div></div></div>
-                            <div class="glass-panel p-4 rounded-2xl shadow-soft hover-lift relative overflow-hidden flex flex-col h-[120px] group"><div class="absolute top-0 right-0 w-24 h-24 bg-orange-500/10 rounded-full blur-xl -mr-8 -mt-8 transition-transform group-hover:scale-150"></div><div class="flex items-center gap-3 relative z-10"><div class="w-10 h-10 rounded-xl bg-orange-500 flex items-center justify-center text-white shadow-glow-orange"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div><div><p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-0.5">Pending Approval</p><h2 class="text-3xl font-extrabold text-gray-900 dark:text-white font-montserrat leading-none" id="stat-pending">0</h2></div></div></div>
-                            <div class="glass-panel p-4 rounded-2xl shadow-soft hover-lift relative overflow-hidden flex flex-col h-[120px] group"><div class="absolute top-0 right-0 w-24 h-24 bg-purple-500/10 rounded-full blur-xl -mr-8 -mt-8 transition-transform group-hover:scale-150"></div><div class="flex items-center gap-3 relative z-10"><div class="w-10 h-10 rounded-xl bg-purple-600 flex items-center justify-center text-white shadow-glow-purple"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg></div><div><p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-0.5">Staff Active</p><h2 class="text-3xl font-extrabold text-gray-900 dark:text-white font-montserrat leading-none" id="stat-staff">0</h2></div></div></div>
-                        </div>
-
-                        <!-- Charts -->
-                        <div class="grid grid-cols-1 lg:grid-cols-4 gap-5">
-                            <div class="glass-panel p-4 rounded-2xl shadow-soft flex flex-col lg:col-span-1 h-[250px] hover-lift group">
-                                <h3 class="font-bold text-gray-900 dark:text-white text-xs mb-2">Distribution</h3>
-                                <div class="relative w-full flex-1"><canvas id="statusChart"></canvas></div>
-                            </div>
-                            <div class="glass-panel p-4 rounded-2xl shadow-soft flex flex-col lg:col-span-2 h-[250px] hover-lift group">
-                                <h3 class="font-bold text-gray-900 dark:text-white text-xs mb-2">Performance Trends</h3>
-                                <div class="relative w-full flex-1"><canvas id="staffChart"></canvas></div>
-                            </div>
-                            <div class="bg-gradient-to-br from-[#1e1b4b] to-[#312e81] p-4 rounded-2xl shadow-glow-purple flex flex-col lg:col-span-1 h-[250px] hover-lift relative overflow-hidden border border-indigo-500/30">
-                                <div class="absolute -top-10 -right-10 w-24 h-24 bg-purple-500 rounded-full blur-[30px] opacity-30"></div>
-                                <h3 class="font-bold text-white text-xs mb-3 flex items-center gap-1.5"><svg class="w-3.5 h-3.5 text-purple-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>Insights</h3>
-                                <div class="space-y-3 flex-1 flex flex-col justify-center relative z-10">
-                                    <div class="flex items-center gap-3 bg-white/10 backdrop-blur-md rounded-xl p-3 border border-white/10"><div class="text-2xl drop-shadow-[0_0_8px_rgba(251,191,36,0.8)]">🏆</div><div><p class="text-[9px] font-bold text-indigo-200 uppercase tracking-widest mb-0.5">Top Performer</p><p class="font-extrabold text-white text-sm" id="insight-top-staff">-</p></div></div>
-                                    <div class="flex items-center gap-3 bg-white/10 backdrop-blur-md rounded-xl p-3 border border-white/10"><div class="text-2xl drop-shadow-[0_0_8px_rgba(249,115,22,0.8)]">⏳</div><div><p class="text-[9px] font-bold text-indigo-200 uppercase tracking-widest mb-0.5">Action Needed</p><p class="font-extrabold text-white text-sm" id="insight-pending-count">0 Pending</p></div></div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Table -->
-                        <div class="glass-panel rounded-2xl shadow-soft flex flex-col w-full h-[75vh] overflow-hidden relative">
-                            <div id="table-scroll-container" class="flex-1 overflow-y-auto overflow-x-auto custom-scrollbar relative">
-                                <table class="w-full text-left" id="data-table">
-                                    <thead>
-                                        <tr>
-                                            <th class="px-3 py-4 text-center">NO</th>
-                                            <th class="px-3 py-4 text-center">CONTROL NUMBER</th>
-                                            <th class="px-3 py-4 text-center w-[120px] max-w-[120px] leading-tight">CALL NO<br>(082)</th>
-                                            <th class="px-3 py-4 text-center w-[120px] max-w-[120px] leading-tight">CALL NO<br>(050/060)</th>
-                                            <th class="px-3 py-4 text-left">ACCESSION</th>
-                                            <th class="px-3 py-4 text-left min-w-[200px]">TITLE</th>
-                                            <th class="px-3 py-4 text-left">STAFF</th>
-                                            <th class="px-3 py-4 text-center">DATE</th>
-                                            <th class="px-3 py-4 text-left">STATUS</th>
-                                            <th class="px-3 py-4 text-left min-w-[150px]">AUDIT TRAIL</th>
-                                            <th class="px-3 py-4 text-center">ACTION</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="table-body" class="table-body space-y-1"></tbody>
-                                </table>
-                            </div>
-                            <!-- Pagination -->
-                            <div class="px-4 py-3 border-t border-gray-200 dark:border-gray-700 flex justify-between items-center bg-white/80 dark:bg-gray-800/80 backdrop-blur-md shrink-0">
-                                <span class="text-[10px] text-gray-500 dark:text-gray-400 font-semibold" id="page-info">Showing 0-0 of 0 records</span>
-                                <div class="flex gap-1.5">
-                                    <button onclick="changePage(-1)" class="px-3 py-1.5 text-[10px] bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-50 shadow-sm font-bold hover-lift">Previous</button>
-                                    <button onclick="changePage(1)" class="px-3 py-1.5 text-[10px] bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-50 shadow-sm font-bold hover-lift">Next</button>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
+                    <span id="profile-name" class="font-bold text-sm text-[#003366] uppercase">STAFF</span>
+                    <svg class="w-5 h-5 text-red-400 hover:text-red-600 transition ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" title="Log Keluar"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
                 </div>
-
-                <!-- TAB: EXECUTIVE COLLECTION (Placeholder) -->
-                <div id="view-collection" class="tab-pane hidden flex-1 flex flex-col items-center justify-center">
-                    <div class="glass-panel p-8 rounded-3xl shadow-soft max-w-sm w-full text-center">
-                        <div class="w-16 h-16 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-glow-blue">
-                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
-                        </div>
-                        <h3 class="text-lg font-extrabold text-gray-900 dark:text-white mb-2 font-montserrat">Executive Collection</h3>
-                        <p class="text-[11px] text-gray-500 dark:text-gray-400 leading-relaxed">This module focuses strictly on full record navigation based on specific search filters.</p>
-                    </div>
-                </div>
-
-                <!-- TAB: APPROVALS (Placeholder) -->
-                <div id="view-approvals" class="tab-pane hidden flex-1 flex flex-col items-center justify-center">
-                    <div class="glass-panel p-8 rounded-3xl shadow-soft max-w-sm w-full text-center">
-                        <div class="w-16 h-16 bg-orange-50 dark:bg-orange-900/30 text-orange-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-glow-orange">
-                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        </div>
-                        <h3 class="text-lg font-extrabold text-gray-900 dark:text-white mb-2 font-montserrat">Approvals Queue</h3>
-                        <p class="text-[11px] text-gray-500 dark:text-gray-400 leading-relaxed">Approvals should be managed directly from the main Dashboard table.</p>
-                    </div>
-                </div>
-
-                <!-- TAB: STAFF MANAGEMENT (Placeholder) -->
-                <div id="view-staff" class="tab-pane hidden flex-1 flex flex-col items-center justify-center">
-                    <div class="glass-panel p-8 rounded-3xl shadow-soft max-w-sm w-full text-center">
-                        <div class="w-16 h-16 bg-purple-50 dark:bg-purple-900/30 text-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-glow-purple">
-                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
-                        </div>
-                        <h3 class="text-lg font-extrabold text-gray-900 dark:text-white mb-2 font-montserrat">Staff Management</h3>
-                        <p class="text-[11px] text-gray-500 dark:text-gray-400 leading-relaxed">Refer to the Dashboard's chart section for performance reviews.</p>
-                    </div>
-                </div>
-
-                <!-- TAB: REPORTS & ANALYTICS (Placeholder) -->
-                <div id="view-reports" class="tab-pane hidden flex-1 flex flex-col items-center justify-center">
-                    <div class="glass-panel p-8 rounded-3xl shadow-soft max-w-sm w-full text-center">
-                        <div class="w-16 h-16 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-glow-emerald">
-                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002-2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
-                        </div>
-                        <h3 class="text-lg font-extrabold text-gray-900 dark:text-white mb-2 font-montserrat">Advanced Analytics</h3>
-                        <p class="text-[11px] text-gray-500 dark:text-gray-400 leading-relaxed">Visualizations are actively displayed in the main Dashboard overview.</p>
-                    </div>
-                </div>
-
             </div>
-        </main>
-    </div>
+        </header>
 
-    <!-- ================== TOAST & LOADING ================== -->
-    <div id="toast" class="fixed bottom-6 right-6 transform translate-y-20 opacity-0 transition-all duration-300 bg-gray-900 text-white px-5 py-3.5 rounded-xl shadow-2xl z-50 flex items-center gap-3">
-        <div class="w-6 h-6 rounded-full bg-emerald-500/20 flex items-center justify-center shadow-glow-emerald">
-            <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+        <!-- SUMMARY CARDS -->
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
+            <!-- Total Records -->
+            <div class="bg-white p-5 rounded-xl shadow-sm border-l-[5px] border-blue-500 flex justify-between items-center">
+                <div>
+                    <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 font-montserrat">Jumlah Rekod</p>
+                    <h2 class="text-3xl font-extrabold text-[#003366] font-montserrat" id="stat-total">0</h2>
+                </div>
+                <div class="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center text-blue-500">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg>
+                </div>
+            </div>
+            
+            <!-- Completed -->
+            <div class="bg-white p-5 rounded-xl shadow-sm border-l-[5px] border-[#00b074] flex justify-between items-center">
+                <div>
+                    <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 font-montserrat">Completed</p>
+                    <h2 class="text-3xl font-extrabold text-[#00b074] font-montserrat" id="stat-completed">0</h2>
+                </div>
+                <div class="w-12 h-12 rounded-full bg-green-50 flex items-center justify-center text-[#00b074]">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                </div>
+            </div>
+            
+            <!-- Pending -->
+            <div class="bg-white p-5 rounded-xl shadow-sm border-l-[5px] border-[#ff9f43] flex justify-between items-center">
+                <div>
+                    <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 font-montserrat">Pending Approval</p>
+                    <h2 class="text-3xl font-extrabold text-[#ff9f43] font-montserrat" id="stat-pending">0</h2>
+                </div>
+                <div class="w-12 h-12 rounded-full bg-orange-50 flex items-center justify-center text-[#ff9f43]">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                </div>
+            </div>
+            
+            <!-- Staff Active -->
+            <div class="bg-white p-5 rounded-xl shadow-sm border-l-[5px] border-[#7367f0] flex justify-between items-center">
+                <div>
+                    <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 font-montserrat">Staff Active</p>
+                    <h2 class="text-3xl font-extrabold text-[#003366] font-montserrat" id="stat-staff">0</h2>
+                </div>
+                <div class="w-12 h-12 rounded-full bg-indigo-50 flex items-center justify-center text-[#7367f0]">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                </div>
+            </div>
         </div>
-        <span id="toast-message" class="font-bold text-[11px]">Action completed successfully.</span>
-    </div>
 
-    <div id="loading-overlay" class="fixed inset-0 bg-white/60 dark:bg-black/60 backdrop-blur-md z-[100] flex flex-col items-center justify-center hidden transition-all">
-        <div class="glass-panel p-6 rounded-2xl shadow-2xl flex flex-col items-center">
-            <svg class="animate-spin h-8 w-8 text-indigo-600 dark:text-indigo-400 mb-4 drop-shadow-lg" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
-            <p class="text-gray-900 dark:text-white font-extrabold text-[10px] font-montserrat animate-pulse uppercase tracking-widest" id="loading-text">Processing...</p>
+        <!-- CHARTS & INSIGHTS -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+            <div class="bg-white p-5 rounded-xl shadow-sm min-h-[220px] flex flex-col">
+                <h3 class="font-bold text-[#003366] text-sm mb-4 font-montserrat">Status Distribution</h3>
+                <div class="relative w-full h-[160px] flex justify-center items-center">
+                    <canvas id="statusChart"></canvas>
+                </div>
+            </div>
+            <div class="bg-white p-5 rounded-xl shadow-sm min-h-[220px] flex flex-col">
+                <h3 class="font-bold text-[#003366] text-sm mb-4 font-montserrat">Staff Performance</h3>
+                <div class="relative w-full h-[160px]">
+                    <canvas id="staffChart"></canvas>
+                </div>
+            </div>
+            <div class="bg-white p-5 rounded-xl shadow-sm min-h-[220px] flex flex-col">
+                <h3 class="font-bold text-[#003366] text-sm mb-4 font-montserrat">Quick Insights</h3>
+                <div class="space-y-4 flex-1 flex flex-col justify-center">
+                    <div class="flex items-start gap-4">
+                        <div class="p-2 bg-orange-50 rounded-full text-orange-400 mt-1"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg></div>
+                        <div>
+                            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Top Performer</p>
+                            <p class="font-bold text-[#003366] text-sm font-montserrat" id="insight-top-staff">-</p>
+                            <p class="text-xs text-[#00b074] font-medium" id="insight-top-count">0 Rekod Keseluruhan</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-4">
+                        <div class="p-2 bg-blue-50 rounded-full text-blue-500 mt-1"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>
+                        <div>
+                            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Pending Tasks</p>
+                            <p class="font-bold text-[#003366] text-sm font-montserrat" id="insight-pending-count">0 Rekod</p>
+                            <p class="text-xs text-red-500 font-medium">Belum Selesai Lulus</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
+
+        <!-- FILTERS & ACTIONS -->
+        <div class="bg-white p-5 rounded-t-xl shadow-sm flex flex-wrap gap-4 items-end border-b border-gray-100 font-montserrat">
+            <div class="flex-1 min-w-[200px]">
+                <label class="block text-[10px] font-bold text-gray-500 mb-1.5 uppercase tracking-widest">Carian</label>
+                <div class="relative">
+                    <input type="text" id="search-input" onkeyup="applyFilters()" placeholder="Cari Tajuk atau Accession" class="w-full text-sm border border-gray-200 rounded-lg pl-3 pr-10 py-2 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition placeholder-gray-400 font-inter">
+                </div>
+            </div>
+            
+            <div class="w-40">
+                <label class="block text-[10px] font-bold text-gray-500 mb-1.5 uppercase tracking-widest">Staff</label>
+                <select id="filter-staff" onchange="applyFilters()" class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-gray-600 appearance-none bg-no-repeat bg-[right_0.5rem_center] bg-[length:1.5em_1.5em] font-inter" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%236b7280%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E');">
+                    <option value="">Semua Staff</option>
+                    <option value="FATIHAH">FATIHAH</option>
+                    <option value="FAZILAH">FAZILAH</option>
+                    <option value="SAKINAH">SAKINAH</option>
+                    <option value="HUSNA">HUSNA</option>
+                    <option value="ADMIN">ADMIN</option>
+                </select>
+            </div>
+            
+            <div class="w-40">
+                <label class="block text-[10px] font-bold text-gray-500 mb-1.5 uppercase tracking-widest">Status</label>
+                <select id="filter-status" onchange="applyFilters()" class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-gray-600 appearance-none bg-no-repeat bg-[right_0.5rem_center] bg-[length:1.5em_1.5em] font-inter" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%236b7280%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E');">
+                    <option value="">Semua Status</option>
+                    <option value="Completed">Completed</option>
+                    <option value="Pending Semakan">Pending Semakan</option>
+                    <option value="Pending Kelulusan">Pending Kelulusan</option>
+                    <option value="Rejected">Rejected</option>
+                    <option value="incomplete">Incomplete</option>
+                </select>
+            </div>
+            
+            <div class="w-32">
+                <label class="block text-[10px] font-bold text-gray-500 mb-1.5 uppercase tracking-widest">Tahun</label>
+                <select id="filter-tahun" onchange="applyFilters()" class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-gray-600 appearance-none bg-no-repeat bg-[right_0.5rem_center] bg-[length:1.5em_1.5em] font-inter" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%236b7280%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E');">
+                    <option value="">Semua Tahun</option>
+                    <option value="2024">2024</option>
+                    <option value="2025">2025</option>
+                    <option value="2026">2026</option>
+                    <option value="2027">2027</option>
+                </select>
+            </div>
+            
+            <div class="flex items-end gap-3 ml-auto">
+                <button onclick="fetchDataFromGoogleSheet()" class="bg-[#003366] hover:bg-[#002244] text-white text-sm font-medium px-4 py-2 rounded-lg flex items-center gap-2 transition shadow-sm h-[38px]">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                    Segerak Auto
+                </button>
+                
+                <div class="flex items-end gap-2">
+                    <div>
+                        <label class="block text-[10px] font-bold text-[#00b074] mb-1.5 uppercase tracking-widest">Laporan Excel</label>
+                        <select id="export-tahun" class="w-32 text-sm border border-[#00b074] text-[#00b074] rounded-lg px-3 py-2 h-[38px] focus:outline-none appearance-none bg-no-repeat bg-[right_0.5rem_center] bg-[length:1.5em_1.5em] font-inter" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%2300b074%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E');">
+                            <option value="">Keseluruhan</option>
+                            <option value="2024">2024</option>
+                            <option value="2025">2025</option>
+                            <option value="2026">2026</option>
+                            <option value="2027">2027</option>
+                        </select>
+                    </div>
+                    <button onclick="exportToExcel()" class="bg-[#00b074] hover:bg-green-600 text-white text-sm font-medium px-4 py-2 rounded-lg flex items-center gap-2 transition shadow-sm h-[38px]">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                        Muat Turun
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- TABLE SECTION -->
+        <div class="w-full max-h-[600px] overflow-y-auto overflow-x-auto custom-scrollbar bg-white shadow-sm border border-gray-100 rounded-b-xl relative">
+            <table class="w-full text-left whitespace-nowrap" id="data-table">
+                <!-- Sticky Header (top-0 z-20) -->
+                <thead class="bg-[#003366] text-white text-xs uppercase font-bold tracking-wider sticky top-0 z-20 font-montserrat shadow-md border-b-2 border-blue-800">
+                    <tr>
+                        <th class="px-4 py-4 text-center">NO</th>
+                        <th class="px-4 py-4 text-center">CONTROL NUMBER</th>
+                        <th class="px-4 py-4 text-center w-[120px] whitespace-normal leading-tight">CALL NO (082)</th>
+                        <th class="px-4 py-4 text-center w-[120px] whitespace-normal leading-tight">CALL NO (050/060)</th>
+                        <th class="px-4 py-4">ACCESSION</th>
+                        <th class="px-4 py-4 min-w-[200px] text-center">TITLE</th>
+                        <th class="px-4 py-4">STAFF</th>
+                        <th class="px-4 py-4">TARIKH</th>
+                        <th class="px-4 py-4">STATUS</th>
+                        <th class="px-4 py-4 min-w-[200px]">JEJAK AUDIT</th>
+                        <th class="px-4 py-4 text-center">TINDAKAN</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body" class="text-xs text-gray-700 divide-y divide-gray-100 bg-white" style="font-family: 'Inter', sans-serif;">
+                    <!-- Data dijana oleh JavaScript -->
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- PAGINATION CONTROLS -->
+        <div id="pagination-controls" class="p-4 border border-t-0 border-gray-100 flex justify-between items-center bg-gray-50 hidden rounded-b-xl shadow-sm">
+            <span class="text-xs text-gray-500 font-medium" id="page-info">Memaparkan 0-0 dari 0 rekod</span>
+            <div class="flex gap-2">
+                <button onclick="prevPage()" class="px-3 py-1.5 text-xs bg-white border border-gray-200 rounded hover:bg-gray-100 transition shadow-sm font-medium">Sebelumnya</button>
+                <button onclick="nextPage()" class="px-3 py-1.5 text-xs bg-white border border-gray-200 rounded hover:bg-gray-100 transition shadow-sm font-medium">Seterusnya</button>
+            </div>
+        </div>
+
     </div>
 
-    <!-- ================== JAVASCRIPT LOGIC ================== -->
+    <!-- NOTIFIKASI TOAST -->
+    <div id="toast" class="fixed bottom-5 right-5 transform translate-y-20 opacity-0 transition-all duration-300 bg-gray-800 text-white px-4 py-3 rounded-lg shadow-xl z-50 flex items-center gap-3 font-medium">
+        <svg class="w-5 h-5 text-[#00b074]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+        <span id="toast-message">Data berjaya dikemaskini.</span>
+    </div>
+
+    <!-- OVERLAY LOADING -->
+    <div id="loading-overlay" class="fixed inset-0 bg-white/80 backdrop-blur-sm z-[100] flex flex-col items-center justify-center hidden">
+        <div class="animate-spin rounded-full h-12 w-12 border-[4px] border-[#003366] border-t-transparent mb-3"></div>
+        <p class="text-[#003366] font-bold font-montserrat animate-pulse" id="loading-text">Sedang Memproses...</p>
+    </div>
+
     <script>
         /* =====================================================================
-           KONFIGURASI API & DATA
+           KONFIGURASI API (UNTUK HOSTING DI GITHUB/EXTERNAL)
            ===================================================================== */
         const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwIEv9oCQDmn2pMmBI2RWBDY2YrEjz1RuBTxOhXjNsQqz_z8CdQT0CrvDxYg6Nj9OQr/exec";
-        const statusOptions = ["Completed", "incomplete", "Pending For Approval"];
+        
+        // Pilihan Dropdown mengikut format baru
+        const statusOptions = ["Completed", "incomplete", "Pending Semakan", "Pending Kelulusan", "Rejected", "Pending For Approval"];
         const staffOptions = ["FATIHAH", "FAZILAH", "SAKINAH", "HUSNA"];
         
-        let dataset = []; 
-        let filteredDataset = []; 
+        let dataset = []; // Data Asal (Semua)
+        let filteredDataset = []; // Data selepas filter/carian digunakan
         let editingId = null;
         let staffChartInstance = null;
         let statusChartInstance = null;
         
+        // Pagination Variables
         let currentPage = 1;
         const rowsPerPage = 100;
         
+        // Simpan sesi log masuk semasa
         let currentUserRole = ""; 
         let currentUserName = "";
 
+        // =====================================================================
+        // MEMORI SEMENTARA (UNTUK UJIAN LOKAL TANPA GOOGLE SCRIPT URL)
+        // =====================================================================
         let MOCK_DB = [
-            { id: 2, no: 1, controlNo: "23576", callNo082: "0005.3", callNo050: "TK5105.888 IRS 2001", accession: "BK00075774", title: "DEVELOPING WEB SITE USING MICROSOFT WORD STEP BY STEP", status: "incomplete", staff: "FAZILAH", date: "14/04/2024", approvedBy: "", approvedDate: "" },
-            { id: 3, no: 2, controlNo: "0000025823", callNo082: "001.4 BIE", callNo050: "HA31.2.B54 2003", accession: "BK00076063", title: "INTRODUCTION TO SURVEY QUALITY", status: "Completed", staff: "SAKINAH", date: "10/04/2025", approvedBy: "ROSLI", approvedDate: "12/04/2025" },
-            { id: 4, no: 3, controlNo: "1111000011", callNo082: "005.2 TEST", callNo050: "AB12.3", accession: "BK00099999", title: "THE BOOK OF TESTING", status: "Pending For Approval", staff: "", date: "16/04/2026", approvedBy: "", approvedDate: "" }
+            { id: 2, no: 1, controlNo: "23576", callNo082: "0005.3", callNo050: "TK5105.888 IRS 2001", accession: "BK00075774", title: "DEVELOPING WEB SITE USING MICROSOFT WORD STEP BY STEP", status: "incomplete", staff: "FAZILAH", date: "2024-04-14", checkedBy: "", dateChecked: "", approvedBy: "", approvedDate: "" },
+            { id: 3, no: 2, controlNo: "0000025823", callNo082: "001.4 BIE", callNo050: "HA31.2.B54 2003", accession: "BK00076063", title: "INTRODUCTION TO SURVEY QUALITY", status: "Completed", staff: "SAKINAH", date: "2025-04-10", checkedBy: "ROSLI", dateChecked: "2025-04-10", approvedBy: "JAINI", approvedDate: "2025-04-12" },
+            { id: 4, no: 3, controlNo: "1111000011", callNo082: "005.2 TEST", callNo050: "AB12.3", accession: "BK00099999", title: "THE BOOK OF ADMIN TESTING AND OTHER STUFF", status: "Pending Semakan", staff: "FATIHAH", date: "2026-04-16", checkedBy: "", dateChecked: "", approvedBy: "", approvedDate: "" }
         ];
 
-        /* =====================================================================
-           FUNCTIONS (UTILS & DISPLAY)
-           ===================================================================== */
+        // Dapatkan paparan nama staf (selain dari list 4 di atas akan dilabel ADMIN)
         const getStaffDisplay = (staffName) => {
-            if (!staffName || staffName.trim() === '') return '-';
-            return staffOptions.includes(staffName) ? staffName : 'ADMIN';
+            return staffOptions.includes(staffName) ? staffName : "ADMIN";
         };
 
+        // Dapatkan tahun dari format tarikh
         const getYearFromDate = (dateStr) => {
             if(!dateStr || dateStr === '-') return '';
-            const match = String(dateStr).match(/\b(20\d{2})\b/);
-            return match ? match[1] : '';
+            const parts = dateStr.split('-');
+            if(parts.length > 0) return parts[0];
+            return '';
         }
 
+        // Tukar format tarikh paparan (YYYY-MM-DD ke DD/MM/YYYY)
         const formatDisplayDate = (dateStr) => {
             if (!dateStr || dateStr === '-') return '-';
-            const str = String(dateStr).trim();
-            if (/^\d{4}-\d{2}-\d{2}$/.test(str)) {
-                const parts = str.split('-');
-                return `${parts[2]}/${parts[1]}/${parts[0]}`;
-            }
-            return str;
+            const parts = dateStr.split('-');
+            if (parts.length === 3) return `${parts[2]}/${parts[1]}/${parts[0]}`;
+            return dateStr;
         };
 
-        function showLoading(msg) {
-            document.getElementById('loading-text').textContent = msg;
-            document.getElementById('loading-overlay').classList.remove('hidden');
-        }
-        function hideLoading() { document.getElementById('loading-overlay').classList.add('hidden'); }
-        
-        function showToast(msg) {
-            const toast = document.getElementById('toast');
-            document.getElementById('toast-message').textContent = msg || "Successfully updated.";
-            toast.classList.remove('translate-y-20', 'opacity-0');
-            setTimeout(() => { toast.classList.add('translate-y-20', 'opacity-0'); }, 3000);
-        }
-
         /* =====================================================================
-           BACKEND CALLS
+           BACKEND FETCHER 
            ===================================================================== */
         const server = {
             withSuccessHandler: function(cb) { this.cb = cb; return this; },
+            
             getInitialData: function() { 
                 if (GAS_WEB_APP_URL === "LETAK_URL_GOOGLE_APPS_SCRIPT_ANDA_DI_SINI") {
-                    setTimeout(() => this.cb([...MOCK_DB]), 800); return;
+                    setTimeout(() => this.cb([...MOCK_DB]), 800);
+                    return;
                 }
+                
                 fetch(GAS_WEB_APP_URL + "?action=getInitialData")
                     .then(response => response.json())
                     .then(data => { if(this.cb) this.cb(data); })
-                    .catch(error => { console.error('Fetch Error:', error); hideLoading(); showToast("Error fetching data."); });
+                    .catch(error => { console.error('Fetch Error:', error); hideLoading(); showToast("Ralat mengambil data dari server."); });
             },
+            
             updateRow: function(record) { 
                 if (GAS_WEB_APP_URL === "LETAK_URL_GOOGLE_APPS_SCRIPT_ANDA_DI_SINI") {
                     const idx = MOCK_DB.findIndex(r => r.id === record.id);
                     if(idx > -1) MOCK_DB[idx] = {...record};
-                    setTimeout(() => { if(this.cb) this.cb(true); }, 500); return;
+                    setTimeout(() => this.cb(true), 500); 
+                    return;
                 }
+                
+                console.log("[API REQUEST] Menghantar payload kemaskini:", record);
+                
                 fetch(GAS_WEB_APP_URL, {
-                    method: 'POST', mode: 'no-cors',
+                    method: 'POST', 
+                    mode: 'no-cors',
                     body: JSON.stringify({ action: 'updateRow', record: record }), 
                     headers: { 'Content-Type': 'text/plain' }
                 })
-                .then(() => { setTimeout(() => { if(this.cb) this.cb(true); }, 1000); })
-                .catch(error => { console.error('Fetch Error:', error); hideLoading(); showToast("Failed to save."); });
+                .then(() => { 
+                    console.log("[API RESPONSE] Permintaan kemaskini berjaya dihantar.");
+                    setTimeout(() => { if(this.cb) this.cb(true); }, 1000); 
+                })
+                .catch(error => { 
+                    console.error('[Fetch Error - updateRow]:', error); 
+                    hideLoading(); 
+                    showToast("Gagal menyimpan ke Google Apps Script."); 
+                });
+            },
+            
+            bulkApproveGroup: function(staffTarget, role, actionName) { 
+                // Fungsi ini tidak lagi digunakan secara terus untuk elakkan ralat backend lama.
+                // Logik baru telah dipindahkan ke processBulkApproval() menggunakan updateRow.
             }
         };
 
-        function fetchDataFromGoogleSheet(isSilent = false) {
-            if (!isSilent) showLoading("Syncing Data...");
-            server.withSuccessHandler(function(data) {
-                dataset = data || [];
-                applyFilters(true); 
-                if (!isSilent) hideLoading();
-            }).getInitialData();
-        }
-
         /* =====================================================================
-           LOGIN & AUTO LOGIN
+           FUNGSI LOG MASUK (LOGIN LOGIC)
            ===================================================================== */
         document.getElementById('login-role').addEventListener('change', function(e) {
             const pwdContainer = document.getElementById('password-container');
             document.getElementById('login-error').classList.add('hidden');
-            if (e.target.value !== '') { pwdContainer.classList.remove('hidden'); document.getElementById('login-password').focus(); }
+            if (e.target.value !== '') {
+                pwdContainer.classList.remove('hidden');
+                document.getElementById('login-password').focus();
+            } else { pwdContainer.classList.add('hidden'); }
         });
-        document.getElementById('login-password').addEventListener('keypress', function(e) { if (e.key === 'Enter') handleLogin(); });
+
+        document.getElementById('login-password').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') handleLogin();
+        });
 
         function handleLogin() {
             const role = document.getElementById('login-role').value;
             const password = document.getElementById('login-password').value;
             const errorMsg = document.getElementById('login-error');
 
-            if (!role || !password) { errorMsg.textContent = "Please complete the form."; errorMsg.classList.remove('hidden'); return; }
+            if (!role || !password) {
+                errorMsg.textContent = "Sila lengkapkan pilihan dan kata laluan.";
+                errorMsg.classList.remove('hidden'); return;
+            }
 
             const encodedInput = btoa(password);
             let isValid = false;
 
             if (role === 'staff' && encodedInput === 'c3RhZmYxMjM=') { isValid = true; currentUserName = "STAFF"; } 
             else if (role === 'rosli' && encodedInput === 'cm9zbGkxMjM=') { isValid = true; currentUserName = "ROSLI"; } 
+            else if (role === 'jaini' && encodedInput === 'amFpbmkxMjM=') { isValid = true; currentUserName = "JAINI"; } 
             else if (role === 'admin' && encodedInput === 'YWRtaW4xMjM=') { isValid = true; currentUserName = "ADMIN"; }
 
             if (isValid) {
-                currentUserRole = role; currentPage = 1;
+                currentUserRole = role;
+                currentPage = 1; // Reset pagination
                 errorMsg.classList.add('hidden');
-                
-                localStorage.setItem('iku_role', currentUserRole);
-                localStorage.setItem('iku_name', currentUserName);
-                localStorage.setItem('iku_last_active', Date.now());
-
                 document.getElementById('profile-name').textContent = currentUserName;
                 document.getElementById('profile-initial').textContent = currentUserName.charAt(0);
                 
                 document.getElementById('login-screen').classList.add('hidden');
                 document.getElementById('dashboard-screen').classList.remove('hidden');
-                
-                if (window.innerWidth >= 1024) document.getElementById('sidebar').classList.add('sidebar-desktop-closed');
-                
+                setTimeout(() => document.getElementById('dashboard-screen').classList.remove('opacity-0'), 50);
+
                 fetchDataFromGoogleSheet();
-            } else { errorMsg.textContent = "Invalid password."; errorMsg.classList.remove('hidden'); }
-        }
-
-        function checkAutoLogin() {
-            const savedRole = localStorage.getItem('iku_role');
-            const savedName = localStorage.getItem('iku_name');
-            const lastActive = localStorage.getItem('iku_last_active');
-
-            if (savedRole && savedName && lastActive) {
-                const now = Date.now();
-                if (now - parseInt(lastActive) < 1800000) {
-                    currentUserRole = savedRole; currentUserName = savedName; currentPage = 1;
-                    localStorage.setItem('iku_last_active', now);
-
-                    document.getElementById('profile-name').textContent = currentUserName;
-                    document.getElementById('profile-initial').textContent = currentUserName.charAt(0);
-
-                    document.getElementById('login-screen').classList.add('hidden');
-                    document.getElementById('dashboard-screen').classList.remove('hidden');
-                    
-                    if (window.innerWidth >= 1024) document.getElementById('sidebar').classList.add('sidebar-desktop-closed');
-                    fetchDataFromGoogleSheet();
-                } else {
-                    localStorage.clear();
-                }
+            } else {
+                errorMsg.textContent = "Kata laluan tidak sah.";
+                errorMsg.classList.remove('hidden');
             }
         }
 
-        function logout() { localStorage.clear(); location.reload(); }
+        function logout() {
+            document.getElementById('login-password').value = '';
+            document.getElementById('login-role').value = '';
+            document.getElementById('password-container').classList.add('hidden');
+            currentUserRole = ""; currentUserName = "";
 
-        /* =====================================================================
-           SIDEBAR & TABS (Hanya Paparan Sahaja)
-           ===================================================================== */
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebar-overlay');
-            if (window.innerWidth < 1024) { sidebar.classList.toggle('-translate-x-full'); overlay.classList.toggle('hidden'); } 
-            else { sidebar.classList.toggle('sidebar-desktop-closed'); }
-        }
-
-        function switchTab(tabId, clickedElement) {
-            document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.add('hidden'));
-            
-            const activePane = document.getElementById('view-' + tabId);
-            if (activePane) activePane.classList.remove('hidden');
-
-            document.querySelectorAll('.nav-link').forEach(link => {
-                link.className = 'nav-link flex items-center gap-3 px-3 py-2.5 text-indigo-100 hover:bg-[#1e40af] rounded-lg font-medium text-[11px] transition-colors cursor-pointer';
-            });
-            if (clickedElement) clickedElement.className = 'nav-link flex items-center gap-3 px-3 py-2.5 bg-blue-600 text-white shadow-sm rounded-lg font-medium text-[11px] transition-colors cursor-pointer';
-
-            const titles = {
-                'dashboard': [`Welcome back, <span class="uppercase text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">${currentUserName}</span>!`, "Here is the summary of executive collection management today."],
-                'collection': ["Executive Collection", "Viewing full collection limits and details."],
-                'approvals': ["Approvals Queue", "Process pending documents."],
-                'staff': ["Team Management", "Monitor staff contributions."],
-                'reports': ["Advanced Analytics", "Data visualization and history."]
-            };
-            
-            if(titles[tabId]) {
-                document.getElementById('page-title').innerHTML = titles[tabId][0];
-                document.getElementById('page-subtitle').textContent = titles[tabId][1];
-            }
-
-            if (window.innerWidth < 1024) toggleSidebar();
-            
-            if(tabId === 'dashboard') {
-                applyFilters();
-            }
+            const dashboard = document.getElementById('dashboard-screen');
+            dashboard.classList.add('opacity-0');
+            setTimeout(() => {
+                dashboard.classList.add('hidden');
+                document.getElementById('login-screen').classList.remove('hidden');
+            }, 500);
         }
 
         /* =====================================================================
-           FILTER & RENDER TABLE (Hanya dipaparkan di Dashboard)
+           PENGURUSAN DATA, CARIAN & FILTER
            ===================================================================== */
-        function applyFilters(preservePage = false) {
+        function showLoading(msg) {
+            document.getElementById('loading-text').textContent = msg;
+            document.getElementById('loading-overlay').classList.remove('hidden');
+        }
+        function hideLoading() { document.getElementById('loading-overlay').classList.add('hidden'); }
+
+        function fetchDataFromGoogleSheet() {
+            showLoading("Menyegerak Data dari Spreadsheet...");
+            server.withSuccessHandler(function(data) {
+                dataset = data || [];
+                applyFilters(); // Filter akan reset dan render jadual baru
+                hideLoading();
+            }).getInitialData();
+        }
+        
+        // FUNGSI APPLYSemua Kombinasi Filter & Carian
+        function applyFilters() {
             const searchTerm = document.getElementById('search-input').value.toLowerCase().trim();
             const filterStaff = document.getElementById('filter-staff').value;
             const filterStatus = document.getElementById('filter-status').value;
             const filterTahun = document.getElementById('filter-tahun').value;
             
             filteredDataset = dataset.filter(row => {
-                if (searchTerm && !((row.title||"").toLowerCase().includes(searchTerm) || (row.accession||"").toLowerCase().includes(searchTerm))) return false;
-                if (filterStaff && getStaffDisplay(row.staff) !== filterStaff) return false;
-                if (filterStatus && (row.status||"").toLowerCase().trim() !== filterStatus.toLowerCase().trim()) return false;
-                if (filterTahun && getYearFromDate(row.date) != filterTahun) return false;
-                return true;
+                let match = true;
+                
+                // 1. Carian (Partial & Case Insensitive pada Title atau Accession)
+                if (searchTerm !== "") {
+                    const titleMatch = (row.title || "").toLowerCase().includes(searchTerm);
+                    const accMatch = (row.accession || "").toLowerCase().includes(searchTerm);
+                    if (!titleMatch && !accMatch) match = false;
+                }
+                
+                // 2. Filter Staff
+                if (filterStaff !== "") {
+                    const rowDisplayStaff = getStaffDisplay(row.staff);
+                    if (rowDisplayStaff !== filterStaff) match = false;
+                }
+                
+                // 3. Filter Status
+                if (filterStatus !== "") {
+                    if (row.status !== filterStatus) match = false;
+                }
+                
+                // 4. Filter Tahun
+                if (filterTahun !== "") {
+                    const rowTahun = getYearFromDate(row.date);
+                    if (rowTahun !== filterTahun) match = false;
+                }
+                
+                return match;
             });
             
-            if (!preservePage) currentPage = 1; 
-            else {
-                const maxPages = Math.ceil(filteredDataset.length / rowsPerPage) || 1;
-                if (currentPage > maxPages) currentPage = maxPages;
-            }
-            
+            currentPage = 1; // Reset ke page 1 selepas filter
             renderTable();
         }
 
-        function prevPage() { if (currentPage > 1) { currentPage--; renderTable(); } }
-        function nextPage() { if (currentPage * rowsPerPage < filteredDataset.length) { currentPage++; renderTable(); } }
-        function changePage(delta) { 
-            const max = Math.ceil(filteredDataset.length / rowsPerPage); 
-            if (currentPage + delta >= 1 && currentPage + delta <= max) { currentPage += delta; renderTable(); } 
+        // FUNGSI PAGINATION
+        function prevPage() {
+            if (currentPage > 1) { currentPage--; renderTable(); }
+        }
+        function nextPage() {
+            if (currentPage * rowsPerPage < filteredDataset.length) { currentPage++; renderTable(); }
         }
 
         function renderTable() {
             const tbody = document.getElementById('table-body');
-            const scrollContainer = document.getElementById('table-scroll-container');
-            const mainContainer = document.querySelector('main');
-            
-            const currentScroll = scrollContainer ? scrollContainer.scrollTop : 0;
-            const mainScroll = mainContainer ? mainContainer.scrollTop : 0;
-
-            if(tbody) tbody.style.minHeight = tbody.offsetHeight > 0 ? tbody.offsetHeight + 'px' : '';
+            const paginationDiv = document.getElementById('pagination-controls');
             tbody.innerHTML = '';
             
-            const startIndex = (currentPage - 1) * rowsPerPage;
-            const paginatedData = filteredDataset.slice(startIndex, startIndex + rowsPerPage);
-            
-            if (paginatedData.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="11" class="px-5 py-10 text-center text-gray-500 font-medium italic">No records found.</td></tr>`;
-            } else {
-                tbody.innerHTML = paginatedData.map(row => {
-                    const isEditing = editingId === row.id;
-                    return `<tr class="table-row ${isEditing ? 'bg-indigo-50 dark:bg-indigo-900/30' : ''}" id="row-${row.id}">${generateRowHTML(row, isEditing)}</tr>`;
-                }).join('');
-            }
-            
-            const infoEnd = Math.min(startIndex + rowsPerPage, filteredDataset.length);
-            document.getElementById('page-info').textContent = `Showing ${filteredDataset.length > 0 ? startIndex + 1 : 0}-${infoEnd} of ${filteredDataset.length}`;
-            
-            updateDashboardStats();
+            // JIKA ROSLI ATAU JAINI LOG MASUK (Kumpulan Khas)
+            if (currentUserRole === 'rosli' || currentUserRole === 'jaini') {
+                paginationDiv.classList.add('hidden'); // Tiada pagination untuk kumpulan khas
+                
+                // Rosli akan nampak "Pending For Approval" (atau "Pending Semakan")
+                const targetStatus = currentUserRole === 'rosli' ? 'Pending For Approval' : 'Pending Kelulusan';
+                const actionLabel = currentUserRole === 'rosli' ? 'Tandakan Semua Sebagai Disemak' : 'Luluskan Semua Rekod';
+                
+                let groupedData = {};
+                filteredDataset.forEach(row => {
+                    // Rangkuman khas buat Rosli (jika sebelum ini statusnya Pending Semakan atau Pending For Approval)
+                    if ((currentUserRole === 'rosli' && (row.status === 'Pending Semakan' || row.status === 'Pending For Approval')) || 
+                        (currentUserRole === 'jaini' && row.status === 'Pending Kelulusan')) {
+                        if (!groupedData[row.staff]) groupedData[row.staff] = [];
+                        groupedData[row.staff].push(row);
+                    }
+                });
 
-            requestAnimationFrame(() => {
-                if(tbody) tbody.style.minHeight = '';
-                if(scrollContainer) scrollContainer.scrollTop = currentScroll;
-                if(mainContainer) mainContainer.scrollTop = mainScroll;
-            });
+                if(Object.keys(groupedData).length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="11" class="px-4 py-8 text-center text-gray-500 font-medium bg-gray-50 italic">Tiada rekod memerlukan tindakan anda pada masa ini berdasarkan tapisan.</td></tr>`;
+                }
+
+                for (let staffName in groupedData) {
+                    const staffRows = groupedData[staffName];
+                    const groupHeader = document.createElement('tr');
+                    groupHeader.className = "bg-indigo-50 border-y-2 border-indigo-100 sticky top-[48px] z-10 shadow-sm"; // Jadikan group header juga sedikit sticky di bawah thead
+                    groupHeader.innerHTML = `
+                        <td colspan="11" class="px-4 py-3">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <span class="text-[10px] font-bold text-indigo-400 uppercase tracking-widest block">Koleksi Staf</span>
+                                    <span class="text-indigo-800 font-bold text-sm tracking-wide font-montserrat">${getStaffDisplay(staffName)}</span>
+                                    <span class="ml-2 bg-indigo-200 text-indigo-700 text-xs px-2 py-0.5 rounded-full font-bold">${staffRows.length} Rekod</span>
+                                </div>
+                                <button onclick="processBulkApproval('${staffName}')" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-4 py-2 rounded shadow transition flex items-center gap-2">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                    ${actionLabel}
+                                </button>
+                            </div>
+                        </td>
+                    `;
+                    tbody.appendChild(groupHeader);
+
+                    staffRows.forEach(row => {
+                        const tr = document.createElement('tr');
+                        tr.className = 'transition-colors hover:bg-gray-50';
+                        tr.innerHTML = generateRowHTML(row, false, true); 
+                        tbody.appendChild(tr);
+                    });
+                }
+            } 
+            // JIKA STAFF / ADMIN (Dengan Pagination max 100)
+            else {
+                paginationDiv.classList.remove('hidden');
+                
+                const startIndex = (currentPage - 1) * rowsPerPage;
+                const endIndex = startIndex + rowsPerPage;
+                const paginatedData = filteredDataset.slice(startIndex, endIndex);
+                
+                if (paginatedData.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="11" class="px-4 py-8 text-center text-gray-500 font-medium bg-gray-50 italic">Tiada rekod dijumpai berdasarkan carian/tapisan anda.</td></tr>`;
+                }
+
+                paginatedData.forEach(row => {
+                    const tr = document.createElement('tr');
+                    tr.id = `row-${row.id}`;
+                    tr.className = editingId === row.id ? 'editing-row transition-colors' : 'transition-colors group';
+                    tr.innerHTML = generateRowHTML(row, editingId === row.id, false);
+                    tbody.appendChild(tr);
+                });
+                
+                // Update Pagination Info
+                const infoEnd = Math.min(startIndex + rowsPerPage, filteredDataset.length);
+                document.getElementById('page-info').textContent = `Memaparkan ${filteredDataset.length > 0 ? startIndex + 1 : 0}-${infoEnd} dari ${filteredDataset.length} rekod`;
+            }
+
+            updateDashboardStats();
         }
 
-        function generateRowHTML(row, isEditing) {
+        // =====================================================================
+        // FUNGSI BARU UNTUK KELULUSAN KUMPULAN (BULK APPROVAL PINTAR)
+        // =====================================================================
+        function processBulkApproval(staffName) {
+            if(!confirm(`Adakah anda pasti untuk meluluskan semua rekod daripada staf: ${staffName}?`)) return;
+            
+            showLoading("Memproses Kelulusan Kumpulan...");
+            
+            let recordsToUpdate = [];
+            
+            // OPTIMISTIC UPDATE: Kita kemaskini data di paparan (frontend) serta-merta
+            dataset.forEach(r => {
+                if (r.staff === staffName) {
+                    if (currentUserRole === 'rosli' && (r.status === 'Pending Semakan' || r.status === 'Pending For Approval')) {
+                        r.status = 'Pending Kelulusan';
+                        r.checkedBy = currentUserName;
+                        const t = new Date();
+                        r.dateChecked = t.getFullYear() + '-' + String(t.getMonth() + 1).padStart(2, '0') + '-' + String(t.getDate()).padStart(2, '0');
+                        recordsToUpdate.push({...r});
+                    } else if (currentUserRole === 'jaini' && r.status === 'Pending Kelulusan') {
+                        r.status = 'Completed';
+                        r.approvedBy = currentUserName;
+                        const t = new Date();
+                        r.approvedDate = t.getFullYear() + '-' + String(t.getMonth() + 1).padStart(2, '0') + '-' + String(t.getDate()).padStart(2, '0');
+                        recordsToUpdate.push({...r});
+                    }
+                }
+            });
+
+            if (recordsToUpdate.length === 0) {
+                hideLoading();
+                showToast("Tiada rekod untuk diluluskan berdasarkan status semasa.");
+                return;
+            }
+
+            // Kemaskini UI dengan segera tanpa tunggu backend selesai
+            applyFilters();
+            
+            // Hantar kemaskini ke Google Sheets satu per satu di belakang tabir (Background Sync)
+            // Ini akan memintas sekatan logik lama di Code.gs dan memastikan data betul-betul dikemaskini.
+            recordsToUpdate.forEach((record, index) => {
+                setTimeout(() => {
+                    if (GAS_WEB_APP_URL !== "LETAK_URL_GOOGLE_APPS_SCRIPT_ANDA_DI_SINI") {
+                        fetch(GAS_WEB_APP_URL, {
+                            method: 'POST', 
+                            mode: 'no-cors', 
+                            body: JSON.stringify({ action: 'updateRow', record: record }), 
+                            headers: { 'Content-Type': 'text/plain' }
+                        }).catch(e => console.error(e));
+                    } else {
+                        // Mock DB update
+                        const idx = MOCK_DB.findIndex(r => r.id === record.id);
+                        if(idx > -1) MOCK_DB[idx] = {...record};
+                    }
+                }, index * 300); // 300ms sela masa untuk elakkan Google Sheets jammed
+            });
+            
+            // Selesai memproses paparan
+            setTimeout(() => {
+                hideLoading();
+                showToast(`${recordsToUpdate.length} Rekod berjaya disemak/diluluskan!`);
+            }, 1000);
+        }
+
+        function generateRowHTML(row, isEditing, isReadonlyView) {
             const displayStaff = getStaffDisplay(row.staff);
-            const currentStatusLower = (row.status || "").toLowerCase().trim();
 
-            if (isEditing) {
+            // ============================
+            // MODE SUNTINGAN (EDIT MODE)
+            // ============================
+            if (isEditing && !isReadonlyView) {
+                
                 let call082HTML = (currentUserRole === 'staff')
-                    ? `<td class="table-cell px-3 text-center whitespace-normal break-words w-[120px] max-w-[120px] leading-relaxed font-medium text-gray-900 text-[14px]">${row.callNo082}<input type="hidden" id="edit-c082-${row.id}" value="${row.callNo082}"></td>`
-                    : `<td class="table-cell px-3"><input type="text" id="edit-c082-${row.id}" value="${row.callNo082}" class="w-full text-sm px-3 py-2 border border-blue-300 rounded focus:border-indigo-500 text-center bg-white text-gray-900 shadow-sm"></td>`;
+                    ? `<td class="px-4 py-4 text-center text-gray-700 bg-gray-50 whitespace-normal break-words min-w-[100px] max-w-[120px] leading-snug">${row.callNo082}<input type="hidden" id="edit-c082-${row.id}" value="${row.callNo082}"></td>`
+                    : `<td class="px-2 py-3"><input type="text" id="edit-c082-${row.id}" value="${row.callNo082}" class="w-full text-xs px-2 py-1.5 border border-blue-300 rounded shadow-inner focus:outline-none focus:border-[#003366] bg-white font-inter text-center"></td>`;
 
-                let statusSelectHTML = `<select id="edit-status-${row.id}" class="w-full text-sm px-2 py-2 border border-blue-300 rounded focus:border-indigo-500 font-bold bg-white text-gray-900 shadow-sm">
-                    ${currentUserRole === 'staff' ? `<option value="Completed" ${currentStatusLower === 'completed' || currentStatusLower === 'pending for approval' ? 'selected' : ''}>Completed</option><option value="incomplete" ${currentStatusLower === 'incomplete' ? 'selected' : ''}>Incomplete</option>` : statusOptions.map(opt => `<option value="${opt}" ${row.status === opt ? 'selected' : ''}>${opt}</option>`).join('')}
-                </select>`;
+                let statusSelectHTML = '';
+                if (currentUserRole === 'staff') {
+                    let isStaffCompleted = (row.status === 'Pending Semakan' || row.status === 'Pending Kelulusan' || row.status === 'Completed' || row.status === 'Pending For Approval');
+                    statusSelectHTML = `
+                        <select id="edit-status-${row.id}" class="w-full text-xs px-2 py-1.5 border border-blue-300 rounded shadow-inner bg-white font-inter font-bold text-gray-700">
+                            <option value="Completed" ${isStaffCompleted ? 'selected' : ''}>Completed</option>
+                            <option value="incomplete" ${!isStaffCompleted ? 'selected' : ''}>incomplete</option>
+                        </select>
+                    `;
+                } else {
+                    statusSelectHTML = `
+                        <select id="edit-status-${row.id}" class="w-full text-xs px-2 py-1.5 border border-blue-300 rounded shadow-inner bg-white font-inter font-bold text-gray-700">
+                            ${statusOptions.map(opt => `<option value="${opt}" ${row.status === opt ? 'selected' : ''}>${opt}</option>`).join('')}
+                        </select>
+                    `;
+                }
 
                 return `
-                    <td class="table-cell px-3 text-center font-bold text-gray-500 text-sm">${row.no}</td>
-                    <td class="table-cell px-3 text-center"><input type="text" id="edit-ctrl-${row.id}" value="${row.controlNo}" class="w-full text-sm px-3 py-2 border border-blue-300 rounded focus:border-indigo-500 text-center bg-white text-gray-900 shadow-sm"></td>
+                    <td class="px-4 py-3 text-center text-gray-400 font-medium">${row.no}</td>
+                    <td class="px-2 py-3"><input type="text" id="edit-ctrl-${row.id}" value="${row.controlNo}" class="w-full text-xs px-2 py-1.5 border border-blue-300 rounded shadow-inner focus:outline-none focus:border-[#003366] bg-white font-inter text-center"></td>
                     ${call082HTML}
-                    <td class="table-cell px-3 text-center"><input type="text" id="edit-c050-${row.id}" value="${row.callNo050}" class="w-full text-sm px-3 py-2 border border-blue-300 rounded focus:border-indigo-500 text-center bg-white text-gray-900 shadow-sm"></td>
-                    <td class="table-cell px-3 font-extrabold text-indigo-700 text-[14px]">${row.accession}</td>
-                    <td class="table-cell px-3 whitespace-normal min-w-[250px] break-words font-semibold leading-snug text-left text-[14px]">${row.title}</td>
-                    <td class="table-cell px-3"><select id="edit-staff-${row.id}" class="w-full text-sm px-2 py-2 border border-blue-300 rounded font-bold text-indigo-700 bg-white shadow-sm"><option value="${row.staff}" hidden>${displayStaff}</option>${staffOptions.map(opt => `<option value="${opt}" ${row.staff === opt ? 'selected' : ''}>${opt}</option>`).join('')}</select></td>
-                    <td class="table-cell px-3 text-center font-medium text-gray-600 text-[14px]">${formatDisplayDate(row.date)}</td>
-                    <td class="table-cell px-3">${statusSelectHTML}</td>
-                    <td class="table-cell px-3 text-xs text-gray-400 italic font-medium">Audit Trail locked.</td>
-                    <td class="table-cell px-3 text-center align-middle">
-                        <div class="flex gap-1.5 justify-center">
-                            <button type="button" onclick="saveRow(${row.id})" class="bg-emerald-500 hover:bg-emerald-600 text-white p-2 rounded-lg shadow-glow-emerald hover:-translate-y-0.5 transition-all"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></button>
-                            <button type="button" onclick="cancelEdit()" class="bg-gray-400 hover:bg-gray-500 text-white p-2 rounded-lg shadow-sm hover:-translate-y-0.5 transition-all"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+                    <td class="px-2 py-3"><input type="text" id="edit-c050-${row.id}" value="${row.callNo050}" class="w-full text-xs px-2 py-1.5 border border-blue-300 rounded shadow-inner focus:outline-none focus:border-[#003366] bg-white font-inter text-center"></td>
+                    <td class="px-4 py-4 font-semibold text-[#003366] bg-gray-50">${row.accession}</td>
+                    <td class="px-4 py-4 whitespace-normal max-w-xs break-words font-medium leading-snug text-center bg-gray-50">${row.title}</td>
+                    <td class="px-2 py-3">
+                        <select id="edit-staff-${row.id}" class="w-full text-xs px-2 py-1.5 border border-blue-300 rounded shadow-inner bg-white font-semibold text-[#003366] font-inter">
+                            <option value="${row.staff}" hidden>${displayStaff}</option>
+                            ${staffOptions.map(opt => `<option value="${opt}" ${row.staff === opt ? 'selected' : ''}>${opt}</option>`).join('')}
+                        </select>
+                    </td>
+                    <td class="px-4 py-4 text-gray-500 bg-gray-50 text-center">${formatDisplayDate(row.date)}</td>
+                    <td class="px-2 py-3">${statusSelectHTML}</td>
+                    <td class="px-3 py-2 bg-gray-50 border-x border-gray-100 rounded text-[10px] text-gray-400 text-center italic">Maklumat Jejak Audit dikunci.</td>
+                    <td class="px-4 py-3 text-center align-middle">
+                        <div class="flex flex-col gap-1.5 justify-center items-center">
+                            <button onclick="saveRow(${row.id})" class="bg-[#00b074] hover:bg-green-600 text-white p-1.5 rounded-md shadow-sm transition w-8 h-8 flex items-center justify-center" title="Simpan Rekod"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></button>
+                            <button onclick="cancelEdit()" class="bg-gray-400 hover:bg-gray-500 text-white p-1.5 rounded-md shadow-sm transition w-8 h-8 flex items-center justify-center" title="Batal"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
                         </div>
                     </td>
                 `;
             }
 
-            let statusBadge = `<span class="inline-flex items-center px-2 py-1.5 rounded-md text-[11px] font-bold bg-gray-100 text-gray-600 uppercase shadow-sm"><span class="w-1.5 h-1.5 rounded-full bg-gray-400 mr-1.5"></span>${row.status || '-'}</span>`;
-            if (currentStatusLower === 'completed') statusBadge = `<span class="inline-flex items-center px-2.5 py-1.5 rounded-md text-[11px] font-bold bg-emerald-50 text-emerald-600 border border-emerald-100 uppercase shadow-sm"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5 shadow-[0_0_5px_rgba(16,185,129,0.8)]"></span>Completed</span>`;
-            else if (currentStatusLower === 'incomplete') statusBadge = `<span class="inline-flex items-center px-2.5 py-1.5 rounded-md text-[11px] font-bold bg-red-50 text-red-600 border border-red-100 uppercase shadow-sm"><span class="w-1.5 h-1.5 rounded-full bg-red-500 mr-1.5 shadow-[0_0_5px_rgba(239,68,68,0.8)]"></span>Incomplete</span>`;
-            else if (currentStatusLower === 'pending for approval') statusBadge = `<span class="inline-flex items-center px-2.5 py-1.5 rounded-md text-[11px] font-bold bg-orange-50 text-orange-600 border border-orange-100 uppercase shadow-sm"><span class="w-1.5 h-1.5 rounded-full bg-orange-500 mr-1.5 shadow-[0_0_5px_rgba(249,115,22,0.8)]"></span>Pending</span>`;
+            // ============================
+            // MODE BACA (READ MODE)
+            // ============================
+            let statusBadge = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold bg-gray-100 text-gray-600 uppercase tracking-wider">${row.status || '-'}</span>`;
+            if (row.status === 'Completed') statusBadge = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold bg-green-100 text-[#00b074] uppercase tracking-wider"><svg class="mr-1.5 h-2 w-2 text-[#00b074]" fill="currentColor" viewBox="0 0 8 8"><circle cx="4" cy="4" r="3" /></svg>Completed</span>`;
+            else if (row.status === 'incomplete') statusBadge = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold bg-red-100 text-red-700 uppercase tracking-wider"><svg class="mr-1.5 h-2 w-2 text-red-600" fill="currentColor" viewBox="0 0 8 8"><circle cx="4" cy="4" r="3" /></svg>Incomplete</span>`;
+            else if (row.status === 'Rejected') statusBadge = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold bg-red-100 text-red-700 uppercase tracking-wider"><svg class="mr-1.5 h-2 w-2 text-red-600" fill="currentColor" viewBox="0 0 8 8"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>Rejected</span>`;
+            else if (row.status === 'Pending For Approval' || row.status === 'Pending Semakan' || row.status === 'Pending Kelulusan') statusBadge = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold bg-blue-100 text-blue-700 uppercase tracking-wider"><svg class="mr-1.5 h-2 w-2 text-blue-600" fill="currentColor" viewBox="0 0 8 8"><circle cx="4" cy="4" r="3" /></svg>Pending</span>`;
 
-            let auditTrailHtml = '<span class="text-gray-300 italic text-[11px] font-medium">—</span>';
-            if (currentStatusLower === 'completed' && row.approvedBy && row.approvedBy.trim() !== '') {
-                auditTrailHtml = `
-                    <div class="text-[12px] sm:text-xs flex items-center gap-1.5 whitespace-normal leading-tight">
-                        <span class="w-4 h-4 rounded-full bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center shrink-0"><svg class="w-2.5 h-2.5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></span>
-                        <span class="text-gray-500 dark:text-gray-400 font-medium">By <span class="text-gray-800 dark:text-gray-200 font-bold">${row.approvedBy}</span><br><span class="text-[10px] text-gray-400">${formatDisplayDate(row.approvedDate)}</span></span>
-                    </div>
-                `;
-            }
-
-            let actionHtml = '';
-            if (currentUserRole === 'rosli' && currentStatusLower === 'pending for approval') {
-                actionHtml = `<button type="button" onclick="approveSingleRow(${row.id})" class="text-emerald-500 hover:text-white bg-emerald-50 hover:bg-emerald-500 p-1.5 rounded-lg transition-all shadow-sm hover:shadow-glow-emerald"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></button>`;
-            } else if (currentUserRole === 'staff' && currentStatusLower === 'completed') {
-                actionHtml = `<span class="text-gray-300 italic text-[11px] font-medium">—</span>`;
-            } else if (currentUserRole !== 'rosli') {
-                actionHtml = `<button type="button" onclick="editRow(${row.id})" class="text-indigo-500 hover:text-white bg-indigo-50 hover:bg-indigo-500 p-1.5 rounded-lg transition-all shadow-sm hover:shadow-glow-blue"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg></button>`;
-            }
+            let actionHtml = isReadonlyView 
+                ? `<span class="text-gray-300 italic text-[10px]">Tiada Aksi</span>` 
+                : `<button onclick="editRow(${row.id})" class="text-blue-500 hover:text-white bg-blue-50 hover:bg-[#003366] p-2 rounded-lg transition-colors outline-none" title="Kemaskini Rekod"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg></button>`;
 
             return `
-                <td class="table-cell px-3 text-center font-bold text-gray-500 text-[14px]">${row.no}</td>
-                <td class="table-cell px-3 text-center font-medium text-[14px]">${row.controlNo}</td>
-                <td class="table-cell px-3 text-center font-medium whitespace-normal break-words w-[120px] max-w-[120px] leading-relaxed text-[14px]">${row.callNo082}</td>
-                <td class="table-cell px-3 text-center font-medium whitespace-normal break-words w-[120px] max-w-[120px] leading-relaxed text-[14px]">${row.callNo050}</td>
-                <td class="table-cell px-3 font-extrabold text-indigo-600 dark:text-indigo-400 text-[14px]">${row.accession}</td>
-                <td class="table-cell px-3 whitespace-normal min-w-[250px] break-words font-semibold leading-relaxed text-left text-[14px]">${row.title}</td>
-                <td class="table-cell px-3 font-bold text-gray-800 dark:text-gray-200 text-[14px]">${displayStaff}</td>
-                <td class="table-cell px-3 text-center font-medium text-[14px]">${formatDisplayDate(row.date)}</td>
-                <td class="table-cell px-3">${statusBadge}</td>
-                <td class="table-cell px-3 text-left min-w-[150px]">${auditTrailHtml}</td>
-                <td class="table-cell px-3 text-center">${actionHtml}</td>
+                <td class="px-4 py-4 text-center font-medium text-gray-500">${row.no}</td>
+                <td class="px-4 py-4 text-center text-gray-700">${row.controlNo}</td>
+                <td class="px-4 py-4 text-center text-gray-700 whitespace-normal break-words min-w-[100px] max-w-[120px] leading-snug">${row.callNo082}</td>
+                <td class="px-4 py-4 text-center text-gray-700 whitespace-normal break-words min-w-[100px] max-w-[120px] leading-snug">${row.callNo050}</td>
+                <td class="px-4 py-4 font-semibold text-[#003366]">${row.accession}</td>
+                <td class="px-4 py-4 whitespace-normal max-w-xs break-words font-medium leading-snug text-center">${row.title}</td>
+                <td class="px-4 py-4 font-bold text-[#003366]">${displayStaff}</td>
+                <td class="px-4 py-4 text-center text-gray-500">${formatDisplayDate(row.date)}</td>
+                <td class="px-4 py-4">${statusBadge}</td>
+                <td class="px-4 py-3">
+                    <div class="flex flex-col gap-1.5 text-[10px] bg-gray-50 p-2 rounded-lg border border-gray-100">
+                        <div class="flex items-start">
+                            <span class="text-gray-400 mr-2"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg></span>
+                            <span class="leading-tight"><span class="font-bold text-gray-600 uppercase">Checked:</span> ${row.checkedBy ? `<span class="text-[#003366] font-bold ml-1">${row.checkedBy}</span>` : '<span class="text-gray-400 italic ml-1">N/A</span>'} ${row.dateChecked ? `<span class="text-gray-400 ml-1">(${formatDisplayDate(row.dateChecked)})</span>` : ''}</span>
+                        </div>
+                        <div class="flex items-start">
+                            <span class="text-[#00b074] mr-2"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></span>
+                            <span class="leading-tight"><span class="font-bold text-gray-600 uppercase">Approved:</span> ${row.approvedBy ? `<span class="text-[#00b074] font-bold ml-1">${row.approvedBy}</span>` : '<span class="text-gray-400 italic ml-1">N/A</span>'} ${row.approvedDate ? `<span class="text-gray-400 ml-1">(${formatDisplayDate(row.approvedDate)})</span>` : ''}</span>
+                        </div>
+                    </div>
+                </td>
+                <td class="px-4 py-4 text-center">${actionHtml}</td>
             `;
         }
 
-        function editRow(id) { editingId = id; applyFilters(true); }
-        function cancelEdit() { editingId = null; applyFilters(true); }
+        function editRow(id) { editingId = id; renderTable(); }
+        function cancelEdit() { editingId = null; renderTable(); }
 
         function saveRow(id) {
             const index = dataset.findIndex(r => r.id === id);
@@ -828,15 +803,16 @@
             let newStatus = document.getElementById(`edit-status-${id}`).value;
             let newDate = dataset[index].date;
             
+            // JIKA staf simpan sebagai "Completed", tukar terus status menjadi "Pending For Approval" 
             let finalStatusToSave = newStatus;
             if (currentUserRole === 'staff' && newStatus === 'Completed') {
                 finalStatusToSave = 'Pending For Approval'; 
             }
 
-            const currentStatusLower = (dataset[index].status || "").toLowerCase().trim();
-            if ((newStatus === 'Completed' || finalStatusToSave === 'Pending For Approval') && currentStatusLower !== 'completed' && currentStatusLower !== 'pending for approval') {
+            // Auto Update Date JIKA status baru adalah berkaitan kelulusan (bila staf save), dan sebelum ini tidak
+            if ((newStatus === 'Completed' || finalStatusToSave === 'Pending For Approval' || finalStatusToSave === 'Pending Semakan') && dataset[index].status !== 'Completed' && dataset[index].status !== 'Pending Semakan' && dataset[index].status !== 'Pending Kelulus' && dataset[index].status !== 'Pending For Approval') {
                 const t = new Date();
-                newDate = String(t.getDate()).padStart(2, '0') + '/' + String(t.getMonth() + 1).padStart(2, '0') + '/' + t.getFullYear();
+                newDate = t.getFullYear() + '-' + String(t.getMonth() + 1).padStart(2, '0') + '-' + String(t.getDate()).padStart(2, '0');
             }
 
             const updatedRecord = {
@@ -849,163 +825,167 @@
                 date: newDate
             };
 
-            showLoading("Saving...");
-            server.withSuccessHandler(function() {
-                hideLoading(); showToast("Record successfully updated.");
-                dataset[index] = updatedRecord; editingId = null; applyFilters(true);
+            showLoading("Menyimpan ke Spreadsheet...");
+            server.withSuccessHandler(function(success) {
+                hideLoading();
+                showToast("Rekod berjaya dikemaskini.");
+                // Kemaskini data memory secara automatik
+                dataset[index] = updatedRecord;
+                editingId = null;
+                applyFilters(); // Refresh UI dan filter
+                
             }).updateRow(updatedRecord);
         }
 
-        function approveSingleRow(id) {
-            if(!confirm(`Are you sure you want to approve this record?`)) return;
-            showLoading("Approving...");
-            const index = dataset.findIndex(r => r.id === id);
-            if (index === -1) { hideLoading(); return; }
+        /* =====================================================================
+           CARTA, UTILITI & EXCEL EXPORT
+           ===================================================================== */
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('clock-time').textContent = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('clock-date').textContent = now.toLocaleDateString('en-GB', options).toUpperCase();
+        }
+        setInterval(updateClock, 1000); updateClock();
 
-            let record = {...dataset[index]};
-            record.status = 'Completed';
-            record.approvedBy = currentUserName;
-            const t = new Date();
-            record.approvedDate = String(t.getDate()).padStart(2, '0') + '/' + String(t.getMonth() + 1).padStart(2, '0') + '/' + t.getFullYear();
-
-            dataset[index] = record;
-            applyFilters(true);
-            server.withSuccessHandler(function() {
-                hideLoading(); showToast("Record successfully approved!"); fetchDataFromGoogleSheet(true); 
-            }).updateRow(record);
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-message').textContent = msg || "Data berjaya dikemaskini.";
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => { toast.classList.add('translate-y-20', 'opacity-0'); }, 3000);
         }
 
+        // FUNGSI MUAT TURUN EXCEL
         function exportToExcel() {
-            showLoading("Generating Excel File...");
+            showLoading("Menjana Fail Excel...");
+            
             setTimeout(() => {
                 const exportTahun = document.getElementById('export-tahun').value;
-                let dataToExport = dataset; 
+                let dataToExport = dataset; // Gunakan keseluruhan data sebagai base
                 
+                // Filter jika user pilih tahun tertentu untuk export
                 if (exportTahun !== "") {
                     dataToExport = dataset.filter(row => getYearFromDate(row.date) === exportTahun);
                 }
                 
                 if (dataToExport.length === 0) {
                     hideLoading();
-                    alert("No records found for the selected year.");
+                    alert("Tiada rekod dijumpai untuk tahun yang dipilih.");
                     return;
                 }
 
+                // Format data array of object untuk SheetJS
                 const cleanData = dataToExport.map(row => ({
-                    "No": row.no, "Control Number": row.controlNo, "Call No (082)": row.callNo082, "Call No (050/060)": row.callNo050,
-                    "Accession": row.accession, "Title": row.title, "Staff": getStaffDisplay(row.staff), "Date": formatDisplayDate(row.date),
-                    "Status": row.status, "Approved By": row.approvedBy, "Approved Date": formatDisplayDate(row.approvedDate)
+                    "No": row.no,
+                    "Control Number": row.controlNo,
+                    "Call No (082)": row.callNo082,
+                    "Call No (050/060)": row.callNo050,
+                    "Accession": row.accession,
+                    "Title": row.title,
+                    "Staff": getStaffDisplay(row.staff),
+                    "Tarikh": formatDisplayDate(row.date),
+                    "Status": row.status,
+                    "Disemak Oleh": row.checkedBy,
+                    "Tarikh Disemak": formatDisplayDate(row.dateChecked),
+                    "Diluluskan Oleh": row.approvedBy,
+                    "Tarikh Diluluskan": formatDisplayDate(row.approvedDate)
                 }));
 
+                // Bina Workbook
                 const worksheet = XLSX.utils.json_to_sheet(cleanData);
                 const workbook = XLSX.utils.book_new();
-                XLSX.utils.book_append_sheet(workbook, worksheet, "IKU Report");
-                worksheet['!cols'] = [{ wch: 5 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 40 }, { wch: 15 }, { wch: 12 }, { wch: 20 }, { wch: 15 }, { wch: 15 }];
+                XLSX.utils.book_append_sheet(workbook, worksheet, "Laporan IKU");
 
-                XLSX.writeFile(workbook, exportTahun === "" ? "IKU_Report_Overall.xlsx" : `IKU_Report_${exportTahun}.xlsx`);
-                hideLoading(); showToast("Excel file successfully downloaded.");
+                // Laraskan kelebaran kolum Excel secara automatik (anggaran)
+                const colWidths = [
+                    { wch: 5 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, 
+                    { wch: 40 }, { wch: 15 }, { wch: 12 }, { wch: 20 }, { wch: 15 }, 
+                    { wch: 15 }, { wch: 15 }, { wch: 15 }
+                ];
+                worksheet['!cols'] = colWidths;
+
+                // Muat turun
+                const fileName = exportTahun === "" ? "Laporan_IKU_Keseluruhan.xlsx" : `Laporan_IKU_${exportTahun}.xlsx`;
+                XLSX.writeFile(workbook, fileName);
+                
+                hideLoading();
+                showToast("Berjaya memuat turun fail Excel.");
             }, 500);
         }
 
         function updateDashboardStats() {
+            // Stats dikira berdasarkan FILTERED DATASET (Paparan real-time berdasarkan filter)
             const total = filteredDataset.length;
-            const completed = filteredDataset.filter(r => (r.status||"").toLowerCase().trim() === 'completed').length;
-            const pending = filteredDataset.filter(r => (r.status||"").toLowerCase().trim().includes('pending')).length;
+            const completed = filteredDataset.filter(r => r.status === 'Completed').length;
+            const pending = filteredDataset.filter(r => r.status.includes('Pending')).length;
             
             const staffCounts = {};
-            const statusCounts = { 'Completed': 0, 'Pending Approval': 0, 'Incomplete': 0 };
+            const statusCounts = { 'Completed': 0, 'Pending Checking': 0, 'Pending Approval': 0, 'Incomplete': 0 };
 
             filteredDataset.forEach(r => { 
                 const displayStaff = getStaffDisplay(r.staff);
-                if(displayStaff !== '-') staffCounts[displayStaff] = (staffCounts[displayStaff] || 0) + 1; 
+                
+                if(displayStaff !== 'ADMIN') {
+                    staffCounts[displayStaff] = (staffCounts[displayStaff] || 0) + 1; 
+                }
+                
                 let chartStatus = 'Incomplete';
-                const sLower = (r.status || "").toLowerCase().trim();
-                if (sLower === 'completed') chartStatus = 'Completed';
-                else if (sLower === 'pending for approval') chartStatus = 'Pending Approval'; 
+                if (r.status === 'Completed') chartStatus = 'Completed';
+                else if (r.status === 'Pending Semakan' || r.status === 'Pending For Approval') chartStatus = 'Pending Checking'; 
+                else if (r.status === 'Pending Kelulusan') chartStatus = 'Pending Approval'; 
+                else if (r.status === 'incomplete' || r.status === 'Draft' || r.status === 'Rejected') chartStatus = 'Incomplete';
+                
                 statusCounts[chartStatus] = (statusCounts[chartStatus] || 0) + 1;
             });
 
-            document.getElementById('stat-total').textContent = total.toLocaleString();
-            document.getElementById('stat-completed').textContent = completed.toLocaleString();
+            document.getElementById('stat-total').textContent = total;
+            document.getElementById('stat-completed').textContent = completed;
             document.getElementById('stat-pending').textContent = pending;
-            document.getElementById('stat-staff').textContent = Object.keys(staffCounts).length;
-            document.getElementById('insight-pending-count').textContent = pending + ' Records';
+            document.getElementById('stat-staff').textContent = Object.keys(staffCounts).length; // Aktif staff
+            document.getElementById('insight-pending-count').textContent = pending + ' Rekod';
 
             let topStaff = "-", maxCount = 0;
             for(let s in staffCounts) { if(staffCounts[s] > maxCount) { maxCount = staffCounts[s]; topStaff = s; } }
             document.getElementById('insight-top-staff').textContent = topStaff;
+            document.getElementById('insight-top-count').textContent = maxCount + ' Rekod Di Jumpai';
 
             updateCharts(staffCounts, statusCounts);
         }
 
-        const isDarkMode = () => document.documentElement.classList.contains('dark');
-
         function updateCharts(staffCounts, statusCounts) {
-            const statusCtx = document.getElementById('statusChart');
-            if(!statusCtx) return;
-            
+            const statusCtx = document.getElementById('statusChart').getContext('2d');
             if (statusChartInstance) statusChartInstance.destroy();
             
-            const textColor = isDarkMode() ? '#94a3b8' : '#64748b';
-            const gridColor = isDarkMode() ? '#334155' : '#f1f5f9';
-
-            statusChartInstance = new Chart(statusCtx.getContext('2d'), {
+            statusChartInstance = new Chart(statusCtx, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Completed', 'Pending Approval', 'Incomplete'],
-                    datasets: [{ data: [statusCounts['Completed'], statusCounts['Pending Approval'], statusCounts['Incomplete']], backgroundColor: ['#10b981', '#f59e0b', '#ef4444'], borderWidth: 0, hoverOffset: 8 }]
+                    labels: ['Completed', 'Pending Checking', 'Pending Approval', 'Incomplete/Rejected'],
+                    datasets: [{
+                        data: [statusCounts['Completed'], statusCounts['Pending Checking'], statusCounts['Pending Approval'], statusCounts['Incomplete']],
+                        backgroundColor: ['#00b074', '#f59e0b', '#3b82f6', '#ef4444'],
+                        borderWidth: 0, hoverOffset: 4
+                    }]
                 },
-                options: { responsive: true, maintainAspectRatio: false, layout: { padding: { top: 10, bottom: 10 } }, animation: { animateScale: true, animateRotate: true }, plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 8, font: { size: 10 }, color: textColor } } }, cutout: '70%' }
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { usePointStyle: true, boxWidth: 8, font: { family: "'Inter', sans-serif", size: 10 } } } }, cutout: '65%' }
             });
 
-            const fixedOrder = ["FATIHAH", "FAZILAH", "SAKINAH", "HUSNA", "ADMIN"];
-            const fixedColors = ["#002855", "#0056b3", "#3b82f6", "#10b981", "#7367f0"];
-            const staffData = fixedOrder.map(s => staffCounts[s] || 0);
-            
-            const staffCtx = document.getElementById('staffChart');
+            const staffNames = Object.keys(staffCounts);
+            const staffData = Object.values(staffCounts);
+            const barColors = ['#7367f0', '#00cfe8', '#28c76f', '#ea5455', '#ff9f43', '#003366'];
+            const staffCtx = document.getElementById('staffChart').getContext('2d');
             if (staffChartInstance) staffChartInstance.destroy();
-            staffChartInstance = new Chart(staffCtx.getContext('2d'), {
+            staffChartInstance = new Chart(staffCtx, {
                 type: 'bar',
-                data: { labels: fixedOrder, datasets: [{ label: 'Total Records', data: staffData, backgroundColor: fixedColors, borderRadius: 6, barThickness: 45, hoverBackgroundColor: '#818cf8' }] },
-                options: { responsive: true, maintainAspectRatio: false, animation: { y: { duration: 1000, easing: 'easeOutQuart' } }, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, border: {display: false}, ticks: { stepSize: 100, font: { size: 10 }, color: textColor }, grid: { color: gridColor, drawBorder: false } }, x: { grid: { display: false }, border: {display: false}, ticks: { font: { size: 11, weight: '600' }, color: textColor } } } }
+                data: {
+                    labels: staffNames,
+                    datasets: [{ label: 'Jumlah Rekod', data: staffData, backgroundColor: barColors.slice(0, staffNames.length), borderRadius: 4, barThickness: 25 }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true, ticks: { stepSize: 1, font: { family: "'Inter', sans-serif", size: 10 } }, grid: { borderDash: [4, 4] } }, x: { grid: { display: false }, ticks: { font: { family: "'Inter', sans-serif", size: 10, weight: 'bold' } } } }
+                }
             });
         }
-
-        const observer = new MutationObserver((mutations) => {
-            mutations.forEach((mutation) => { if (mutation.attributeName === 'class' && currentUserRole !== "") updateDashboardStats(); });
-        });
-        observer.observe(document.documentElement, { attributes: true });
-
-        /* =====================================================================
-           TIMERS & INIT
-           ===================================================================== */
-        checkAutoLogin();
-
-        setInterval(() => { if (currentUserRole !== "" && editingId === null) fetchDataFromGoogleSheet(true); }, 30000);
-        
-        let idleTime = 0;
-        function resetIdleTimer() { idleTime = 0; if (currentUserRole !== "") localStorage.setItem('iku_last_active', Date.now()); }
-        window.addEventListener('mousemove', resetIdleTimer);
-        window.addEventListener('keypress', resetIdleTimer);
-        window.addEventListener('click', resetIdleTimer);
-        window.addEventListener('scroll', resetIdleTimer, true);
-        
-        setInterval(() => {
-            if (currentUserRole !== "") {
-                idleTime++;
-                if (idleTime >= 30) { alert("Sesi anda telah tamat kerana tidak aktif selama 30 minit. Sila log masuk semula."); logout(); resetIdleTimer(); }
-            }
-        }, 60000);
-
-        function updateClock() {
-            const now = new Date();
-            const timeEl = document.getElementById('clock-time');
-            const dateEl = document.getElementById('clock-date');
-            if(timeEl) timeEl.textContent = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
-            if(dateEl) dateEl.textContent = now.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
-        }
-        setInterval(updateClock, 1000); updateClock();
-
     </script>
 </body>
 </html>
