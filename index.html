@@ -111,7 +111,6 @@
         .sidebar-desktop-closed .nav-link svg { margin: 0 auto !important; width: 22px; height: 22px; }
         .sidebar-desktop-closed .profile-details { display: none; }
 
-        /* Tooltip Logic (Fixed to show purely on hover) */
         .sidebar-tooltip {
             position: absolute; left: calc(100% + 12px); top: 50%; transform: translateY(-50%);
             background: rgba(15, 23, 42, 0.95); color: #fff; padding: 6px 12px; border-radius: 6px;
@@ -235,7 +234,7 @@
                         <p class="text-[9px] text-indigo-200 leading-relaxed">AI analytics for making decisions.</p>
                     </div>
 
-                    <div class="flex items-center justify-between cursor-pointer group hover:bg-white/10 p-2.5 rounded-xl transition-all border border-transparent hover:border-white/20" onclick="logout()">
+                    <div class="flex items-center justify-between cursor-pointer group hover:bg-white/10 p-2.5 rounded-xl transition-all border border-transparent hover:border-white/20" onclick="logout(true)">
                         <div class="flex items-center gap-2">
                             <div id="profile-initial-sidebar" class="w-8 h-8 bg-gradient-to-tr from-blue-500 to-indigo-500 text-white rounded-lg flex items-center justify-center font-bold text-xs shadow-sm shrink-0">S</div>
                             <div class="profile-details">
@@ -426,7 +425,7 @@
                     </div>
                 </div>
 
-                <!-- TAB: REKOD (Table moved here) -->
+                <!-- TAB: REKOD -->
                 <div id="view-collection" class="tab-pane flex-col flex-1 min-h-0 relative">
                     <!-- Dynamic shared container will be injected here -->
                 </div>
@@ -480,13 +479,13 @@
         </main>
     </div>
 
-    <!-- SHARED TABLE WRAPPER (Moved dynamically by JS between Tabs) -->
+    <!-- SHARED TABLE WRAPPER -->
     <div id="shared-table-section" class="glass-panel rounded-2xl shadow-soft flex flex-col flex-1 overflow-hidden min-h-[400px] hidden">
         <!-- Filters Area -->
         <div class="p-3 flex flex-wrap items-center gap-2 border-b border-gray-200 dark:border-gray-700 bg-white/50 dark:bg-gray-800/50">
             <div class="flex-1 min-w-[200px] relative">
                 <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                <input type="text" id="search-input" onkeyup="applyFilters()" placeholder="Search Title or Accession..." class="w-full text-xs border border-gray-200 dark:border-gray-600 rounded-lg pl-8 pr-3 py-1.5 h-[36px] bg-gray-50/50 dark:bg-gray-900/50 focus:bg-white dark:focus:bg-gray-800 transition-all font-medium">
+                <input type="text" id="search-input" onkeyup="debouncedSearch()" placeholder="Search Title or Accession..." class="w-full text-xs border border-gray-200 dark:border-gray-600 rounded-lg pl-8 pr-3 py-1.5 h-[36px] bg-gray-50/50 dark:bg-gray-900/50 focus:bg-white dark:focus:bg-gray-800 transition-all font-medium">
             </div>
             
             <div class="flex flex-wrap items-center gap-2">
@@ -617,6 +616,20 @@
         </div>
     </div>
 
+
+    <!-- SESSION WARNING MODAL -->
+    <div id="session-warning-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[200] hidden items-center justify-center p-4 transition-all">
+        <div class="glass-panel p-8 rounded-3xl shadow-2xl max-w-sm w-full text-center animate-[fadeIn_0.2s_ease-out]">
+            <div class="w-16 h-16 bg-orange-50 dark:bg-orange-900/30 text-orange-500 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-glow-orange">
+                <svg class="w-8 h-8 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            </div>
+            <h3 class="text-xl font-extrabold text-gray-900 dark:text-white mb-2 font-montserrat">Session Timeout</h3>
+            <p class="text-xs text-gray-500 dark:text-gray-400 leading-relaxed mb-6">Your session will expire in 1 minute due to inactivity. Move your mouse or click to stay logged in.</p>
+            <button onclick="activityHandler()" class="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white text-xs font-bold py-2.5 px-6 rounded-xl shadow-glow-orange transition-all hover:-translate-y-0.5 w-full">
+                Continue Session
+            </button>
+        </div>
+    </div>
 
     <!-- ================== TOAST & LOADING ================== -->
     <div id="toast" class="fixed bottom-6 right-6 transform translate-y-20 opacity-0 transition-all duration-300 bg-gray-900 text-white px-5 py-3.5 rounded-xl shadow-2xl z-50 flex items-center gap-3">
@@ -941,7 +954,98 @@
         };
 
         /* =====================================================================
-           BACKEND FETCHER 
+           SESSION TIMEOUT LOGIC
+           ===================================================================== */
+        const TIMEOUT_DURATION = 30 * 60 * 1000; // 30 minit
+        const WARNING_DURATION = 29 * 60 * 1000; // 29 minit
+        let sessionCheckerInterval;
+        let autoSyncInterval;
+        let isThrottled = false;
+
+        function startSessionManagement() {
+            updateActivity();
+            
+            // Pasang event listener untuk pantau sebarang pergerakan pengguna
+            ['mousemove', 'mousedown', 'keypress', 'scroll', 'touchstart'].forEach(evt => {
+                document.addEventListener(evt, activityHandler, { passive: true });
+            });
+
+            // Semak status sesi secara ringan setiap 5 saat
+            if(sessionCheckerInterval) clearInterval(sessionCheckerInterval);
+            sessionCheckerInterval = setInterval(checkSessionStatus, 5000);
+            
+            // Auto Sync (Realtime DOM Diffing Poll) setiap 15 saat - berjalan waktu login sahaja
+            if(autoSyncInterval) clearInterval(autoSyncInterval);
+            autoSyncInterval = setInterval(() => {
+                if (currentUserRole !== "" && editingId === null) {
+                    fetchDataFromGoogleSheet(true); 
+                }
+            }, 15000);
+        }
+
+        function stopSessionManagement() {
+            ['mousemove', 'mousedown', 'keypress', 'scroll', 'touchstart'].forEach(evt => {
+                document.removeEventListener(evt, activityHandler);
+            });
+            if(sessionCheckerInterval) clearInterval(sessionCheckerInterval);
+            if(autoSyncInterval) clearInterval(autoSyncInterval);
+        }
+
+        function activityHandler() {
+            if (!isThrottled && currentUserRole) {
+                updateActivity();
+                hideSessionWarning(); // Tutup popup terus jika pengguna mula bergerak
+                isThrottled = true;
+                setTimeout(() => { isThrottled = false; }, 2000); // Rakam pergerakan max 1 kali per 2 saat (Jimat memori pelayar)
+            }
+        }
+
+        function updateActivity() {
+            localStorage.setItem('iku_last_activity', Date.now().toString());
+        }
+
+        function checkSessionStatus() {
+            if (!currentUserRole) return;
+            
+            const lastActivityStr = localStorage.getItem('iku_last_activity');
+            if (!lastActivityStr) return;
+            
+            const lastActivity = parseInt(lastActivityStr, 10);
+            const idleTime = Date.now() - lastActivity;
+
+            if (idleTime >= TIMEOUT_DURATION) {
+                logoutDueToInactivity();
+            } else if (idleTime >= WARNING_DURATION) {
+                showSessionWarning();
+            } else {
+                hideSessionWarning();
+            }
+        }
+
+        function showSessionWarning() {
+            const modal = document.getElementById('session-warning-modal');
+            if (modal && modal.classList.contains('hidden')) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            }
+        }
+
+        function hideSessionWarning() {
+            const modal = document.getElementById('session-warning-modal');
+            if (modal && !modal.classList.contains('hidden')) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+        }
+
+        function logoutDueToInactivity() {
+            hideSessionWarning();
+            logout();
+            alert("Sesi anda telah tamat kerana tiada aktiviti selama 30 minit. Sila log masuk semula.");
+        }
+
+        /* =====================================================================
+           BACKEND FETCHER & REALTIME SYNC (DOM DIFFING)
            ===================================================================== */
         const server = {
             withSuccessHandler: function(cb) { this.cb = cb; return this; },
@@ -1038,6 +1142,10 @@
 
                 switchTab('dashboard', document.querySelector('.nav-link'));
 
+                // Hidupkan sesi login, pemantauan masa (timeout) & Auto Sync
+                startSessionManagement();
+
+                // Tarik data spreadsheet (Data hanya ditarik selepas login berjaya)
                 fetchDataFromGoogleSheet();
             } else {
                 errorMsg.textContent = "Invalid password.";
@@ -1045,31 +1153,47 @@
             }
         }
 
+        // Dilaksanakan (Triggered) setiap kali page refresh untuk maintain session
         function checkAutoLogin() {
             const savedRole = localStorage.getItem('iku_role');
             const savedName = localStorage.getItem('iku_name');
+            const lastActivity = localStorage.getItem('iku_last_activity');
 
-            if (savedRole && savedName) {
-                currentUserRole = savedRole;
-                currentUserName = savedName;
-                currentPage = 1;
-
-                const nameSpan = document.getElementById('profile-name');
-                if(nameSpan) nameSpan.textContent = currentUserName;
-
-                document.getElementById('profile-initial').textContent = currentUserName.charAt(0);
-                const sidebarInitial = document.getElementById('profile-initial-sidebar');
-                if (sidebarInitial) sidebarInitial.textContent = currentUserName.charAt(0);
-
-                document.getElementById('login-screen').classList.add('hidden');
-                document.getElementById('dashboard-screen').classList.remove('hidden');
-                document.getElementById('dashboard-screen').classList.add('flex');
+            if (savedRole && savedName && lastActivity) {
+                const idleTime = Date.now() - parseInt(lastActivity, 10);
                 
-                document.getElementById('sidebar').classList.add('sidebar-desktop-closed');
+                // Sahkan jika sesi sebelum browser ditutup telah luput
+                if (idleTime < TIMEOUT_DURATION) {
+                    currentUserRole = savedRole;
+                    currentUserName = savedName;
+                    currentPage = 1;
 
-                switchTab('dashboard', document.querySelector('.nav-link'));
+                    const nameSpan = document.getElementById('profile-name');
+                    if(nameSpan) nameSpan.textContent = currentUserName;
 
-                fetchDataFromGoogleSheet(true);
+                    document.getElementById('profile-initial').textContent = currentUserName.charAt(0);
+                    const sidebarInitial = document.getElementById('profile-initial-sidebar');
+                    if (sidebarInitial) sidebarInitial.textContent = currentUserName.charAt(0);
+
+                    // Sembunyikan login, tunjuk dashboard (Tanpa menyekat pengalaman pengguna)
+                    document.getElementById('login-screen').classList.add('hidden');
+                    document.getElementById('dashboard-screen').classList.remove('hidden');
+                    document.getElementById('dashboard-screen').classList.add('flex');
+                    
+                    document.getElementById('sidebar').classList.add('sidebar-desktop-closed');
+
+                    switchTab('dashboard', document.querySelector('.nav-link'));
+
+                    // Mulakan semula Pemantauan Sesi
+                    startSessionManagement();
+
+                    // Tarik data baharu dari spreadsheet serta-merta tanpa perlu login lagi
+                    fetchDataFromGoogleSheet(true);
+                } else {
+                    logout(); // Luput kerana tak aktif terlalu lama sebelum ini
+                }
+            } else {
+                logout(); // Bersihkan skrin dan biarkan page login muncul
             }
         }
 
@@ -1080,14 +1204,23 @@
             
             localStorage.removeItem('iku_role');
             localStorage.removeItem('iku_name');
+            localStorage.removeItem('iku_last_activity');
             
             editingId = null; 
             currentUserRole = ""; 
             currentUserName = "";
 
+            stopSessionManagement();
+            hideSessionWarning();
+
             document.getElementById('dashboard-screen').classList.add('hidden');
             document.getElementById('dashboard-screen').classList.remove('flex');
             document.getElementById('login-screen').classList.remove('hidden');
+            
+            // Padam/Kosongkan memori jadual supaya selamat
+            dataset = [];
+            filteredDataset = [];
+            document.getElementById('table-body').innerHTML = '';
         }
 
         /* =====================================================================
@@ -1106,6 +1239,14 @@
                 applyFilters(true); 
                 if (!isSilent) hideLoading();
             }).getInitialData();
+        }
+
+        let searchDebounceTimer;
+        function debouncedSearch() {
+            clearTimeout(searchDebounceTimer);
+            searchDebounceTimer = setTimeout(() => {
+                applyFilters();
+            }, 300); 
         }
         
         function applyFilters(preservePage = false) {
@@ -1165,8 +1306,9 @@
             
             const tableContainer = document.getElementById('table-container');
             const currentTableScroll = tableContainer ? tableContainer.scrollTop : 0;
-
-            tbody.innerHTML = '';
+            
+            // DOM Diffing & Document Fragment (Optimum untuk Realtime Syncing)
+            const fragment = document.createDocumentFragment();
             
             if (currentUserRole === 'rosli' && window.forcedStatusFilter === 'Pending For Approval') {
                 paginationDiv.classList.add('hidden'); 
@@ -1182,7 +1324,9 @@
                 });
 
                 if(Object.keys(groupedData).length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="11" class="px-5 py-10 text-center text-gray-500 font-medium italic text-sm">No records require your action.</td></tr>`;
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `<tr><td colspan="11" class="px-5 py-10 text-center text-gray-500 font-medium italic text-sm">No records require your action.</td></tr>`;
+                    fragment.appendChild(tr);
                 } else {
                     for (let staffName in groupedData) {
                         const staffRows = groupedData[staffName];
@@ -1197,14 +1341,16 @@
                                 </div>
                             </td>
                         `;
-                        tbody.appendChild(groupHeader);
+                        fragment.appendChild(groupHeader);
                         staffRows.forEach(row => {
                             const tr = document.createElement('tr');
                             tr.innerHTML = generateRowHTML(row, false, true); 
-                            tbody.appendChild(tr);
+                            fragment.appendChild(tr);
                         });
                     }
                 }
+                tbody.innerHTML = '';
+                tbody.appendChild(fragment);
             } else {
                 paginationDiv.classList.remove('hidden');
                 const startIndex = (currentPage - 1) * rowsPerPage;
@@ -1213,15 +1359,50 @@
                 
                 if (paginatedData.length === 0) {
                     tbody.innerHTML = `<tr><td colspan="11" class="px-5 py-10 text-center text-gray-500 font-medium italic text-sm">No records found based on your search/filter.</td></tr>`;
-                }
+                } else {
+                    // Update rows directly if they exist (Mencegah Full Reload / Screen Freeze)
+                    const currentRows = Array.from(tbody.querySelectorAll('tr[id^="row-"]'));
+                    const paginatedIds = paginatedData.map(r => `row-${r.id}`);
+                    
+                    // 1. Buang row yang tak wujud
+                    currentRows.forEach(row => {
+                        if (!paginatedIds.includes(row.id)) {
+                            row.remove();
+                        }
+                    });
 
-                paginatedData.forEach(row => {
-                    const tr = document.createElement('tr');
-                    tr.id = `row-${row.id}`;
-                    tr.className = editingId === row.id ? 'editing-row' : '';
-                    tr.innerHTML = generateRowHTML(row, editingId === row.id, false);
-                    tbody.appendChild(tr);
-                });
+                    // 2. Tambah dan kemas kini
+                    paginatedData.forEach((row, index) => {
+                        const rowId = `row-${row.id}`;
+                        let tr = document.getElementById(rowId);
+                        const html = generateRowHTML(row, editingId === row.id, false);
+                        const className = editingId === row.id ? 'editing-row' : '';
+                        
+                        if (tr) {
+                            if (tr.innerHTML !== html || tr.className !== className) {
+                                tr.innerHTML = html;
+                                tr.className = className;
+                            }
+                            if (tbody.children[index] !== tr) {
+                                tbody.insertBefore(tr, tbody.children[index]);
+                            }
+                        } else {
+                            tr = document.createElement('tr');
+                            tr.id = rowId;
+                            tr.className = className;
+                            tr.innerHTML = html;
+                            
+                            if (tbody.children[index]) {
+                                tbody.insertBefore(tr, tbody.children[index]);
+                            } else {
+                                fragment.appendChild(tr);
+                            }
+                        }
+                    });
+                    if (fragment.children.length > 0) {
+                        tbody.appendChild(fragment);
+                    }
+                }
                 
                 const infoEnd = Math.min(startIndex + rowsPerPage, filteredDataset.length);
                 document.getElementById('page-info').textContent = `Showing ${filteredDataset.length > 0 ? startIndex + 1 : 0} to ${infoEnd} of ${filteredDataset.length} records`;
@@ -1322,7 +1503,7 @@
             let actionHtml = '';
             if (currentUserRole === 'rosli') {
                 if (isApprovalsTab) {
-                    actionHtml = `<button type="button" onclick="approveSingleRow(${row.id})" class="text-emerald-500 hover:text-white bg-emerald-50 hover:bg-emerald-500 p-1.5 rounded-lg transition-all shadow-sm hover:shadow-glow-emerald" title="Approve Record"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></button>`;
+                    actionHtml = `<button type="button" onclick="approveSingleRow(${row.id})" class="text-emerald-500 hover:text-white bg-emerald-50 hover:bg-emerald-500 p-1.5 rounded-lg transition-all shadow-sm hover:shadow-glow-emerald" title="Approve Record"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></button>`;
                 } else {
                     actionHtml = `<span class="text-gray-300 italic text-[10px] font-medium">—</span>`;
                 }
@@ -1550,13 +1731,8 @@
             }
         }
 
+        // Mulakan Pemeriksaan Login secara mandatori
         checkAutoLogin();
-        
-        setInterval(() => {
-            if (currentUserRole !== "" && editingId === null) {
-                fetchDataFromGoogleSheet(true); 
-            }
-        }, 15000); 
         
     </script>
 </body>
