@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IKU Library System - Premium Enterprise</title>
     
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -72,7 +71,7 @@
         .dark #table-body td { --row-bg: #1e293b; color: #e2e8f0; }
         .dark #table-body tr:hover td { --row-bg: #334155; }
         
-        /* Removed transform: scale() to fix jittering issue during row updates */
+        /* Fixed hover transform to prevent jittering */
         #table-body tr:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.05); z-index: 10; position: relative; }
         #table-body tr:hover td { background-color: var(--row-hover, #f8fafc) !important; }
         
@@ -113,7 +112,7 @@
         .sidebar-desktop-closed .nav-link svg { margin: 0 auto !important; width: 22px; height: 22px; }
         .sidebar-desktop-closed .profile-details { display: none; }
 
-        /* Tooltip Logic */
+        /* Tooltip Logic (Fixed to show purely on hover) */
         .sidebar-tooltip {
             position: absolute; left: calc(100% + 12px); top: 50%; transform: translateY(-50%);
             background: rgba(15, 23, 42, 0.95); color: #fff; padding: 6px 12px; border-radius: 6px;
@@ -136,7 +135,6 @@
 </head>
 <body class="min-h-screen flex overflow-hidden bg-gray-50 dark:bg-premiumDark text-gray-800 dark:text-gray-200">
 
-    <!-- ================== LOGIN SCREEN ================== -->
     <div id="login-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-gray-50 dark:bg-premiumDark transition-colors duration-300">
         <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-[100px] pointer-events-none"></div>
         <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-[100px] pointer-events-none"></div>
@@ -173,12 +171,10 @@
     </div>
 
 
-    <!-- ================== DASHBOARD SCREEN ================== -->
     <div id="dashboard-screen" class="hidden flex w-full h-screen relative">
         
         <div id="sidebar-overlay" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-30 hidden transition-opacity lg:hidden" onclick="toggleSidebar()"></div>
 
-        <!-- SIDEBAR -->
         <aside id="sidebar" class="text-white flex flex-col justify-between shrink-0 z-40 relative fixed inset-y-0 left-0 transform -translate-x-full lg:relative lg:translate-x-0 shadow-2xl">
             <div class="absolute inset-0 overflow-hidden pointer-events-none opacity-20">
                 <div class="absolute -top-10 -left-10 w-32 h-32 bg-purple-500 rounded-full blur-[40px]"></div>
@@ -186,7 +182,6 @@
             </div>
 
             <div class="relative z-10 flex flex-col h-full">
-                <!-- Brand -->
                 <div class="h-20 flex items-center px-5 mb-2 border-b border-white/10 shrink-0">
                     <div class="flex items-center gap-3 w-full">
                         <div class="w-9 h-9 bg-white/10 backdrop-blur-md rounded-lg flex items-center justify-center shrink-0 border border-white/20 shadow-glow-blue">
@@ -199,7 +194,6 @@
                     </div>
                 </div>
 
-                <!-- Navigation -->
                 <nav class="px-3 py-3 space-y-1 overflow-visible" id="main-nav">
                     <a href="#" onclick="switchTab('dashboard', this)" class="nav-link active-tab flex items-center gap-3 px-3 py-2.5 text-indigo-100 hover:text-white group">
                         <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
@@ -251,12 +245,10 @@
             </div>
         </aside>
 
-        <!-- MAIN CONTENT AREA -->
         <main class="flex-1 flex flex-col h-screen overflow-y-auto custom-scrollbar p-4 lg:p-6 relative w-full transition-colors duration-300">
             
             <div class="max-w-[1500px] w-full mx-auto flex flex-col h-full">
                 
-                <!-- TOP HEADER BAR -->
                 <header class="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-6 shrink-0">
                     <div class="flex items-center gap-3">
                         <button onclick="toggleSidebar()" class="p-2 bg-white dark:bg-gray-800 rounded-lg shadow-soft border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:text-indigo-600 transition-colors z-10 hover-lift" title="Toggle Menu">
@@ -285,10 +277,8 @@
                     </div>
                 </header>
 
-                <!-- TAB: DASHBOARD (KPIs & Summary Charts Only) -->
                 <div id="view-dashboard" class="tab-pane active flex-col flex-1 min-h-0">
                     
-                    <!-- KPI CARDS -->
                     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 mb-5 shrink-0">
                         <div class="glass-panel p-5 rounded-2xl shadow-soft hover-lift relative overflow-hidden flex flex-col h-[140px] group">
                             <div class="absolute top-0 right-0 w-24 h-24 bg-blue-500/10 rounded-full blur-xl -mr-8 -mt-8 transition-transform group-hover:scale-150"></div>
@@ -375,7 +365,6 @@
                         </div>
                     </div>
 
-                    <!-- CHARTS ROW -->
                     <div class="grid grid-cols-1 lg:grid-cols-4 gap-5 mb-5 shrink-0">
                         <div class="glass-panel p-5 rounded-2xl shadow-soft flex flex-col lg:col-span-1 h-[280px] hover-lift group">
                             <h3 class="font-bold text-gray-900 dark:text-white text-sm mb-3 flex items-center justify-between shrink-0">
@@ -397,7 +386,6 @@
                             </div>
                         </div>
 
-                        <!-- Quick Insights -->
                         <div class="bg-gradient-to-br from-[#1e1b4b] to-[#312e81] dark:from-gray-900 dark:to-black p-5 rounded-2xl shadow-glow-purple flex flex-col lg:col-span-1 h-[280px] hover-lift border border-indigo-500/30 relative overflow-hidden">
                             <div class="absolute -top-10 -right-10 w-24 h-24 bg-purple-500 rounded-full blur-[30px] opacity-30"></div>
                             
@@ -428,17 +416,12 @@
                     </div>
                 </div>
 
-                <!-- TAB: REKOD (Table moved here) -->
                 <div id="view-collection" class="tab-pane flex-col flex-1 min-h-0 relative">
-                    <!-- Dynamic shared container will be injected here -->
-                </div>
+                    </div>
 
-                <!-- TAB: APPROVALS -->
                 <div id="view-approvals" class="tab-pane flex-col flex-1 min-h-0 relative">
-                    <!-- Dynamic shared container will be injected here -->
-                </div>
+                    </div>
 
-                <!-- TAB: STAFF MANAGEMENT -->
                 <div id="view-staff" class="tab-pane flex-col flex-1 overflow-y-auto">
                     <div class="flex justify-between items-center mb-6">
                         <h2 class="text-lg font-bold text-gray-900 dark:text-white font-montserrat">Staff Directory</h2>
@@ -447,25 +430,20 @@
                         </button>
                     </div>
                     <div id="staff-grid" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6 pb-6">
-                        <!-- Rendered via JS -->
-                    </div>
+                        </div>
                 </div>
 
-                <!-- TAB: ANALYTICS CATALOG -->
                 <div id="view-reports" class="tab-pane flex-col flex-1 overflow-y-auto">
                     <h2 class="text-lg font-bold text-gray-900 dark:text-white font-montserrat mb-6">Analytics Catalog</h2>
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-                        <!-- Top Keywords -->
                         <div class="glass-panel p-5 rounded-2xl shadow-soft h-[300px] flex flex-col hover-lift">
                             <h3 class="font-bold text-gray-800 dark:text-white text-xs mb-4">Top Keywords Searched</h3>
                             <div class="relative w-full flex-1 min-h-[150px] flex items-center justify-center pb-2"><canvas id="chart-keywords"></canvas></div>
                         </div>
-                        <!-- Popular Fields -->
                         <div class="glass-panel p-5 rounded-2xl shadow-soft h-[300px] flex flex-col hover-lift">
                             <h3 class="font-bold text-gray-800 dark:text-white text-xs mb-4">Most Popular Subjects</h3>
                             <div class="relative w-full flex-1 min-h-[150px] flex items-center justify-center pb-2"><canvas id="chart-fields"></canvas></div>
                         </div>
-                        <!-- Staff Search Trends -->
                         <div class="glass-panel p-5 rounded-2xl shadow-soft h-[300px] flex flex-col hover-lift">
                             <h3 class="font-bold text-gray-800 dark:text-white text-xs mb-4">Staff Search Frequency</h3>
                             <div class="relative w-full flex-1 min-h-[150px] flex items-center justify-center pb-2"><canvas id="chart-trends"></canvas></div>
@@ -482,13 +460,11 @@
         </main>
     </div>
 
-    <!-- SHARED TABLE WRAPPER (Moved dynamically by JS between Tabs) -->
     <div id="shared-table-section" class="glass-panel rounded-2xl shadow-soft flex flex-col flex-1 overflow-hidden min-h-[400px] hidden">
-        <!-- Filters Area -->
         <div class="p-3 flex flex-wrap items-center gap-2 border-b border-gray-200 dark:border-gray-700 bg-white/50 dark:bg-gray-800/50">
             <div class="flex-1 min-w-[200px] relative">
                 <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                <input type="text" id="search-input" onkeyup="debouncedSearch()" placeholder="Search Title or Accession..." class="w-full text-xs border border-gray-200 dark:border-gray-600 rounded-lg pl-8 pr-3 py-1.5 h-[36px] bg-gray-50/50 dark:bg-gray-900/50 focus:bg-white dark:focus:bg-gray-800 transition-all font-medium">
+                <input type="text" id="search-input" onkeyup="applyFilters()" placeholder="Search Title or Accession..." class="w-full text-xs border border-gray-200 dark:border-gray-600 rounded-lg pl-8 pr-3 py-1.5 h-[36px] bg-gray-50/50 dark:bg-gray-900/50 focus:bg-white dark:focus:bg-gray-800 transition-all font-medium">
             </div>
             
             <div class="flex flex-wrap items-center gap-2">
@@ -545,31 +521,28 @@
             </div>
         </div>
 
-        <!-- Table Inner Container -->
         <div id="table-container" class="flex-1 overflow-y-auto overflow-x-auto custom-scrollbar bg-white/50 dark:bg-gray-900/50 px-1 pb-1">
             <table class="w-full text-left whitespace-nowrap" id="data-table">
                 <thead class="bg-[#1e3a8a] text-white">
                     <tr>
-                        <th class="px-3 py-3 text-center text-[10px]">NO</th>
-                        <th class="px-3 py-3 text-center text-[10px]">CONTROL NUMBER</th>
-                        <th class="px-3 py-3 text-center w-[130px] max-w-[130px] whitespace-normal leading-tight text-[10px]">CALL NO<br>(082)</th>
-                        <th class="px-3 py-3 text-center w-[130px] max-w-[130px] whitespace-normal leading-tight text-[10px]">CALL NO<br>(050/060)</th>
-                        <th class="px-3 py-3 text-left text-[10px]">ACCESSION</th>
-                        <th class="px-3 py-3 text-left min-w-[250px] text-[10px]">TITLE</th>
-                        <th class="px-3 py-3 text-left text-[10px]">STAFF</th>
-                        <th class="px-3 py-3 text-center text-[10px]">DATE</th>
-                        <th class="px-3 py-3 text-left text-[10px]">STATUS</th>
-                        <th class="px-3 py-3 text-left min-w-[150px] text-[10px]">AUDIT TRAIL</th>
-                        <th class="px-3 py-3 text-center text-[10px]">ACTION</th>
+                        <th class="px-3 py-3 text-center text-xs">NO</th>
+                        <th class="px-3 py-3 text-center text-xs">CONTROL NUMBER</th>
+                        <th class="px-3 py-3 text-center w-[130px] max-w-[130px] whitespace-normal leading-tight text-xs">CALL NO<br>(082)</th>
+                        <th class="px-3 py-3 text-center w-[130px] max-w-[130px] whitespace-normal leading-tight text-xs">CALL NO<br>(050/060)</th>
+                        <th class="px-3 py-3 text-left text-xs">ACCESSION</th>
+                        <th class="px-3 py-3 text-left min-w-[250px] text-xs">TITLE</th>
+                        <th class="px-3 py-3 text-left text-xs">STAFF</th>
+                        <th class="px-3 py-3 text-center text-xs">DATE</th>
+                        <th class="px-3 py-3 text-left text-xs">STATUS</th>
+                        <th class="px-3 py-3 text-left min-w-[150px] text-xs">AUDIT TRAIL</th>
+                        <th class="px-3 py-3 text-center text-xs">ACTION</th>
                     </tr>
                 </thead>
                 <tbody id="table-body" class="space-y-1">
-                    <!-- Data Injected via JS -->
-                </tbody>
+                    </tbody>
             </table>
         </div>
         
-        <!-- Pagination -->
         <div id="pagination-controls" class="px-4 py-3 border-t border-gray-200 dark:border-gray-700 flex justify-between items-center bg-white/80 dark:bg-gray-800/80 backdrop-blur-md hidden">
             <span class="text-[10px] text-gray-500 dark:text-gray-400 font-semibold" id="page-info">Showing 0-0 of 0 records</span>
             <div class="flex gap-1.5">
@@ -580,7 +553,6 @@
     </div>
 
 
-    <!-- STAFF MODAL -->
     <div id="staff-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100] hidden items-center justify-center p-4">
         <div class="glass-panel p-6 rounded-2xl shadow-2xl max-w-md w-full animate-[fadeIn_0.2s_ease-out]">
             <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4" id="staff-modal-title">Add New Staff</h3>
@@ -620,22 +592,6 @@
     </div>
 
 
-    <!-- SESSION WARNING MODAL -->
-    <div id="session-warning-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[200] hidden items-center justify-center p-4 transition-all">
-        <div class="glass-panel p-8 rounded-3xl shadow-2xl max-w-sm w-full text-center animate-[fadeIn_0.2s_ease-out]">
-            <div class="w-16 h-16 bg-orange-50 dark:bg-orange-900/30 text-orange-500 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-glow-orange">
-                <svg class="w-8 h-8 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-            </div>
-            <h3 class="text-xl font-extrabold text-gray-900 dark:text-white mb-2 font-montserrat">Session Timeout</h3>
-            <p class="text-xs text-gray-500 dark:text-gray-400 leading-relaxed mb-6">Your session will expire in 1 minute due to inactivity. Click below to stay logged in.</p>
-            <button onclick="activityHandler()" class="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white text-xs font-bold py-2.5 px-6 rounded-xl shadow-glow-orange transition-all hover:-translate-y-0.5 w-full">
-                Continue Session
-            </button>
-        </div>
-    </div>
-
-
-    <!-- ================== TOAST & LOADING ================== -->
     <div id="toast" class="fixed bottom-6 right-6 transform translate-y-20 opacity-0 transition-all duration-300 bg-gray-900 text-white px-5 py-3.5 rounded-xl shadow-2xl z-50 flex items-center gap-3">
         <div class="w-6 h-6 rounded-full bg-emerald-500/20 flex items-center justify-center shadow-glow-emerald">
             <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
@@ -653,7 +609,6 @@
         </div>
     </div>
 
-    <!-- ================== EXACT PRESERVED JAVASCRIPT ================== -->
     <script>
         
         let analyticsChartsInitialized = false;
@@ -958,47 +913,21 @@
         };
 
         /* =====================================================================
-           BACKEND FETCHER & API OPTIMIZATION (STABILIZED)
+           BACKEND FETCHER 
            ===================================================================== */
         const server = {
             withSuccessHandler: function(cb) { this.cb = cb; return this; },
             
-            // FUNGSI RETRY & TIMEOUT: Menyelesaikan "Failed to Fetch" secara automatik
-            fetchWithRetry: async function(url, options = {}, retries = 3, backoff = 1000) {
-                for (let i = 0; i < retries; i++) {
-                    try {
-                        const controller = new AbortController();
-                        const id = setTimeout(() => controller.abort(), 15000); // 15 saat maksimum per request
-                        const response = await fetch(url, { ...options, signal: controller.signal });
-                        clearTimeout(id);
-                        
-                        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                        return await response.json();
-                    } catch (err) {
-                        if (i === retries - 1) throw err;
-                        await new Promise(res => setTimeout(res, backoff * (i + 1))); // Cuba semula selepas 1s, kemudian 2s...
-                    }
-                }
-            },
-
-            getInitialData: function(isSilent = false) { 
+            getInitialData: function() { 
                 if (GAS_WEB_APP_URL === "LETAK_URL_GOOGLE_APPS_SCRIPT_ANDA_DI_SINI") {
                     setTimeout(() => this.cb([...MOCK_DB]), 500);
                     return;
                 }
                 
-                this.fetchWithRetry(GAS_WEB_APP_URL + "?action=getInitialData")
-                    .then(data => { 
-                        if(data && data.error) throw new Error(data.error);
-                        if(this.cb) this.cb(data); 
-                    })
-                    .catch(error => { 
-                        console.error('Fetch Error:', error); 
-                        if (!isSilent) {
-                            hideLoading(); 
-                            showToast("Gagal memuat turun data. Sila semak internet anda."); 
-                        }
-                    });
+                fetch(GAS_WEB_APP_URL + "?action=getInitialData")
+                    .then(response => response.json())
+                    .then(data => { if(this.cb) this.cb(data); })
+                    .catch(error => { console.error('Fetch Error:', error); hideLoading(); showToast("Error fetching data."); });
             },
             
             updateRow: function(record) { 
@@ -1009,21 +938,18 @@
                     return;
                 }
                 
-                // PENTING: Dibuang mode: 'no-cors' agar frontend boleh baca JSON Response.
-                // Menggunakan text/plain bagi melepasi sekatan preflight standard Google Apps Script
-                this.fetchWithRetry(GAS_WEB_APP_URL, {
+                fetch(GAS_WEB_APP_URL, {
                     method: 'POST', 
+                    mode: 'no-cors',
                     body: JSON.stringify({ action: 'updateRow', record: record }), 
-                    headers: { 'Content-Type': 'text/plain' } 
-                }, 2, 2000)
-                .then(data => { 
-                    if(data && data.error) throw new Error(data.error);
-                    setTimeout(() => { if(this.cb) this.cb(true); }, 500); 
+                    headers: { 'Content-Type': 'text/plain' }
+                })
+                .then(() => { 
+                    setTimeout(() => { if(this.cb) this.cb(true); }, 800); 
                 })
                 .catch(error => { 
-                    console.error('[Fetch Error - updateRow]:', error); 
                     hideLoading(); 
-                    showToast("Gagal menyimpan: " + error.message); 
+                    showToast("Failed to save."); 
                 });
             }
         };
@@ -1084,9 +1010,6 @@
 
                 switchTab('dashboard', document.querySelector('.nav-link'));
 
-                // Initiates Timeout Tracker
-                activityHandler();
-
                 fetchDataFromGoogleSheet();
             } else {
                 errorMsg.textContent = "Invalid password.";
@@ -1118,9 +1041,6 @@
 
                 switchTab('dashboard', document.querySelector('.nav-link'));
 
-                // Initiates Timeout Tracker
-                activityHandler();
-
                 fetchDataFromGoogleSheet(true);
             }
         }
@@ -1136,67 +1056,11 @@
             editingId = null; 
             currentUserRole = ""; 
             currentUserName = "";
-            
-            // Clear Timeout Tracker
-            clearTimeout(sessionTimeout);
-            clearTimeout(warningTimeout);
-            hideSessionWarning();
 
             document.getElementById('dashboard-screen').classList.add('hidden');
             document.getElementById('dashboard-screen').classList.remove('flex');
             document.getElementById('login-screen').classList.remove('hidden');
         }
-
-        /* =====================================================================
-           SESSION TIMEOUT LOGIC
-           ===================================================================== */
-        let sessionTimeout;
-        let warningTimeout;
-        const TIMEOUT_DURATION = 30 * 60 * 1000; // 30 mins
-        const WARNING_DURATION = 29 * 60 * 1000; // 29 mins
-
-        function resetSessionTimer() {
-            if (!currentUserRole) return;
-            
-            clearTimeout(sessionTimeout);
-            clearTimeout(warningTimeout);
-            hideSessionWarning();
-
-            warningTimeout = setTimeout(showSessionWarning, WARNING_DURATION);
-            sessionTimeout = setTimeout(logoutDueToInactivity, TIMEOUT_DURATION);
-        }
-
-        function showSessionWarning() {
-            document.getElementById('session-warning-modal').classList.remove('hidden');
-            document.getElementById('session-warning-modal').classList.add('flex');
-        }
-
-        function hideSessionWarning() {
-            const modal = document.getElementById('session-warning-modal');
-            if(modal) {
-                modal.classList.add('hidden');
-                modal.classList.remove('flex');
-            }
-        }
-
-        function logoutDueToInactivity() {
-            hideSessionWarning();
-            logout();
-            showToast("Logged out due to inactivity.");
-        }
-
-        let isThrottled = false;
-        function activityHandler() {
-            if (!isThrottled && currentUserRole) {
-                resetSessionTimer();
-                isThrottled = true;
-                setTimeout(() => { isThrottled = false; }, 2000); // Only reset timer every 2 secs
-            }
-        }
-
-        ['mousemove', 'mousedown', 'keypress', 'scroll', 'touchstart'].forEach(evt => {
-            document.addEventListener(evt, activityHandler, { passive: true });
-        });
 
         /* =====================================================================
            PENGURUSAN DATA, CARIAN & FILTER
@@ -1210,18 +1074,10 @@
         function fetchDataFromGoogleSheet(isSilent = false) {
             if (!isSilent) showLoading("Syncing...");
             server.withSuccessHandler(function(data) {
-                if (data) dataset = data; // Tambahan perlindungan jika data undefined
+                dataset = data || [];
                 applyFilters(true); 
                 if (!isSilent) hideLoading();
-            }).getInitialData(isSilent);
-        }
-        
-        let searchDebounceTimer;
-        function debouncedSearch() {
-            clearTimeout(searchDebounceTimer);
-            searchDebounceTimer = setTimeout(() => {
-                applyFilters();
-            }, 300); // 300ms delay to prevent freezing
+            }).getInitialData();
         }
         
         function applyFilters(preservePage = false) {
@@ -1278,15 +1134,12 @@
         function renderTable() {
             const tbody = document.getElementById('table-body');
             const paginationDiv = document.getElementById('pagination-controls');
-            const tableContainer = document.getElementById('table-container');
             
+            const tableContainer = document.getElementById('table-container');
             const currentTableScroll = tableContainer ? tableContainer.scrollTop : 0;
 
             tbody.innerHTML = '';
             
-            // Efficient Rendering using Document Fragment
-            const fragment = document.createDocumentFragment();
-
             if (currentUserRole === 'rosli' && window.forcedStatusFilter === 'Pending For Approval') {
                 paginationDiv.classList.add('hidden'); 
                 const targetStatus = 'pending for approval';
@@ -1301,9 +1154,7 @@
                 });
 
                 if(Object.keys(groupedData).length === 0) {
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `<tr><td colspan="11" class="px-5 py-10 text-center text-gray-500 font-medium italic text-sm">No records require your action.</td></tr>`;
-                    fragment.appendChild(tr);
+                    tbody.innerHTML = `<tr><td colspan="11" class="px-5 py-10 text-center text-gray-500 font-medium italic text-sm">No records require your action.</td></tr>`;
                 } else {
                     for (let staffName in groupedData) {
                         const staffRows = groupedData[staffName];
@@ -1318,11 +1169,11 @@
                                 </div>
                             </td>
                         `;
-                        fragment.appendChild(groupHeader);
+                        tbody.appendChild(groupHeader);
                         staffRows.forEach(row => {
                             const tr = document.createElement('tr');
                             tr.innerHTML = generateRowHTML(row, false, true); 
-                            fragment.appendChild(tr);
+                            tbody.appendChild(tr);
                         });
                     }
                 }
@@ -1333,9 +1184,7 @@
                 const paginatedData = filteredDataset.slice(startIndex, endIndex);
                 
                 if (paginatedData.length === 0) {
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `<tr><td colspan="11" class="px-5 py-10 text-center text-gray-500 font-medium italic text-sm">No records found based on your search/filter.</td></tr>`;
-                    fragment.appendChild(tr);
+                    tbody.innerHTML = `<tr><td colspan="11" class="px-5 py-10 text-center text-gray-500 font-medium italic text-sm">No records found based on your search/filter.</td></tr>`;
                 }
 
                 paginatedData.forEach(row => {
@@ -1343,14 +1192,12 @@
                     tr.id = `row-${row.id}`;
                     tr.className = editingId === row.id ? 'editing-row' : '';
                     tr.innerHTML = generateRowHTML(row, editingId === row.id, false);
-                    fragment.appendChild(tr);
+                    tbody.appendChild(tr);
                 });
                 
                 const infoEnd = Math.min(startIndex + rowsPerPage, filteredDataset.length);
                 document.getElementById('page-info').textContent = `Showing ${filteredDataset.length > 0 ? startIndex + 1 : 0} to ${infoEnd} of ${filteredDataset.length} records`;
             }
-
-            tbody.appendChild(fragment);
 
             updateDashboardStats();
 
