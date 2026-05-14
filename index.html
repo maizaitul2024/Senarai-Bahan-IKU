@@ -657,12 +657,25 @@
         /* =====================================================================
            STAFF MANAGEMENT MOCK DATABASE
            ===================================================================== */
-        let staffDB = [
+        let defaultStaffDB = [
             { id: 1, name: "FATIHAH", position: "Data Entry Officer", grade: "S19", email: "fatihah@library.iku.gov.my", phone: "012-3456789", image: "" },
             { id: 2, name: "FAZILAH", position: "Senior Librarian", grade: "S29", email: "fazilah@library.iku.gov.my", phone: "013-4567890", image: "" },
             { id: 3, name: "SAKINAH", position: "Cataloging Assistant", grade: "S19", email: "sakinah@library.iku.gov.my", phone: "014-5678901", image: "" },
             { id: 4, name: "HUSNA", position: "Library Executive", grade: "S41", email: "husna@library.iku.gov.my", phone: "019-8765432", image: "" }
         ];
+
+        let staffDB = [];
+        try {
+            const storedStaff = localStorage.getItem('iku_staff_db');
+            if (storedStaff) {
+                staffDB = JSON.parse(storedStaff);
+            } else {
+                staffDB = JSON.parse(JSON.stringify(defaultStaffDB));
+            }
+        } catch(e) {
+            staffDB = JSON.parse(JSON.stringify(defaultStaffDB));
+        }
+
         let editingStaffId = null;
 
         function renderStaffDirectory() {
@@ -749,6 +762,7 @@
         function deleteStaff(id) {
             if(confirm("Delete this staff?")) {
                 staffDB = staffDB.filter(x => x.id !== id);
+                try { localStorage.setItem('iku_staff_db', JSON.stringify(staffDB)); } catch(e){}
                 renderStaffDirectory();
                 showToast("Staff deleted.");
             }
@@ -768,18 +782,57 @@
                 if(editingStaffId) {
                     let s = staffDB.find(x => x.id === editingStaffId);
                     s.name = name; s.position = pos; s.grade = grd; s.email = email; s.phone = phone;
-                    if(imgData) s.image = imgData;
+                    if(imgData !== null) s.image = imgData;
                 } else {
-                    staffDB.push({ id: Date.now(), name: name, position: pos, grade: grd, email: email, phone: phone, image: imgData });
+                    staffDB.push({ id: Date.now(), name: name, position: pos, grade: grd, email: email, phone: phone, image: imgData || "" });
                 }
+                
+                try {
+                    // Simpanan memori akan berjaya kerana gambar sudah di-compress
+                    localStorage.setItem('iku_staff_db', JSON.stringify(staffDB));
+                } catch(e) {
+                    alert("Ralat Storan: " + e.message);
+                }
+
                 closeStaffModal();
                 renderStaffDirectory();
                 showToast("Staff saved!");
             };
 
+            // FUNGSI AUTO-COMPRESS GAMBAR UNTUK MENGELAKKAN STORAGE PENUH
             if(fileInput.files && fileInput.files[0]) {
                 const reader = new FileReader();
-                reader.onload = (e) => updateDB(e.target.result);
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        const MAX_SIZE = 400; // Saiz maksimum resolusi dikecilkan ke 400px
+                        let width = img.width;
+                        let height = img.height;
+
+                        if (width > height) {
+                            if (width > MAX_SIZE) {
+                                height *= MAX_SIZE / width;
+                                width = MAX_SIZE;
+                            }
+                        } else {
+                            if (height > MAX_SIZE) {
+                                width *= MAX_SIZE / height;
+                                height = MAX_SIZE;
+                            }
+                        }
+
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+                        
+                        // Menukar kepada format JPEG berkualiti sederhana (0.8) supaya sangat ringan
+                        const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.8);
+                        updateDB(compressedDataUrl);
+                    };
+                    img.src = e.target.result;
+                };
                 reader.readAsDataURL(fileInput.files[0]);
             } else {
                 updateDB(editingStaffId ? staffDB.find(x => x.id === editingStaffId).image : "");
