@@ -234,7 +234,7 @@
                         <p class="text-[9px] text-indigo-200 leading-relaxed">AI analytics for making decisions.</p>
                     </div>
 
-                    <div class="flex items-center justify-between cursor-pointer group hover:bg-white/10 p-2.5 rounded-xl transition-all border border-transparent hover:border-white/20" onclick="logout(true)">
+                    <div class="flex items-center justify-between cursor-pointer group hover:bg-white/10 p-2.5 rounded-xl transition-all border border-transparent hover:border-white/20" onclick="logout()">
                         <div class="flex items-center gap-2">
                             <div id="profile-initial-sidebar" class="w-8 h-8 bg-gradient-to-tr from-blue-500 to-indigo-500 text-white rounded-lg flex items-center justify-center font-bold text-xs shadow-sm shrink-0">S</div>
                             <div class="profile-details">
@@ -268,7 +268,7 @@
                     </div>
 
                     <div class="flex items-center gap-4 self-end md:self-auto">
-                        <button onclick="document.documentElement.classList.toggle('dark'); setTimeout(()=>updateCharts(currentStaffCounts, currentStatusCounts), 50);" class="p-2 bg-white dark:bg-gray-800 rounded-full shadow-soft border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-yellow-400 hover:bg-gray-50 transition-all hover-lift" title="Toggle Dark Mode">
+                        <button onclick="document.documentElement.classList.toggle('dark'); setTimeout(()=>updateDashboardStats(), 50);" class="p-2 bg-white dark:bg-gray-800 rounded-full shadow-soft border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-yellow-400 hover:bg-gray-50 transition-all hover-lift" title="Toggle Dark Mode">
                             <svg class="w-4 h-4 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
                             <svg class="w-4 h-4 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
                         </button>
@@ -285,6 +285,49 @@
                 <!-- TAB: DASHBOARD (KPIs & Summary Charts Only) -->
                 <div id="view-dashboard" class="tab-pane active flex-col flex-1 min-h-0">
                     
+                    <!-- DASHBOARD SPECIFIC FILTERS (Independent) -->
+                    <div class="glass-panel p-3 mb-5 rounded-2xl shadow-soft flex flex-wrap items-center gap-3 shrink-0">
+                        <span class="text-[11px] font-extrabold text-gray-500 dark:text-gray-400 uppercase tracking-widest pl-2">Overview Filter:</span>
+                        <div class="flex flex-wrap items-center gap-2">
+                            <div class="w-28">
+                                <select id="dash-filter-staff" onchange="updateDashboardStats()" class="w-full text-[11px] border border-gray-200 dark:border-gray-600 rounded-lg px-2 h-[36px] bg-white dark:bg-gray-800 cursor-pointer appearance-none text-gray-700 dark:text-gray-200 font-semibold shadow-sm transition-all hover:border-indigo-300" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%239ca3af%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E'); background-position: right 0.5rem center; background-repeat: no-repeat; background-size: 1em;">
+                                    <option value="">Staff: All</option>
+                                    <option value="-">-</option>
+                                    <option value="FATIHAH">FATIHAH</option>
+                                    <option value="FAZILAH">FAZILAH</option>
+                                    <option value="SAKINAH">SAKINAH</option>
+                                    <option value="HUSNA">HUSNA</option>
+                                </select>
+                            </div>
+                            
+                            <div class="w-32">
+                                <select id="dash-filter-status" onchange="updateDashboardStats()" class="w-full text-[11px] border border-gray-200 dark:border-gray-600 rounded-lg px-2 h-[36px] bg-white dark:bg-gray-800 cursor-pointer appearance-none text-gray-700 dark:text-gray-200 font-semibold shadow-sm transition-all hover:border-indigo-300" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%239ca3af%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E'); background-position: right 0.5rem center; background-repeat: no-repeat; background-size: 1em;">
+                                    <option value="">Status: All</option>
+                                    <option value="Completed">Completed</option>
+                                    <option value="Pending For Approval">Pending</option>
+                                    <option value="incomplete">Incomplete</option>
+                                </select>
+                            </div>
+                            
+                            <div class="w-28">
+                                <select id="dash-filter-tahun" onchange="updateDashboardStats()" class="w-full text-[11px] border border-gray-200 dark:border-gray-600 rounded-lg px-2 h-[36px] bg-white dark:bg-gray-800 cursor-pointer appearance-none text-gray-700 dark:text-gray-200 font-semibold shadow-sm transition-all hover:border-indigo-300" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%239ca3af%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E'); background-position: right 0.5rem center; background-repeat: no-repeat; background-size: 1em;">
+                                    <option value="">Year: All</option>
+                                    <option value="2024">2024</option>
+                                    <option value="2025">2025</option>
+                                    <option value="2026">2026</option>
+                                    <option value="2027">2027</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="ml-auto">
+                            <button onclick="fetchDataFromGoogleSheet()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-[11px] font-bold px-4 py-0 rounded-lg flex items-center justify-center gap-1.5 transition-all shadow-glow-blue hover:-translate-y-0.5 h-[36px]">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                                Sync
+                            </button>
+                        </div>
+                    </div>
+
                     <!-- KPI CARDS -->
                     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 mb-5 shrink-0">
                         <div class="glass-panel p-5 rounded-2xl shadow-soft hover-lift relative overflow-hidden flex flex-col h-[140px] group">
@@ -842,7 +885,8 @@
            ===================================================================== */
         let filterStates = {
             'collection': { search: '', staff: '', status: '', tahun: '' },
-            'approvals': { search: '', staff: '', status: 'Pending For Approval', tahun: '' }
+            'approvals': { search: '', staff: '', status: 'Pending For Approval', tahun: '' },
+            'dashboard': { staff: '', status: '', tahun: '' }
         };
         let currentActiveTab = 'dashboard'; 
 
@@ -877,6 +921,11 @@
                 pageTitle.innerHTML = `Welcome back, <span id="profile-name" class="uppercase text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400">${currentUserName || 'STAFF'}</span>!`;
                 pageSubtitle.textContent = "Here is the summary of executive collection management today.";
                 sharedTable.classList.add('hidden');
+                
+                if (document.getElementById('dash-filter-staff')) document.getElementById('dash-filter-staff').value = filterStates['dashboard'].staff;
+                if (document.getElementById('dash-filter-status')) document.getElementById('dash-filter-status').value = filterStates['dashboard'].status;
+                if (document.getElementById('dash-filter-tahun')) document.getElementById('dash-filter-tahun').value = filterStates['dashboard'].tahun;
+                
                 updateDashboardStats();
             } 
             else if (tabId === 'collection') {
@@ -1236,8 +1285,6 @@
         }
 
         function checkAutoLogin() {
-            // Memastikan setiap kali page di-refresh atau dibuka buat pertama kali,
-            // pengguna wajib log masuk semula dan tiada data akan ditarik lebih awal.
             logout();
         }
 
@@ -1250,6 +1297,13 @@
             localStorage.removeItem('iku_name');
             localStorage.removeItem('iku_last_activity');
             
+            // Padam kesemua state / tapisan dashboard sebelum log keluar
+            if (document.getElementById('dash-filter-staff')) {
+                document.getElementById('dash-filter-staff').value = "";
+                document.getElementById('dash-filter-status').value = "";
+                document.getElementById('dash-filter-tahun').value = "";
+            }
+
             editingId = null; 
             currentUserRole = ""; 
             currentUserName = "";
@@ -1280,11 +1334,9 @@
             server.withSuccessHandler(function(data) {
                 if (data) dataset = data; 
                 
-                // Segera kemas kini dashboard (Supaya ia ambil total keseluruhan rekod)
-                updateDashboardStats();
-
-                // Kemas kini table HANYA sekiranya tab Rekod atau tab Approval sedang dibuka
-                if (currentActiveTab === 'collection' || currentActiveTab === 'approvals') {
+                if (currentActiveTab === 'dashboard') {
+                    updateDashboardStats();
+                } else if (currentActiveTab === 'collection' || currentActiveTab === 'approvals') {
                     applyFilters(true); 
                 }
                 
@@ -1303,10 +1355,8 @@
         }
         
         function applyFilters(preservePage = false) {
-            // Abaikan tapisan sekiranya tiada kaitan dengan jadual
             if (currentActiveTab !== 'collection' && currentActiveTab !== 'approvals') return;
 
-            // Simpan state semasa ke dalam memori tab yang sedang aktif
             filterStates[currentActiveTab].search = document.getElementById('search-input').value.toLowerCase().trim();
             filterStates[currentActiveTab].staff = document.getElementById('filter-staff').value;
             filterStates[currentActiveTab].tahun = document.getElementById('filter-tahun').value;
@@ -1383,7 +1433,9 @@
                 });
 
                 if(Object.keys(groupedData).length === 0) {
-                    // Dibiarkan kosong jika tiada data
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `<tr><td colspan="11" class="px-5 py-10 text-center text-gray-500 font-medium italic text-sm">No records require your action.</td></tr>`;
+                    fragment.appendChild(tr);
                 } else {
                     for (let staffName in groupedData) {
                         const staffRows = groupedData[staffName];
@@ -1415,7 +1467,7 @@
                 const paginatedData = filteredDataset.slice(startIndex, endIndex);
                 
                 if (paginatedData.length === 0) {
-                    tbody.innerHTML = ''; // Dibiarkan kosong jika tiada data
+                    tbody.innerHTML = ''; 
                 } else {
                     const currentRows = Array.from(tbody.querySelectorAll('tr[id^="row-"]'));
                     const paginatedIds = paginatedData.map(r => `row-${r.id}`);
@@ -1694,15 +1746,29 @@
         let currentStaffCounts = {}; let currentStatusCounts = {};
 
         function updateDashboardStats() {
-            // Pengiraan statistik dipisahkan daripada tapisan jadual (menggunakan dataset penuh)
-            const total = dataset.length;
-            const completed = dataset.filter(r => (r.status||"").toLowerCase().trim() === 'completed').length;
-            const pending = dataset.filter(r => (r.status||"").toLowerCase().trim().includes('pending')).length;
+            // Pengiraan statistik dipisahkan secara mutlak menggunakan kotak input filter Dashboard
+            const dashFilterStaff = document.getElementById('dash-filter-staff') ? document.getElementById('dash-filter-staff').value : filterStates['dashboard'].staff;
+            const dashFilterStatus = document.getElementById('dash-filter-status') ? document.getElementById('dash-filter-status').value : filterStates['dashboard'].status;
+            const dashFilterTahun = document.getElementById('dash-filter-tahun') ? document.getElementById('dash-filter-tahun').value : filterStates['dashboard'].tahun;
+
+            // Simpan memori filter Dashboard supaya ia tak hilang bila tukar tab
+            filterStates['dashboard'] = { staff: dashFilterStaff, status: dashFilterStatus, tahun: dashFilterTahun };
+
+            const dashDataset = dataset.filter(row => {
+                if (dashFilterStaff !== "" && getStaffDisplay(row.staff) !== dashFilterStaff) return false;
+                if (dashFilterStatus !== "" && (row.status || "").toLowerCase().trim() !== dashFilterStatus.toLowerCase().trim()) return false;
+                if (dashFilterTahun !== "" && getYearFromDate(row.date) !== dashFilterTahun) return false;
+                return true;
+            });
+
+            const total = dashDataset.length;
+            const completed = dashDataset.filter(r => (r.status||"").toLowerCase().trim() === 'completed').length;
+            const pending = dashDataset.filter(r => (r.status||"").toLowerCase().trim().includes('pending')).length;
             
             const staffCounts = {};
             const statusCounts = { 'Completed': 0, 'Pending Approval': 0, 'Incomplete': 0 };
 
-            dataset.forEach(r => { 
+            dashDataset.forEach(r => { 
                 const displayStaff = getStaffDisplay(r.staff);
                 if(displayStaff !== '-') staffCounts[displayStaff] = (staffCounts[displayStaff] || 0) + 1; 
                 
