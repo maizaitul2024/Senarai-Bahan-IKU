@@ -282,67 +282,6 @@
                     </div>
                 </header>
 
-                <!-- GLOBAL FILTER BAR -->
-                <div id="global-filter-bar" class="glass-panel p-3 mb-5 rounded-2xl shadow-soft hidden flex-wrap items-center gap-2 transition-all duration-300">
-                    <div class="flex-1 min-w-[200px] relative">
-                        <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                        <input type="text" id="search-input" onkeyup="debouncedSearch()" placeholder="Search Title or Accession..." class="w-full text-xs border border-gray-200 dark:border-gray-600 rounded-lg pl-8 pr-3 py-1.5 h-[36px] bg-gray-50/50 dark:bg-gray-900/50 focus:bg-white dark:focus:bg-gray-800 transition-all font-medium">
-                    </div>
-                    
-                    <div class="flex flex-wrap items-center gap-2">
-                        <div class="w-28">
-                            <select id="filter-staff" onchange="applyFilters()" class="w-full text-[11px] border border-gray-200 dark:border-gray-600 rounded-lg px-2 h-[36px] bg-white dark:bg-gray-800 cursor-pointer appearance-none text-gray-700 dark:text-gray-200 font-semibold shadow-sm transition-all hover:border-indigo-300" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%239ca3af%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E'); background-position: right 0.5rem center; background-repeat: no-repeat; background-size: 1em;">
-                                <option value="">Staff: All</option>
-                                <option value="-">-</option>
-                                <option value="FATIHAH">FATIHAH</option>
-                                <option value="FAZILAH">FAZILAH</option>
-                                <option value="SAKINAH">SAKINAH</option>
-                                <option value="HUSNA">HUSNA</option>
-                            </select>
-                        </div>
-                        
-                        <div class="w-32" id="status-filter-wrap">
-                            <select id="filter-status" onchange="applyFilters()" class="w-full text-[11px] border border-gray-200 dark:border-gray-600 rounded-lg px-2 h-[36px] bg-white dark:bg-gray-800 cursor-pointer appearance-none text-gray-700 dark:text-gray-200 font-semibold shadow-sm transition-all hover:border-indigo-300" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%239ca3af%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E'); background-position: right 0.5rem center; background-repeat: no-repeat; background-size: 1em;">
-                                <option value="">Status: All</option>
-                                <option value="Completed">Completed</option>
-                                <option value="Pending For Approval">Pending</option>
-                                <option value="incomplete">Incomplete</option>
-                            </select>
-                        </div>
-                        
-                        <div class="w-28">
-                            <select id="filter-tahun" onchange="applyFilters()" class="w-full text-[11px] border border-gray-200 dark:border-gray-600 rounded-lg px-2 h-[36px] bg-white dark:bg-gray-800 cursor-pointer appearance-none text-gray-700 dark:text-gray-200 font-semibold shadow-sm transition-all hover:border-indigo-300" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%239ca3af%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E'); background-position: right 0.5rem center; background-repeat: no-repeat; background-size: 1em;">
-                                <option value="">Year: All</option>
-                                <option value="2024">2024</option>
-                                <option value="2025">2025</option>
-                                <option value="2026">2026</option>
-                                <option value="2027">2027</option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <div class="flex items-center gap-2 ml-auto w-full lg:w-auto mt-2 lg:mt-0">
-                        <button onclick="fetchDataFromGoogleSheet()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-[11px] font-bold px-4 py-0 rounded-lg flex items-center justify-center gap-1.5 transition-all shadow-glow-blue hover:-translate-y-0.5 h-[36px] flex-1 lg:flex-none">
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-                            Auto Sync
-                        </button>
-                        
-                        <div class="flex items-center bg-emerald-50 dark:bg-emerald-900/20 rounded-lg border border-emerald-100 dark:border-emerald-800/50 p-1 shadow-sm h-[36px]">
-                            <select id="export-tahun" class="w-20 text-[10px] bg-transparent text-emerald-700 dark:text-emerald-400 font-bold border-none px-1 focus:outline-none cursor-pointer appearance-none text-center h-full">
-                                <option value="">All Data</option>
-                                <option value="2024">2024</option>
-                                <option value="2025">2025</option>
-                                <option value="2026">2026</option>
-                                <option value="2027">2027</option>
-                            </select>
-                            <button onclick="exportToExcel()" class="bg-emerald-500 hover:bg-emerald-600 text-white text-[11px] font-bold px-3 rounded-md flex items-center gap-1 transition-all shadow-glow-emerald hover:-translate-y-0.5 h-full">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-                                Export
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
                 <!-- TAB: DASHBOARD (KPIs & Summary Charts Only) -->
                 <div id="view-dashboard" class="tab-pane active flex-col flex-1 min-h-0">
                     
@@ -542,6 +481,67 @@
 
     <!-- SHARED TABLE WRAPPER -->
     <div id="shared-table-section" class="glass-panel rounded-2xl shadow-soft flex flex-col flex-1 overflow-hidden min-h-[400px] hidden">
+        <!-- Filters Area -->
+        <div class="p-3 flex flex-wrap items-center gap-2 border-b border-gray-200 dark:border-gray-700 bg-white/50 dark:bg-gray-800/50">
+            <div class="flex-1 min-w-[200px] relative">
+                <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                <input type="text" id="search-input" onkeyup="debouncedSearch()" placeholder="Search Title or Accession..." class="w-full text-xs border border-gray-200 dark:border-gray-600 rounded-lg pl-8 pr-3 py-1.5 h-[36px] bg-gray-50/50 dark:bg-gray-900/50 focus:bg-white dark:focus:bg-gray-800 transition-all font-medium">
+            </div>
+            
+            <div class="flex flex-wrap items-center gap-2">
+                <div class="w-28">
+                    <select id="filter-staff" onchange="applyFilters()" class="w-full text-[11px] border border-gray-200 dark:border-gray-600 rounded-lg px-2 h-[36px] bg-white dark:bg-gray-800 cursor-pointer appearance-none text-gray-700 dark:text-gray-200 font-semibold shadow-sm transition-all hover:border-indigo-300" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%239ca3af%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E'); background-position: right 0.5rem center; background-repeat: no-repeat; background-size: 1em;">
+                        <option value="">Staff: All</option>
+                        <option value="-">-</option>
+                        <option value="FATIHAH">FATIHAH</option>
+                        <option value="FAZILAH">FAZILAH</option>
+                        <option value="SAKINAH">SAKINAH</option>
+                        <option value="HUSNA">HUSNA</option>
+                    </select>
+                </div>
+                
+                <div class="w-32" id="status-filter-wrap">
+                    <select id="filter-status" onchange="applyFilters()" class="w-full text-[11px] border border-gray-200 dark:border-gray-600 rounded-lg px-2 h-[36px] bg-white dark:bg-gray-800 cursor-pointer appearance-none text-gray-700 dark:text-gray-200 font-semibold shadow-sm transition-all hover:border-indigo-300" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%239ca3af%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E'); background-position: right 0.5rem center; background-repeat: no-repeat; background-size: 1em;">
+                        <option value="">Status: All</option>
+                        <option value="Completed">Completed</option>
+                        <option value="Pending For Approval">Pending</option>
+                        <option value="incomplete">Incomplete</option>
+                    </select>
+                </div>
+                
+                <div class="w-28">
+                    <select id="filter-tahun" onchange="applyFilters()" class="w-full text-[11px] border border-gray-200 dark:border-gray-600 rounded-lg px-2 h-[36px] bg-white dark:bg-gray-800 cursor-pointer appearance-none text-gray-700 dark:text-gray-200 font-semibold shadow-sm transition-all hover:border-indigo-300" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%239ca3af%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E'); background-position: right 0.5rem center; background-repeat: no-repeat; background-size: 1em;">
+                        <option value="">Year: All</option>
+                        <option value="2024">2024</option>
+                        <option value="2025">2025</option>
+                        <option value="2026">2026</option>
+                        <option value="2027">2027</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-2 ml-auto w-full lg:w-auto mt-2 lg:mt-0">
+                <button onclick="fetchDataFromGoogleSheet()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-[11px] font-bold px-4 py-0 rounded-lg flex items-center justify-center gap-1.5 transition-all shadow-glow-blue hover:-translate-y-0.5 h-[36px] flex-1 lg:flex-none">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                    Auto Sync
+                </button>
+                
+                <div class="flex items-center bg-emerald-50 dark:bg-emerald-900/20 rounded-lg border border-emerald-100 dark:border-emerald-800/50 p-1 shadow-sm h-[36px]">
+                    <select id="export-tahun" class="w-20 text-[10px] bg-transparent text-emerald-700 dark:text-emerald-400 font-bold border-none px-1 focus:outline-none cursor-pointer appearance-none text-center h-full">
+                        <option value="">All Data</option>
+                        <option value="2024">2024</option>
+                        <option value="2025">2025</option>
+                        <option value="2026">2026</option>
+                        <option value="2027">2027</option>
+                    </select>
+                    <button onclick="exportToExcel()" class="bg-emerald-500 hover:bg-emerald-600 text-white text-[11px] font-bold px-3 rounded-md flex items-center gap-1 transition-all shadow-glow-emerald hover:-translate-y-0.5 h-full">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                        Export
+                    </button>
+                </div>
+            </div>
+        </div>
+
         <!-- Table Inner Container -->
         <div id="table-container" class="flex-1 overflow-y-auto overflow-x-auto custom-scrollbar bg-white/50 dark:bg-gray-900/50 px-1 pb-1 pt-1">
             <table class="w-full text-left whitespace-nowrap" id="data-table">
@@ -664,18 +664,7 @@
             { id: 4, name: "HUSNA", position: "Library Executive", grade: "S41", email: "husna@library.iku.gov.my", phone: "019-8765432", image: "" }
         ];
 
-        let staffDB = [];
-        try {
-            const storedStaff = localStorage.getItem('iku_staff_db');
-            if (storedStaff) {
-                staffDB = JSON.parse(storedStaff);
-            } else {
-                staffDB = JSON.parse(JSON.stringify(defaultStaffDB));
-            }
-        } catch(e) {
-            staffDB = JSON.parse(JSON.stringify(defaultStaffDB));
-        }
-
+        let staffDB = JSON.parse(JSON.stringify(defaultStaffDB)); 
         let editingStaffId = null;
 
         function renderStaffDirectory() {
@@ -762,9 +751,10 @@
         function deleteStaff(id) {
             if(confirm("Delete this staff?")) {
                 staffDB = staffDB.filter(x => x.id !== id);
-                try { localStorage.setItem('iku_staff_db', JSON.stringify(staffDB)); } catch(e){}
                 renderStaffDirectory();
-                showToast("Staff deleted.");
+                
+                showLoading("Memadam rekod di pangkalan data...");
+                server.saveStaff(staffDB);
             }
         }
 
@@ -787,26 +777,20 @@
                     staffDB.push({ id: Date.now(), name: name, position: pos, grade: grd, email: email, phone: phone, image: imgData || "" });
                 }
                 
-                try {
-                    // Simpanan memori akan berjaya kerana gambar sudah di-compress
-                    localStorage.setItem('iku_staff_db', JSON.stringify(staffDB));
-                } catch(e) {
-                    alert("Ralat Storan: " + e.message);
-                }
-
                 closeStaffModal();
                 renderStaffDirectory();
-                showToast("Staff saved!");
+                
+                showLoading("Menyimpan ke pangkalan data...");
+                server.saveStaff(staffDB);
             };
 
-            // FUNGSI AUTO-COMPRESS GAMBAR UNTUK MENGELAKKAN STORAGE PENUH
             if(fileInput.files && fileInput.files[0]) {
                 const reader = new FileReader();
                 reader.onload = (e) => {
                     const img = new Image();
                     img.onload = () => {
                         const canvas = document.createElement('canvas');
-                        const MAX_SIZE = 400; // Saiz maksimum resolusi dikecilkan ke 400px
+                        const MAX_SIZE = 400; 
                         let width = img.width;
                         let height = img.height;
 
@@ -827,7 +811,6 @@
                         const ctx = canvas.getContext('2d');
                         ctx.drawImage(img, 0, 0, width, height);
                         
-                        // Menukar kepada format JPEG berkualiti sederhana (0.8) supaya sangat ringan
                         const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.8);
                         updateDB(compressedDataUrl);
                     };
@@ -857,7 +840,11 @@
         /* =====================================================================
            FUNGSI PERTUKARAN TAB (TAB SWITCHING LOGIC)
            ===================================================================== */
-        window.forcedStatusFilter = null; 
+        let filterStates = {
+            'collection': { search: '', staff: '', status: '', tahun: '' },
+            'approvals': { search: '', staff: '', status: 'Pending For Approval', tahun: '' }
+        };
+        let currentActiveTab = 'dashboard'; 
 
         function switchTab(tabId, clickedElement) {
             document.querySelectorAll('.tab-pane').forEach(pane => {
@@ -878,44 +865,48 @@
                 clickedElement.className = 'nav-link active-tab flex items-center gap-3 px-3 py-2.5 group';
             }
 
+            currentActiveTab = tabId;
+
             const pageTitle = document.getElementById('page-title');
             const pageSubtitle = document.getElementById('page-subtitle');
             
             const sharedTable = document.getElementById('shared-table-section');
-            const globalFilter = document.getElementById('global-filter-bar');
             const statusFilterWrap = document.getElementById('status-filter-wrap');
-
-            // Kawal penglihatan Global Filter Bar
-            if (tabId === 'staff' || tabId === 'reports') {
-                globalFilter.classList.add('hidden');
-                globalFilter.classList.remove('flex');
-            } else {
-                globalFilter.classList.remove('hidden');
-                globalFilter.classList.add('flex');
-            }
 
             if (tabId === 'dashboard') {
                 pageTitle.innerHTML = `Welcome back, <span id="profile-name" class="uppercase text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400">${currentUserName || 'STAFF'}</span>!`;
                 pageSubtitle.textContent = "Here is the summary of executive collection management today.";
                 sharedTable.classList.add('hidden');
-                statusFilterWrap.classList.remove('hidden');
-                window.forcedStatusFilter = null; 
+                updateDashboardStats();
             } 
             else if (tabId === 'collection') {
                 pageTitle.innerHTML = "Records";
                 pageSubtitle.textContent = "Full list of all executive collections and status.";
+                
                 document.getElementById('view-collection').appendChild(sharedTable);
                 sharedTable.classList.remove('hidden');
                 statusFilterWrap.classList.remove('hidden');
-                window.forcedStatusFilter = null; 
+                
+                document.getElementById('search-input').value = filterStates['collection'].search;
+                document.getElementById('filter-staff').value = filterStates['collection'].staff;
+                document.getElementById('filter-status').value = filterStates['collection'].status;
+                document.getElementById('filter-tahun').value = filterStates['collection'].tahun;
+                
+                applyFilters();
             } 
             else if (tabId === 'approvals') {
                 pageTitle.innerHTML = "Approvals Queue";
                 pageSubtitle.textContent = "Action required for pending files.";
+                
                 document.getElementById('view-approvals').appendChild(sharedTable);
                 sharedTable.classList.remove('hidden');
                 statusFilterWrap.classList.add('hidden'); 
-                window.forcedStatusFilter = 'Pending For Approval'; 
+                
+                document.getElementById('search-input').value = filterStates['approvals'].search;
+                document.getElementById('filter-staff').value = filterStates['approvals'].staff;
+                document.getElementById('filter-tahun').value = filterStates['approvals'].tahun;
+                
+                applyFilters();
             } 
             else if (tabId === 'staff') {
                 pageTitle.innerHTML = "Staff Management";
@@ -929,8 +920,6 @@
                 sharedTable.classList.add('hidden');
                 initAnalyticsCatalog();
             }
-
-            applyFilters();
         }
 
         /* =====================================================================
@@ -1120,6 +1109,43 @@
                     .then(data => { if(this.cb) this.cb(data); })
                     .catch(error => { console.error('Fetch Error:', error); hideLoading(); showToast("Error fetching data."); });
             },
+
+            getStaffData: function() {
+                if (GAS_WEB_APP_URL === "LETAK_URL_GOOGLE_APPS_SCRIPT_ANDA_DI_SINI") return;
+                
+                fetch(GAS_WEB_APP_URL + "?action=getStaffData")
+                    .then(response => response.json())
+                    .then(data => { 
+                        if(data && Array.isArray(data)) {
+                            staffDB = data.length > 0 ? data : JSON.parse(JSON.stringify(defaultStaffDB));
+                            if (currentActiveTab === 'staff') {
+                                renderStaffDirectory();
+                            }
+                        }
+                    })
+                    .catch(error => console.error('Fetch Staff Error:', error));
+            },
+
+            saveStaff: function(staffList) {
+                if (GAS_WEB_APP_URL === "LETAK_URL_GOOGLE_APPS_SCRIPT_ANDA_DI_SINI") {
+                    setTimeout(() => { hideLoading(); showToast("Staff saved!"); }, 500);
+                    return;
+                }
+                
+                fetch(GAS_WEB_APP_URL, {
+                    method: 'POST', 
+                    mode: 'no-cors',
+                    body: JSON.stringify({ action: 'saveStaff', staffDB: staffList }), 
+                    headers: { 'Content-Type': 'text/plain' }
+                })
+                .then(() => { 
+                    setTimeout(() => { hideLoading(); showToast("Maklumat Staff berjaya di-sync!"); }, 800); 
+                })
+                .catch(error => { 
+                    hideLoading(); 
+                    showToast("Gagal menyimpan data ke server."); 
+                });
+            },
             
             updateRow: function(record) { 
                 if (GAS_WEB_APP_URL === "LETAK_URL_GOOGLE_APPS_SCRIPT_ANDA_DI_SINI") {
@@ -1210,9 +1236,41 @@
         }
 
         function checkAutoLogin() {
-            // Memastikan setiap kali page di-refresh atau dibuka buat pertama kali,
-            // pengguna wajib log masuk semula dan tiada data akan di-load lebih awal.
-            logout();
+            const savedRole = localStorage.getItem('iku_role');
+            const savedName = localStorage.getItem('iku_name');
+            const lastActivity = localStorage.getItem('iku_last_activity');
+
+            if (savedRole && savedName && lastActivity) {
+                const idleTime = Date.now() - parseInt(lastActivity, 10);
+                
+                if (idleTime < TIMEOUT_DURATION) {
+                    currentUserRole = savedRole;
+                    currentUserName = savedName;
+                    currentPage = 1;
+
+                    const nameSpan = document.getElementById('profile-name');
+                    if(nameSpan) nameSpan.textContent = currentUserName;
+
+                    document.getElementById('profile-initial').textContent = currentUserName.charAt(0);
+                    const sidebarInitial = document.getElementById('profile-initial-sidebar');
+                    if (sidebarInitial) sidebarInitial.textContent = currentUserName.charAt(0);
+
+                    document.getElementById('login-screen').classList.add('hidden');
+                    document.getElementById('dashboard-screen').classList.remove('hidden');
+                    document.getElementById('dashboard-screen').classList.add('flex');
+                    
+                    document.getElementById('sidebar').classList.add('sidebar-desktop-closed');
+
+                    switchTab('dashboard', document.querySelector('.nav-link'));
+
+                    startSessionManagement();
+                    fetchDataFromGoogleSheet(true);
+                } else {
+                    logout(); 
+                }
+            } else {
+                logout(); 
+            }
         }
 
         function logout() {
@@ -1253,9 +1311,19 @@
             if (!isSilent) showLoading("Syncing...");
             server.withSuccessHandler(function(data) {
                 if (data) dataset = data; 
-                applyFilters(true); 
+                
+                // Segera kemas kini dashboard (Supaya ia ambil total keseluruhan rekod)
+                updateDashboardStats();
+
+                // Kemas kini table HANYA sekiranya tab Rekod atau tab Approval sedang dibuka
+                if (currentActiveTab === 'collection' || currentActiveTab === 'approvals') {
+                    applyFilters(true); 
+                }
+                
                 if (!isSilent) hideLoading();
             }).getInitialData();
+
+            server.getStaffData();
         }
 
         let searchDebounceTimer;
@@ -1267,34 +1335,41 @@
         }
         
         function applyFilters(preservePage = false) {
-            const searchTerm = document.getElementById('search-input').value.toLowerCase().trim();
-            const filterStaff = document.getElementById('filter-staff').value;
-            const filterStatus = document.getElementById('filter-status').value;
-            const filterTahun = document.getElementById('filter-tahun').value;
+            // Abaikan tapisan sekiranya tiada kaitan dengan jadual
+            if (currentActiveTab !== 'collection' && currentActiveTab !== 'approvals') return;
+
+            // Simpan state semasa ke dalam memori tab yang sedang aktif
+            filterStates[currentActiveTab].search = document.getElementById('search-input').value.toLowerCase().trim();
+            filterStates[currentActiveTab].staff = document.getElementById('filter-staff').value;
+            filterStates[currentActiveTab].tahun = document.getElementById('filter-tahun').value;
+            
+            if (currentActiveTab === 'approvals') {
+                filterStates[currentActiveTab].status = 'Pending For Approval';
+            } else {
+                filterStates[currentActiveTab].status = document.getElementById('filter-status').value;
+            }
+
+            const state = filterStates[currentActiveTab];
             
             filteredDataset = dataset.filter(row => {
                 let match = true;
                 
-                if (searchTerm !== "") {
-                    const titleMatch = (row.title || "").toLowerCase().includes(searchTerm);
-                    const accMatch = (row.accession || "").toLowerCase().includes(searchTerm);
+                if (state.search !== "") {
+                    const titleMatch = (row.title || "").toLowerCase().includes(state.search);
+                    const accMatch = (row.accession || "").toLowerCase().includes(state.search);
                     if (!titleMatch && !accMatch) match = false;
                 }
                 
-                if (filterStaff !== "") {
-                    const rowDisplayStaff = getStaffDisplay(row.staff);
-                    if (rowDisplayStaff !== filterStaff) match = false;
+                if (state.staff !== "") {
+                    if (getStaffDisplay(row.staff) !== state.staff) match = false;
                 }
                 
-                if (window.forcedStatusFilter) {
-                    if ((row.status || "").toLowerCase().trim() !== window.forcedStatusFilter.toLowerCase().trim()) match = false;
-                } else if (filterStatus !== "") {
-                    if ((row.status || "").toLowerCase().trim() !== filterStatus.toLowerCase().trim()) match = false;
+                if (state.status !== "") {
+                    if ((row.status || "").toLowerCase().trim() !== state.status.toLowerCase().trim()) match = false;
                 }
                 
-                if (filterTahun !== "") {
-                    const rowTahun = getYearFromDate(row.date);
-                    if (rowTahun !== filterTahun) match = false;
+                if (state.tahun !== "") {
+                    if (getYearFromDate(row.date) !== state.tahun) match = false;
                 }
                 
                 return match;
@@ -1326,7 +1401,7 @@
             
             const fragment = document.createDocumentFragment();
             
-            if (currentUserRole === 'rosli' && window.forcedStatusFilter === 'Pending For Approval') {
+            if (currentUserRole === 'rosli' && currentActiveTab === 'approvals') {
                 paginationDiv.classList.add('hidden'); 
                 const targetStatus = 'pending for approval';
                 
@@ -1340,7 +1415,7 @@
                 });
 
                 if(Object.keys(groupedData).length === 0) {
-                    // Teks ralat telah dibuang
+                    // Dibiarkan kosong jika tiada data
                 } else {
                     for (let staffName in groupedData) {
                         const staffRows = groupedData[staffName];
@@ -1372,7 +1447,7 @@
                 const paginatedData = filteredDataset.slice(startIndex, endIndex);
                 
                 if (paginatedData.length === 0) {
-                    tbody.innerHTML = ''; // Teks ralat telah dibuang
+                    tbody.innerHTML = ''; // Dibiarkan kosong jika tiada data
                 } else {
                     const currentRows = Array.from(tbody.querySelectorAll('tr[id^="row-"]'));
                     const paginatedIds = paginatedData.map(r => `row-${r.id}`);
@@ -1419,8 +1494,6 @@
                 document.getElementById('page-info').textContent = `Showing ${filteredDataset.length > 0 ? startIndex + 1 : 0} to ${infoEnd} of ${filteredDataset.length} records`;
             }
 
-            updateDashboardStats();
-
             if (tableContainer) tableContainer.scrollTop = currentTableScroll;
         }
 
@@ -1454,7 +1527,6 @@
 
         function generateRowHTML(row, isEditing, isReadonlyView) {
             const displayStaff = getStaffDisplay(row.staff);
-            const isApprovalsTab = window.forcedStatusFilter === 'Pending For Approval';
             const currentStatusLower = (row.status || "").toLowerCase().trim();
             const isCompleted = currentStatusLower === 'completed';
 
@@ -1514,13 +1586,13 @@
 
             let actionHtml = '';
             if (currentUserRole === 'rosli') {
-                if (isApprovalsTab) {
+                if (currentActiveTab === 'approvals') {
                     actionHtml = `<button type="button" onclick="approveSingleRow(${row.id})" class="text-emerald-500 hover:text-white bg-emerald-50 hover:bg-emerald-500 p-1.5 rounded-lg transition-all shadow-sm hover:shadow-glow-emerald" title="Approve Record"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></button>`;
                 } else {
                     actionHtml = `<span class="text-gray-300 italic text-[10px] font-medium">—</span>`;
                 }
             } else if (currentUserRole === 'staff') {
-                if (isApprovalsTab || isCompleted || isReadonlyView) {
+                if (currentActiveTab === 'approvals' || isCompleted || isReadonlyView) {
                     actionHtml = `<span class="text-gray-300 italic text-[10px] font-medium">—</span>`;
                 } else {
                     actionHtml = `<button type="button" ondblclick="editRow(${row.id})" class="text-indigo-500 hover:text-white bg-indigo-50 hover:bg-indigo-500 p-1.5 rounded-lg transition-all shadow-sm hover:shadow-glow-blue" title="Double Click to Edit"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg></button>`;
@@ -1534,7 +1606,7 @@
             }
             
             let displayCallNo050 = `<span class="block text-center font-medium whitespace-normal break-words w-[130px] max-w-[130px] leading-relaxed text-xs">${row.callNo050}</span>`;
-            if (currentUserRole === 'rosli' && isApprovalsTab && !isEditing) {
+            if (currentUserRole === 'rosli' && currentActiveTab === 'approvals' && !isEditing) {
                 displayCallNo050 = `<input type="text" id="rosli-c050-${row.id}" value="${row.callNo050}" class="w-full text-xs px-2 py-1.5 border border-blue-300 rounded focus:border-indigo-500 text-center transition-all bg-white text-gray-900 shadow-sm">`;
             }
 
@@ -1654,14 +1726,15 @@
         let currentStaffCounts = {}; let currentStatusCounts = {};
 
         function updateDashboardStats() {
-            const total = filteredDataset.length;
-            const completed = filteredDataset.filter(r => (r.status||"").toLowerCase().trim() === 'completed').length;
-            const pending = filteredDataset.filter(r => (r.status||"").toLowerCase().trim().includes('pending')).length;
+            // Pengiraan statistik dipisahkan daripada tapisan jadual (menggunakan dataset penuh)
+            const total = dataset.length;
+            const completed = dataset.filter(r => (r.status||"").toLowerCase().trim() === 'completed').length;
+            const pending = dataset.filter(r => (r.status||"").toLowerCase().trim().includes('pending')).length;
             
             const staffCounts = {};
             const statusCounts = { 'Completed': 0, 'Pending Approval': 0, 'Incomplete': 0 };
 
-            filteredDataset.forEach(r => { 
+            dataset.forEach(r => { 
                 const displayStaff = getStaffDisplay(r.staff);
                 if(displayStaff !== '-') staffCounts[displayStaff] = (staffCounts[displayStaff] || 0) + 1; 
                 
