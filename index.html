@@ -234,7 +234,7 @@
                         <p class="text-[9px] text-indigo-200 leading-relaxed">AI analytics for making decisions.</p>
                     </div>
 
-                    <div class="flex items-center justify-between cursor-pointer group hover:bg-white/10 p-2.5 rounded-xl transition-all border border-transparent hover:border-white/20" onclick="logout()">
+                    <div class="flex items-center justify-between cursor-pointer group hover:bg-white/10 p-2.5 rounded-xl transition-all border border-transparent hover:border-white/20" onclick="logout(true)">
                         <div class="flex items-center gap-2">
                             <div id="profile-initial-sidebar" class="w-8 h-8 bg-gradient-to-tr from-blue-500 to-indigo-500 text-white rounded-lg flex items-center justify-center font-bold text-xs shadow-sm shrink-0">S</div>
                             <div class="profile-details">
@@ -468,14 +468,199 @@
                     </div>
                 </div>
 
-                <!-- TAB: REKOD -->
+                <!-- TAB: REKOD (Independent Structure) -->
                 <div id="view-collection" class="tab-pane flex-col flex-1 min-h-0 relative">
-                    <!-- Dynamic shared container will be injected here -->
+                    <div class="glass-panel rounded-2xl shadow-soft flex flex-col flex-1 overflow-hidden min-h-[400px]">
+                        <!-- Filters Area -->
+                        <div class="p-3 flex flex-wrap items-center gap-2 border-b border-gray-200 dark:border-gray-700 bg-white/50 dark:bg-gray-800/50">
+                            <div class="flex-1 min-w-[200px] relative">
+                                <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                                <input type="text" id="search-collection" onkeyup="debouncedSearch('collection')" placeholder="Search Title or Accession..." class="w-full text-xs border border-gray-200 dark:border-gray-600 rounded-lg pl-8 pr-3 py-1.5 h-[36px] bg-gray-50/50 dark:bg-gray-900/50 focus:bg-white dark:focus:bg-gray-800 transition-all font-medium">
+                            </div>
+                            
+                            <div class="flex flex-wrap items-center gap-2">
+                                <div class="w-28">
+                                    <select id="staff-collection" onchange="applyFilters('collection')" class="w-full text-[11px] border border-gray-200 dark:border-gray-600 rounded-lg px-2 h-[36px] bg-white dark:bg-gray-800 cursor-pointer appearance-none text-gray-700 dark:text-gray-200 font-semibold shadow-sm transition-all hover:border-indigo-300" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%239ca3af%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E'); background-position: right 0.5rem center; background-repeat: no-repeat; background-size: 1em;">
+                                        <option value="">Staff: All</option>
+                                        <option value="-">-</option>
+                                        <option value="FATIHAH">FATIHAH</option>
+                                        <option value="FAZILAH">FAZILAH</option>
+                                        <option value="SAKINAH">SAKINAH</option>
+                                        <option value="HUSNA">HUSNA</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="w-32" id="status-wrap-collection">
+                                    <select id="status-collection" onchange="applyFilters('collection')" class="w-full text-[11px] border border-gray-200 dark:border-gray-600 rounded-lg px-2 h-[36px] bg-white dark:bg-gray-800 cursor-pointer appearance-none text-gray-700 dark:text-gray-200 font-semibold shadow-sm transition-all hover:border-indigo-300" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%239ca3af%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E'); background-position: right 0.5rem center; background-repeat: no-repeat; background-size: 1em;">
+                                        <option value="">Status: All</option>
+                                        <option value="Completed">Completed</option>
+                                        <option value="Pending For Approval">Pending</option>
+                                        <option value="incomplete">Incomplete</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="w-28">
+                                    <select id="tahun-collection" onchange="applyFilters('collection')" class="w-full text-[11px] border border-gray-200 dark:border-gray-600 rounded-lg px-2 h-[36px] bg-white dark:bg-gray-800 cursor-pointer appearance-none text-gray-700 dark:text-gray-200 font-semibold shadow-sm transition-all hover:border-indigo-300" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%239ca3af%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E'); background-position: right 0.5rem center; background-repeat: no-repeat; background-size: 1em;">
+                                        <option value="">Year: All</option>
+                                        <option value="2024">2024</option>
+                                        <option value="2025">2025</option>
+                                        <option value="2026">2026</option>
+                                        <option value="2027">2027</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center gap-2 ml-auto w-full lg:w-auto mt-2 lg:mt-0">
+                                <button onclick="fetchDataFromGoogleSheet()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-[11px] font-bold px-4 py-0 rounded-lg flex items-center justify-center gap-1.5 transition-all shadow-glow-blue hover:-translate-y-0.5 h-[36px] flex-1 lg:flex-none">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                                    Sync
+                                </button>
+                                
+                                <div class="flex items-center bg-emerald-50 dark:bg-emerald-900/20 rounded-lg border border-emerald-100 dark:border-emerald-800/50 p-1 shadow-sm h-[36px]">
+                                    <select id="export-tahun-collection" class="w-20 text-[10px] bg-transparent text-emerald-700 dark:text-emerald-400 font-bold border-none px-1 focus:outline-none cursor-pointer appearance-none text-center h-full">
+                                        <option value="">All Data</option>
+                                        <option value="2024">2024</option>
+                                        <option value="2025">2025</option>
+                                        <option value="2026">2026</option>
+                                        <option value="2027">2027</option>
+                                    </select>
+                                    <button onclick="exportToExcel('collection')" class="bg-emerald-500 hover:bg-emerald-600 text-white text-[11px] font-bold px-3 rounded-md flex items-center gap-1 transition-all shadow-glow-emerald hover:-translate-y-0.5 h-full">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                                        Export
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Table Inner Container -->
+                        <div class="flex-1 overflow-y-auto overflow-x-auto custom-scrollbar bg-white/50 dark:bg-gray-900/50 px-1 pb-1 pt-1">
+                            <table class="w-full text-left whitespace-nowrap" id="table-collection">
+                                <thead class="bg-[#1e3a8a] text-white">
+                                    <tr>
+                                        <th class="px-3 py-3 text-center text-[10px]">NO</th>
+                                        <th class="px-3 py-3 text-center text-[10px]">CONTROL NUMBER</th>
+                                        <th class="px-3 py-3 text-center w-[130px] max-w-[130px] whitespace-normal leading-tight text-[10px]">CALL NO<br>(082)</th>
+                                        <th class="px-3 py-3 text-center w-[130px] max-w-[130px] whitespace-normal leading-tight text-[10px]">CALL NO<br>(050/060)</th>
+                                        <th class="px-3 py-3 text-left text-[10px]">ACCESSION</th>
+                                        <th class="px-3 py-3 text-left min-w-[250px] text-[10px]">TITLE</th>
+                                        <th class="px-3 py-3 text-left text-[10px]">STAFF</th>
+                                        <th class="px-3 py-3 text-center text-[10px]">DATE</th>
+                                        <th class="px-3 py-3 text-left text-[10px]">STATUS</th>
+                                        <th class="px-3 py-3 text-left min-w-[150px] text-[10px]">AUDIT TRAIL</th>
+                                        <th class="px-3 py-3 text-center text-[10px]">ACTION</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="table-body-collection" class="space-y-1">
+                                    <!-- Data Injected via JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <!-- Pagination -->
+                        <div id="pagination-collection" class="px-4 py-3 border-t border-gray-200 dark:border-gray-700 flex justify-between items-center bg-white/80 dark:bg-gray-800/80 backdrop-blur-md hidden">
+                            <span class="text-[10px] text-gray-500 dark:text-gray-400 font-semibold" id="page-info-collection">Showing 0-0 of 0 records</span>
+                            <div class="flex gap-1.5">
+                                <button onclick="prevPage('collection')" class="px-3 py-1.5 text-[10px] bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition-all shadow-sm font-bold hover-lift">Previous</button>
+                                <button onclick="nextPage('collection')" class="px-3 py-1.5 text-[10px] bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition-all shadow-sm font-bold hover-lift">Next</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- TAB: APPROVALS -->
+                <!-- TAB: APPROVALS (Independent Structure) -->
                 <div id="view-approvals" class="tab-pane flex-col flex-1 min-h-0 relative">
-                    <!-- Dynamic shared container will be injected here -->
+                    <div class="glass-panel rounded-2xl shadow-soft flex flex-col flex-1 overflow-hidden min-h-[400px]">
+                        <!-- Filters Area -->
+                        <div class="p-3 flex flex-wrap items-center gap-2 border-b border-gray-200 dark:border-gray-700 bg-white/50 dark:bg-gray-800/50">
+                            <div class="flex-1 min-w-[200px] relative">
+                                <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                                <input type="text" id="search-approvals" onkeyup="debouncedSearch('approvals')" placeholder="Search Title or Accession..." class="w-full text-xs border border-gray-200 dark:border-gray-600 rounded-lg pl-8 pr-3 py-1.5 h-[36px] bg-gray-50/50 dark:bg-gray-900/50 focus:bg-white dark:focus:bg-gray-800 transition-all font-medium">
+                            </div>
+                            
+                            <div class="flex flex-wrap items-center gap-2">
+                                <div class="w-28">
+                                    <select id="staff-approvals" onchange="applyFilters('approvals')" class="w-full text-[11px] border border-gray-200 dark:border-gray-600 rounded-lg px-2 h-[36px] bg-white dark:bg-gray-800 cursor-pointer appearance-none text-gray-700 dark:text-gray-200 font-semibold shadow-sm transition-all hover:border-indigo-300" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%239ca3af%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E'); background-position: right 0.5rem center; background-repeat: no-repeat; background-size: 1em;">
+                                        <option value="">Staff: All</option>
+                                        <option value="-">-</option>
+                                        <option value="FATIHAH">FATIHAH</option>
+                                        <option value="FAZILAH">FAZILAH</option>
+                                        <option value="SAKINAH">SAKINAH</option>
+                                        <option value="HUSNA">HUSNA</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="w-32 hidden" id="status-wrap-approvals">
+                                    <select id="status-approvals" class="w-full text-[11px] border border-gray-200 dark:border-gray-600 rounded-lg px-2 h-[36px] bg-white dark:bg-gray-800 cursor-pointer appearance-none text-gray-700 dark:text-gray-200 font-semibold shadow-sm transition-all hover:border-indigo-300" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%239ca3af%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E'); background-position: right 0.5rem center; background-repeat: no-repeat; background-size: 1em;">
+                                        <option value="Pending For Approval">Pending</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="w-28">
+                                    <select id="tahun-approvals" onchange="applyFilters('approvals')" class="w-full text-[11px] border border-gray-200 dark:border-gray-600 rounded-lg px-2 h-[36px] bg-white dark:bg-gray-800 cursor-pointer appearance-none text-gray-700 dark:text-gray-200 font-semibold shadow-sm transition-all hover:border-indigo-300" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%239ca3af%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E'); background-position: right 0.5rem center; background-repeat: no-repeat; background-size: 1em;">
+                                        <option value="">Year: All</option>
+                                        <option value="2024">2024</option>
+                                        <option value="2025">2025</option>
+                                        <option value="2026">2026</option>
+                                        <option value="2027">2027</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center gap-2 ml-auto w-full lg:w-auto mt-2 lg:mt-0">
+                                <button onclick="fetchDataFromGoogleSheet()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-[11px] font-bold px-4 py-0 rounded-lg flex items-center justify-center gap-1.5 transition-all shadow-glow-blue hover:-translate-y-0.5 h-[36px] flex-1 lg:flex-none">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                                    Sync
+                                </button>
+                                
+                                <div class="flex items-center bg-emerald-50 dark:bg-emerald-900/20 rounded-lg border border-emerald-100 dark:border-emerald-800/50 p-1 shadow-sm h-[36px]">
+                                    <select id="export-tahun-approvals" class="w-20 text-[10px] bg-transparent text-emerald-700 dark:text-emerald-400 font-bold border-none px-1 focus:outline-none cursor-pointer appearance-none text-center h-full">
+                                        <option value="">All Data</option>
+                                        <option value="2024">2024</option>
+                                        <option value="2025">2025</option>
+                                        <option value="2026">2026</option>
+                                        <option value="2027">2027</option>
+                                    </select>
+                                    <button onclick="exportToExcel('approvals')" class="bg-emerald-500 hover:bg-emerald-600 text-white text-[11px] font-bold px-3 rounded-md flex items-center gap-1 transition-all shadow-glow-emerald hover:-translate-y-0.5 h-full">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                                        Export
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Table Inner Container -->
+                        <div class="flex-1 overflow-y-auto overflow-x-auto custom-scrollbar bg-white/50 dark:bg-gray-900/50 px-1 pb-1 pt-1">
+                            <table class="w-full text-left whitespace-nowrap" id="table-approvals">
+                                <thead class="bg-[#1e3a8a] text-white">
+                                    <tr>
+                                        <th class="px-3 py-3 text-center text-[10px]">NO</th>
+                                        <th class="px-3 py-3 text-center text-[10px]">CONTROL NUMBER</th>
+                                        <th class="px-3 py-3 text-center w-[130px] max-w-[130px] whitespace-normal leading-tight text-[10px]">CALL NO<br>(082)</th>
+                                        <th class="px-3 py-3 text-center w-[130px] max-w-[130px] whitespace-normal leading-tight text-[10px]">CALL NO<br>(050/060)</th>
+                                        <th class="px-3 py-3 text-left text-[10px]">ACCESSION</th>
+                                        <th class="px-3 py-3 text-left min-w-[250px] text-[10px]">TITLE</th>
+                                        <th class="px-3 py-3 text-left text-[10px]">STAFF</th>
+                                        <th class="px-3 py-3 text-center text-[10px]">DATE</th>
+                                        <th class="px-3 py-3 text-left text-[10px]">STATUS</th>
+                                        <th class="px-3 py-3 text-left min-w-[150px] text-[10px]">AUDIT TRAIL</th>
+                                        <th class="px-3 py-3 text-center text-[10px]">ACTION</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="table-body-approvals" class="space-y-1">
+                                    <!-- Data Injected via JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <!-- Pagination -->
+                        <div id="pagination-approvals" class="px-4 py-3 border-t border-gray-200 dark:border-gray-700 flex justify-between items-center bg-white/80 dark:bg-gray-800/80 backdrop-blur-md hidden">
+                            <span class="text-[10px] text-gray-500 dark:text-gray-400 font-semibold" id="page-info-approvals">Showing 0-0 of 0 records</span>
+                            <div class="flex gap-1.5">
+                                <button onclick="prevPage('approvals')" class="px-3 py-1.5 text-[10px] bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition-all shadow-sm font-bold hover-lift">Previous</button>
+                                <button onclick="nextPage('approvals')" class="px-3 py-1.5 text-[10px] bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition-all shadow-sm font-bold hover-lift">Next</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- TAB: STAFF MANAGEMENT -->
@@ -521,104 +706,6 @@
             </div>
         </main>
     </div>
-
-    <!-- SHARED TABLE WRAPPER -->
-    <div id="shared-table-section" class="glass-panel rounded-2xl shadow-soft flex flex-col flex-1 overflow-hidden min-h-[400px] hidden">
-        <!-- Filters Area -->
-        <div class="p-3 flex flex-wrap items-center gap-2 border-b border-gray-200 dark:border-gray-700 bg-white/50 dark:bg-gray-800/50">
-            <div class="flex-1 min-w-[200px] relative">
-                <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                <input type="text" id="search-input" onkeyup="debouncedSearch()" placeholder="Search Title or Accession..." class="w-full text-xs border border-gray-200 dark:border-gray-600 rounded-lg pl-8 pr-3 py-1.5 h-[36px] bg-gray-50/50 dark:bg-gray-900/50 focus:bg-white dark:focus:bg-gray-800 transition-all font-medium">
-            </div>
-            
-            <div class="flex flex-wrap items-center gap-2">
-                <div class="w-28">
-                    <select id="filter-staff" onchange="applyFilters()" class="w-full text-[11px] border border-gray-200 dark:border-gray-600 rounded-lg px-2 h-[36px] bg-white dark:bg-gray-800 cursor-pointer appearance-none text-gray-700 dark:text-gray-200 font-semibold shadow-sm transition-all hover:border-indigo-300" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%239ca3af%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E'); background-position: right 0.5rem center; background-repeat: no-repeat; background-size: 1em;">
-                        <option value="">Staff: All</option>
-                        <option value="-">-</option>
-                        <option value="FATIHAH">FATIHAH</option>
-                        <option value="FAZILAH">FAZILAH</option>
-                        <option value="SAKINAH">SAKINAH</option>
-                        <option value="HUSNA">HUSNA</option>
-                    </select>
-                </div>
-                
-                <div class="w-32" id="status-filter-wrap">
-                    <select id="filter-status" onchange="applyFilters()" class="w-full text-[11px] border border-gray-200 dark:border-gray-600 rounded-lg px-2 h-[36px] bg-white dark:bg-gray-800 cursor-pointer appearance-none text-gray-700 dark:text-gray-200 font-semibold shadow-sm transition-all hover:border-indigo-300" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%239ca3af%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E'); background-position: right 0.5rem center; background-repeat: no-repeat; background-size: 1em;">
-                        <option value="">Status: All</option>
-                        <option value="Completed">Completed</option>
-                        <option value="Pending For Approval">Pending</option>
-                        <option value="incomplete">Incomplete</option>
-                    </select>
-                </div>
-                
-                <div class="w-28">
-                    <select id="filter-tahun" onchange="applyFilters()" class="w-full text-[11px] border border-gray-200 dark:border-gray-600 rounded-lg px-2 h-[36px] bg-white dark:bg-gray-800 cursor-pointer appearance-none text-gray-700 dark:text-gray-200 font-semibold shadow-sm transition-all hover:border-indigo-300" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%239ca3af%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E'); background-position: right 0.5rem center; background-repeat: no-repeat; background-size: 1em;">
-                        <option value="">Year: All</option>
-                        <option value="2024">2024</option>
-                        <option value="2025">2025</option>
-                        <option value="2026">2026</option>
-                        <option value="2027">2027</option>
-                    </select>
-                </div>
-            </div>
-            
-            <div class="flex items-center gap-2 ml-auto w-full lg:w-auto mt-2 lg:mt-0">
-                <button onclick="fetchDataFromGoogleSheet()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-[11px] font-bold px-4 py-0 rounded-lg flex items-center justify-center gap-1.5 transition-all shadow-glow-blue hover:-translate-y-0.5 h-[36px] flex-1 lg:flex-none">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-                    Auto Sync
-                </button>
-                
-                <div class="flex items-center bg-emerald-50 dark:bg-emerald-900/20 rounded-lg border border-emerald-100 dark:border-emerald-800/50 p-1 shadow-sm h-[36px]">
-                    <select id="export-tahun" class="w-20 text-[10px] bg-transparent text-emerald-700 dark:text-emerald-400 font-bold border-none px-1 focus:outline-none cursor-pointer appearance-none text-center h-full">
-                        <option value="">All Data</option>
-                        <option value="2024">2024</option>
-                        <option value="2025">2025</option>
-                        <option value="2026">2026</option>
-                        <option value="2027">2027</option>
-                    </select>
-                    <button onclick="exportToExcel()" class="bg-emerald-500 hover:bg-emerald-600 text-white text-[11px] font-bold px-3 rounded-md flex items-center gap-1 transition-all shadow-glow-emerald hover:-translate-y-0.5 h-full">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-                        Export
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Table Inner Container -->
-        <div id="table-container" class="flex-1 overflow-y-auto overflow-x-auto custom-scrollbar bg-white/50 dark:bg-gray-900/50 px-1 pb-1 pt-1">
-            <table class="w-full text-left whitespace-nowrap" id="data-table">
-                <thead class="bg-[#1e3a8a] text-white">
-                    <tr>
-                        <th class="px-3 py-3 text-center text-[10px]">NO</th>
-                        <th class="px-3 py-3 text-center text-[10px]">CONTROL NUMBER</th>
-                        <th class="px-3 py-3 text-center w-[130px] max-w-[130px] whitespace-normal leading-tight text-[10px]">CALL NO<br>(082)</th>
-                        <th class="px-3 py-3 text-center w-[130px] max-w-[130px] whitespace-normal leading-tight text-[10px]">CALL NO<br>(050/060)</th>
-                        <th class="px-3 py-3 text-left text-[10px]">ACCESSION</th>
-                        <th class="px-3 py-3 text-left min-w-[250px] text-[10px]">TITLE</th>
-                        <th class="px-3 py-3 text-left text-[10px]">STAFF</th>
-                        <th class="px-3 py-3 text-center text-[10px]">DATE</th>
-                        <th class="px-3 py-3 text-left text-[10px]">STATUS</th>
-                        <th class="px-3 py-3 text-left min-w-[150px] text-[10px]">AUDIT TRAIL</th>
-                        <th class="px-3 py-3 text-center text-[10px]">ACTION</th>
-                    </tr>
-                </thead>
-                <tbody id="table-body" class="space-y-1">
-                    <!-- Data Injected via JS -->
-                </tbody>
-            </table>
-        </div>
-        
-        <!-- Pagination -->
-        <div id="pagination-controls" class="px-4 py-3 border-t border-gray-200 dark:border-gray-700 flex justify-between items-center bg-white/80 dark:bg-gray-800/80 backdrop-blur-md hidden">
-            <span class="text-[10px] text-gray-500 dark:text-gray-400 font-semibold" id="page-info">Showing 0-0 of 0 records</span>
-            <div class="flex gap-1.5">
-                <button onclick="prevPage()" class="px-3 py-1.5 text-[10px] bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition-all shadow-sm font-bold hover-lift">Previous</button>
-                <button onclick="nextPage()" class="px-3 py-1.5 text-[10px] bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition-all shadow-sm font-bold hover-lift">Next</button>
-            </div>
-        </div>
-    </div>
-
 
     <!-- STAFF MODAL -->
     <div id="staff-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100] hidden items-center justify-center p-4">
@@ -708,7 +795,7 @@
         ];
 
         let staffDB = JSON.parse(JSON.stringify(defaultStaffDB)); 
-        let editingStaffId = null;
+        let editingId = null;
 
         function renderStaffDirectory() {
             const grid = document.getElementById('staff-grid');
@@ -883,9 +970,9 @@
         /* =====================================================================
            FUNGSI PERTUKARAN TAB (TAB SWITCHING LOGIC)
            ===================================================================== */
-        let filterStates = {
-            'collection': { search: '', staff: '', status: '', tahun: '' },
-            'approvals': { search: '', staff: '', status: 'Pending For Approval', tahun: '' },
+        let tabStates = {
+            'collection': { search: '', staff: '', status: '', tahun: '', page: 1, filtered: [] },
+            'approvals': { search: '', staff: '', status: 'Pending For Approval', tahun: '', page: 1, filtered: [] },
             'dashboard': { staff: '', status: '', tahun: '' }
         };
         let currentActiveTab = 'dashboard'; 
@@ -914,59 +1001,29 @@
             const pageTitle = document.getElementById('page-title');
             const pageSubtitle = document.getElementById('page-subtitle');
             
-            const sharedTable = document.getElementById('shared-table-section');
-            const statusFilterWrap = document.getElementById('status-filter-wrap');
-
             if (tabId === 'dashboard') {
                 pageTitle.innerHTML = `Welcome back, <span id="profile-name" class="uppercase text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400">${currentUserName || 'STAFF'}</span>!`;
                 pageSubtitle.textContent = "Here is the summary of executive collection management today.";
-                sharedTable.classList.add('hidden');
-                
-                if (document.getElementById('dash-filter-staff')) document.getElementById('dash-filter-staff').value = filterStates['dashboard'].staff;
-                if (document.getElementById('dash-filter-status')) document.getElementById('dash-filter-status').value = filterStates['dashboard'].status;
-                if (document.getElementById('dash-filter-tahun')) document.getElementById('dash-filter-tahun').value = filterStates['dashboard'].tahun;
-                
                 updateDashboardStats();
             } 
             else if (tabId === 'collection') {
                 pageTitle.innerHTML = "Records";
                 pageSubtitle.textContent = "Full list of all executive collections and status.";
-                
-                document.getElementById('view-collection').appendChild(sharedTable);
-                sharedTable.classList.remove('hidden');
-                statusFilterWrap.classList.remove('hidden');
-                
-                document.getElementById('search-input').value = filterStates['collection'].search;
-                document.getElementById('filter-staff').value = filterStates['collection'].staff;
-                document.getElementById('filter-status').value = filterStates['collection'].status;
-                document.getElementById('filter-tahun').value = filterStates['collection'].tahun;
-                
-                applyFilters();
+                applyFilters('collection', true);
             } 
             else if (tabId === 'approvals') {
                 pageTitle.innerHTML = "Approvals Queue";
                 pageSubtitle.textContent = "Action required for pending files.";
-                
-                document.getElementById('view-approvals').appendChild(sharedTable);
-                sharedTable.classList.remove('hidden');
-                statusFilterWrap.classList.add('hidden'); 
-                
-                document.getElementById('search-input').value = filterStates['approvals'].search;
-                document.getElementById('filter-staff').value = filterStates['approvals'].staff;
-                document.getElementById('filter-tahun').value = filterStates['approvals'].tahun;
-                
-                applyFilters();
+                applyFilters('approvals', true);
             } 
             else if (tabId === 'staff') {
                 pageTitle.innerHTML = "Staff Management";
                 pageSubtitle.textContent = "Manage team profiles and credentials.";
-                sharedTable.classList.add('hidden');
                 renderStaffDirectory();
             } 
             else if (tabId === 'reports') {
                 pageTitle.innerHTML = "Analytics Catalog";
                 pageSubtitle.textContent = "Search trends and topic analysis.";
-                sharedTable.classList.add('hidden');
                 initAnalyticsCatalog();
             }
         }
@@ -1015,12 +1072,9 @@
         const staffOptions = ["FATIHAH", "FAZILAH", "SAKINAH", "HUSNA"];
         
         let dataset = []; 
-        let filteredDataset = []; 
-        let editingId = null;
         let staffChartInstance = null;
         let statusChartInstance = null;
         
-        let currentPage = 1;
         const rowsPerPage = 100;
         
         let currentUserRole = ""; 
@@ -1255,7 +1309,9 @@
 
             if (isValid) {
                 currentUserRole = role;
-                currentPage = 1;
+                // reset pagination on login
+                tabStates['collection'].page = 1;
+                tabStates['approvals'].page = 1;
                 errorMsg.classList.add('hidden');
                 
                 localStorage.setItem('iku_role', currentUserRole);
@@ -1297,12 +1353,15 @@
             localStorage.removeItem('iku_name');
             localStorage.removeItem('iku_last_activity');
             
-            // Padam kesemua state / tapisan dashboard sebelum log keluar
-            if (document.getElementById('dash-filter-staff')) {
-                document.getElementById('dash-filter-staff').value = "";
-                document.getElementById('dash-filter-status').value = "";
-                document.getElementById('dash-filter-tahun').value = "";
-            }
+            if (document.getElementById('dash-filter-staff')) document.getElementById('dash-filter-staff').value = "";
+            if (document.getElementById('dash-filter-status')) document.getElementById('dash-filter-status').value = "";
+            if (document.getElementById('dash-filter-tahun')) document.getElementById('dash-filter-tahun').value = "";
+            
+            tabStates = {
+                'collection': { search: '', staff: '', status: '', tahun: '', page: 1, filtered: [] },
+                'approvals': { search: '', staff: '', status: 'Pending For Approval', tahun: '', page: 1, filtered: [] },
+                'dashboard': { staff: '', status: '', tahun: '' }
+            };
 
             editingId = null; 
             currentUserRole = ""; 
@@ -1316,12 +1375,12 @@
             document.getElementById('login-screen').classList.remove('hidden');
             
             dataset = [];
-            filteredDataset = [];
-            document.getElementById('table-body').innerHTML = '';
+            document.getElementById('table-body-collection').innerHTML = '';
+            document.getElementById('table-body-approvals').innerHTML = '';
         }
 
         /* =====================================================================
-           PENGURUSAN DATA, CARIAN & FILTER
+           PENGURUSAN DATA, CARIAN & FILTER MULTI-TAB
            ===================================================================== */
         function showLoading(msg) {
             document.getElementById('loading-text').textContent = msg || "Processing";
@@ -1334,11 +1393,10 @@
             server.withSuccessHandler(function(data) {
                 if (data) dataset = data; 
                 
-                if (currentActiveTab === 'dashboard') {
-                    updateDashboardStats();
-                } else if (currentActiveTab === 'collection' || currentActiveTab === 'approvals') {
-                    applyFilters(true); 
-                }
+                // Kemas kini tab secara background TANPA mengganggu tab lain
+                updateDashboardStats();
+                applyFilters('collection', true);
+                applyFilters('approvals', true);
                 
                 if (!isSilent) hideLoading();
             }).getInitialData();
@@ -1347,89 +1405,101 @@
         }
 
         let searchDebounceTimer;
-        function debouncedSearch() {
+        function debouncedSearch(tabId) {
             clearTimeout(searchDebounceTimer);
             searchDebounceTimer = setTimeout(() => {
-                applyFilters();
+                applyFilters(tabId);
             }, 300); 
         }
         
-        function applyFilters(preservePage = false) {
-            if (currentActiveTab !== 'collection' && currentActiveTab !== 'approvals') return;
+        function applyFilters(tabId, preservePage = false) {
+            if (!tabId) tabId = currentActiveTab;
+            if (tabId !== 'collection' && tabId !== 'approvals') return;
 
-            filterStates[currentActiveTab].search = document.getElementById('search-input').value.toLowerCase().trim();
-            filterStates[currentActiveTab].staff = document.getElementById('filter-staff').value;
-            filterStates[currentActiveTab].tahun = document.getElementById('filter-tahun').value;
+            const searchVal = document.getElementById(`search-${tabId}`).value.toLowerCase().trim();
+            const staffVal = document.getElementById(`staff-${tabId}`).value;
+            const tahunVal = document.getElementById(`tahun-${tabId}`).value;
             
-            if (currentActiveTab === 'approvals') {
-                filterStates[currentActiveTab].status = 'Pending For Approval';
+            let statusVal = "";
+            if (tabId === 'approvals') {
+                statusVal = 'pending for approval';
             } else {
-                filterStates[currentActiveTab].status = document.getElementById('filter-status').value;
+                statusVal = document.getElementById(`status-${tabId}`).value;
             }
 
-            const state = filterStates[currentActiveTab];
-            
-            filteredDataset = dataset.filter(row => {
+            // Simpan memori filter secara terasing
+            tabStates[tabId].search = searchVal;
+            tabStates[tabId].staff = staffVal;
+            tabStates[tabId].tahun = tahunVal;
+            tabStates[tabId].status = statusVal;
+
+            tabStates[tabId].filtered = dataset.filter(row => {
                 let match = true;
                 
-                if (state.search !== "") {
-                    const titleMatch = (row.title || "").toLowerCase().includes(state.search);
-                    const accMatch = (row.accession || "").toLowerCase().includes(state.search);
+                if (searchVal !== "") {
+                    const titleMatch = (row.title || "").toLowerCase().includes(searchVal);
+                    const accMatch = (row.accession || "").toLowerCase().includes(searchVal);
                     if (!titleMatch && !accMatch) match = false;
                 }
                 
-                if (state.staff !== "") {
-                    if (getStaffDisplay(row.staff) !== state.staff) match = false;
+                if (staffVal !== "") {
+                    if (getStaffDisplay(row.staff) !== staffVal) match = false;
                 }
                 
-                if (state.status !== "") {
-                    if ((row.status || "").toLowerCase().trim() !== state.status.toLowerCase().trim()) match = false;
+                if (statusVal !== "") {
+                    if ((row.status || "").toLowerCase().trim() !== statusVal.toLowerCase().trim()) match = false;
                 }
                 
-                if (state.tahun !== "") {
-                    if (getYearFromDate(row.date) !== state.tahun) match = false;
+                if (tahunVal !== "") {
+                    if (getYearFromDate(row.date) !== tahunVal) match = false;
                 }
                 
                 return match;
             });
             
             if (!preservePage) {
-                currentPage = 1; 
+                tabStates[tabId].page = 1; 
             } else {
-                const maxPages = Math.ceil(filteredDataset.length / rowsPerPage) || 1;
-                if (currentPage > maxPages) currentPage = maxPages;
+                const maxPages = Math.ceil(tabStates[tabId].filtered.length / rowsPerPage) || 1;
+                if (tabStates[tabId].page > maxPages) tabStates[tabId].page = maxPages;
             }
             
-            renderTable();
+            renderTable(tabId);
         }
 
-        function prevPage() {
-            if (currentPage > 1) { currentPage--; renderTable(); }
+        function prevPage(tabId) {
+            if (tabStates[tabId].page > 1) { 
+                tabStates[tabId].page--; 
+                renderTable(tabId); 
+            }
         }
-        function nextPage() {
-            if (currentPage * rowsPerPage < filteredDataset.length) { currentPage++; renderTable(); }
+        function nextPage(tabId) {
+            if (tabStates[tabId].page * rowsPerPage < tabStates[tabId].filtered.length) { 
+                tabStates[tabId].page++; 
+                renderTable(tabId); 
+            }
         }
 
-        function renderTable() {
-            const tbody = document.getElementById('table-body');
-            const paginationDiv = document.getElementById('pagination-controls');
+        function renderTable(tabId) {
+            const tbody = document.getElementById(`table-body-${tabId}`);
+            if (!tbody) return;
             
-            const tableContainer = document.getElementById('table-container');
+            const paginationDiv = document.getElementById(`pagination-${tabId}`);
+            const tableContainer = tbody.closest('.custom-scrollbar');
             const currentTableScroll = tableContainer ? tableContainer.scrollTop : 0;
             
             const fragment = document.createDocumentFragment();
+            const filteredDataset = tabStates[tabId].filtered;
+            const currentPage = tabStates[tabId].page;
             
-            if (currentUserRole === 'rosli' && currentActiveTab === 'approvals') {
+            if (currentUserRole === 'rosli' && tabId === 'approvals') {
                 paginationDiv.classList.add('hidden'); 
-                const targetStatus = 'pending for approval';
                 
                 let groupedData = {};
                 filteredDataset.forEach(row => {
-                    if ((row.status || '').toLowerCase().trim() === targetStatus) {
-                        const sName = getStaffDisplay(row.staff);
-                        if (!groupedData[sName]) groupedData[sName] = [];
-                        groupedData[sName].push(row);
-                    }
+                    const sName = getStaffDisplay(row.staff);
+                    if (!groupedData[sName]) groupedData[sName] = [];
+                    groupedData[sName].push(row);
                 });
 
                 if(Object.keys(groupedData).length === 0) {
@@ -1453,7 +1523,7 @@
                         fragment.appendChild(groupHeader);
                         staffRows.forEach(row => {
                             const tr = document.createElement('tr');
-                            tr.innerHTML = generateRowHTML(row, false, true); 
+                            tr.innerHTML = generateRowHTML(row, false, true, tabId); 
                             fragment.appendChild(tr);
                         });
                     }
@@ -1467,10 +1537,10 @@
                 const paginatedData = filteredDataset.slice(startIndex, endIndex);
                 
                 if (paginatedData.length === 0) {
-                    tbody.innerHTML = ''; 
+                    tbody.innerHTML = `<tr><td colspan="11" class="px-5 py-10 text-center text-gray-500 font-medium italic text-sm">No records found.</td></tr>`; 
                 } else {
-                    const currentRows = Array.from(tbody.querySelectorAll('tr[id^="row-"]'));
-                    const paginatedIds = paginatedData.map(r => `row-${r.id}`);
+                    const currentRows = Array.from(tbody.querySelectorAll(`tr[id^="row-${tabId}-"]`));
+                    const paginatedIds = paginatedData.map(r => `row-${tabId}-${r.id}`);
                     
                     currentRows.forEach(row => {
                         if (!paginatedIds.includes(row.id)) {
@@ -1479,10 +1549,12 @@
                     });
 
                     paginatedData.forEach((row, index) => {
-                        const rowId = `row-${row.id}`;
+                        const rowId = `row-${tabId}-${row.id}`;
                         let tr = document.getElementById(rowId);
-                        const html = generateRowHTML(row, editingId === row.id, false);
-                        const className = editingId === row.id ? 'editing-row' : '';
+                        
+                        const isEditing = (editingId === row.id && currentActiveTab === tabId);
+                        const html = generateRowHTML(row, isEditing, false, tabId);
+                        const className = isEditing ? 'editing-row' : '';
                         
                         if (tr) {
                             if (tr.innerHTML !== html || tr.className !== className) {
@@ -1511,13 +1583,13 @@
                 }
                 
                 const infoEnd = Math.min(startIndex + rowsPerPage, filteredDataset.length);
-                document.getElementById('page-info').textContent = `Showing ${filteredDataset.length > 0 ? startIndex + 1 : 0} to ${infoEnd} of ${filteredDataset.length} records`;
+                document.getElementById(`page-info-${tabId}`).textContent = `Showing ${filteredDataset.length > 0 ? startIndex + 1 : 0} to ${infoEnd} of ${filteredDataset.length} records`;
             }
 
             if (tableContainer) tableContainer.scrollTop = currentTableScroll;
         }
 
-        function approveSingleRow(id) {
+        function approveSingleRow(id, tabId) {
             if(!confirm(`Are you sure you want to approve this record?`)) return;
             showLoading("Approving...");
             const index = dataset.findIndex(r => r.id === id);
@@ -1525,7 +1597,7 @@
 
             let record = {...dataset[index]};
             
-            const rosliInput = document.getElementById(`rosli-c050-${id}`);
+            const rosliInput = document.getElementById(`rosli-c050-${tabId}-${id}`);
             if (rosliInput) {
                 record.callNo050 = rosliInput.value;
             }
@@ -1536,7 +1608,8 @@
             record.approvedDate = String(t.getDate()).padStart(2, '0') + '/' + String(t.getMonth() + 1).padStart(2, '0') + '/' + t.getFullYear();
 
             dataset[index] = record;
-            applyFilters(true);
+            applyFilters(tabId, true);
+            updateDashboardStats();
             
             server.withSuccessHandler(function() {
                 hideLoading();
@@ -1545,28 +1618,28 @@
             }).updateRow(record);
         }
 
-        function generateRowHTML(row, isEditing, isReadonlyView) {
+        function generateRowHTML(row, isEditing, isReadonlyView, tabId) {
             const displayStaff = getStaffDisplay(row.staff);
             const currentStatusLower = (row.status || "").toLowerCase().trim();
             const isCompleted = currentStatusLower === 'completed';
 
             if (isEditing && !isReadonlyView) {
                 let call082HTML = (currentUserRole === 'staff')
-                    ? `<td class="px-3 py-3 text-center whitespace-normal break-words w-[130px] max-w-[130px] leading-tight font-medium text-gray-900 text-xs">${row.callNo082}<input type="hidden" id="edit-c082-${row.id}" value="${row.callNo082}"></td>`
-                    : `<td class="px-3 py-3"><input type="text" id="edit-c082-${row.id}" value="${row.callNo082}" class="w-full text-xs px-2 py-1.5 border border-blue-300 rounded focus:border-indigo-500 focus:ring-1 focus:ring-indigo-200 text-center transition-all bg-white text-gray-900 shadow-sm"></td>`;
+                    ? `<td class="px-3 py-3 text-center whitespace-normal break-words w-[130px] max-w-[130px] leading-tight font-medium text-gray-900 text-xs">${row.callNo082}<input type="hidden" id="edit-c082-${tabId}-${row.id}" value="${row.callNo082}"></td>`
+                    : `<td class="px-3 py-3"><input type="text" id="edit-c082-${tabId}-${row.id}" value="${row.callNo082}" class="w-full text-xs px-2 py-1.5 border border-blue-300 rounded focus:border-indigo-500 focus:ring-1 focus:ring-indigo-200 text-center transition-all bg-white text-gray-900 shadow-sm"></td>`;
 
                 let statusSelectHTML = '';
                 if (currentUserRole === 'staff') {
                     let isStaffCompleted = (row.status === 'Completed' || row.status === 'Pending For Approval');
                     statusSelectHTML = `
-                        <select id="edit-status-${row.id}" class="w-full text-xs px-1 py-1.5 border border-blue-300 rounded focus:border-indigo-500 font-bold bg-white text-gray-900 shadow-sm transition-all">
+                        <select id="edit-status-${tabId}-${row.id}" class="w-full text-xs px-1 py-1.5 border border-blue-300 rounded focus:border-indigo-500 font-bold bg-white text-gray-900 shadow-sm transition-all">
                             <option value="Completed" ${isStaffCompleted ? 'selected' : ''}>Completed</option>
                             <option value="incomplete" ${!isStaffCompleted ? 'selected' : ''}>Incomplete</option>
                         </select>
                     `;
                 } else {
                     statusSelectHTML = `
-                        <select id="edit-status-${row.id}" class="w-full text-xs px-1 py-1.5 border border-blue-300 rounded focus:border-indigo-500 font-bold bg-white text-gray-900 shadow-sm transition-all">
+                        <select id="edit-status-${tabId}-${row.id}" class="w-full text-xs px-1 py-1.5 border border-blue-300 rounded focus:border-indigo-500 font-bold bg-white text-gray-900 shadow-sm transition-all">
                             ${statusOptions.map(opt => `<option value="${opt}" ${row.status === opt ? 'selected' : ''}>${opt}</option>`).join('')}
                         </select>
                     `;
@@ -1574,13 +1647,13 @@
 
                 return `
                     <td class="px-3 py-3 text-center text-gray-500 font-bold text-xs">${row.no}</td>
-                    <td class="px-3 py-3"><input type="text" id="edit-ctrl-${row.id}" value="${row.controlNo}" class="w-full text-xs px-2 py-1.5 border border-blue-300 rounded focus:border-indigo-500 text-center transition-all bg-white text-gray-900 shadow-sm"></td>
+                    <td class="px-3 py-3"><input type="text" id="edit-ctrl-${tabId}-${row.id}" value="${row.controlNo}" class="w-full text-xs px-2 py-1.5 border border-blue-300 rounded focus:border-indigo-500 text-center transition-all bg-white text-gray-900 shadow-sm"></td>
                     ${call082HTML}
-                    <td class="px-3 py-3"><input type="text" id="edit-c050-${row.id}" value="${row.callNo050}" class="w-full text-xs px-2 py-1.5 border border-blue-300 rounded focus:border-indigo-500 text-center transition-all bg-white text-gray-900 shadow-sm"></td>
+                    <td class="px-3 py-3"><input type="text" id="edit-c050-${tabId}-${row.id}" value="${row.callNo050}" class="w-full text-xs px-2 py-1.5 border border-blue-300 rounded focus:border-indigo-500 text-center transition-all bg-white text-gray-900 shadow-sm"></td>
                     <td class="px-3 py-3 font-extrabold text-indigo-700 text-xs">${row.accession}</td>
                     <td class="px-3 py-3 whitespace-normal min-w-[250px] break-words font-semibold leading-snug text-left text-gray-900 text-sm">${row.title}</td>
                     <td class="px-3 py-3">
-                        <select id="edit-staff-${row.id}" class="w-full text-xs px-1 py-1.5 border border-blue-300 rounded focus:border-indigo-500 font-bold text-indigo-700 shadow-sm transition-all bg-white">
+                        <select id="edit-staff-${tabId}-${row.id}" class="w-full text-xs px-1 py-1.5 border border-blue-300 rounded focus:border-indigo-500 font-bold text-indigo-700 shadow-sm transition-all bg-white">
                             <option value="${row.staff}" hidden>${displayStaff}</option>
                             ${staffOptions.map(opt => `<option value="${opt}" ${row.staff === opt ? 'selected' : ''}>${opt}</option>`).join('')}
                         </select>
@@ -1590,8 +1663,8 @@
                     <td class="px-3 py-3 rounded text-xs text-gray-400 text-left italic font-medium">Audit Trail locked.</td>
                     <td class="px-3 py-3 text-center align-middle">
                         <div class="flex gap-1.5 justify-center">
-                            <button type="button" onclick="saveRow(${row.id})" class="bg-emerald-500 hover:bg-emerald-600 text-white p-1.5 rounded-lg shadow-glow-emerald hover:-translate-y-0.5 transition-all" title="Save Record"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></button>
-                            <button type="button" onclick="cancelEdit()" class="bg-gray-400 hover:bg-gray-500 text-white p-1.5 rounded-lg shadow-sm hover:-translate-y-0.5 transition-all" title="Cancel"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+                            <button type="button" onclick="saveRow(${row.id}, '${tabId}')" class="bg-emerald-500 hover:bg-emerald-600 text-white p-1.5 rounded-lg shadow-glow-emerald hover:-translate-y-0.5 transition-all" title="Save Record"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></button>
+                            <button type="button" onclick="cancelEdit('${tabId}')" class="bg-gray-400 hover:bg-gray-500 text-white p-1.5 rounded-lg shadow-sm hover:-translate-y-0.5 transition-all" title="Cancel"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
                         </div>
                     </td>
                 `;
@@ -1606,13 +1679,13 @@
 
             let actionHtml = '';
             if (currentUserRole === 'rosli') {
-                if (currentActiveTab === 'approvals') {
-                    actionHtml = `<button type="button" onclick="approveSingleRow(${row.id})" class="text-emerald-500 hover:text-white bg-emerald-50 hover:bg-emerald-500 p-1.5 rounded-lg transition-all shadow-sm hover:shadow-glow-emerald" title="Approve Record"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></button>`;
+                if (tabId === 'approvals') {
+                    actionHtml = `<button type="button" onclick="approveSingleRow(${row.id}, '${tabId}')" class="text-emerald-500 hover:text-white bg-emerald-50 hover:bg-emerald-500 p-1.5 rounded-lg transition-all shadow-sm hover:shadow-glow-emerald" title="Approve Record"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></button>`;
                 } else {
                     actionHtml = `<span class="text-gray-300 italic text-[10px] font-medium">—</span>`;
                 }
             } else if (currentUserRole === 'staff') {
-                if (currentActiveTab === 'approvals' || isCompleted || isReadonlyView) {
+                if (tabId === 'approvals' || isCompleted || isReadonlyView) {
                     actionHtml = `<span class="text-gray-300 italic text-[10px] font-medium">—</span>`;
                 } else {
                     actionHtml = `<button type="button" ondblclick="editRow(${row.id})" class="text-indigo-500 hover:text-white bg-indigo-50 hover:bg-indigo-500 p-1.5 rounded-lg transition-all shadow-sm hover:shadow-glow-blue" title="Double Click to Edit"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg></button>`;
@@ -1626,8 +1699,8 @@
             }
             
             let displayCallNo050 = `<span class="block text-center font-medium whitespace-normal break-words w-[130px] max-w-[130px] leading-relaxed text-xs">${row.callNo050}</span>`;
-            if (currentUserRole === 'rosli' && currentActiveTab === 'approvals' && !isEditing) {
-                displayCallNo050 = `<input type="text" id="rosli-c050-${row.id}" value="${row.callNo050}" class="w-full text-xs px-2 py-1.5 border border-blue-300 rounded focus:border-indigo-500 text-center transition-all bg-white text-gray-900 shadow-sm">`;
+            if (currentUserRole === 'rosli' && tabId === 'approvals' && !isEditing) {
+                displayCallNo050 = `<input type="text" id="rosli-c050-${tabId}-${row.id}" value="${row.callNo050}" class="w-full text-xs px-2 py-1.5 border border-blue-300 rounded focus:border-indigo-500 text-center transition-all bg-white text-gray-900 shadow-sm">`;
             }
 
             return `
@@ -1662,14 +1735,20 @@
             `;
         }
 
-        function editRow(id) { editingId = id; renderTable(); }
-        function cancelEdit() { editingId = null; renderTable(); }
+        function editRow(id) { 
+            editingId = id; 
+            renderTable(currentActiveTab); 
+        }
+        function cancelEdit(tabId) { 
+            editingId = null; 
+            renderTable(tabId); 
+        }
 
-        function saveRow(id) {
+        function saveRow(id, tabId) {
             const index = dataset.findIndex(r => r.id === id);
             if (index === -1) return;
 
-            let newStatus = document.getElementById(`edit-status-${id}`).value;
+            let newStatus = document.getElementById(`edit-status-${tabId}-${id}`).value;
             let newDate = dataset[index].date;
             
             let finalStatusToSave = newStatus;
@@ -1685,10 +1764,10 @@
 
             const updatedRecord = {
                 ...dataset[index],
-                controlNo: document.getElementById(`edit-ctrl-${id}`).value,
-                callNo082: document.getElementById(`edit-c082-${id}`).value, 
-                callNo050: document.getElementById(`edit-c050-${id}`).value,
-                staff: document.getElementById(`edit-staff-${id}`).value,
+                controlNo: document.getElementById(`edit-ctrl-${tabId}-${id}`).value,
+                callNo082: document.getElementById(`edit-c082-${tabId}-${id}`).value, 
+                callNo050: document.getElementById(`edit-c050-${tabId}-${id}`).value,
+                staff: document.getElementById(`edit-staff-${tabId}-${id}`).value,
                 status: finalStatusToSave, 
                 date: newDate
             };
@@ -1699,7 +1778,9 @@
                 showToast("Record successfully updated.");
                 dataset[index] = updatedRecord;
                 editingId = null;
-                applyFilters(true); 
+                
+                applyFilters(tabId, true);
+                updateDashboardStats();
                 fetchDataFromGoogleSheet(true);
             }).updateRow(updatedRecord);
         }
@@ -1722,10 +1803,10 @@
             setTimeout(() => { toast.classList.add('translate-y-20', 'opacity-0'); }, 3000);
         }
 
-        function exportToExcel() {
+        function exportToExcel(tabId) {
             showLoading("Generating Excel File...");
             setTimeout(() => {
-                const exportTahun = document.getElementById('export-tahun').value;
+                const exportTahun = document.getElementById('export-tahun-' + tabId).value;
                 let dataToExport = dataset; 
                 if (exportTahun !== "") dataToExport = dataset.filter(row => getYearFromDate(row.date) === exportTahun);
                 if (dataToExport.length === 0) { hideLoading(); alert("No records found."); return; }
@@ -1743,15 +1824,12 @@
             }, 500);
         }
 
-        let currentStaffCounts = {}; let currentStatusCounts = {};
-
         function updateDashboardStats() {
-            // Pengiraan statistik dipisahkan secara mutlak menggunakan kotak input filter Dashboard
+            // Dashboard bergantung KEPADA filter khusus dashboard & DATA mentah tanpa pengaruhi tab lain.
             const dashFilterStaff = document.getElementById('dash-filter-staff') ? document.getElementById('dash-filter-staff').value : filterStates['dashboard'].staff;
             const dashFilterStatus = document.getElementById('dash-filter-status') ? document.getElementById('dash-filter-status').value : filterStates['dashboard'].status;
             const dashFilterTahun = document.getElementById('dash-filter-tahun') ? document.getElementById('dash-filter-tahun').value : filterStates['dashboard'].tahun;
 
-            // Simpan memori filter Dashboard supaya ia tak hilang bila tukar tab
             filterStates['dashboard'] = { staff: dashFilterStaff, status: dashFilterStatus, tahun: dashFilterTahun };
 
             const dashDataset = dataset.filter(row => {
@@ -1796,7 +1874,6 @@
             if(elTopCount) elTopCount.textContent = maxCount + ' Records';
             if(elPendingCount) elPendingCount.textContent = pending + ' Records';
 
-            currentStaffCounts = staffCounts; currentStatusCounts = statusCounts;
             updateCharts(staffCounts, statusCounts);
         }
 
