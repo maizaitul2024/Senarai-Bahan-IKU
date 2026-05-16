@@ -268,7 +268,7 @@
                     </div>
 
                     <div class="flex items-center gap-4 self-end md:self-auto">
-                        <button onclick="document.documentElement.classList.toggle('dark'); setTimeout(()=>applyDashboardFilter(), 50);" class="p-2 bg-white dark:bg-gray-800 rounded-full shadow-soft border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-yellow-400 hover:bg-gray-50 transition-all hover-lift" title="Toggle Dark Mode">
+                        <button onclick="document.documentElement.classList.toggle('dark'); setTimeout(()=> { if(currentActiveTab === 'dashboard') updateDashboardStats(); if(currentActiveTab === 'reports') updateAnalyticsCatalog(); }, 50);" class="p-2 bg-white dark:bg-gray-800 rounded-full shadow-soft border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-yellow-400 hover:bg-gray-50 transition-all hover-lift" title="Toggle Dark Mode">
                             <svg class="w-4 h-4 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
                             <svg class="w-4 h-4 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
                         </button>
@@ -290,7 +290,7 @@
                         <span class="text-[11px] font-extrabold text-gray-500 dark:text-gray-400 uppercase tracking-widest pl-2">Overview Filter:</span>
                         <div class="flex flex-wrap items-center gap-2">
                             <div class="w-28">
-                                <select id="dash-filter-staff" onchange="applyDashboardFilter()" class="w-full text-[11px] border border-gray-200 dark:border-gray-600 rounded-lg px-2 h-[36px] bg-white dark:bg-gray-800 cursor-pointer appearance-none text-gray-700 dark:text-gray-200 font-semibold shadow-sm transition-all hover:border-indigo-300" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%239ca3af%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E'); background-position: right 0.5rem center; background-repeat: no-repeat; background-size: 1em;">
+                                <select id="dash-filter-staff" onchange="updateDashboardStats()" class="w-full text-[11px] border border-gray-200 dark:border-gray-600 rounded-lg px-2 h-[36px] bg-white dark:bg-gray-800 cursor-pointer appearance-none text-gray-700 dark:text-gray-200 font-semibold shadow-sm transition-all hover:border-indigo-300" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%239ca3af%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E'); background-position: right 0.5rem center; background-repeat: no-repeat; background-size: 1em;">
                                     <option value="">Staff: All</option>
                                     <option value="-">-</option>
                                     <option value="FATIHAH">FATIHAH</option>
@@ -301,7 +301,7 @@
                             </div>
                             
                             <div class="w-32">
-                                <select id="dash-filter-status" onchange="applyDashboardFilter()" class="w-full text-[11px] border border-gray-200 dark:border-gray-600 rounded-lg px-2 h-[36px] bg-white dark:bg-gray-800 cursor-pointer appearance-none text-gray-700 dark:text-gray-200 font-semibold shadow-sm transition-all hover:border-indigo-300" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%239ca3af%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E'); background-position: right 0.5rem center; background-repeat: no-repeat; background-size: 1em;">
+                                <select id="dash-filter-status" onchange="updateDashboardStats()" class="w-full text-[11px] border border-gray-200 dark:border-gray-600 rounded-lg px-2 h-[36px] bg-white dark:bg-gray-800 cursor-pointer appearance-none text-gray-700 dark:text-gray-200 font-semibold shadow-sm transition-all hover:border-indigo-300" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%239ca3af%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E'); background-position: right 0.5rem center; background-repeat: no-repeat; background-size: 1em;">
                                     <option value="">Status: All</option>
                                     <option value="Completed">Completed</option>
                                     <option value="Pending For Approval">Pending</option>
@@ -310,7 +310,7 @@
                             </div>
                             
                             <div class="w-28">
-                                <select id="dash-filter-tahun" onchange="applyDashboardFilter()" class="w-full text-[11px] border border-gray-200 dark:border-gray-600 rounded-lg px-2 h-[36px] bg-white dark:bg-gray-800 cursor-pointer appearance-none text-gray-700 dark:text-gray-200 font-semibold shadow-sm transition-all hover:border-indigo-300" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%239ca3af%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E'); background-position: right 0.5rem center; background-repeat: no-repeat; background-size: 1em;">
+                                <select id="dash-filter-tahun" onchange="updateDashboardStats()" class="w-full text-[11px] border border-gray-200 dark:border-gray-600 rounded-lg px-2 h-[36px] bg-white dark:bg-gray-800 cursor-pointer appearance-none text-gray-700 dark:text-gray-200 font-semibold shadow-sm transition-all hover:border-indigo-300" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%239ca3af%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E'); background-position: right 0.5rem center; background-repeat: no-repeat; background-size: 1em;">
                                     <option value="">Year: All</option>
                                     <option value="2024">2024</option>
                                     <option value="2025">2025</option>
@@ -693,7 +693,7 @@
                     
                     <div class="glass-panel p-5 rounded-2xl shadow-soft">
                         <h3 class="font-bold text-gray-800 dark:text-white text-xs mb-4">Catalog Summary</h3>
-                        <p class="text-sm text-gray-500 dark:text-gray-400">Most searched MARC tag is 245 (Title Statement). Popular subjects include public health and information technology. Search trends increased by 15% compared to last week.</p>
+                        <p class="text-sm text-gray-500 dark:text-gray-400" id="analytics-summary-text">System is preparing analytics catalog...</p>
                     </div>
                 </div>
 
@@ -1040,8 +1040,112 @@
             else if (tabId === 'reports') {
                 pageTitle.innerHTML = "Analytics Catalog";
                 pageSubtitle.textContent = "Search trends and topic analysis.";
-                initAnalyticsCatalog();
+                updateAnalyticsCatalog();
             }
+        }
+
+        /* =====================================================================
+           ANALYTICS CATALOG DYNAMIC GENERATION
+           ===================================================================== */
+        let chartKeywordsInstance = null;
+        let chartFieldsInstance = null;
+        let chartTrendsInstance = null;
+
+        function updateAnalyticsCatalog() {
+            if (!masterData || masterData.length === 0) return;
+
+            // 1. Keyword Calculation (Dari Title)
+            let wordCounts = {};
+            const stopWords = ['the', 'of', 'and', 'a', 'to', 'in', 'for', 'on', 'with', 'an', 'by', 'is', 'at', 'dari', 'dan', 'yang', 'untuk', 'di', 'ke', 'ini', 'itu', 'pada', 'dalam'];
+            masterData.forEach(row => {
+                if(row.title) {
+                    let words = row.title.toLowerCase().replace(/[^a-z0-9\s]/g, '').split(/\s+/);
+                    words.forEach(w => {
+                        if (w.length > 3 && !stopWords.includes(w)) {
+                            wordCounts[w] = (wordCounts[w] || 0) + 1;
+                        }
+                    });
+                }
+            });
+            let sortedWords = Object.entries(wordCounts).sort((a,b) => b[1] - a[1]).slice(0, 5);
+            let keywordLabels = sortedWords.map(x => x[0].toUpperCase());
+            let keywordData = sortedWords.map(x => x[1]);
+
+            if (keywordLabels.length === 0) {
+                keywordLabels = ['DATA', 'SYSTEM', 'TEST', 'RECORD', 'INFO'];
+                keywordData = [0, 0, 0, 0, 0];
+            }
+
+            // 2. Field/Subject Calculation (Dari Call No 082)
+            let fieldCounts = { 'Computer/Tech': 0, 'Science': 0, 'Social Sciences': 0, 'Others': 0 };
+            masterData.forEach(row => {
+                let callNo = (row.callNo082 || "").trim();
+                if(callNo.startsWith('0') || callNo.startsWith('6')) fieldCounts['Computer/Tech']++;
+                else if(callNo.startsWith('5')) fieldCounts['Science']++;
+                else if(callNo.startsWith('3')) fieldCounts['Social Sciences']++;
+                else fieldCounts['Others']++;
+            });
+            let fieldLabels = Object.keys(fieldCounts);
+            let fieldData = Object.values(fieldCounts);
+
+            // 3. Trends Calculation (Dari Month/Year)
+            let monthCountsArr = [0,0,0,0,0,0,0,0,0,0,0,0];
+            let monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+            masterData.forEach(row => {
+                let dateStr = row.date || ""; 
+                let parts = dateStr.split('/');
+                if(parts.length === 3) {
+                    let mIndex = parseInt(parts[1], 10) - 1;
+                    if(mIndex >= 0 && mIndex < 12) {
+                        monthCountsArr[mIndex]++;
+                    }
+                }
+            });
+            
+            let currentMonth = new Date().getMonth();
+            let trendLabels = [];
+            let trendData = [];
+            for (let i = 4; i >= 0; i--) {
+                let m = (currentMonth - i + 12) % 12;
+                trendLabels.push(monthNames[m]);
+                trendData.push(monthCountsArr[m]);
+            }
+
+            // Kemas kini Teks Summary
+            const summaryEl = document.getElementById('analytics-summary-text');
+            if(summaryEl) {
+                const topField = fieldLabels[fieldData.indexOf(Math.max(...fieldData))] || '-';
+                summaryEl.innerHTML = `Analitik dijana daripada <b>${masterData.length}</b> rekod keseluruhan. Kata kunci carian tertinggi adalah <b>"${keywordLabels[0] || '-'}"</b>. Majoriti bahan merangkumi bidang <b>${topField}</b>.`;
+            }
+
+            const textColor = isDarkMode() ? '#94a3b8' : '#64748b';
+
+            if (chartKeywordsInstance) chartKeywordsInstance.destroy();
+            chartKeywordsInstance = new Chart(document.getElementById('chart-keywords').getContext('2d'), {
+                type: 'bar',
+                data: { labels: keywordLabels, datasets: [{ data: keywordData, backgroundColor: '#6366f1', borderRadius: 4, barThickness: 15 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: {display: false} }, scales: { x:{display:false}, y:{grid:{display:false}, ticks:{font:{size:9}, color:textColor}} } }
+            });
+            
+            if (chartFieldsInstance) chartFieldsInstance.destroy();
+            chartFieldsInstance = new Chart(document.getElementById('chart-fields').getContext('2d'), {
+                type: 'doughnut',
+                data: { labels: fieldLabels, datasets: [{ data: fieldData, backgroundColor: ['#8b5cf6', '#10b981', '#f59e0b', '#cbd5e1'], borderWidth: 0 }] },
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: false, 
+                    cutout: '65%', 
+                    layout: { padding: { top: 10, bottom: 10, left: 10, right: 10 } },
+                    plugins: { legend: { position: 'right', labels:{usePointStyle:true, boxWidth:6, font:{size:9}, color:textColor} } } 
+                }
+            });
+            
+            if (chartTrendsInstance) chartTrendsInstance.destroy();
+            chartTrendsInstance = new Chart(document.getElementById('chart-trends').getContext('2d'), {
+                type: 'line',
+                data: { labels: trendLabels, datasets: [{ label: 'Searches', data: trendData, borderColor: '#3b82f6', tension: 0.4, fill: true, backgroundColor: 'rgba(59, 130, 246, 0.1)' }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: {display: false} }, scales: { x:{grid:{display:false}, ticks:{color:textColor, font:{size:9}}}, y:{display:false} } }
+            });
         }
 
         /* =====================================================================
@@ -1276,8 +1380,11 @@
             if (isValid) {
                 currentUserRole = role;
                 
-                collectionPage = 1;
-                approvalsPage = 1;
+                tabStates = {
+                    'collection': { search: '', staff: '', status: '', tahun: '', page: 1, filtered: [] },
+                    'approvals': { search: '', staff: '', status: 'Pending For Approval', tahun: '', page: 1, filtered: [] },
+                    'dashboard': { staff: '', status: '', tahun: '' }
+                };
 
                 errorMsg.classList.add('hidden');
                 
@@ -1367,10 +1474,15 @@
             server.withSuccessHandler(function(data) {
                 if (data) masterData = data; 
                 
-                // Segarkan state semua tab untuk menjamin data selari
-                applyDashboardFilter();
-                applyCollectionFilter(true);
-                applyApprovalsFilter(true);
+                if (currentActiveTab === 'dashboard') {
+                    updateDashboardStats();
+                } else if (currentActiveTab === 'collection') {
+                    applyFilters('collection', true); 
+                } else if (currentActiveTab === 'approvals') {
+                    applyFilters('approvals', true); 
+                } else if (currentActiveTab === 'reports') {
+                    updateAnalyticsCatalog();
+                }
                 
                 if (!isSilent) hideLoading();
             }).getInitialData();
@@ -1437,7 +1549,7 @@
 
             approvalData = masterData.filter(row => {
                 let match = true;
-                if ((row.status || "").toLowerCase().trim() !== 'pending for approval') match = false; // Force Pending only
+                if ((row.status || "").toLowerCase().trim() !== 'pending for approval') match = false; 
 
                 if (searchVal !== "") {
                     const titleMatch = (row.title || "").toLowerCase().includes(searchVal);
