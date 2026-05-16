@@ -268,7 +268,7 @@
                     </div>
 
                     <div class="flex items-center gap-4 self-end md:self-auto">
-                        <button onclick="document.documentElement.classList.toggle('dark'); setTimeout(()=>updateDashboardStats(), 50);" class="p-2 bg-white dark:bg-gray-800 rounded-full shadow-soft border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-yellow-400 hover:bg-gray-50 transition-all hover-lift" title="Toggle Dark Mode">
+                        <button onclick="document.documentElement.classList.toggle('dark'); setTimeout(()=>applyDashboardFilter(), 50);" class="p-2 bg-white dark:bg-gray-800 rounded-full shadow-soft border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-yellow-400 hover:bg-gray-50 transition-all hover-lift" title="Toggle Dark Mode">
                             <svg class="w-4 h-4 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
                             <svg class="w-4 h-4 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
                         </button>
@@ -290,7 +290,7 @@
                         <span class="text-[11px] font-extrabold text-gray-500 dark:text-gray-400 uppercase tracking-widest pl-2">Overview Filter:</span>
                         <div class="flex flex-wrap items-center gap-2">
                             <div class="w-28">
-                                <select id="dash-filter-staff" onchange="updateDashboardStats()" class="w-full text-[11px] border border-gray-200 dark:border-gray-600 rounded-lg px-2 h-[36px] bg-white dark:bg-gray-800 cursor-pointer appearance-none text-gray-700 dark:text-gray-200 font-semibold shadow-sm transition-all hover:border-indigo-300" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%239ca3af%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E'); background-position: right 0.5rem center; background-repeat: no-repeat; background-size: 1em;">
+                                <select id="dash-filter-staff" onchange="applyDashboardFilter()" class="w-full text-[11px] border border-gray-200 dark:border-gray-600 rounded-lg px-2 h-[36px] bg-white dark:bg-gray-800 cursor-pointer appearance-none text-gray-700 dark:text-gray-200 font-semibold shadow-sm transition-all hover:border-indigo-300" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%239ca3af%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E'); background-position: right 0.5rem center; background-repeat: no-repeat; background-size: 1em;">
                                     <option value="">Staff: All</option>
                                     <option value="-">-</option>
                                     <option value="FATIHAH">FATIHAH</option>
@@ -301,7 +301,7 @@
                             </div>
                             
                             <div class="w-32">
-                                <select id="dash-filter-status" onchange="updateDashboardStats()" class="w-full text-[11px] border border-gray-200 dark:border-gray-600 rounded-lg px-2 h-[36px] bg-white dark:bg-gray-800 cursor-pointer appearance-none text-gray-700 dark:text-gray-200 font-semibold shadow-sm transition-all hover:border-indigo-300" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%239ca3af%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E'); background-position: right 0.5rem center; background-repeat: no-repeat; background-size: 1em;">
+                                <select id="dash-filter-status" onchange="applyDashboardFilter()" class="w-full text-[11px] border border-gray-200 dark:border-gray-600 rounded-lg px-2 h-[36px] bg-white dark:bg-gray-800 cursor-pointer appearance-none text-gray-700 dark:text-gray-200 font-semibold shadow-sm transition-all hover:border-indigo-300" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%239ca3af%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E'); background-position: right 0.5rem center; background-repeat: no-repeat; background-size: 1em;">
                                     <option value="">Status: All</option>
                                     <option value="Completed">Completed</option>
                                     <option value="Pending For Approval">Pending</option>
@@ -310,7 +310,7 @@
                             </div>
                             
                             <div class="w-28">
-                                <select id="dash-filter-tahun" onchange="updateDashboardStats()" class="w-full text-[11px] border border-gray-200 dark:border-gray-600 rounded-lg px-2 h-[36px] bg-white dark:bg-gray-800 cursor-pointer appearance-none text-gray-700 dark:text-gray-200 font-semibold shadow-sm transition-all hover:border-indigo-300" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%239ca3af%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E'); background-position: right 0.5rem center; background-repeat: no-repeat; background-size: 1em;">
+                                <select id="dash-filter-tahun" onchange="applyDashboardFilter()" class="w-full text-[11px] border border-gray-200 dark:border-gray-600 rounded-lg px-2 h-[36px] bg-white dark:bg-gray-800 cursor-pointer appearance-none text-gray-700 dark:text-gray-200 font-semibold shadow-sm transition-all hover:border-indigo-300" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%239ca3af%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E'); background-position: right 0.5rem center; background-repeat: no-repeat; background-size: 1em;">
                                     <option value="">Year: All</option>
                                     <option value="2024">2024</option>
                                     <option value="2025">2025</option>
@@ -480,7 +480,7 @@
                             
                             <div class="flex flex-wrap items-center gap-2">
                                 <div class="w-28">
-                                    <select id="staff-collection" onchange="applyFilters('collection')" class="w-full text-[11px] border border-gray-200 dark:border-gray-600 rounded-lg px-2 h-[36px] bg-white dark:bg-gray-800 cursor-pointer appearance-none text-gray-700 dark:text-gray-200 font-semibold shadow-sm transition-all hover:border-indigo-300" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%239ca3af%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E'); background-position: right 0.5rem center; background-repeat: no-repeat; background-size: 1em;">
+                                    <select id="staff-collection" onchange="applyCollectionFilter()" class="w-full text-[11px] border border-gray-200 dark:border-gray-600 rounded-lg px-2 h-[36px] bg-white dark:bg-gray-800 cursor-pointer appearance-none text-gray-700 dark:text-gray-200 font-semibold shadow-sm transition-all hover:border-indigo-300" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%239ca3af%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E'); background-position: right 0.5rem center; background-repeat: no-repeat; background-size: 1em;">
                                         <option value="">Staff: All</option>
                                         <option value="-">-</option>
                                         <option value="FATIHAH">FATIHAH</option>
@@ -491,7 +491,7 @@
                                 </div>
                                 
                                 <div class="w-32">
-                                    <select id="status-collection" onchange="applyFilters('collection')" class="w-full text-[11px] border border-gray-200 dark:border-gray-600 rounded-lg px-2 h-[36px] bg-white dark:bg-gray-800 cursor-pointer appearance-none text-gray-700 dark:text-gray-200 font-semibold shadow-sm transition-all hover:border-indigo-300" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%239ca3af%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E'); background-position: right 0.5rem center; background-repeat: no-repeat; background-size: 1em;">
+                                    <select id="status-collection" onchange="applyCollectionFilter()" class="w-full text-[11px] border border-gray-200 dark:border-gray-600 rounded-lg px-2 h-[36px] bg-white dark:bg-gray-800 cursor-pointer appearance-none text-gray-700 dark:text-gray-200 font-semibold shadow-sm transition-all hover:border-indigo-300" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%239ca3af%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E'); background-position: right 0.5rem center; background-repeat: no-repeat; background-size: 1em;">
                                         <option value="">Status: All</option>
                                         <option value="Completed">Completed</option>
                                         <option value="Pending For Approval">Pending</option>
@@ -500,7 +500,7 @@
                                 </div>
                                 
                                 <div class="w-28">
-                                    <select id="tahun-collection" onchange="applyFilters('collection')" class="w-full text-[11px] border border-gray-200 dark:border-gray-600 rounded-lg px-2 h-[36px] bg-white dark:bg-gray-800 cursor-pointer appearance-none text-gray-700 dark:text-gray-200 font-semibold shadow-sm transition-all hover:border-indigo-300" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%239ca3af%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E'); background-position: right 0.5rem center; background-repeat: no-repeat; background-size: 1em;">
+                                    <select id="tahun-collection" onchange="applyCollectionFilter()" class="w-full text-[11px] border border-gray-200 dark:border-gray-600 rounded-lg px-2 h-[36px] bg-white dark:bg-gray-800 cursor-pointer appearance-none text-gray-700 dark:text-gray-200 font-semibold shadow-sm transition-all hover:border-indigo-300" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%239ca3af%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E'); background-position: right 0.5rem center; background-repeat: no-repeat; background-size: 1em;">
                                         <option value="">Year: All</option>
                                         <option value="2024">2024</option>
                                         <option value="2025">2025</option>
@@ -579,7 +579,7 @@
                             
                             <div class="flex flex-wrap items-center gap-2">
                                 <div class="w-28">
-                                    <select id="staff-approvals" onchange="applyFilters('approvals')" class="w-full text-[11px] border border-gray-200 dark:border-gray-600 rounded-lg px-2 h-[36px] bg-white dark:bg-gray-800 cursor-pointer appearance-none text-gray-700 dark:text-gray-200 font-semibold shadow-sm transition-all hover:border-indigo-300" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%239ca3af%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E'); background-position: right 0.5rem center; background-repeat: no-repeat; background-size: 1em;">
+                                    <select id="staff-approvals" onchange="applyApprovalsFilter()" class="w-full text-[11px] border border-gray-200 dark:border-gray-600 rounded-lg px-2 h-[36px] bg-white dark:bg-gray-800 cursor-pointer appearance-none text-gray-700 dark:text-gray-200 font-semibold shadow-sm transition-all hover:border-indigo-300" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%239ca3af%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E'); background-position: right 0.5rem center; background-repeat: no-repeat; background-size: 1em;">
                                         <option value="">Staff: All</option>
                                         <option value="-">-</option>
                                         <option value="FATIHAH">FATIHAH</option>
@@ -590,7 +590,7 @@
                                 </div>
                                 
                                 <div class="w-28">
-                                    <select id="tahun-approvals" onchange="applyFilters('approvals')" class="w-full text-[11px] border border-gray-200 dark:border-gray-600 rounded-lg px-2 h-[36px] bg-white dark:bg-gray-800 cursor-pointer appearance-none text-gray-700 dark:text-gray-200 font-semibold shadow-sm transition-all hover:border-indigo-300" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%239ca3af%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E'); background-position: right 0.5rem center; background-repeat: no-repeat; background-size: 1em;">
+                                    <select id="tahun-approvals" onchange="applyApprovalsFilter()" class="w-full text-[11px] border border-gray-200 dark:border-gray-600 rounded-lg px-2 h-[36px] bg-white dark:bg-gray-800 cursor-pointer appearance-none text-gray-700 dark:text-gray-200 font-semibold shadow-sm transition-all hover:border-indigo-300" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%239ca3af%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E'); background-position: right 0.5rem center; background-repeat: no-repeat; background-size: 1em;">
                                         <option value="">Year: All</option>
                                         <option value="2024">2024</option>
                                         <option value="2025">2025</option>
@@ -786,11 +786,27 @@
         </div>
     </div>
 
-    <!-- ================== EXACT PRESERVED JAVASCRIPT ================== -->
+    <!-- ================== JAVASCRIPT LOGIC ================== -->
     <script>
-        
         let analyticsChartsInitialized = false;
         
+        /* =====================================================================
+           ISOLATED DATA STATES
+           ===================================================================== */
+        let masterData = []; // Full Data from API
+        let dashboardData = []; // Data untuk chart sahaja
+        let recordData = []; // Data untuk table Koleksi
+        let approvalData = []; // Data untuk table Approval
+        
+        let collectionPage = 1;
+        let approvalsPage = 1;
+        const rowsPerPage = 100;
+        
+        let currentUserRole = ""; 
+        let currentUserName = "";
+        let currentActiveTab = 'dashboard';
+        let editingId = null;
+
         /* =====================================================================
            STAFF MANAGEMENT DATABASE
            ===================================================================== */
@@ -975,16 +991,8 @@
         }
 
         /* =====================================================================
-           FUNGSI PERTUKARAN TAB (TAB SWITCHING LOGIC & ISOLATED STATES)
+           FUNGSI PERTUKARAN TAB
            ===================================================================== */
-        let tabStates = {
-            'collection': { search: '', staff: '', status: '', tahun: '', page: 1, filtered: [] },
-            'approvals': { search: '', staff: '', status: 'Pending For Approval', tahun: '', page: 1, filtered: [] },
-            'dashboard': { staff: '', status: '', tahun: '' }
-        };
-        let currentActiveTab = 'dashboard'; 
-        let editingId = null;
-
         function switchTab(tabId, clickedElement) {
             document.querySelectorAll('.tab-pane').forEach(pane => {
                 pane.classList.add('hidden');
@@ -1012,33 +1020,17 @@
             if (tabId === 'dashboard') {
                 pageTitle.innerHTML = `Welcome back, <span id="profile-name" class="uppercase text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400">${currentUserName || 'STAFF'}</span>!`;
                 pageSubtitle.textContent = "Here is the summary of executive collection management today.";
-                
-                if (document.getElementById('dash-filter-staff')) document.getElementById('dash-filter-staff').value = tabStates['dashboard'].staff;
-                if (document.getElementById('dash-filter-status')) document.getElementById('dash-filter-status').value = tabStates['dashboard'].status;
-                if (document.getElementById('dash-filter-tahun')) document.getElementById('dash-filter-tahun').value = tabStates['dashboard'].tahun;
-                
-                updateDashboardStats();
+                applyDashboardFilter();
             } 
             else if (tabId === 'collection') {
                 pageTitle.innerHTML = "Records";
                 pageSubtitle.textContent = "Full list of all executive collections and status.";
-                
-                document.getElementById('search-collection').value = tabStates['collection'].search;
-                document.getElementById('staff-collection').value = tabStates['collection'].staff;
-                document.getElementById('status-collection').value = tabStates['collection'].status;
-                document.getElementById('tahun-collection').value = tabStates['collection'].tahun;
-                
-                applyFilters('collection', true);
+                applyCollectionFilter(true);
             } 
             else if (tabId === 'approvals') {
                 pageTitle.innerHTML = "Approvals Queue";
                 pageSubtitle.textContent = "Action required for pending files.";
-                
-                document.getElementById('search-approvals').value = tabStates['approvals'].search;
-                document.getElementById('staff-approvals').value = tabStates['approvals'].staff;
-                document.getElementById('tahun-approvals').value = tabStates['approvals'].tahun;
-                
-                applyFilters('approvals', true);
+                applyApprovalsFilter(true);
             } 
             else if (tabId === 'staff') {
                 pageTitle.innerHTML = "Staff Management";
@@ -1053,41 +1045,6 @@
         }
 
         /* =====================================================================
-           ANALYTICS CATALOG MOCKUP
-           ===================================================================== */
-        function initAnalyticsCatalog() {
-            if(analyticsChartsInitialized) return;
-            analyticsChartsInitialized = true;
-            
-            const textColor = isDarkMode() ? '#94a3b8' : '#64748b';
-            
-            new Chart(document.getElementById('chart-keywords').getContext('2d'), {
-                type: 'bar',
-                data: { labels: ['Technology', 'Survey', 'Web Dev', 'Testing', 'Data'], datasets: [{ data: [120, 95, 80, 50, 45], backgroundColor: '#6366f1', borderRadius: 4, barThickness: 15 }] },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: {display: false} }, scales: { x:{display:false}, y:{grid:{display:false}, ticks:{font:{size:9}, color:textColor}} } }
-            });
-            
-            new Chart(document.getElementById('chart-fields').getContext('2d'), {
-                type: 'doughnut',
-                data: { labels: ['Computer Science', 'Medicine', 'Statistics', 'Others'], datasets: [{ data: [40, 30, 20, 10], backgroundColor: ['#8b5cf6', '#10b981', '#f59e0b', '#cbd5e1'], borderWidth: 0 }] },
-                options: { 
-                    responsive: true, 
-                    maintainAspectRatio: false, 
-                    cutout: '65%', 
-                    layout: { padding: { top: 10, bottom: 10, left: 10, right: 10 } },
-                    plugins: { legend: { position: 'right', labels:{usePointStyle:true, boxWidth:6, font:{size:9}, color:textColor} } } 
-                }
-            });
-            
-            new Chart(document.getElementById('chart-trends').getContext('2d'), {
-                type: 'line',
-                data: { labels: ['Jan','Feb','Mar','Apr','May'], datasets: [{ label: 'Searches', data: [20, 45, 30, 80, 110], borderColor: '#3b82f6', tension: 0.4, fill: true, backgroundColor: 'rgba(59, 130, 246, 0.1)' }] },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: {display: false} }, scales: { x:{grid:{display:false}, ticks:{color:textColor, font:{size:9}}}, y:{display:false} } }
-            });
-        }
-
-
-        /* =====================================================================
            KONFIGURASI API (UNTUK HOSTING DI GITHUB/EXTERNAL)
            ===================================================================== */
         const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyW6tt0RSPlUk6FYADcQizfe3ami9wLtKNKDcjJd8f1Wev9E3D918Vr7y7vBnI4ONis/exec";
@@ -1095,19 +1052,9 @@
         const statusOptions = ["Completed", "incomplete", "Pending For Approval"];
         const staffOptions = ["FATIHAH", "FAZILAH", "SAKINAH", "HUSNA"];
         
-        let dataset = []; 
         let staffChartInstance = null;
         let statusChartInstance = null;
         
-        let currentUserRole = ""; 
-        let currentUserName = "";
-
-        let MOCK_DB = [
-            { id: 2, no: 1, controlNo: "23576", callNo082: "0005.3", callNo050: "TK5105.888 IRS 2001", accession: "BK00075774", title: "DEVELOPING WEB SITE USING MICROSOFT WORD STEP BY STEP", status: "incomplete", staff: "FAZILAH", date: "14/04/2024", approvedBy: "", approvedDate: "" },
-            { id: 3, no: 2, controlNo: "0000025823", callNo082: "001.4 BIE", callNo050: "HA31.2.B54 2003", accession: "BK00076063", title: "INTRODUCTION TO SURVEY QUALITY", status: "Completed", staff: "SAKINAH", date: "10/04/2025", approvedBy: "ROSLI", approvedDate: "12/04/2025" },
-            { id: 4, no: 3, controlNo: "1111000011", callNo082: "005.2 TEST", callNo050: "AB12.3", accession: "BK00099999", title: "THE BOOK OF TESTING", status: "Pending For Approval", staff: "", date: "16/04/2026", approvedBy: "", approvedDate: "" }
-        ];
-
         const getStaffDisplay = (staffName) => {
             if (!staffName || staffName.trim() === '') return '-';
             return staffOptions.includes(staffName) ? staffName : 'ADMIN';
@@ -1132,8 +1079,8 @@
         /* =====================================================================
            SESSION TIMEOUT LOGIC
            ===================================================================== */
-        const TIMEOUT_DURATION = 30 * 60 * 1000; // 30 minit
-        const WARNING_DURATION = 29 * 60 * 1000; // 29 minit
+        const TIMEOUT_DURATION = 30 * 60 * 1000; 
+        const WARNING_DURATION = 29 * 60 * 1000; 
         let sessionCheckerInterval;
         let autoSyncInterval;
         let isThrottled = false;
@@ -1218,16 +1165,13 @@
         }
 
         /* =====================================================================
-           BACKEND FETCHER & REALTIME SYNC (SAFE JSON HANDLING)
+           BACKEND FETCHER (JSON PROTECTED)
            ===================================================================== */
         const server = {
             withSuccessHandler: function(cb) { this.cb = cb; return this; },
             
             getInitialData: function() { 
-                if (GAS_WEB_APP_URL === "LETAK_URL_GOOGLE_APPS_SCRIPT_ANDA_DI_SINI") {
-                    setTimeout(() => this.cb([...MOCK_DB]), 500);
-                    return;
-                }
+                if (GAS_WEB_APP_URL === "LETAK_URL_GOOGLE_APPS_SCRIPT_ANDA_DI_SINI") return;
                 
                 fetch(GAS_WEB_APP_URL + "?action=getInitialData")
                     .then(response => {
@@ -1238,9 +1182,7 @@
                         try {
                             const data = JSON.parse(text);
                             if(this.cb) this.cb(data);
-                        } catch(e) {
-                            console.error("JSON Error: ", e);
-                        }
+                        } catch(e) { console.error("JSON Error: ", e); }
                     })
                     .catch(error => { console.error('Fetch Error:', error); hideLoading(); });
             },
@@ -1260,17 +1202,14 @@
                                 staffDB = data.length > 0 ? data : JSON.parse(JSON.stringify(defaultStaffDB));
                                 if (currentActiveTab === 'staff') renderStaffDirectory();
                             }
-                        } catch(e) {
-                            console.error("JSON Error (Staff): ", e);
-                        }
+                        } catch(e) { console.error("JSON Error (Staff): ", e); }
                     })
                     .catch(error => console.error('Fetch Staff Error:', error));
             },
 
             saveStaff: function(staffList) {
                 if (GAS_WEB_APP_URL === "LETAK_URL_GOOGLE_APPS_SCRIPT_ANDA_DI_SINI") {
-                    setTimeout(() => { hideLoading(); showToast("Staff saved!"); }, 500);
-                    return;
+                    setTimeout(() => { hideLoading(); showToast("Staff saved!"); }, 500); return;
                 }
                 
                 fetch(GAS_WEB_APP_URL, {
@@ -1279,21 +1218,15 @@
                     body: JSON.stringify({ action: 'saveStaff', staffDB: staffList }), 
                     headers: { 'Content-Type': 'text/plain' }
                 })
-                .then(() => { 
-                    setTimeout(() => { hideLoading(); showToast("Maklumat Staff berjaya di-sync!"); }, 800); 
-                })
-                .catch(error => { 
-                    hideLoading(); 
-                    showToast("Gagal menyimpan data ke server."); 
-                });
+                .then(() => { setTimeout(() => { hideLoading(); showToast("Maklumat Staff berjaya di-sync!"); }, 800); })
+                .catch(error => { hideLoading(); showToast("Gagal menyimpan data ke server."); });
             },
             
             updateRow: function(record) { 
                 if (GAS_WEB_APP_URL === "LETAK_URL_GOOGLE_APPS_SCRIPT_ANDA_DI_SINI") {
-                    const idx = MOCK_DB.findIndex(r => r.id === record.id);
-                    if(idx > -1) MOCK_DB[idx] = {...record};
-                    setTimeout(() => { if(this.cb) this.cb(true); }, 300); 
-                    return;
+                    const idx = masterData.findIndex(r => r.id === record.id);
+                    if(idx > -1) masterData[idx] = {...record};
+                    setTimeout(() => { if(this.cb) this.cb(true); }, 300); return;
                 }
                 
                 fetch(GAS_WEB_APP_URL, {
@@ -1302,13 +1235,8 @@
                     body: JSON.stringify({ action: 'updateRow', record: record }), 
                     headers: { 'Content-Type': 'text/plain' }
                 })
-                .then(() => { 
-                    setTimeout(() => { if(this.cb) this.cb(true); }, 800); 
-                })
-                .catch(error => { 
-                    hideLoading(); 
-                    showToast("Failed to save."); 
-                });
+                .then(() => { setTimeout(() => { if(this.cb) this.cb(true); }, 800); })
+                .catch(error => { hideLoading(); showToast("Failed to save."); });
             }
         };
 
@@ -1348,11 +1276,8 @@
             if (isValid) {
                 currentUserRole = role;
                 
-                tabStates = {
-                    'collection': { search: '', staff: '', status: '', tahun: '', page: 1, filtered: [] },
-                    'approvals': { search: '', staff: '', status: 'Pending For Approval', tahun: '', page: 1, filtered: [] },
-                    'dashboard': { staff: '', status: '', tahun: '' }
-                };
+                collectionPage = 1;
+                approvalsPage = 1;
 
                 errorMsg.classList.add('hidden');
                 
@@ -1383,7 +1308,7 @@
         }
 
         function checkAutoLogin() {
-            logout();
+            logout(); // Wajib log masuk setiap kali muka surat dibuka/di-refresh
         }
 
         function logout() {
@@ -1399,11 +1324,14 @@
             if (document.getElementById('dash-filter-status')) document.getElementById('dash-filter-status').value = "";
             if (document.getElementById('dash-filter-tahun')) document.getElementById('dash-filter-tahun').value = "";
             
-            tabStates = {
-                'collection': { search: '', staff: '', status: '', tahun: '', page: 1, filtered: [] },
-                'approvals': { search: '', staff: '', status: 'Pending For Approval', tahun: '', page: 1, filtered: [] },
-                'dashboard': { staff: '', status: '', tahun: '' }
-            };
+            if (document.getElementById('search-collection')) document.getElementById('search-collection').value = "";
+            if (document.getElementById('staff-collection')) document.getElementById('staff-collection').value = "";
+            if (document.getElementById('status-collection')) document.getElementById('status-collection').value = "";
+            if (document.getElementById('tahun-collection')) document.getElementById('tahun-collection').value = "";
+
+            if (document.getElementById('search-approvals')) document.getElementById('search-approvals').value = "";
+            if (document.getElementById('staff-approvals')) document.getElementById('staff-approvals').value = "";
+            if (document.getElementById('tahun-approvals')) document.getElementById('tahun-approvals').value = "";
 
             editingId = null; 
             currentUserRole = ""; 
@@ -1416,13 +1344,17 @@
             document.getElementById('dashboard-screen').classList.remove('flex');
             document.getElementById('login-screen').classList.remove('hidden');
             
-            dataset = [];
+            masterData = [];
+            dashboardData = [];
+            recordData = [];
+            approvalData = [];
+
             if(document.getElementById('table-body-collection')) document.getElementById('table-body-collection').innerHTML = '';
             if(document.getElementById('table-body-approvals')) document.getElementById('table-body-approvals').innerHTML = '';
         }
 
         /* =====================================================================
-           PENGURUSAN DATA, CARIAN & FILTER MULTI-TAB
+           DATA SYNC & INDEPENDENT FILTERING
            ===================================================================== */
         function showLoading(msg) {
             document.getElementById('loading-text').textContent = msg || "Processing";
@@ -1433,15 +1365,12 @@
         function fetchDataFromGoogleSheet(isSilent = false) {
             if (!isSilent) showLoading("Syncing...");
             server.withSuccessHandler(function(data) {
-                if (data) dataset = data; 
+                if (data) masterData = data; 
                 
-                if (currentActiveTab === 'dashboard') {
-                    updateDashboardStats();
-                } else if (currentActiveTab === 'collection') {
-                    applyFilters('collection', true); 
-                } else if (currentActiveTab === 'approvals') {
-                    applyFilters('approvals', true); 
-                }
+                // Segarkan state semua tab untuk menjamin data selari
+                applyDashboardFilter();
+                applyCollectionFilter(true);
+                applyApprovalsFilter(true);
                 
                 if (!isSilent) hideLoading();
             }).getInitialData();
@@ -1453,103 +1382,171 @@
         function debouncedSearch(tabId) {
             clearTimeout(searchDebounceTimer);
             searchDebounceTimer = setTimeout(() => {
-                applyFilters(tabId);
+                if (tabId === 'collection') applyCollectionFilter();
+                else if (tabId === 'approvals') applyApprovalsFilter();
             }, 300); 
         }
+
+        function applyDashboardFilter() {
+            const dashFilterStaff = document.getElementById('dash-filter-staff') ? document.getElementById('dash-filter-staff').value : "";
+            const dashFilterStatus = document.getElementById('dash-filter-status') ? document.getElementById('dash-filter-status').value : "";
+            const dashFilterTahun = document.getElementById('dash-filter-tahun') ? document.getElementById('dash-filter-tahun').value : "";
+
+            dashboardData = masterData.filter(row => {
+                if (dashFilterStaff !== "" && getStaffDisplay(row.staff) !== dashFilterStaff) return false;
+                if (dashFilterStatus !== "" && (row.status || "").toLowerCase().trim() !== dashFilterStatus.toLowerCase().trim()) return false;
+                if (dashFilterTahun !== "" && getYearFromDate(row.date) !== dashFilterTahun) return false;
+                return true;
+            });
+
+            updateDashboardStats();
+        }
         
-        function applyFilters(tabId, preservePage = false) {
-            if (!tabId) tabId = currentActiveTab;
-            if (tabId !== 'collection' && tabId !== 'approvals') return;
+        function applyCollectionFilter(preservePage = false) {
+            const searchVal = document.getElementById('search-collection') ? document.getElementById('search-collection').value.toLowerCase().trim() : "";
+            const staffVal = document.getElementById('staff-collection') ? document.getElementById('staff-collection').value : "";
+            const statusVal = document.getElementById('status-collection') ? document.getElementById('status-collection').value : "";
+            const tahunVal = document.getElementById('tahun-collection') ? document.getElementById('tahun-collection').value : "";
 
-            const searchVal = document.getElementById(`search-${tabId}`).value.toLowerCase().trim();
-            const staffVal = document.getElementById(`staff-${tabId}`).value;
-            const tahunVal = document.getElementById(`tahun-${tabId}`).value;
-            
-            let statusVal = "";
-            if (tabId === 'approvals') {
-                statusVal = 'pending for approval';
-            } else {
-                statusVal = document.getElementById(`status-${tabId}`).value;
-            }
-
-            tabStates[tabId].search = searchVal;
-            tabStates[tabId].staff = staffVal;
-            tabStates[tabId].tahun = tahunVal;
-            tabStates[tabId].status = statusVal;
-
-            tabStates[tabId].filtered = dataset.filter(row => {
+            recordData = masterData.filter(row => {
                 let match = true;
-                
                 if (searchVal !== "") {
                     const titleMatch = (row.title || "").toLowerCase().includes(searchVal);
                     const accMatch = (row.accession || "").toLowerCase().includes(searchVal);
                     if (!titleMatch && !accMatch) match = false;
                 }
-                
-                if (staffVal !== "") {
-                    if (getStaffDisplay(row.staff) !== staffVal) match = false;
-                }
-                
-                if (statusVal !== "") {
-                    if ((row.status || "").toLowerCase().trim() !== statusVal.toLowerCase().trim()) match = false;
-                }
-                
-                if (tahunVal !== "") {
-                    if (getYearFromDate(row.date) !== tahunVal) match = false;
-                }
-                
+                if (staffVal !== "" && getStaffDisplay(row.staff) !== staffVal) match = false;
+                if (statusVal !== "" && (row.status || "").toLowerCase().trim() !== statusVal.toLowerCase().trim()) match = false;
+                if (tahunVal !== "" && getYearFromDate(row.date) !== tahunVal) match = false;
                 return match;
             });
             
-            if (!preservePage) {
-                tabStates[tabId].page = 1; 
-            } else {
-                const maxPages = Math.ceil(tabStates[tabId].filtered.length / rowsPerPage) || 1;
-                if (tabStates[tabId].page > maxPages) tabStates[tabId].page = maxPages;
+            if (!preservePage) { collectionPage = 1; } 
+            else {
+                const maxPages = Math.ceil(recordData.length / rowsPerPage) || 1;
+                if (collectionPage > maxPages) collectionPage = maxPages;
             }
             
-            renderTable(tabId);
+            if (currentActiveTab === 'collection') renderRecordTable();
+        }
+
+        function applyApprovalsFilter(preservePage = false) {
+            const searchVal = document.getElementById('search-approvals') ? document.getElementById('search-approvals').value.toLowerCase().trim() : "";
+            const staffVal = document.getElementById('staff-approvals') ? document.getElementById('staff-approvals').value : "";
+            const tahunVal = document.getElementById('tahun-approvals') ? document.getElementById('tahun-approvals').value : "";
+
+            approvalData = masterData.filter(row => {
+                let match = true;
+                if ((row.status || "").toLowerCase().trim() !== 'pending for approval') match = false; // Force Pending only
+
+                if (searchVal !== "") {
+                    const titleMatch = (row.title || "").toLowerCase().includes(searchVal);
+                    const accMatch = (row.accession || "").toLowerCase().includes(searchVal);
+                    if (!titleMatch && !accMatch) match = false;
+                }
+                if (staffVal !== "" && getStaffDisplay(row.staff) !== staffVal) match = false;
+                if (tahunVal !== "" && getYearFromDate(row.date) !== tahunVal) match = false;
+                return match;
+            });
+            
+            if (!preservePage) { approvalsPage = 1; } 
+            else {
+                const maxPages = Math.ceil(approvalData.length / rowsPerPage) || 1;
+                if (approvalsPage > maxPages) approvalsPage = maxPages;
+            }
+            
+            if (currentActiveTab === 'approvals') renderApprovalTable();
         }
 
         function prevPage(tabId) {
-            if (tabStates[tabId].page > 1) { 
-                tabStates[tabId].page--; 
-                renderTable(tabId); 
-            }
+            if (tabId === 'collection' && collectionPage > 1) { collectionPage--; renderRecordTable(); }
+            else if (tabId === 'approvals' && approvalsPage > 1) { approvalsPage--; renderApprovalTable(); }
         }
         function nextPage(tabId) {
-            if (tabStates[tabId].page * rowsPerPage < tabStates[tabId].filtered.length) { 
-                tabStates[tabId].page++; 
-                renderTable(tabId); 
-            }
+            if (tabId === 'collection' && collectionPage * rowsPerPage < recordData.length) { collectionPage++; renderRecordTable(); }
+            else if (tabId === 'approvals' && approvalsPage * rowsPerPage < approvalData.length) { approvalsPage++; renderApprovalTable(); }
         }
 
-        function renderTable(tabId) {
-            const tbody = document.getElementById(`table-body-${tabId}`);
+        /* =====================================================================
+           TABLE RENDERING
+           ===================================================================== */
+        function renderRecordTable() {
+            const tbody = document.getElementById('table-body-collection');
             if (!tbody) return;
+            const paginationDiv = document.getElementById('pagination-collection');
+            const tableContainer = tbody.closest('.custom-scrollbar');
+            const currentTableScroll = tableContainer ? tableContainer.scrollTop : 0;
             
-            const paginationDiv = document.getElementById(`pagination-${tabId}`);
+            paginationDiv.classList.remove('hidden');
+            const startIndex = (collectionPage - 1) * rowsPerPage;
+            const endIndex = startIndex + rowsPerPage;
+            const paginatedData = recordData.slice(startIndex, endIndex);
+            
+            const fragment = document.createDocumentFragment();
+            
+            if (paginatedData.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="11" class="px-5 py-10 text-center text-gray-500 font-medium italic text-sm">No records found.</td></tr>`; 
+            } else {
+                const currentRows = Array.from(tbody.querySelectorAll(`tr[id^="row-collection-"]`));
+                const paginatedIds = paginatedData.map(r => `row-collection-${r.id}`);
+                
+                currentRows.forEach(row => { if (!paginatedIds.includes(row.id)) row.remove(); });
+
+                paginatedData.forEach((row, index) => {
+                    const rowId = `row-collection-${row.id}`;
+                    let tr = document.getElementById(rowId);
+                    
+                    const isEditing = (editingId === row.id && currentActiveTab === 'collection');
+                    const html = generateRowHTML(row, isEditing, false, 'collection');
+                    const className = isEditing ? 'editing-row' : '';
+                    
+                    if (tr) {
+                        if (tr.innerHTML !== html || tr.className !== className) {
+                            tr.innerHTML = html;
+                            tr.className = className;
+                        }
+                        if (tbody.children[index] !== tr) {
+                            tbody.insertBefore(tr, tbody.children[index]);
+                        }
+                    } else {
+                        tr = document.createElement('tr');
+                        tr.id = rowId;
+                        tr.className = className;
+                        tr.innerHTML = html;
+                        if (tbody.children[index]) { tbody.insertBefore(tr, tbody.children[index]); } 
+                        else { fragment.appendChild(tr); }
+                    }
+                });
+                if (fragment.children.length > 0) tbody.appendChild(fragment);
+            }
+            
+            const infoEnd = Math.min(startIndex + rowsPerPage, recordData.length);
+            const infoEl = document.getElementById('page-info-collection');
+            if(infoEl) infoEl.textContent = `Showing ${recordData.length > 0 ? startIndex + 1 : 0} to ${infoEnd} of ${recordData.length} records`;
+
+            if (tableContainer) tableContainer.scrollTop = currentTableScroll;
+        }
+
+        function renderApprovalTable() {
+            const tbody = document.getElementById('table-body-approvals');
+            if (!tbody) return;
+            const paginationDiv = document.getElementById('pagination-approvals');
             const tableContainer = tbody.closest('.custom-scrollbar');
             const currentTableScroll = tableContainer ? tableContainer.scrollTop : 0;
             
             const fragment = document.createDocumentFragment();
-            const filteredDataset = tabStates[tabId].filtered;
-            const currentPage = tabStates[tabId].page;
             
-            if (currentUserRole === 'rosli' && tabId === 'approvals') {
+            if (currentUserRole === 'rosli') {
                 paginationDiv.classList.add('hidden'); 
-                
                 let groupedData = {};
-                filteredDataset.forEach(row => {
+                approvalData.forEach(row => {
                     const sName = getStaffDisplay(row.staff);
                     if (!groupedData[sName]) groupedData[sName] = [];
                     groupedData[sName].push(row);
                 });
 
                 if(Object.keys(groupedData).length === 0) {
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `<td colspan="11" class="px-5 py-10 text-center text-gray-500 font-medium italic text-sm">No records require your action.</td>`;
-                    fragment.appendChild(tr);
+                    tbody.innerHTML = `<tr><td colspan="11" class="px-5 py-10 text-center text-gray-500 font-medium italic text-sm">No records require your action.</td></tr>`;
                 } else {
                     for (let staffName in groupedData) {
                         const staffRows = groupedData[staffName];
@@ -1567,37 +1564,33 @@
                         fragment.appendChild(groupHeader);
                         staffRows.forEach(row => {
                             const tr = document.createElement('tr');
-                            tr.innerHTML = generateRowHTML(row, false, true, tabId); 
+                            tr.innerHTML = generateRowHTML(row, false, true, 'approvals'); 
                             fragment.appendChild(tr);
                         });
                     }
+                    tbody.innerHTML = '';
+                    tbody.appendChild(fragment);
                 }
-                tbody.innerHTML = '';
-                tbody.appendChild(fragment);
             } else {
                 paginationDiv.classList.remove('hidden');
-                const startIndex = (currentPage - 1) * rowsPerPage;
+                const startIndex = (approvalsPage - 1) * rowsPerPage;
                 const endIndex = startIndex + rowsPerPage;
-                const paginatedData = filteredDataset.slice(startIndex, endIndex);
+                const paginatedData = approvalData.slice(startIndex, endIndex);
                 
                 if (paginatedData.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="11" class="px-5 py-10 text-center text-gray-500 font-medium italic text-sm">No records found.</td></tr>`; 
+                    tbody.innerHTML = `<tr><td colspan="11" class="px-5 py-10 text-center text-gray-500 font-medium italic text-sm">No pending records found.</td></tr>`; 
                 } else {
-                    const currentRows = Array.from(tbody.querySelectorAll(`tr[id^="row-${tabId}-"]`));
-                    const paginatedIds = paginatedData.map(r => `row-${tabId}-${r.id}`);
+                    const currentRows = Array.from(tbody.querySelectorAll(`tr[id^="row-approvals-"]`));
+                    const paginatedIds = paginatedData.map(r => `row-approvals-${r.id}`);
                     
-                    currentRows.forEach(row => {
-                        if (!paginatedIds.includes(row.id)) {
-                            row.remove();
-                        }
-                    });
+                    currentRows.forEach(row => { if (!paginatedIds.includes(row.id)) row.remove(); });
 
                     paginatedData.forEach((row, index) => {
-                        const rowId = `row-${tabId}-${row.id}`;
+                        const rowId = `row-approvals-${row.id}`;
                         let tr = document.getElementById(rowId);
                         
-                        const isEditing = (editingId === row.id && currentActiveTab === tabId);
-                        const html = generateRowHTML(row, isEditing, false, tabId);
+                        const isEditing = (editingId === row.id && currentActiveTab === 'approvals');
+                        const html = generateRowHTML(row, isEditing, false, 'approvals');
                         const className = isEditing ? 'editing-row' : '';
                         
                         if (tr) {
@@ -1613,22 +1606,16 @@
                             tr.id = rowId;
                             tr.className = className;
                             tr.innerHTML = html;
-                            
-                            if (tbody.children[index]) {
-                                tbody.insertBefore(tr, tbody.children[index]);
-                            } else {
-                                fragment.appendChild(tr);
-                            }
+                            if (tbody.children[index]) { tbody.insertBefore(tr, tbody.children[index]); } 
+                            else { fragment.appendChild(tr); }
                         }
                     });
-                    if (fragment.children.length > 0) {
-                        tbody.appendChild(fragment);
-                    }
+                    if (fragment.children.length > 0) tbody.appendChild(fragment);
                 }
                 
-                const infoEnd = Math.min(startIndex + rowsPerPage, tabStates[tabId].filtered.length);
-                const infoEl = document.getElementById(`page-info-${tabId}`);
-                if(infoEl) infoEl.textContent = `Showing ${tabStates[tabId].filtered.length > 0 ? startIndex + 1 : 0} to ${infoEnd} of ${tabStates[tabId].filtered.length} records`;
+                const infoEnd = Math.min(startIndex + rowsPerPage, approvalData.length);
+                const infoEl = document.getElementById('page-info-approvals');
+                if(infoEl) infoEl.textContent = `Showing ${approvalData.length > 0 ? startIndex + 1 : 0} to ${infoEnd} of ${approvalData.length} records`;
             }
 
             if (tableContainer) tableContainer.scrollTop = currentTableScroll;
@@ -1637,10 +1624,10 @@
         function approveSingleRow(id, tabId) {
             if(!confirm(`Are you sure you want to approve this record?`)) return;
             showLoading("Approving...");
-            const index = dataset.findIndex(r => r.id === id);
+            const index = masterData.findIndex(r => r.id === id);
             if (index === -1) { hideLoading(); return; }
 
-            let record = {...dataset[index]};
+            let record = {...masterData[index]};
             
             const rosliInput = document.getElementById(`rosli-c050-${tabId}-${id}`);
             if (rosliInput) {
@@ -1652,8 +1639,11 @@
             const t = new Date();
             record.approvedDate = String(t.getDate()).padStart(2, '0') + '/' + String(t.getMonth() + 1).padStart(2, '0') + '/' + t.getFullYear();
 
-            dataset[index] = record;
-            applyFilters(tabId, true);
+            masterData[index] = record;
+            
+            applyDashboardFilter();
+            applyCollectionFilter(true);
+            applyApprovalsFilter(true);
             
             server.withSuccessHandler(function() {
                 hideLoading();
@@ -1789,25 +1779,25 @@
         }
 
         function saveRow(id, tabId) {
-            const index = dataset.findIndex(r => r.id === id);
+            const index = masterData.findIndex(r => r.id === id);
             if (index === -1) return;
 
             let newStatus = document.getElementById(`edit-status-${tabId}-${id}`).value;
-            let newDate = dataset[index].date;
+            let newDate = masterData[index].date;
             
             let finalStatusToSave = newStatus;
             if (currentUserRole === 'staff' && newStatus === 'Completed') {
                 finalStatusToSave = 'Pending For Approval'; 
             }
 
-            const currentStatusLower = (dataset[index].status || "").toLowerCase().trim();
+            const currentStatusLower = (masterData[index].status || "").toLowerCase().trim();
             if ((newStatus === 'Completed' || finalStatusToSave === 'Pending For Approval') && currentStatusLower !== 'completed' && currentStatusLower !== 'pending for approval') {
                 const t = new Date();
                 newDate = String(t.getDate()).padStart(2, '0') + '/' + String(t.getMonth() + 1).padStart(2, '0') + '/' + t.getFullYear();
             }
 
             const updatedRecord = {
-                ...dataset[index],
+                ...masterData[index],
                 controlNo: document.getElementById(`edit-ctrl-${tabId}-${id}`).value,
                 callNo082: document.getElementById(`edit-c082-${tabId}-${id}`).value, 
                 callNo050: document.getElementById(`edit-c050-${tabId}-${id}`).value,
@@ -1820,10 +1810,13 @@
             server.withSuccessHandler(function(success) {
                 hideLoading();
                 showToast("Record successfully updated.");
-                dataset[index] = updatedRecord;
+                masterData[index] = updatedRecord;
                 editingId = null;
                 
-                applyFilters(tabId, true);
+                applyDashboardFilter();
+                applyCollectionFilter(true);
+                applyApprovalsFilter(true);
+                
                 fetchDataFromGoogleSheet(true);
             }).updateRow(updatedRecord);
         }
@@ -1850,8 +1843,8 @@
             showLoading("Generating Excel File...");
             setTimeout(() => {
                 const exportTahun = document.getElementById('export-tahun-' + tabId).value;
-                let dataToExport = dataset; 
-                if (exportTahun !== "") dataToExport = dataset.filter(row => getYearFromDate(row.date) === exportTahun);
+                let dataToExport = masterData; 
+                if (exportTahun !== "") dataToExport = masterData.filter(row => getYearFromDate(row.date) === exportTahun);
                 if (dataToExport.length === 0) { hideLoading(); alert("No records found."); return; }
 
                 const cleanData = dataToExport.map(row => ({
@@ -1868,27 +1861,25 @@
         }
 
         function updateDashboardStats() {
-            const dashFilterStaff = document.getElementById('dash-filter-staff') ? document.getElementById('dash-filter-staff').value : tabStates['dashboard'].staff;
-            const dashFilterStatus = document.getElementById('dash-filter-status') ? document.getElementById('dash-filter-status').value : tabStates['dashboard'].status;
-            const dashFilterTahun = document.getElementById('dash-filter-tahun') ? document.getElementById('dash-filter-tahun').value : tabStates['dashboard'].tahun;
+            dashboardData = masterData.filter(row => {
+                const dashFilterStaff = document.getElementById('dash-filter-staff') ? document.getElementById('dash-filter-staff').value : "";
+                const dashFilterStatus = document.getElementById('dash-filter-status') ? document.getElementById('dash-filter-status').value : "";
+                const dashFilterTahun = document.getElementById('dash-filter-tahun') ? document.getElementById('dash-filter-tahun').value : "";
 
-            tabStates['dashboard'] = { staff: dashFilterStaff, status: dashFilterStatus, tahun: dashFilterTahun };
-
-            const dashDataset = dataset.filter(row => {
                 if (dashFilterStaff !== "" && getStaffDisplay(row.staff) !== dashFilterStaff) return false;
                 if (dashFilterStatus !== "" && (row.status || "").toLowerCase().trim() !== dashFilterStatus.toLowerCase().trim()) return false;
                 if (dashFilterTahun !== "" && getYearFromDate(row.date) !== dashFilterTahun) return false;
                 return true;
             });
 
-            const total = dashDataset.length;
-            const completed = dashDataset.filter(r => (r.status||"").toLowerCase().trim() === 'completed').length;
-            const pending = dashDataset.filter(r => (r.status||"").toLowerCase().trim().includes('pending')).length;
+            const total = dashboardData.length;
+            const completed = dashboardData.filter(r => (r.status||"").toLowerCase().trim() === 'completed').length;
+            const pending = dashboardData.filter(r => (r.status||"").toLowerCase().trim().includes('pending')).length;
             
             const staffCounts = {};
             const statusCounts = { 'Completed': 0, 'Pending Approval': 0, 'Incomplete': 0 };
 
-            dashDataset.forEach(r => { 
+            dashboardData.forEach(r => { 
                 const displayStaff = getStaffDisplay(r.staff);
                 if(displayStaff !== '-') staffCounts[displayStaff] = (staffCounts[displayStaff] || 0) + 1; 
                 
@@ -1947,7 +1938,7 @@
 
             const fixedOrder = ["FATIHAH", "FAZILAH", "SAKINAH", "HUSNA", "ADMIN"];
             const fixedColors = ["#6366f1", "#8b5cf6", "#3b82f6", "#10b981", "#64748b"];
-            const staffData = fixedOrder.map(s => staffCounts[s] || 0);
+            const staffDataArr = fixedOrder.map(s => staffCounts[s] || 0);
             
             const staffCtxEl = document.getElementById('staffChart');
             if(staffCtxEl) {
@@ -1956,7 +1947,7 @@
                     type: 'bar',
                     data: {
                         labels: fixedOrder,
-                        datasets: [{ label: 'Total Records', data: staffData, backgroundColor: fixedColors, borderRadius: 6, barThickness: 28, hoverBackgroundColor: '#818cf8' }]
+                        datasets: [{ label: 'Total Records', data: staffDataArr, backgroundColor: fixedColors, borderRadius: 6, barThickness: 28, hoverBackgroundColor: '#818cf8' }]
                     },
                     options: {
                         responsive: true, maintainAspectRatio: false, animation: { y: { duration: 1000, easing: 'easeOutQuart' } },
@@ -1970,7 +1961,6 @@
             }
         }
 
-        // Mulakan Pemeriksaan Login secara mandatori
         checkAutoLogin();
         
     </script>
