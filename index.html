@@ -290,7 +290,7 @@
                         <span class="text-[11px] font-extrabold text-gray-500 dark:text-gray-400 uppercase tracking-widest pl-2">Overview Filter:</span>
                         <div class="flex flex-wrap items-center gap-2">
                             <div class="w-28">
-                                <select id="dash-filter-staff" onchange="updateDashboardStats()" class="w-full text-[11px] border border-gray-200 dark:border-gray-600 rounded-lg px-2 h-[36px] bg-white dark:bg-gray-800 cursor-pointer appearance-none text-gray-700 dark:text-gray-200 font-semibold shadow-sm transition-all hover:border-indigo-300" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%239ca3af%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E'); background-position: right 0.5rem center; background-repeat: no-repeat; background-size: 1em;">
+                                <select id="dash-filter-staff" onchange="applyDashboardFilter()" class="w-full text-[11px] border border-gray-200 dark:border-gray-600 rounded-lg px-2 h-[36px] bg-white dark:bg-gray-800 cursor-pointer appearance-none text-gray-700 dark:text-gray-200 font-semibold shadow-sm transition-all hover:border-indigo-300" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%239ca3af%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E'); background-position: right 0.5rem center; background-repeat: no-repeat; background-size: 1em;">
                                     <option value="">Staff: All</option>
                                     <option value="-">-</option>
                                     <option value="FATIHAH">FATIHAH</option>
@@ -301,7 +301,7 @@
                             </div>
                             
                             <div class="w-32">
-                                <select id="dash-filter-status" onchange="updateDashboardStats()" class="w-full text-[11px] border border-gray-200 dark:border-gray-600 rounded-lg px-2 h-[36px] bg-white dark:bg-gray-800 cursor-pointer appearance-none text-gray-700 dark:text-gray-200 font-semibold shadow-sm transition-all hover:border-indigo-300" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%239ca3af%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E'); background-position: right 0.5rem center; background-repeat: no-repeat; background-size: 1em;">
+                                <select id="dash-filter-status" onchange="applyDashboardFilter()" class="w-full text-[11px] border border-gray-200 dark:border-gray-600 rounded-lg px-2 h-[36px] bg-white dark:bg-gray-800 cursor-pointer appearance-none text-gray-700 dark:text-gray-200 font-semibold shadow-sm transition-all hover:border-indigo-300" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%239ca3af%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E'); background-position: right 0.5rem center; background-repeat: no-repeat; background-size: 1em;">
                                     <option value="">Status: All</option>
                                     <option value="Completed">Completed</option>
                                     <option value="Pending For Approval">Pending</option>
@@ -310,7 +310,7 @@
                             </div>
                             
                             <div class="w-28">
-                                <select id="dash-filter-tahun" onchange="updateDashboardStats()" class="w-full text-[11px] border border-gray-200 dark:border-gray-600 rounded-lg px-2 h-[36px] bg-white dark:bg-gray-800 cursor-pointer appearance-none text-gray-700 dark:text-gray-200 font-semibold shadow-sm transition-all hover:border-indigo-300" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%239ca3af%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E'); background-position: right 0.5rem center; background-repeat: no-repeat; background-size: 1em;">
+                                <select id="dash-filter-tahun" onchange="applyDashboardFilter()" class="w-full text-[11px] border border-gray-200 dark:border-gray-600 rounded-lg px-2 h-[36px] bg-white dark:bg-gray-800 cursor-pointer appearance-none text-gray-700 dark:text-gray-200 font-semibold shadow-sm transition-all hover:border-indigo-300" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%239ca3af%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E'); background-position: right 0.5rem center; background-repeat: no-repeat; background-size: 1em;">
                                     <option value="">Year: All</option>
                                     <option value="2024">2024</option>
                                     <option value="2025">2025</option>
@@ -1415,7 +1415,7 @@
         }
 
         function checkAutoLogin() {
-            logout(); // Wajib log masuk setiap kali muka surat dibuka/di-refresh
+            logout(); 
         }
 
         function logout() {
@@ -1734,59 +1734,81 @@
         }
 
         function approveSingleRow(id, tabId) {
-            if(!confirm(`Are you sure you want to approve this record?`)) return;
-            showLoading("Approving...");
-            const index = masterData.findIndex(r => r.id === id);
-            if (index === -1) { hideLoading(); return; }
+            try {
+                if(!confirm(`Are you sure you want to approve this record?`)) return;
+                console.log(`[APPROVE ROW] Memproses kelulusan untuk ID: ${id}`);
+                showLoading("Approving...");
+                const index = masterData.findIndex(r => r.id === id);
+                if (index === -1) { 
+                    console.error("Rekod tidak dijumpai.");
+                    hideLoading(); 
+                    return; 
+                }
 
-            let record = {...masterData[index]};
-            
-            const rosliInput = document.getElementById(`rosli-c050-${tabId}-${id}`);
-            if (rosliInput) {
-                record.callNo050 = rosliInput.value;
-            }
+                let record = {...masterData[index]};
+                
+                const rosliInput = document.getElementById(`rosli-c050-${tabId}-${id}`);
+                if (rosliInput) {
+                    record.callNo050 = rosliInput.value;
+                }
 
-            record.status = 'Completed';
-            record.approvedBy = currentUserName;
-            const t = new Date();
-            record.approvedDate = String(t.getDate()).padStart(2, '0') + '/' + String(t.getMonth() + 1).padStart(2, '0') + '/' + t.getFullYear();
+                record.status = 'Completed';
+                record.approvedBy = currentUserName;
+                const t = new Date();
+                record.approvedDate = String(t.getDate()).padStart(2, '0') + '/' + String(t.getMonth() + 1).padStart(2, '0') + '/' + t.getFullYear();
 
-            masterData[index] = record;
-            
-            applyDashboardFilter();
-            applyCollectionFilter(true);
-            applyApprovalsFilter(true);
-            
-            server.withSuccessHandler(function() {
+                masterData[index] = record;
+                
+                applyDashboardFilter();
+                applyCollectionFilter(true);
+                applyApprovalsFilter(true);
+                
+                server.withSuccessHandler(function() {
+                    console.log(`[APPROVE ROW SUCCESS] Rekod ID: ${id} telah diluluskan.`);
+                    hideLoading();
+                    showToast("Record successfully approved!");
+                    fetchDataFromGoogleSheet(true); 
+                }).updateRow(record);
+            } catch(err) {
+                console.error("Ralat pada approveSingleRow:", err);
                 hideLoading();
-                showToast("Record successfully approved!");
-                fetchDataFromGoogleSheet(true); 
-            }).updateRow(record);
+            }
         }
         
         function reopenRecord(id, tabId) {
-            if(!confirm(`Adakah anda pasti mahu 'Reopen' rekod ini untuk membenarkan staf mengedit semula?`)) return;
-            showLoading("Membuka semula rekod...");
-            const index = masterData.findIndex(r => r.id === id);
-            if (index === -1) { hideLoading(); return; }
+            try {
+                if(!confirm(`Adakah anda pasti mahu 'Reopen' rekod ini untuk membenarkan staf mengedit semula?`)) return;
+                console.log(`[REOPEN ROW] Admin membuka semula rekod ID: ${id}`);
+                showLoading("Membuka semula rekod...");
+                const index = masterData.findIndex(r => r.id === id);
+                if (index === -1) { 
+                    console.error("Rekod tidak dijumpai.");
+                    hideLoading(); 
+                    return; 
+                }
 
-            let record = {...masterData[index]};
+                let record = {...masterData[index]};
 
-            record.status = 'incomplete';
-            record.approvedBy = '';
-            record.approvedDate = '';
+                record.status = 'incomplete';
+                record.approvedBy = '';
+                record.approvedDate = '';
 
-            masterData[index] = record;
-            
-            applyDashboardFilter();
-            applyCollectionFilter(true);
-            applyApprovalsFilter(true);
-            
-            server.withSuccessHandler(function() {
+                masterData[index] = record;
+                
+                applyDashboardFilter();
+                applyCollectionFilter(true);
+                applyApprovalsFilter(true);
+                
+                server.withSuccessHandler(function() {
+                    console.log(`[REOPEN ROW SUCCESS] Rekod ID: ${id} dibuka semula.`);
+                    hideLoading();
+                    showToast("Rekod dibuka semula (Reopened)!");
+                    fetchDataFromGoogleSheet(true); 
+                }).updateRow(record);
+            } catch(err) {
+                console.error("Ralat pada reopenRecord:", err);
                 hideLoading();
-                showToast("Rekod dibuka semula (Reopened)!");
-                fetchDataFromGoogleSheet(true); 
-            }).updateRow(record);
+            }
         }
 
         function generateRowHTML(row, isEditing, isReadonlyView, tabId) {
@@ -1914,55 +1936,89 @@
         }
 
         function editRow(id, tabId) { 
-            editingId = id; 
-            renderTable(tabId); 
+            try {
+                console.log(`[EDIT MODE] Mengaktifkan edit untuk ID: ${id} pada tab: ${tabId}`);
+                editingId = id; 
+                renderTable(tabId); 
+            } catch(e) {
+                console.error("Ralat pada editRow:", e);
+            }
         }
+        
         function cancelEdit(tabId) { 
-            editingId = null; 
-            renderTable(tabId); 
+            try {
+                console.log(`[CANCEL EDIT] Membatalkan edit pada tab: ${tabId}`);
+                editingId = null; 
+                renderTable(tabId); 
+            } catch(e) {
+                console.error("Ralat pada cancelEdit:", e);
+            }
         }
 
         function saveRow(id, tabId) {
-            const index = masterData.findIndex(r => r.id === id);
-            if (index === -1) return;
+            try {
+                console.log(`[SAVE ROW] Menyimpan rekod ID: ${id} dari tab: ${tabId}`);
+                const index = masterData.findIndex(r => r.id === id);
+                if (index === -1) {
+                    console.error(`Rekod dengan ID ${id} tidak wujud dalam masterData.`);
+                    return;
+                }
 
-            let newStatus = document.getElementById(`edit-status-${tabId}-${id}`).value;
-            let newDate = masterData[index].date;
-            
-            let finalStatusToSave = newStatus;
-            if (currentUserRole === 'staff' && newStatus === 'Completed') {
-                finalStatusToSave = 'Pending For Approval'; 
-            }
+                const statusEl = document.getElementById(`edit-status-${tabId}-${id}`);
+                const ctrlEl = document.getElementById(`edit-ctrl-${tabId}-${id}`);
+                const c082El = document.getElementById(`edit-c082-${tabId}-${id}`);
+                const c050El = document.getElementById(`edit-c050-${tabId}-${id}`);
+                const staffEl = document.getElementById(`edit-staff-${tabId}-${id}`);
 
-            const currentStatusLower = (masterData[index].status || "").toLowerCase().trim();
-            if ((newStatus === 'Completed' || finalStatusToSave === 'Pending For Approval') && currentStatusLower !== 'completed' && currentStatusLower !== 'pending for approval') {
-                const t = new Date();
-                newDate = String(t.getDate()).padStart(2, '0') + '/' + String(t.getMonth() + 1).padStart(2, '0') + '/' + t.getFullYear();
-            }
+                if (!statusEl || !ctrlEl || !c050El || !staffEl) {
+                    console.error("Elemen input tidak dijumpai. Pastikan rendering berjaya.");
+                    return;
+                }
 
-            const updatedRecord = {
-                ...masterData[index],
-                controlNo: document.getElementById(`edit-ctrl-${tabId}-${id}`).value,
-                callNo082: document.getElementById(`edit-c082-${tabId}-${id}`).value, 
-                callNo050: document.getElementById(`edit-c050-${tabId}-${id}`).value,
-                staff: document.getElementById(`edit-staff-${tabId}-${id}`).value,
-                status: finalStatusToSave, 
-                date: newDate
-            };
+                let newStatus = statusEl.value;
+                let newDate = masterData[index].date;
+                
+                let finalStatusToSave = newStatus;
+                if (currentUserRole === 'staff' && newStatus === 'Completed') {
+                    finalStatusToSave = 'Pending For Approval'; 
+                }
 
-            showLoading("Saving...");
-            server.withSuccessHandler(function(success) {
+                const currentStatusLower = (masterData[index].status || "").toLowerCase().trim();
+                if ((newStatus === 'Completed' || finalStatusToSave === 'Pending For Approval') && currentStatusLower !== 'completed' && currentStatusLower !== 'pending for approval') {
+                    const t = new Date();
+                    newDate = String(t.getDate()).padStart(2, '0') + '/' + String(t.getMonth() + 1).padStart(2, '0') + '/' + t.getFullYear();
+                }
+
+                const updatedRecord = {
+                    ...masterData[index],
+                    controlNo: ctrlEl.value,
+                    callNo082: c082El ? c082El.value : masterData[index].callNo082, 
+                    callNo050: c050El.value,
+                    staff: staffEl.value,
+                    status: finalStatusToSave, 
+                    date: newDate
+                };
+
+                showLoading("Saving...");
+                server.withSuccessHandler(function(success) {
+                    console.log(`[SAVE ROW SUCCESS] Rekod ID: ${id} berjaya disimpan.`);
+                    hideLoading();
+                    showToast("Record successfully updated.");
+                    masterData[index] = updatedRecord;
+                    editingId = null;
+                    
+                    applyDashboardFilter();
+                    applyCollectionFilter(true);
+                    applyApprovalsFilter(true);
+                    
+                    fetchDataFromGoogleSheet(true);
+                }).updateRow(updatedRecord);
+
+            } catch (error) {
+                console.error("Ralat tidak dijangka pada saveRow:", error);
                 hideLoading();
-                showToast("Record successfully updated.");
-                masterData[index] = updatedRecord;
-                editingId = null;
-                
-                applyDashboardFilter();
-                applyCollectionFilter(true);
-                applyApprovalsFilter(true);
-                
-                fetchDataFromGoogleSheet(true);
-            }).updateRow(updatedRecord);
+                alert("Ralat semasa menyimpan rekod. Sila semak konsol.");
+            }
         }
 
         /* =====================================================================
@@ -2005,25 +2061,27 @@
         }
 
         function updateDashboardStats() {
-            dashboardData = masterData.filter(row => {
-                const dashFilterStaff = document.getElementById('dash-filter-staff') ? document.getElementById('dash-filter-staff').value : "";
-                const dashFilterStatus = document.getElementById('dash-filter-status') ? document.getElementById('dash-filter-status').value : "";
-                const dashFilterTahun = document.getElementById('dash-filter-tahun') ? document.getElementById('dash-filter-tahun').value : "";
+            const dashFilterStaff = document.getElementById('dash-filter-staff') ? document.getElementById('dash-filter-staff').value : tabStates['dashboard'].staff;
+            const dashFilterStatus = document.getElementById('dash-filter-status') ? document.getElementById('dash-filter-status').value : tabStates['dashboard'].status;
+            const dashFilterTahun = document.getElementById('dash-filter-tahun') ? document.getElementById('dash-filter-tahun').value : tabStates['dashboard'].tahun;
 
+            tabStates['dashboard'] = { staff: dashFilterStaff, status: dashFilterStatus, tahun: dashFilterTahun };
+
+            const dashDataset = masterData.filter(row => {
                 if (dashFilterStaff !== "" && getStaffDisplay(row.staff) !== dashFilterStaff) return false;
                 if (dashFilterStatus !== "" && (row.status || "").toLowerCase().trim() !== dashFilterStatus.toLowerCase().trim()) return false;
                 if (dashFilterTahun !== "" && getYearFromDate(row.date) !== dashFilterTahun) return false;
                 return true;
             });
 
-            const total = dashboardData.length;
-            const completed = dashboardData.filter(r => (r.status||"").toLowerCase().trim() === 'completed').length;
-            const pending = dashboardData.filter(r => (r.status||"").toLowerCase().trim().includes('pending')).length;
+            const total = dashDataset.length;
+            const completed = dashDataset.filter(r => (r.status||"").toLowerCase().trim() === 'completed').length;
+            const pending = dashDataset.filter(r => (r.status||"").toLowerCase().trim().includes('pending')).length;
             
             const staffCounts = {};
             const statusCounts = { 'Completed': 0, 'Pending Approval': 0, 'Incomplete': 0 };
 
-            dashboardData.forEach(r => { 
+            dashDataset.forEach(r => { 
                 const displayStaff = getStaffDisplay(r.staff);
                 if(displayStaff !== '-') staffCounts[displayStaff] = (staffCounts[displayStaff] || 0) + 1; 
                 
