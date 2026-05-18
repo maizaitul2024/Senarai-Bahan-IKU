@@ -1763,6 +1763,31 @@
                 fetchDataFromGoogleSheet(true); 
             }).updateRow(record);
         }
+        
+        function reopenRecord(id, tabId) {
+            if(!confirm(`Adakah anda pasti mahu 'Reopen' rekod ini untuk membenarkan staf mengedit semula?`)) return;
+            showLoading("Membuka semula rekod...");
+            const index = masterData.findIndex(r => r.id === id);
+            if (index === -1) { hideLoading(); return; }
+
+            let record = {...masterData[index]};
+
+            record.status = 'incomplete';
+            record.approvedBy = '';
+            record.approvedDate = '';
+
+            masterData[index] = record;
+            
+            applyDashboardFilter();
+            applyCollectionFilter(true);
+            applyApprovalsFilter(true);
+            
+            server.withSuccessHandler(function() {
+                hideLoading();
+                showToast("Rekod dibuka semula (Reopened)!");
+                fetchDataFromGoogleSheet(true); 
+            }).updateRow(record);
+        }
 
         function generateRowHTML(row, isEditing, isReadonlyView, tabId) {
             const displayStaff = getStaffDisplay(row.staff);
@@ -1836,11 +1861,18 @@
                 } else {
                     actionHtml = `<button type="button" ondblclick="editRow(${row.id}, '${tabId}')" class="text-indigo-500 hover:text-white bg-indigo-50 hover:bg-indigo-500 p-1.5 rounded-lg transition-all shadow-sm hover:shadow-glow-blue" title="Double Click to Edit"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg></button>`;
                 }
-            } else { 
+            } else { // admin
                 if (isReadonlyView) {
                     actionHtml = `<span class="text-gray-300 italic text-[10px] font-medium">—</span>`;
                 } else {
-                    actionHtml = `<button type="button" ondblclick="editRow(${row.id}, '${tabId}')" class="text-indigo-500 hover:text-white bg-indigo-50 hover:bg-indigo-500 p-1.5 rounded-lg transition-all shadow-sm hover:shadow-glow-blue" title="Double Click to Edit"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg></button>`;
+                    let editBtn = `<button type="button" ondblclick="editRow(${row.id}, '${tabId}')" class="text-indigo-500 hover:text-white bg-indigo-50 hover:bg-indigo-500 p-1.5 rounded-lg transition-all shadow-sm hover:shadow-glow-blue" title="Double Click to Edit"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg></button>`;
+                    
+                    if (isCompleted || currentStatusLower === 'pending for approval') {
+                        let reopenBtn = `<button type="button" onclick="reopenRecord(${row.id}, '${tabId}')" class="text-orange-500 hover:text-white bg-orange-50 hover:bg-orange-500 p-1.5 rounded-lg transition-all shadow-sm hover:shadow-glow-orange" title="Return to Staff (Reopen)"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path></svg></button>`;
+                        actionHtml = `<div class="flex gap-1.5 justify-center">${editBtn}${reopenBtn}</div>`;
+                    } else {
+                        actionHtml = `<div class="flex gap-1.5 justify-center">${editBtn}</div>`;
+                    }
                 }
             }
             
@@ -1883,14 +1915,11 @@
 
         function editRow(id, tabId) { 
             editingId = id; 
-            if (tabId === 'collection') renderRecordTable();
-            else if (tabId === 'approvals') renderApprovalTable();
+            renderTable(tabId); 
         }
-        
         function cancelEdit(tabId) { 
             editingId = null; 
-            if (tabId === 'collection') renderRecordTable();
-            else if (tabId === 'approvals') renderApprovalTable();
+            renderTable(tabId); 
         }
 
         function saveRow(id, tabId) {
