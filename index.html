@@ -1771,42 +1771,42 @@
 
             if (isEditing && !isReadonlyView) {
                 let call082HTML = (currentUserRole === 'staff')
-                    ? `<td class="px-3 py-3 text-center whitespace-normal break-words w-[130px] max-w-[130px] leading-tight font-medium text-gray-900 text-xs">${row.callNo082}<input type="hidden" id="edit-c082-${tabId}-${row.id}" value="${row.callNo082}"></td>`
-                    : `<td class="px-3 py-3"><input type="text" id="edit-c082-${tabId}-${row.id}" value="${row.callNo082}" class="w-full text-xs px-2 py-1.5 border border-blue-300 rounded focus:border-indigo-500 focus:ring-1 focus:ring-indigo-200 text-center transition-all bg-white text-gray-900 shadow-sm"></td>`;
+                    ? `<td class="px-3 py-3 text-center whitespace-normal break-words w-[130px] max-w-[130px] leading-tight font-medium text-gray-900 text-[11px]">${row.callNo082}<input type="hidden" id="edit-c082-${tabId}-${row.id}" value="${row.callNo082}"></td>`
+                    : `<td class="px-3 py-3"><input type="text" id="edit-c082-${tabId}-${row.id}" value="${row.callNo082}" class="w-full text-[11px] px-2 py-1.5 border border-blue-300 rounded focus:border-indigo-500 focus:ring-1 focus:ring-indigo-200 text-center transition-all bg-white text-gray-900 shadow-sm"></td>`;
 
                 let statusSelectHTML = '';
                 if (currentUserRole === 'staff') {
                     let isStaffCompleted = (row.status === 'Completed' || row.status === 'Pending For Approval');
                     statusSelectHTML = `
-                        <select id="edit-status-${tabId}-${row.id}" class="w-full text-xs px-1 py-1.5 border border-blue-300 rounded focus:border-indigo-500 font-bold bg-white text-gray-900 shadow-sm transition-all">
+                        <select id="edit-status-${tabId}-${row.id}" class="w-full text-[11px] px-1 py-1.5 border border-blue-300 rounded focus:border-indigo-500 font-bold bg-white text-gray-900 shadow-sm transition-all">
                             <option value="Completed" ${isStaffCompleted ? 'selected' : ''}>Completed</option>
                             <option value="incomplete" ${!isStaffCompleted ? 'selected' : ''}>Incomplete</option>
                         </select>
                     `;
                 } else {
                     statusSelectHTML = `
-                        <select id="edit-status-${tabId}-${row.id}" class="w-full text-xs px-1 py-1.5 border border-blue-300 rounded focus:border-indigo-500 font-bold bg-white text-gray-900 shadow-sm transition-all">
+                        <select id="edit-status-${tabId}-${row.id}" class="w-full text-[11px] px-1 py-1.5 border border-blue-300 rounded focus:border-indigo-500 font-bold bg-white text-gray-900 shadow-sm transition-all">
                             ${statusOptions.map(opt => `<option value="${opt}" ${row.status === opt ? 'selected' : ''}>${opt}</option>`).join('')}
                         </select>
                     `;
                 }
 
                 return `
-                    <td class="px-3 py-3 text-center text-gray-500 font-bold text-xs">${row.no}</td>
-                    <td class="px-3 py-3"><input type="text" id="edit-ctrl-${tabId}-${row.id}" value="${row.controlNo}" class="w-full text-xs px-2 py-1.5 border border-blue-300 rounded focus:border-indigo-500 text-center transition-all bg-white text-gray-900 shadow-sm"></td>
+                    <td class="px-3 py-3 text-center text-gray-500 font-bold text-[11px]">${row.no}</td>
+                    <td class="px-3 py-3"><input type="text" id="edit-ctrl-${tabId}-${row.id}" value="${row.controlNo}" class="w-full text-[11px] px-2 py-1.5 border border-blue-300 rounded focus:border-indigo-500 text-center transition-all bg-white text-gray-900 shadow-sm"></td>
                     ${call082HTML}
-                    <td class="px-3 py-3"><input type="text" id="edit-c050-${tabId}-${row.id}" value="${row.callNo050}" class="w-full text-xs px-2 py-1.5 border border-blue-300 rounded focus:border-indigo-500 text-center transition-all bg-white text-gray-900 shadow-sm"></td>
-                    <td class="px-3 py-3 font-extrabold text-indigo-700 text-xs">${row.accession}</td>
-                    <td class="px-3 py-3 whitespace-normal min-w-[250px] break-words font-semibold leading-snug text-left text-gray-900 text-sm">${row.title}</td>
+                    <td class="px-3 py-3"><input type="text" id="edit-c050-${tabId}-${row.id}" value="${row.callNo050}" class="w-full text-[11px] px-2 py-1.5 border border-blue-300 rounded focus:border-indigo-500 text-center transition-all bg-white text-gray-900 shadow-sm"></td>
+                    <td class="px-3 py-3 font-extrabold text-indigo-700 text-[11px]">${row.accession}</td>
+                    <td class="px-3 py-3 whitespace-normal min-w-[250px] break-words font-semibold leading-snug text-left text-gray-900 text-xs">${row.title}</td>
                     <td class="px-3 py-3">
-                        <select id="edit-staff-${tabId}-${row.id}" class="w-full text-xs px-1 py-1.5 border border-blue-300 rounded focus:border-indigo-500 font-bold text-indigo-700 shadow-sm transition-all bg-white">
+                        <select id="edit-staff-${tabId}-${row.id}" class="w-full text-[11px] px-1 py-1.5 border border-blue-300 rounded focus:border-indigo-500 font-bold text-indigo-700 shadow-sm transition-all bg-white">
                             <option value="${row.staff}" hidden>${displayStaff}</option>
                             ${staffOptions.map(opt => `<option value="${opt}" ${row.staff === opt ? 'selected' : ''}>${opt}</option>`).join('')}
                         </select>
                     </td>
-                    <td class="px-3 py-3 text-center font-medium text-gray-600 text-xs">${formatDisplayDate(row.date)}</td>
+                    <td class="px-3 py-3 text-center font-medium text-gray-600 text-[11px]">${formatDisplayDate(row.date)}</td>
                     <td class="px-3 py-3">${statusSelectHTML}</td>
-                    <td class="px-3 py-3 rounded text-xs text-gray-400 text-left italic font-medium">Audit Trail locked.</td>
+                    <td class="px-3 py-3 rounded text-[11px] text-gray-400 text-left italic font-medium">Audit Trail locked.</td>
                     <td class="px-3 py-3 text-center align-middle">
                         <div class="flex gap-1.5 justify-center">
                             <button type="button" onclick="saveRow(${row.id}, '${tabId}')" class="bg-emerald-500 hover:bg-emerald-600 text-white p-1.5 rounded-lg shadow-glow-emerald hover:-translate-y-0.5 transition-all" title="Save Record"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></button>
@@ -1834,30 +1834,30 @@
                 if (tabId === 'approvals' || isCompleted || isReadonlyView) {
                     actionHtml = `<span class="text-gray-300 italic text-[10px] font-medium">—</span>`;
                 } else {
-                    actionHtml = `<button type="button" onclick="editRow(${row.id}, '${tabId}')" class="text-indigo-500 hover:text-white bg-indigo-50 hover:bg-indigo-500 p-1.5 rounded-lg transition-all shadow-sm hover:shadow-glow-blue" title="Edit Record"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg></button>`;
+                    actionHtml = `<button type="button" ondblclick="editRow(${row.id}, '${tabId}')" class="text-indigo-500 hover:text-white bg-indigo-50 hover:bg-indigo-500 p-1.5 rounded-lg transition-all shadow-sm hover:shadow-glow-blue" title="Double Click to Edit"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg></button>`;
                 }
             } else { 
                 if (isReadonlyView) {
                     actionHtml = `<span class="text-gray-300 italic text-[10px] font-medium">—</span>`;
                 } else {
-                    actionHtml = `<button type="button" onclick="editRow(${row.id}, '${tabId}')" class="text-indigo-500 hover:text-white bg-indigo-50 hover:bg-indigo-500 p-1.5 rounded-lg transition-all shadow-sm hover:shadow-glow-blue" title="Edit Record"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg></button>`;
+                    actionHtml = `<button type="button" ondblclick="editRow(${row.id}, '${tabId}')" class="text-indigo-500 hover:text-white bg-indigo-50 hover:bg-indigo-500 p-1.5 rounded-lg transition-all shadow-sm hover:shadow-glow-blue" title="Double Click to Edit"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg></button>`;
                 }
             }
             
-            let displayCallNo050 = `<span class="block text-center font-medium whitespace-normal break-words w-[130px] max-w-[130px] leading-relaxed text-xs">${row.callNo050}</span>`;
+            let displayCallNo050 = `<span class="block text-center font-medium whitespace-normal break-words w-[130px] max-w-[130px] leading-relaxed text-[11px]">${row.callNo050}</span>`;
             if (currentUserRole === 'rosli' && tabId === 'approvals' && !isEditing) {
-                displayCallNo050 = `<input type="text" id="rosli-c050-${tabId}-${row.id}" value="${row.callNo050}" class="w-full text-xs px-2 py-1.5 border border-blue-300 rounded focus:border-indigo-500 text-center transition-all bg-white text-gray-900 shadow-sm">`;
+                displayCallNo050 = `<input type="text" id="rosli-c050-${tabId}-${row.id}" value="${row.callNo050}" class="w-full text-[11px] px-2 py-1.5 border border-blue-300 rounded focus:border-indigo-500 text-center transition-all bg-white text-gray-900 shadow-sm">`;
             }
 
             return `
-                <td class="px-3 py-3 text-center font-bold text-gray-500 text-xs">${row.no}</td>
-                <td class="px-3 py-3 text-center font-medium text-xs">${row.controlNo}</td>
-                <td class="px-3 py-3 text-center font-medium whitespace-normal break-words w-[130px] max-w-[130px] leading-relaxed text-xs">${row.callNo082}</td>
+                <td class="px-3 py-3 text-center font-bold text-gray-500 text-[11px]">${row.no}</td>
+                <td class="px-3 py-3 text-center font-medium text-[11px]">${row.controlNo}</td>
+                <td class="px-3 py-3 text-center font-medium whitespace-normal break-words w-[130px] max-w-[130px] leading-relaxed text-[11px]">${row.callNo082}</td>
                 <td class="px-3 py-3 text-center align-middle">${displayCallNo050}</td>
-                <td class="px-3 py-3 font-extrabold text-indigo-600 dark:text-indigo-400 text-xs">${row.accession}</td>
-                <td class="px-3 py-3 whitespace-normal break-words font-semibold leading-relaxed text-left text-sm min-w-[250px]">${row.title}</td>
-                <td class="px-3 py-3 font-bold text-gray-800 dark:text-gray-200 text-xs">${displayStaff}</td>
-                <td class="px-3 py-3 text-center font-medium text-xs">${formatDisplayDate(row.date)}</td>
+                <td class="px-3 py-3 font-extrabold text-indigo-600 dark:text-indigo-400 text-[11px]">${row.accession}</td>
+                <td class="px-3 py-3 whitespace-normal break-words font-semibold leading-relaxed text-left text-xs min-w-[250px]">${row.title}</td>
+                <td class="px-3 py-3 font-bold text-gray-800 dark:text-gray-200 text-[11px]">${displayStaff}</td>
+                <td class="px-3 py-3 text-center font-medium text-[11px]">${formatDisplayDate(row.date)}</td>
                 <td class="px-3 py-3">${statusBadge}</td>
                 <td class="px-3 py-3 text-left min-w-[150px]">
                     ${row.approvedBy 
@@ -1866,7 +1866,7 @@
                                <svg class="w-3 h-3 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                              </span>
                              <div class="flex flex-col">
-                               <span class="text-gray-500 dark:text-gray-400 font-medium leading-none text-xs">By <span class="text-gray-800 dark:text-gray-200 font-bold">${row.approvedBy}</span></span>
+                               <span class="text-gray-500 dark:text-gray-400 font-medium leading-none text-[11px]">By <span class="text-gray-800 dark:text-gray-200 font-bold">${row.approvedBy}</span></span>
                                ${row.approvedDate ? `<span class="text-[9px] text-gray-400 font-semibold mt-1">${row.approvedDate}</span>` : ''}
                              </div>
                            </div>` 
@@ -1874,7 +1874,7 @@
                              <span class="w-5 h-5 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center shrink-0">
                                <span class="w-1.5 h-1.5 rounded-full bg-gray-400"></span>
                              </span>
-                             <span class="text-gray-400 italic text-xs">Pending</span>
+                             <span class="text-gray-400 italic text-[11px]">Pending</span>
                            </div>`)} 
                 </td>
                 <td class="px-3 py-3 text-center align-middle">${actionHtml}</td>
