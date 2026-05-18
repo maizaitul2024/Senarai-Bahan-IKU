@@ -1939,7 +1939,8 @@
             try {
                 console.log(`[EDIT MODE] Mengaktifkan edit untuk ID: ${id} pada tab: ${tabId}`);
                 editingId = id; 
-                renderTable(tabId); 
+                if (tabId === 'collection') renderRecordTable();
+                else if (tabId === 'approvals') renderApprovalTable();
             } catch(e) {
                 console.error("Ralat pada editRow:", e);
             }
@@ -1949,7 +1950,8 @@
             try {
                 console.log(`[CANCEL EDIT] Membatalkan edit pada tab: ${tabId}`);
                 editingId = null; 
-                renderTable(tabId); 
+                if (tabId === 'collection') renderRecordTable();
+                else if (tabId === 'approvals') renderApprovalTable();
             } catch(e) {
                 console.error("Ralat pada cancelEdit:", e);
             }
